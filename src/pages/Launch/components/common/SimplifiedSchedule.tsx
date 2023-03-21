@@ -1,116 +1,164 @@
-import {Box, Grid, Flex, Text, useColorMode, Image} from '@chakra-ui/react';
+import {Box, Grid, Flex, Text, useColorMode} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import React from 'react';
-import CalendarIcon from '../../../../assets/svgs/calendar_inactive_icon.svg';
+import SingleCalendarPop from './SingleCalendarPop';
+import {snapshotGap, stosMinimumRequirements} from '@Launch/const';
+import {convertTimeStamp} from 'utils/convertTIme';
 
 type ScheduleProps = {
-    stepNames: string[];
-    currentStep: number;
+  stepNames: string[];
+  currentStep: number;
 };
-  
 
 export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
-    const {stepNames, currentStep} = props;
-    const [maxStep, setStepMax] = useState(0);
-    const {colorMode} = useColorMode();
+  const {stepNames, currentStep} = props;
+  const [maxStep, setStepMax] = useState(0);
+  const {colorMode} = useColorMode();
+  const [snapshotDate, setSnapshotDate] = useState<number | undefined>(0);
+  const [publicSale1Date, setPublicSale1Date] = useState<number | undefined>(0);
+  const [publicSale2Date, setPublicSale2Date] = useState<number | undefined>(0);
 
-    /* Ensure stepMax is always set to the highest value of currentStep seen (so far) 
+  /* Ensure stepMax is always set to the highest value of currentStep seen (so far) 
        If currentStep increases beyond the current maxStep, the stepMax is updated to 
        reflect the new maximum value of currentStep
 
        callback func will run whenever the currentStep, or maxStep changes.
     */
-    useEffect(() => {
-        if (currentStep > maxStep) {
-          setStepMax(currentStep);
-        }
-      }, [currentStep, maxStep]);
-      
- return (
-    <>
-    <Grid my={2}>
+  useEffect(() => {
+    if (currentStep > maxStep) {
+      setStepMax(currentStep);
+    }
+  }, [currentStep, maxStep]);
+
+  return (
+      <Grid my={2}>
         <Box my={2}>
-            <Text fontSize='md'>Schedule</Text>
+          <Text fontSize="md">Schedule</Text>
         </Box>
-      <Grid templateColumns='repeat(6, 1fr)' gap={8}>
-      {stepNames.map((step: string, index: number) => {
-          const indexNum = index + 1;
-          const isStep = currentStep === indexNum;
-          const pastStep = currentStep > indexNum || maxStep > indexNum;
-          return (
-            <Grid mb={2} fontSize='xs'>
-                {(step === 'Snapshot' || step === 'Public Sale 1' || step === 'Public Sale 2') 
-                ? <Flex as='b'><Text mr={'5px'} color={'#FF3B3B'}>*</Text>{step}</Flex>
-                : <Flex><Text as='b'>{step}</Text></Flex>
-                }
-          </Grid>
-        );
-      })}
-    </Grid>
-    <Flex ml={'25px'}>
-      {stepNames.map((step: string, index: number) => {
-          const indexNum = index + 1;
-          const isStep = currentStep === indexNum;
-          const pastStep = currentStep > indexNum || maxStep > indexNum;
-          return (
-            <Flex alignItems="center">
-            {/* Dot */}
-            <Box
-              borderRadius={18}
-              bg={isStep ? '#2ea1f8' : 'transparent'}
-              w={'8px'}
-              h={'8px'}
-              alignItems="center"
-              justifyContent="center"
-              border={
-                isStep
-                  ? ''
-                  : colorMode === 'light'
-                  ? 'solid 1px #e6eaee'
-                  : 'solid 1px #373737'
-              }>
-            </Box>
-            {/* Line */}
-            {index < stepNames.length - 1 &&
-            <Box
-                w={'120px'}
-                h={'2px'} 
-                bg={isStep ? '#2ea1f8' : 'transparent'}
-                border={
+        <Grid templateColumns="repeat(6, 1fr)" gap={8}>
+          {stepNames.map((step: string, index: number) => {
+            const indexNum = index + 1;
+            const isStep = currentStep === indexNum;
+            const pastStep = currentStep > indexNum || maxStep > indexNum;
+            return (
+              <Grid mb={2} fontSize="xs">
+                {step === 'Snapshot' ||
+                step === 'Public Sale 1' ||
+                step === 'Public Sale 2' ? (
+                  <Flex as="b">
+                    <Text mr={'5px'} color={'#FF3B3B'}>
+                      *
+                    </Text>
+                    {step}
+                  </Flex>
+                ) : (
+                  <Flex>
+                    <Text as="b">{step}</Text>
+                  </Flex>
+                )}
+              </Grid>
+            );
+          })}
+        </Grid>
+        <Flex ml={'25px'}>
+          {stepNames.map((step: string, index: number) => {
+            const indexNum = index + 1;
+            const isStep = currentStep === indexNum;
+            const pastStep = currentStep > indexNum || maxStep > indexNum;
+            return (
+              <Flex alignItems="center">
+                {/* Dot */}
+                <Box
+                  borderRadius={18}
+                  bg={isStep ? '#2ea1f8' : 'transparent'}
+                  w={'8px'}
+                  h={'8px'}
+                  alignItems="center"
+                  justifyContent="center"
+                  border={
                     isStep
                       ? ''
                       : colorMode === 'light'
                       ? 'solid 1px #e6eaee'
                       : 'solid 1px #373737'
-                  }>
-            </Box>
-            }
-          </Flex>
-        );
-      })}
-    </Flex>
-    <Grid templateColumns='repeat(6, 1fr)' gap={8}>
-    {stepNames.map((step: string, index: number) => {
-          const indexNum = index + 1;
-          const isStep = currentStep === indexNum;
-          const pastStep = currentStep > indexNum || maxStep > indexNum;
-          return (
-            <Grid alignItems="center">
-            {/* date & time */}
-            <Box m={2} fontSize='xs'>
-            2023.03.09
-            10:00:01
-            </Box>
-            {(step === 'Snapshot' || step === 'Public Sale 1' || step === 'Public Sale 2') && 
-              (<Image ml={4} src={CalendarIcon} alt="calendar_inactive" />)
-            }
-          </Grid>
-        );
-      })}
-    </Grid>
-    </Grid>
-    </>
- )
+                  }></Box>
+                {/* Line */}
+                {index < stepNames.length - 1 && (
+                  <Box
+                    w={'120px'}
+                    h={'2px'}
+                    bg={isStep ? '#2ea1f8' : 'transparent'}
+                    border={
+                      isStep
+                        ? ''
+                        : colorMode === 'light'
+                        ? 'solid 1px #e6eaee'
+                        : 'solid 1px #373737'
+                    }></Box>
+                )}
+              </Flex>
+            );
+          })}
+        </Flex>
+        <Grid templateColumns="repeat(6, 1fr)" gap={8} fontSize="xs">
+          {stepNames.map((step: string, index: number) => {
+            const indexNum = index + 1;
+            const isStep = currentStep === indexNum;
+            const pastStep = currentStep > indexNum || maxStep > indexNum;
+            return (
+              <Grid alignItems="center" m={2}>
+                {/* snapshot date & time */}
+                {step === 'Snapshot' && (
+                  <Grid>
+                    <Text mr={'5px'}>
+                      {snapshotDate
+                        ? convertTimeStamp(snapshotDate, 'YYYY-MM-DD HH:mm:ss')
+                        : null}
+                    </Text>
+                    <Flex alignItems="center">
+                      <SingleCalendarPop
+                        setDate={setSnapshotDate}></SingleCalendarPop>
+                    </Flex>
+                  </Grid>
+                )}
+                {/* Public sale 1 date & time */}
+                {step === 'Public Sale 1' && (
+                  <Grid>
+                    <Text mr={'5px'}>
+                      {publicSale1Date
+                        ? convertTimeStamp(
+                            publicSale1Date,
+                            'YYYY-MM-DD HH:mm:ss',
+                          )
+                        : null}
+                    </Text>
+                    <Flex alignItems="center">
+                      <SingleCalendarPop
+                        setDate={setPublicSale1Date}></SingleCalendarPop>
+                    </Flex>
+                  </Grid>
+                )}
+                {/* Public sale 2 date & time */}
+                {step === 'Public Sale 2' && (
+                  <Grid>
+                    <Text mr={'5px'}>
+                      {publicSale2Date
+                        ? convertTimeStamp(
+                            publicSale2Date,
+                            'YYYY-MM-DD HH:mm:ss',
+                          )
+                        : null}
+                    </Text>
+                    <Flex alignItems="center">
+                      <SingleCalendarPop
+                        setDate={setPublicSale2Date}></SingleCalendarPop>
+                    </Flex>
+                  </Grid>
+                )}
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Grid>
+  );
 };
-
-
