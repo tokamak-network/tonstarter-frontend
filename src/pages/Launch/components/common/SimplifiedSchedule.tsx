@@ -14,6 +14,12 @@ export const SimplifiedSchedule: React.FC<ScheduleProps> = (props) => {
     const [maxStep, setStepMax] = useState(0);
     const {colorMode} = useColorMode();
 
+    /* Ensure stepMax is always set to the highest value of currentStep seen (so far) 
+       If currentStep increases beyond the current maxStep, the stepMax is updated to 
+       reflect the new maximum value of currentStep
+
+       callback func will run whenever the currentStep, or maxStep changes.
+    */
     useEffect(() => {
         if (currentStep > maxStep) {
           setStepMax(currentStep);
