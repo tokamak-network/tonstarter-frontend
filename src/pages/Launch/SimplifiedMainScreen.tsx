@@ -254,7 +254,7 @@ const SimplifiedMainScreen = () => {
                         fontSize={14}
                         color={isDisable ? '#86929d' : 'white.100'}
                         bg={isDisable ? 'gray.25' : 'blue.500'}
-                        disabled={isDisable}
+                        // disabled={isDisable}
                         _hover={{}}
                         borderRadius={4}
                         onClick={() => {

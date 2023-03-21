@@ -136,6 +136,8 @@ type ChainNumber = 1 | 4;
 
 type StepNumber = 1 | 2 | 3;
 
+type TEconomyStepNumber = 0| 1 | 2 |3
+
 type PublicTokenColData = {
   firstColData: [
     {
@@ -321,5 +323,6 @@ export type {
   VaultLiquidityIncentive,
   ProjectCardType,
   TokenType,
-  LaunchMode
+  LaunchMode,
+  TEconomyStepNumber
 };
