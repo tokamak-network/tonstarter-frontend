@@ -22,7 +22,7 @@ const filedNameList = [
 
 const OpenStepOneSimplified = () => {
   const {colorMode} = useColorMode();
-  const {values, setValues} = useFormikContext<Projects['CreateProject']>();
+  const {values, setValues} = useFormikContext<Projects['CreateSimplifiedProject']>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
