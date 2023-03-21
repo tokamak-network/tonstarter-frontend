@@ -126,10 +126,26 @@ interface ProjectStep3 {
   isTokenDeployedErr: boolean;
 }
 
+interface SimplifiedProjectStep1 {
+  projectName: string | undefined;
+  description: string | undefined;
+  tokenName: string | undefined;
+  tokenSymbol: string | undefined;
+  tokenSymbolImage: string;
+}
+interface SimplifiedProjectStep2 {
+
+}
+interface SimplifiedProjectStep3 {
+
+}
+
 type Project = ProjectStep1 & ProjectStep2 & ProjectStep3;
+type SimplifiedProject = SimplifiedProjectStep1 & SimplifiedProjectStep2 & SimplifiedProjectStep3;
 
 type Projects = {
   CreateProject: Project;
+  CreateSimplifiedProject: SimplifiedProject
 };
 
 type ChainNumber = 1 | 4;
