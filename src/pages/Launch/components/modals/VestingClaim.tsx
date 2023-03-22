@@ -51,7 +51,7 @@ const VestingClaimModal = () => {
       return VestingVaultContract.claim();
     }
   }, [VestingVaultContract]);
-
+  
   return (
     <Modal
       isOpen={data.modal === 'Launch_Vesting' ? true : false}
@@ -154,7 +154,7 @@ const VestingClaimModal = () => {
                       </Text>
                     </Flex>
 
-                    <Text fontSize={20}>23,648.00</Text>
+                    <Text fontSize={20}>{data?.data?.currentClaimAmount}</Text>
                   </Box>
                   <Box
                     fontSize={12}
@@ -229,7 +229,7 @@ const VestingClaimModal = () => {
                         height={'23px'}
                         lineHeight={'27px'}
                         verticalAlign={'bottom'}>
-                        65.4%
+                      {(((data?.data?.accRound+Number(data?.data?.currentClaimAmount) )/data?.data?.accTotal)*100).toLocaleString()}%
                       </Text>
                     </Flex>
                     <Text
@@ -239,11 +239,11 @@ const VestingClaimModal = () => {
                       lineHeight={'27px'}
                       fontFamily={'Rajdhani'}
                       verticalAlign={'bottom'}>
-                      3,981,532 /{data?.data?.accTotal && data?.data?.accTotal.toLocaleString()}TON
+                      {data?.data?.accRound && (data?.data?.accRound+Number(data?.data?.currentClaimAmount) ).toLocaleString() } /{data?.data?.accTotal && data?.data?.accTotal.toLocaleString()}TON
                     </Text>
                   </Box>
                   <Progress
-                    value={65.4}
+                    value={(data?.data?.accRound/data?.data?.accTotal)*100}
                     w={'100%'}
                     h={'6px'}
                     mt={'5px'}

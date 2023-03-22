@@ -96,8 +96,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
       ); //claim amount of current round
 
       const num = convertNumber({
-        amount: calculClaimAmount,
-        localeString: true,
+        amount: calculClaimAmount
       });
 
       const disabled =
@@ -354,7 +353,8 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
                     totalRounds: totalRounds,
                     currentRnd: currentRnd,
                     currentClaimAmount: currentClaimAmount,
-                    accTotal:accTotal
+                    accTotal:accTotal,
+                    accRound:accRound
                   })
                 }>
                 Claim
