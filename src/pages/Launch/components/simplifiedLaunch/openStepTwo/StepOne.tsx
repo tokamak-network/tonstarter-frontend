@@ -22,9 +22,7 @@ const StepOne = () => {
   const {MENU_STYLE} = theme;
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-  // const {vaults} = values;
-  // const publicVault = vaults[0] as VaultPublic;
-console.log('values',values);
+
 
   const buttonStatus = (option: string) => {
     switch (option) {
@@ -61,6 +59,7 @@ console.log('values',values);
   const handleSelect = (option: number) => {
     setOption(option.toString());
     setFieldValue('hardCap', option);
+    setFieldValue('marketCap', option/0.3)
   };
 
   return (
@@ -85,7 +84,7 @@ console.log('values',values);
             h="30px"
             bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}>
             <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-              {buttonStatus(option)}
+              { option !== 'Other' && values.hardCap? ` $ ${values.hardCap.toLocaleString()}`: buttonStatus(option)}
               <span>
                 <ChevronDownIcon />
               </span>
@@ -141,6 +140,7 @@ console.log('values',values);
                 onChange={(e) => {
                   
                   setFieldValue('hardCap', parseInt(e.target.value));
+                  setFieldValue('marketCap', parseInt(e.target.value)/0.3)
                 }}
                 textAlign={'left'}
                 _focus={{}}></NumberInputField>

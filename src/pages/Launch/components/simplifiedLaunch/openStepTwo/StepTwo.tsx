@@ -22,11 +22,13 @@ const StepTwo = () => {
   const [option, setOption] = useState('');
   const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
 
+  console.log('values',values);
+  
   const buttonStatus = (option: string) => {
     switch (option) {
       case '':
         return 'Select One..';
-      case 'other':
+      case 'Other':
         return 'Other';
       default:
         return ` $ ${Number(option).toLocaleString()}`;
@@ -35,10 +37,9 @@ const StepTwo = () => {
 
   const handleSelect = (option: number) => {
     setOption(option.toString());
-    // setFieldValue('marketCap', option);
+    setFieldValue('growth', option)
   };
-
-
+  
   const themeDesign = {
     border: {
       light: 'solid 1px #dfe4ee',
@@ -87,7 +88,7 @@ const StepTwo = () => {
           h="30px"
           bg={colorMode ==='dark'?'transparent':'#f9fafb'}>
           <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-            {option === '' ? 'Select One...' : option}
+          {option !== 'Other' && values.growth? ` $ ${values.growth.toLocaleString()}`: buttonStatus(option)}
             <span>
               {' '}
               <ChevronDownIcon />
@@ -132,7 +133,7 @@ const StepTwo = () => {
                 step={0}
                 value={values.hardCap}
                 onChange={(e)=> {
-                  setFieldValue('vaults[0].hardCap', parseInt(e.target.value));
+                  setFieldValue('growth', parseInt(e.target.value));
                }}
                 textAlign={'right'}
                 _focus={{}}></NumberInputField>

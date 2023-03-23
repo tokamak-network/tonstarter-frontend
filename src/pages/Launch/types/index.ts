@@ -139,6 +139,7 @@ interface SimplifiedProjectStep2 {
   totalSupply: number | undefined;
   tokenPrice: number | undefined;
   dexPrice: number | undefined;
+  growth: number | undefined;
 }
 interface SimplifiedProjectStep3 {}
 

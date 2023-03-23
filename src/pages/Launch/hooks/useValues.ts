@@ -182,6 +182,13 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
   tokenName: undefined,
   tokenSymbol: undefined,
   tokenSymbolImage: '',
+  hardCap: undefined,
+  marketCap:  undefined,
+  totalSupply:undefined,
+  tokenPrice:  undefined,
+  dexPrice:  undefined,
+  growth: undefined
+
 };
 
 const initialVaultValue: VaultC = {
