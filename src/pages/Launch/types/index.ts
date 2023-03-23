@@ -133,8 +133,8 @@ interface SimplifiedProjectStep1 {
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
   snapshotTime: number | undefined;
-  publicSale1DateRange: number | undefined;
-  publicSale2DateRange: number | undefined;
+  publicSale1DateRange: number | undefined[];
+  publicSale2DateRange: number | undefined[];
 }
 interface SimplifiedProjectStep2 {
 
@@ -324,6 +324,9 @@ export type {
   ProjectStep1,
   ProjectStep2,
   ProjectStep3,
+  SimplifiedProjectStep1,
+  SimplifiedProjectStep2,
+  SimplifiedProjectStep3,
   ChainNumber,
   StepNumber,
   Vault,
