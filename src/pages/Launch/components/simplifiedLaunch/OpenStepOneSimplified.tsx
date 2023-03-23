@@ -1,10 +1,9 @@
-import {Flex, Box, Grid, GridItem, Text, useColorMode, Image, Link} from '@chakra-ui/react';
+import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
 import MarkdownEditor from '@Launch/components/MarkdownEditor';
 import {useEffect} from 'react';
-import {TokenImage} from '@Admin/components/TokenImage';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
@@ -24,7 +23,8 @@ const filedNameList = [
 const OpenStepOneSimplified = () => {
   const {colorMode} = useColorMode();
   const {values, setValues} = useFormikContext<Projects['CreateSimplifiedProject']>();
-
+  console.log('useFormikValues', values);
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
