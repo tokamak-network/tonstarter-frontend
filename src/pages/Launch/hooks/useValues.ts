@@ -176,6 +176,14 @@ const initialObj: Projects['CreateProject'] = {
   ],
 };
 
+const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
+  projectName: undefined,
+  description: undefined,
+  tokenName: undefined,
+  tokenSymbol: undefined,
+  tokenSymbolImage: '',
+};
+
 const initialVaultValue: VaultC = {
   adminAddress: '',
   isMandatory: false,
@@ -194,10 +202,19 @@ const useValues = (account?: string) => {
   const initialObject = account
     ? {...initialObj, owner: account, tokenOwnerAccount: account}
     : initialObj;
+
+  const initialSimplifiedObject  = account 
+  ? {...initialSimplifiedObj}
+  : initialSimplifiedObj
+
   const [initialValues, setInitialValues] =
     useState<Projects['CreateProject']>(initialObject);
 
-  return {initialValues, setInitialValues, defaultParams, initialVaultValue};
+  const [initialSimplifiedValues, SetInitialSimplifiedValues ] = 
+    useState<Projects['CreateSimplifiedProject']>(initialSimplifiedObject);
+
+  return {initialValues, setInitialValues, defaultParams, initialVaultValue, initialSimplifiedValues, SetInitialSimplifiedValues};
 };
+
 
 export default useValues;
