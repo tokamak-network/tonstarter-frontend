@@ -144,6 +144,9 @@ interface SimplifiedProjectStep1 {
   tokenName: string | undefined;
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
+  snapshotTime: number | undefined;
+  publicSale1DateRange: number | undefined[];
+  publicSale2DateRange: number | undefined[];
 }
 interface SimplifiedProjectStep2 {
   hardCap: number | undefined;
