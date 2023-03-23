@@ -58,7 +58,7 @@ const OpenStepOneSimplified = () => {
           <UserGuideLink />
         </Flex>
       </Box>
-      <Box mb={'40px'} pos="relative" >
+      <Box pos="relative" >
         <Box w={'774px'} pos="absolute" left={'-35px'}>
           <Line></Line>
         </Box>
@@ -69,8 +69,7 @@ const OpenStepOneSimplified = () => {
       <Grid
         templateColumns="repeat(2, 1fr)"
         rowGap={'20px'}
-        columnGap={'50px'}
-        mb={'20px'}>
+        columnGap={'50px'}>
         {filedNameList.map(
           (fieldName: {title: string; requirement: boolean}, index: number) => {
             if (fieldName.title === 'tokenName') {
@@ -94,7 +93,7 @@ const OpenStepOneSimplified = () => {
                       key={fieldName.title}
                       requirement={fieldName.requirement}></InputComponent>
                   </Box>
-                  <Box ml={'30px'} mt={'-41px'}>
+                  <Box ml={'35px'} mt={'-36px'}>
                     <TokenImageInput
                       imageLink={values.tokenSymbolImage}
                     />
@@ -117,7 +116,7 @@ const OpenStepOneSimplified = () => {
       <Grid>
         <LaunchSchedule stepNames={['Snapshot', 'Public Sale 1', 'Public Sale 2', 'Unlock 1', 'Unlock 2', 'Unlock 3']} currentStep={1}></LaunchSchedule>
       </Grid>
-      <Box mt={4}>
+      <Box>
         <MarkdownEditor launchMode="simplified"></MarkdownEditor>
       </Box>
     </Flex>

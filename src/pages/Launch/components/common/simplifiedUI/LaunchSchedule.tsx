@@ -46,7 +46,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
    * 4. Set Date range types
    */
   return (
-    <Grid my={4}>
+    <Grid my={'40px'}>
       <Box my={'20px'}>
         <Text fontSize="md">Schedule</Text>
       </Box>
