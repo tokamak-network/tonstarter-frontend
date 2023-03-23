@@ -17,10 +17,13 @@ export const TokenImageInput: React.FC<TokenImageProps> = (props) => {
         justifyContent="center"
         textAlign="center"
         border={
-          colorMode === 'light' ? '1px solid #c7d1d8' : 'solid 1px #323232'
+          colorMode === 'light' ? '1px solid #f4f6f8;' : 'solid 1px #323232'
         }
         borderRadius={40}
-        fontSize={14}
+        fontSize={13}
+        px="22px" 
+        py="24px"
+        fontWeight={500}
         color={colorMode === 'light' ? 'gray.625' : 'gray.600'}>
         <Text>Token Image</Text>
       </Flex>
