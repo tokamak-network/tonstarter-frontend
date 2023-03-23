@@ -12,6 +12,7 @@ import {CustomButton} from 'components/Basic/CustomButton';
 import {testValue} from '@Launch/utils/testValue';
 import { LaunchSchedule } from '../common/simplifiedUI/LaunchSchedule';
 import { UserGuideLink } from '../common/simplifiedUI/UserGuideLink';
+import { TokenImageInput } from '../common/simplifiedUI/TokenImageInput';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -72,21 +73,33 @@ const OpenStepOneSimplified = () => {
         mb={'20px'}>
         {filedNameList.map(
           (fieldName: {title: string; requirement: boolean}, index: number) => {
+            if (fieldName.title === 'tokenName') {
+              return (
+                <Grid w={'212px'}>
+                  <InputComponent
+                    name={fieldName.title}
+                    placeHolder={`input ${fieldName.title}`}
+                    key={fieldName.title}
+                    requirement={fieldName.requirement}></InputComponent>
+                </Grid>
+              );
+            }
             if (fieldName.title === 'tokenSymbolImage') {
               return (
-                <Flex w={'327px'}>
-                  <Box w={'280px'}>
+                <Grid  templateColumns="repeat(2, 1fr)">
+                  <Box w={'212px'}>
                     <InputComponent
                       name={fieldName.title}
                       placeHolder={`input ${fieldName.title}`}
                       key={fieldName.title}
                       requirement={fieldName.requirement}></InputComponent>
                   </Box>
-                  <Box mt={'11px'} ml={'10px'}>
-                    <TokenImage
-                      imageLink={values.tokenSymbolImage}></TokenImage>
+                  <Box ml={'30px'} mt={'-41px'}>
+                    <TokenImageInput
+                      imageLink={values.tokenSymbolImage}
+                    />
                   </Box>
-                </Flex>
+                </Grid>
               );
             }
             return (
