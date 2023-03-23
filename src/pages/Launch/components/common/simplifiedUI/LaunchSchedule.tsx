@@ -79,7 +79,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               <GridItem w={'62px'} mr={'59px'}>
                 <Text>Unlock 1</Text>
               </GridItem>
-              <GridItem w={'62px'} mr={'50px'}>
+              <GridItem w={'62px'} mr={'62px'}>
                 <Text>...</Text>
               </GridItem>
               <GridItem w={'62px'} mr={'66px'}>
@@ -183,7 +183,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                 </GridItem>
               )}
               {step === 'Unlock 2' && (
-                <GridItem w={'62px'} mr={'50px'}>
+                <GridItem w={'62px'} mr={'62px'}>
                   <Text mr={'5px'}>
                     {unlockDate2
                       ? convertTimeStamp(unlockDate2, 'YYYY.MM.DD HH:mm:ss')
@@ -192,7 +192,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                 </GridItem>
               )}
               {step === 'Unlock 3' && (
-                <GridItem w={'62px'} mr={'50px'}>
+                <GridItem w={'62px'} mr={'66px'}>
                   <Text mr={'5px'}>
                     {unlockDate3
                       ? convertTimeStamp(unlockDate3, 'YYYY.MM.DD HH:mm:ss')
@@ -204,20 +204,20 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
           );
         })}
       </Grid>
-      <Grid templateColumns="repeat(6, 1fr)" gap={8} fontSize="xs">
+      <Grid templateColumns="repeat(6, 1fr)" columnGap={'50px'} fontSize="xs">
         {stepNames.map((step: string, index: number) => {
           return (
             <Grid alignItems="center" ml={4} mt={'9px'}>
               {/* snapshot date & time input */}
               {step === 'Snapshot' && (
-                <Flex alignItems="center">
+                <Flex alignItems="center" ml={'10px'}>
                   <SingleCalendarPop
                     setDate={setSnapshotDate}></SingleCalendarPop>
                 </Flex>
               )}
               {/* Public sale 1 date & time input*/}
               {step === 'Public Sale 1' && (
-                <Flex alignItems="center">
+                <Flex alignItems="center" ml={'-8px'}>
                   <DoubleCalendarPop
                     setDate={setPublicSale1DateRange}
                     startTimeCap={0}></DoubleCalendarPop>
@@ -225,7 +225,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               )}
               {/* Public sale 2 date & time input*/}
               {step === 'Public Sale 2' && (
-                <Flex alignItems="center">
+                <Flex alignItems="center" ml={'-17px'}>
                   <DoubleCalendarPop
                     setDate={setPublicSale2DateRange}
                     startTimeCap={0}></DoubleCalendarPop>
