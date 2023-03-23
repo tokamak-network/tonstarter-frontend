@@ -7,12 +7,20 @@ import {
   NumberInputField,
 } from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
+import {useFormikContext} from 'formik';
+import {Projects} from '@Launch/types';
 
 const StepFour = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [option, setOption] = useState('');
-  const {MENU_STYLE} = theme;
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+  console.log('values', values);
+
+  const handleInput = (e: number) => {
+    setFieldValue('exchangeRate', e)
+  };
+
   return (
     <Flex flexDir={'column'} h="142px" alignItems={'flex-start'}>
       {' '}
@@ -30,19 +38,27 @@ const StepFour = () => {
         h="30px"
         w="130px"
         alignItems={'center'}
-        borderRadius='4px'
+        borderRadius="4px"
         bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
-        border={colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'}
-        focusBorderColor={'#dfe4ee'} pr='15px' fontSize={'13px'}>
+        border={
+          colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
+        }
+        focusBorderColor={'#dfe4ee'}
+        pr="15px"
+        fontSize={'13px'}>
         <NumberInput>
           <NumberInputField
-           h="30px"
+            h="30px"
             placeholder={'0'}
             fontSize={'13px'}
-            border='none'
-            pr='5px'
+            border="none"
+            pr="5px"
             textAlign={'right'}
-            _focus={{}}></NumberInputField>
+            _focus={{}}
+            value={values.exchangeRate}
+            onChange={(e) => {
+              handleInput(parseInt(e.target.value));
+            }}></NumberInputField>
         </NumberInput>
         <Text>TON</Text>
       </Flex>

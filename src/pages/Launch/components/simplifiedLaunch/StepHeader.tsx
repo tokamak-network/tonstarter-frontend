@@ -25,6 +25,7 @@ const StepHeader = (props: {deploySteps: boolean; deployStep?: number, title:str
         <Text
           ml="6px"
           fontSize={'13px'}
+          fontFamily={'Titillium Web, sans-serif'}
           color={colorMode === 'dark' ? 'gray.475' : 'gray.400'}>
           User Guide
         </Text>

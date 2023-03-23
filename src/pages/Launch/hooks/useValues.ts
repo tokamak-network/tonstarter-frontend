@@ -187,8 +187,35 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
   totalSupply:undefined,
   tokenPrice:  undefined,
   dexPrice:  undefined,
-  growth: undefined
-
+  growth: undefined,
+  stablePrice: undefined,
+  exchangeRate: undefined,
+  vaults: [{
+    tokenAllocation: undefined,
+    vaultName: 'Public',
+      vaultType: 'Public',
+  },
+  {
+    tokenAllocation: undefined,
+    vaultName: 'Ecosystem',
+      vaultType: 'Ecosystem',
+  },
+  {
+    tokenAllocation: undefined,
+    vaultName: 'Team',
+      vaultType: 'Team',
+  },
+  {
+    tokenAllocation: undefined,
+    vaultName: 'Liquidity',
+      vaultType: 'Liquidity',
+  },
+  {
+    tokenAllocation: undefined,
+    vaultName: 'TONStarter',
+      vaultType: 'TONStarter',
+  },
+]
 };
 
 const initialVaultValue: VaultC = {

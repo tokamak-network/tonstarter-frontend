@@ -33,6 +33,9 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
     ], // options here
   };
 
+  console.log('projectlux',project);
+  
+
   useEffect(() => {
     const setTos = async () => {
       const tosPrices = await fetch(fetchTosPriceURL)

@@ -20,10 +20,9 @@ const StepTwo = () => {
   const theme = useTheme();
   const {MENU_STYLE} = theme;
   const [option, setOption] = useState('');
-  const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
 
-  console.log('values',values);
-  
   const buttonStatus = (option: string) => {
     switch (option) {
       case '':
@@ -37,9 +36,9 @@ const StepTwo = () => {
 
   const handleSelect = (option: number) => {
     setOption(option.toString());
-    setFieldValue('growth', option)
+    setFieldValue('growth', option);
   };
-  
+
   const themeDesign = {
     border: {
       light: 'solid 1px #dfe4ee',
@@ -61,12 +60,7 @@ const StepTwo = () => {
 
   const prices = [10, 50, 100];
   return (
-    <Flex
-    
-      flexDir={'column'}
-      alignItems={'flex-start'}
-      h='142px' 
-      >
+    <Flex flexDir={'column'} alignItems={'flex-start'} h="142px">
       <Text
         fontSize={'14px'}
         fontWeight={500}
@@ -77,33 +71,45 @@ const StepTwo = () => {
         do you aim to grow to?
       </Text>
       <Flex>
-      <Menu>
-        <MenuButton
-          pl="15px"
-          textAlign={'left'}
-          fontSize={'13px'}
-          border={themeDesign.border[colorMode]}
-          {...MENU_STYLE.buttonStyle({colorMode})}
-          w="115px"
-          h="30px"
-          bg={colorMode ==='dark'?'transparent':'#f9fafb'}>
-          <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-          {option !== 'Other' && values.growth? ` $ ${values.growth.toLocaleString()}`: buttonStatus(option)}
-            <span>
-              {' '}
-              <ChevronDownIcon />
-            </span>
-          </Text>
-        </MenuButton>
-        <MenuList zIndex={10000} bg={colorMode === 'light' ? '#ffffff' : '#222222'} fontSize='13px' minWidth="115px">
-          <MenuItem onClick={()=> setOption('')}>Select One...</MenuItem>
-          {prices.map((price: number, index: number) => {
-            return <MenuItem key={index} onClick={()=>handleSelect(price)}>{price.toLocaleString()} times</MenuItem>;
-          })}
-            <MenuItem color={'blue.300'} onClick={()=>setOption('Other')}>Other</MenuItem>
-        </MenuList>
-      </Menu>
-      {option === 'Other' ? (
+        <Menu>
+          <MenuButton
+            pl="15px"
+            textAlign={'left'}
+            fontSize={'13px'}
+            border={themeDesign.border[colorMode]}
+            {...MENU_STYLE.buttonStyle({colorMode})}
+            w="115px"
+            h="30px"
+            bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}>
+            <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
+              {option !== 'Other' && values.growth
+                ? ` ${values.growth.toLocaleString()} times`
+                : buttonStatus(option)}
+              <span>
+                {' '}
+                <ChevronDownIcon />
+              </span>
+            </Text>
+          </MenuButton>
+          <MenuList
+            zIndex={10000}
+            bg={colorMode === 'light' ? '#ffffff' : '#222222'}
+            fontSize="13px"
+            minWidth="115px">
+            <MenuItem onClick={() => setOption('')}>Select One...</MenuItem>
+            {prices.map((price: number, index: number) => {
+              return (
+                <MenuItem key={index} onClick={() => handleSelect(price)}>
+                  {price.toLocaleString()} times
+                </MenuItem>
+              );
+            })}
+            <MenuItem color={'blue.300'} onClick={() => setOption('Other')}>
+              Other
+            </MenuItem>
+          </MenuList>
+        </Menu>
+        {option === 'Other' ? (
           <Flex
             h="30px"
             w="130px"
@@ -116,25 +122,24 @@ const StepTwo = () => {
             focusBorderColor={'#dfe4ee'}
             pr="15px"
             fontSize={'13px'}>
-          
-            <NumberInput >
+            <NumberInput>
               <NumberInputField
-              onKeyDown={(e)=> {
-                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                  e.preventDefault();
-                }
-              }}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                  }
+                }}
                 h="30px"
                 placeholder={'0'}
                 fontSize={'13px'}
                 border="none"
-                onBlur={()=>{}}
+                onBlur={() => {}}
                 pr="5px"
                 step={0}
                 value={values.hardCap}
-                onChange={(e)=> {
+                onChange={(e) => {
                   setFieldValue('growth', parseInt(e.target.value));
-               }}
+                }}
                 textAlign={'right'}
                 _focus={{}}></NumberInputField>
             </NumberInput>
@@ -143,7 +148,7 @@ const StepTwo = () => {
         ) : (
           <></>
         )}
-        </Flex>
+      </Flex>
     </Flex>
   );
 };

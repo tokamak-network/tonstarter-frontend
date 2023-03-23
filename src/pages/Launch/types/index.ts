@@ -126,6 +126,18 @@ interface ProjectStep3 {
   isTokenDeployedErr: boolean;
 }
 
+type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+
+interface SimplifiedVault {
+  tokenAllocation: number | undefined;
+  vaultName: SimplifiedVaultName;
+  vaultType: SimplifiedVaultType
+}
+
+
+
+type simplifiedVaultsAny = SimplifiedVault
 interface SimplifiedProjectStep1 {
   projectName: string | undefined;
   description: string | undefined;
@@ -140,6 +152,9 @@ interface SimplifiedProjectStep2 {
   tokenPrice: number | undefined;
   dexPrice: number | undefined;
   growth: number | undefined;
+  stablePrice: number | undefined;
+  exchangeRate: number|undefined;
+  vaults : simplifiedVaultsAny[]
 }
 interface SimplifiedProjectStep3 {}
 
