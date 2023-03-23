@@ -75,13 +75,13 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
           );
         })}
       </Grid>
-      <Flex ml={'25px'}>
+      <Flex ml={'25px'} >
         {stepNames.map((step: string, index: number) => {
           const indexNum = index + 1;
           const isStep = currentStep === indexNum;
           const pastStep = currentStep > indexNum || maxStep > indexNum;
           return (
-            <Flex alignItems="center">
+            <Flex alignItems="center" textAlign={'center'}>
               {/* Dot */}
               <Box
                 borderRadius={18}
@@ -115,14 +115,14 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
           );
         })}
       </Flex>
-      <Grid templateColumns="repeat(6, 1fr)" gap={8} fontSize="xs">
+      <Grid templateColumns="repeat(5, 1fr)" gap={5} textAlign="center" style={{top:0}} fontSize="xs">
         {stepNames.map((step: string, index: number) => {
           return (
-            <Grid alignItems="center" m={2}>
+            <Grid textAlign="center" mt={2}>
               {/* snapshot date & time */}
               {step === 'Snapshot' && (
                 <Grid>
-                  <Text mr={'5px'}>
+                  <Text>
                     {snapshotDate
                       ? convertTimeStamp(snapshotDate, 'YYYY-MM-DD HH:mm:ss')
                       : '0000-00-00 00:00:00'}
@@ -139,7 +139,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                           'YYYY-MM-DD HH:mm:ss',
                         )} ~ ${convertTimeStamp(
                           publicSale1DateRange[1],
-                          'YYYY-MM-DD HH:mm:ss',
+                          'MM-DD HH:mm:ss',
                         )}`
                       : '0000-00-00 00:00:00'}
                   </Text>
@@ -155,7 +155,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                           'YYYY-MM-DD HH:mm:ss',
                         )} ~ ${convertTimeStamp(
                           publicSale2DateRange[1],
-                          'YYYY-MM-DD HH:mm:ss',
+                          'MM-DD HH:mm:ss',
                         )}`
                       : '0000-00-00 00:00:00'}
                   </Text>
