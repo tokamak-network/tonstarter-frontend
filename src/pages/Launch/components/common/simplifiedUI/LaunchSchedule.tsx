@@ -1,4 +1,4 @@
-import {Box, Grid, Flex, Text, useColorMode} from '@chakra-ui/react';
+import {Box, Grid, Flex, Text, useColorMode, GridItem} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import React from 'react';
 import SingleCalendarPop from '../SingleCalendarPop';
@@ -46,36 +46,48 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
    * 4. Set Date range types
    */
   return (
-    <Grid my={10}>
-      <Box my={2}>
+    <Grid my={4}>
+      <Box my={'20px'}>
         <Text fontSize="md">Schedule</Text>
       </Box>
-      <Grid templateColumns="repeat(6, 1fr)" gap={8}>
-        {stepNames.map((step: string, index: number) => {
-          const indexNum = index + 1;
-          const isStep = currentStep === indexNum;
-          const pastStep = currentStep > indexNum || maxStep > indexNum;
-          return (
-            <Grid mb={2} fontSize="xs">
-              {step === 'Snapshot' ||
-              step === 'Public Sale 1' ||
-              step === 'Public Sale 2' ? (
-                <Flex as="b" justifyContent={'left'}>
-                  <Text mr={'5px'} color={'#FF3B3B'}>
-                    *
-                  </Text>
-                  {step}
-                </Flex>
-              ) : (
-                <Flex justifyContent={'right'}>
-                  <Text as="b">{step}</Text>
-                </Flex>
-              )}
-            </Grid>
-          );
-        })}
-      </Grid>
-      <Flex ml={'25px'} >
+      <Flex>
+          <Grid mb={2} fontSize="xs" templateColumns="repeat(6, 1fr)" textAlign={'center'} as="b">
+              <GridItem w={'62px'} mr={'59px'}>
+                <Flex as="b">
+                <Text mr={'5px'} color={'#FF3B3B'}>
+                  *
+                </Text>
+                Snapshot
+              </Flex>
+              </GridItem>
+              <GridItem  w={'100px'} mr={'28px'}>
+                <Flex>
+                <Text mr={'5px'} color={'#FF3B3B'}>
+                  *
+                </Text>
+                Public Sale 1
+              </Flex>
+              </GridItem>
+              <GridItem w={'100px'} mr={'40px'}>
+                <Flex>
+                <Text mr={'5px'} color={'#FF3B3B'}>
+                  *
+                </Text>
+                Public Sale 2
+              </Flex>
+              </GridItem>
+              <GridItem w={'62px'} mr={'59px'}>
+                <Text>Unlock 1</Text>
+              </GridItem>
+              <GridItem w={'62px'} mr={'50px'}>
+                <Text>Unlock 2</Text>
+              </GridItem>
+              <GridItem w={'62px'} mr={'50px'}>
+                <Text>Unlock 2</Text>
+              </GridItem>
+          </Grid>
+      </Flex>
+      <Flex ml={'28px'} >
         {stepNames.map((step: string, index: number) => {
           const indexNum = index + 1;
           const isStep = currentStep === indexNum;
@@ -115,24 +127,24 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
           );
         })}
       </Flex>
-      <Grid templateColumns="repeat(5, 1fr)" gap={5} textAlign="center" style={{top:0}} fontSize="xs">
+      <Grid templateColumns="repeat(6, 1fr)" textAlign="center" style={{top:0}}>
         {stepNames.map((step: string, index: number) => {
           return (
-            <Grid textAlign="center" mt={2}>
+            <Grid textAlign="center" mt={2} fontSize={'11px'}>
               {/* snapshot date & time */}
               {step === 'Snapshot' && (
-                <Grid>
+                <GridItem w={'62px'} mr={'55px'}>
                   <Text>
                     {snapshotDate
                       ? convertTimeStamp(snapshotDate, 'YYYY-MM-DD HH:mm:ss')
                       : '0000-00-00 00:00:00'}
                   </Text>
-                </Grid>
+                </GridItem>
               )}
               {/* Public sale 1 date & time */}
               {step === 'Public Sale 1' && (
-                <Grid>
-                  <Text mr={'5px'}>
+                <GridItem w={'101px'} mr={'28px'}>
+                  <Text>
                     {publicSale1DateRange
                       ? `${convertTimeStamp(
                           publicSale1DateRange[0],
@@ -143,11 +155,11 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                         )}`
                       : '0000-00-00 00:00:00'}
                   </Text>
-                </Grid>
+                </GridItem>
               )}
               {/* Public sale 2 date & time */}
               {step === 'Public Sale 2' && (
-                <Grid>
+                <GridItem w={'106px'} mr={'40px'}>
                   <Text mr={'5px'}>
                     {publicSale2DateRange
                       ? `${convertTimeStamp(
@@ -159,34 +171,34 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                         )}`
                       : '0000-00-00 00:00:00'}
                   </Text>
-                </Grid>
+                </GridItem>
               )}
               {step === 'Unlock 1' && (
-                <Grid>
+                <GridItem w={'62px'} mr={'60px'}>
                   <Text mr={'5px'}>
                     {unlockDate1
                       ? convertTimeStamp(unlockDate1, 'YYYY-MM-DD HH:mm:ss')
                       : '0000-00-00 00:00:00'}
                   </Text>
-                </Grid>
+                </GridItem>
               )}
               {step === 'Unlock 2' && (
-                <Grid>
+                <GridItem w={'62px'} mr={'50px'}>
                   <Text mr={'5px'}>
                     {unlockDate2
                       ? convertTimeStamp(unlockDate2, 'YYYY-MM-DD HH:mm:ss')
                       : '0000-00-00 00:00:00'}
                   </Text>
-                </Grid>
+                </GridItem>
               )}
               {step === 'Unlock 3' && (
-                <Grid>
+                <GridItem w={'62px'} mr={'50px'}>
                   <Text mr={'5px'}>
                     {unlockDate3
                       ? convertTimeStamp(unlockDate3, 'YYYY-MM-DD HH:mm:ss')
                       : '0000-00-00 00:00:00'}
                   </Text>
-                </Grid>
+                </GridItem>
               )}
             </Grid>
           );
@@ -195,7 +207,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
       <Grid templateColumns="repeat(6, 1fr)" gap={8} fontSize="xs">
         {stepNames.map((step: string, index: number) => {
           return (
-            <Grid alignItems="center" ml={4}>
+            <Grid alignItems="center" ml={4} mt={'9px'}>
               {/* snapshot date & time input */}
               {step === 'Snapshot' && (
                 <Flex alignItems="center">

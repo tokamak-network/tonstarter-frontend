@@ -117,7 +117,7 @@ const OpenStepOneSimplified = () => {
       <Grid>
         <LaunchSchedule stepNames={['Snapshot', 'Public Sale 1', 'Public Sale 2', 'Unlock 1', 'Unlock 2', 'Unlock 3']} currentStep={1}></LaunchSchedule>
       </Grid>
-      <Box>
+      <Box mt={4}>
         <MarkdownEditor launchMode="simplified"></MarkdownEditor>
       </Box>
     </Flex>
