@@ -6,12 +6,13 @@ import {Projects,VaultPublic} from '@Launch/types';
 const DetailComponent = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
-    const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-    const {vaults} = values;
-    const publicVault = vaults[0] as VaultPublic;
+    const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
+    
+    // const {vaults} = values;
+    // const publicVault = vaults[0] as VaultPublic;
   const details = [
-    {name: 'Funding Target', detail: `$ ${publicVault.hardCap? (publicVault.hardCap).toLocaleString():'0'}` },
-    {name: 'Current Market Cap', detail: '$ 10,000,000'},
+    {name: 'Funding Target', detail: `$ ${values.hardCap? (values.hardCap).toLocaleString():'0'}` },
+    {name: 'Current Market Cap', detail: `$ ${values.hardCap? ((values.hardCap)/0.3).toLocaleString():'0'}`},
     {name: 'Total Supply', detail: '10,000,000 TES'},
     {name: 'Token Price', detail: '10,000,000 TON'},
     {name: 'Token Price in DEX', detail: '10,000,000 TOS'},

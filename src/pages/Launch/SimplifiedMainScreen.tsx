@@ -56,7 +56,7 @@ const SimplifiedMainScreen = () => {
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[2];
-
+  
   const dispatch = useAppDispatch();
   const {
     //@ts-ignore
@@ -84,7 +84,7 @@ const SimplifiedMainScreen = () => {
 
   useEffect(() => {
     dispatch(
-      setHashKey({data: isExist === 'createproject' ? undefined : isExist}),
+      setHashKey({data: isExist === 'createprojectsimple' ? undefined : isExist}),
     );
   }, []);
 
@@ -163,7 +163,7 @@ const SimplifiedMainScreen = () => {
         validationSchema={ProjectSchema}
         validate={(values) => {
           // console.log('--formikvalues--');
-          // console.log(values);
+          console.log(values);
           if (step === 3 && oldData !== values) {
             setOldData(values);
             hashKey === undefined
@@ -217,7 +217,7 @@ const SimplifiedMainScreen = () => {
                     mr={step === 1 ? '390px' : '558px'}
                     onClick={() =>
                       account &&
-                      isExist === 'createproject' &&
+                      isExist === 'createprojectsimple' &&
                       hashKey === undefined
                         ? saveProject(values, account, true)
                         : editProject(
