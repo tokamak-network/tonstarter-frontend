@@ -51,7 +51,7 @@ const SimplifiedMainScreen = () => {
   const [isDisableForStep3, setDisableForStep3] = useState<boolean>(true);
   const theme = useTheme();
   const {account} = useActiveWeb3React();
-  const {initialValues} = useValues(account || '');
+  const {initialSimplifiedValues} = useValues(account || '');
 
   const match = useRouteMatch();
   const {url} = match;
@@ -157,8 +157,8 @@ const SimplifiedMainScreen = () => {
         innerRef={formikRef}
         initialValues={
           id && projects
-            ? {...initialValues, ...projects[id]}
-            : {...initialValues, ownerAddress: account}
+            ? {...initialSimplifiedValues, ...projects[id]}
+            : {...initialSimplifiedValues, ownerAddress: account}
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
