@@ -80,10 +80,10 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                 <Text>Unlock 1</Text>
               </GridItem>
               <GridItem w={'62px'} mr={'50px'}>
-                <Text>Unlock 2</Text>
+                <Text>...</Text>
               </GridItem>
-              <GridItem w={'62px'} mr={'50px'}>
-                <Text>Unlock 2</Text>
+              <GridItem w={'62px'} mr={'66px'}>
+                <Text>Unlock 3</Text>
               </GridItem>
           </Grid>
       </Flex>
@@ -136,8 +136,8 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                 <GridItem w={'62px'} mr={'55px'}>
                   <Text>
                     {snapshotDate
-                      ? convertTimeStamp(snapshotDate, 'YYYY-MM-DD HH:mm:ss')
-                      : '0000-00-00 00:00:00'}
+                      ? convertTimeStamp(snapshotDate, 'YYYY.MM.DD HH:mm:ss')
+                      : '0000.00.00 00:00:00'}
                   </Text>
                 </GridItem>
               )}
@@ -148,12 +148,12 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                     {publicSale1DateRange
                       ? `${convertTimeStamp(
                           publicSale1DateRange[0],
-                          'YYYY-MM-DD HH:mm:ss',
+                          'YYYY.MM.DD HH:mm:ss',
                         )} ~ ${convertTimeStamp(
                           publicSale1DateRange[1],
-                          'MM-DD HH:mm:ss',
+                          'MM.DD HH:mm:ss',
                         )}`
-                      : '0000-00-00 00:00:00'}
+                      : '0000.00.00 00:00:00'}
                   </Text>
                 </GridItem>
               )}
@@ -164,12 +164,12 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                     {publicSale2DateRange
                       ? `${convertTimeStamp(
                           publicSale2DateRange[0],
-                          'YYYY-MM-DD HH:mm:ss',
+                          'YYYY.MM.DD HH:mm:ss',
                         )} ~ ${convertTimeStamp(
                           publicSale2DateRange[1],
-                          'MM-DD HH:mm:ss',
+                          'MM.DD HH:mm:ss',
                         )}`
-                      : '0000-00-00 00:00:00'}
+                      : '0000.00.00 00:00:00'}
                   </Text>
                 </GridItem>
               )}
@@ -177,8 +177,8 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                 <GridItem w={'62px'} mr={'60px'}>
                   <Text mr={'5px'}>
                     {unlockDate1
-                      ? convertTimeStamp(unlockDate1, 'YYYY-MM-DD HH:mm:ss')
-                      : '0000-00-00 00:00:00'}
+                      ? convertTimeStamp(unlockDate1, 'YYYY.MM.DD HH:mm:ss')
+                      : '0000.00.00 00:00:00'}
                   </Text>
                 </GridItem>
               )}
@@ -186,8 +186,8 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                 <GridItem w={'62px'} mr={'50px'}>
                   <Text mr={'5px'}>
                     {unlockDate2
-                      ? convertTimeStamp(unlockDate2, 'YYYY-MM-DD HH:mm:ss')
-                      : '0000-00-00 00:00:00'}
+                      ? convertTimeStamp(unlockDate2, 'YYYY.MM.DD HH:mm:ss')
+                      : 'Message'}
                   </Text>
                 </GridItem>
               )}
@@ -195,8 +195,8 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                 <GridItem w={'62px'} mr={'50px'}>
                   <Text mr={'5px'}>
                     {unlockDate3
-                      ? convertTimeStamp(unlockDate3, 'YYYY-MM-DD HH:mm:ss')
-                      : '0000-00-00 00:00:00'}
+                      ? convertTimeStamp(unlockDate3, 'YYYY.MM.DD HH:mm:ss')
+                      : '0000.00.00 00:00:00'}
                   </Text>
                 </GridItem>
               )}
