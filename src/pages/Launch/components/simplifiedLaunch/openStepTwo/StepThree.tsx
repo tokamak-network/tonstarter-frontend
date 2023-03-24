@@ -14,7 +14,7 @@ import {useEffect, useState} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
-
+import {fetchTonPriceURL} from 'constants/index';
 const StepThree = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -22,8 +22,19 @@ const StepThree = () => {
   const [option, setOption] = useState('');
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
+  const [tonInDollars, setTonInDollars] = useState(0);
 
+  useEffect(() => {
+    async function getTonPrice() {
+      const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
+        res.json(),
+      );
+      const tonPrice = tonPriceObj[0].current_price;
+      setTonInDollars(tonPrice);
+    }
 
+    getTonPrice();
+  }, []);
   const themeDesign = {
     border: {
       light: 'solid 1px #dfe4ee',
@@ -68,8 +79,13 @@ const StepThree = () => {
     if (marketCap && growth) {
       const totalSupply = (marketCap * growth) / option;
       setFieldValue('totalSupply', totalSupply);
-      const tokenPrice = marketCap / totalSupply;
-      setFieldValue('tokenPrice', tokenPrice);
+      const tokenPriceinDollars = marketCap / totalSupply;
+      console.log('tokenPriceinDollars',tokenPriceinDollars);
+      
+      const tokenPriceInTon = tokenPriceinDollars/tonInDollars;
+      console.log('tokenPriceInTon',tokenPriceInTon);
+      
+      setFieldValue('tokenPrice', tokenPriceInTon);
       const publicAllocation = totalSupply * 0.3;
       const ecosystemAllocation = totalSupply * 0.35;
       const teamAllocation = totalSupply * 0.15;

@@ -18,7 +18,9 @@ const StepFour = () => {
   console.log('values', values);
 
   const handleInput = (e: number) => {
+    
     setFieldValue('exchangeRate', e)
+    setFieldValue('dexPrice',e)
   };
 
   return (

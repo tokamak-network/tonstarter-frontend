@@ -14,7 +14,7 @@ const DetailComponent = () => {
     {name: 'Funding Target', detail: `$ ${values.hardCap? (values.hardCap).toLocaleString():'0'}` },
     {name: 'Current Market Cap', detail: `$ ${values.marketCap? (values.marketCap).toLocaleString():'0'}`},
     {name: 'Total Supply', detail: `${values.totalSupply? (values.totalSupply).toLocaleString():'0'}`},
-    {name: 'Token Price', detail: `$ ${values.tokenPrice? (values.tokenPrice).toLocaleString():'0'}`},
+    {name: 'Token Price', detail: `${values.tokenPrice? (values.tokenPrice).toLocaleString():'0'} TON`},
     {name: 'Token Price in DEX', detail: `$ ${values.dexPrice? (values.dexPrice).toLocaleString():'0'}`},
   ];
   return (
