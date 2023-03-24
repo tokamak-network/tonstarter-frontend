@@ -133,7 +133,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
             <Grid textAlign="center" mt={2} fontSize={'11px'}>
               {/* snapshot date & time */}
               {step === 'Snapshot' && (
-                <GridItem w={'62px'} mr={'55px'}>
+                <GridItem w={'62px'} mr={'50px'}>
                   <Text>
                     {snapshotDate
                       ? convertTimeStamp(snapshotDate, 'YYYY.MM.DD HH:mm:ss')
@@ -143,13 +143,13 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               )}
               {/* Public sale 1 date & time */}
               {step === 'Public Sale 1' && (
-                <GridItem w={'101px'} mr={'28px'}>
+                <GridItem w={'106px'} mr={'28px'}>
                   <Text>
                     {publicSale1DateRange
                       ? `${convertTimeStamp(
                           publicSale1DateRange[0],
                           'YYYY.MM.DD HH:mm:ss',
-                        )} ~ ${convertTimeStamp(
+                        )} ~${convertTimeStamp(
                           publicSale1DateRange[1],
                           'MM.DD HH:mm:ss',
                         )}`
@@ -165,7 +165,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                       ? `${convertTimeStamp(
                           publicSale2DateRange[0],
                           'YYYY.MM.DD HH:mm:ss',
-                        )} ~ ${convertTimeStamp(
+                        )} ~${convertTimeStamp(
                           publicSale2DateRange[1],
                           'MM.DD HH:mm:ss',
                         )}`
@@ -210,14 +210,14 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
             <Grid alignItems="center" ml={4} mt={'9px'}>
               {/* snapshot date & time input */}
               {step === 'Snapshot' && (
-                <Flex alignItems="center" ml={'10px'}>
+                <Flex alignItems="center" ml={'5px'}>
                   <SingleCalendarPop
                     setDate={setSnapshotDate}></SingleCalendarPop>
                 </Flex>
               )}
               {/* Public sale 1 date & time input*/}
               {step === 'Public Sale 1' && (
-                <Flex alignItems="center" ml={'-8px'}>
+                <Flex alignItems="center" ml={'-3px'}>
                   <DoubleCalendarPop
                     setDate={setPublicSale1DateRange}
                     startTimeCap={0}></DoubleCalendarPop>
@@ -225,7 +225,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               )}
               {/* Public sale 2 date & time input*/}
               {step === 'Public Sale 2' && (
-                <Flex alignItems="center" ml={'-17px'}>
+                <Flex alignItems="center" ml={'-8px'}>
                   <DoubleCalendarPop
                     setDate={setPublicSale2DateRange}
                     startTimeCap={0}></DoubleCalendarPop>
