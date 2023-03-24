@@ -2,7 +2,6 @@ import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
-import MarkdownEditor from '@Launch/components/MarkdownEditor';
 import {useEffect} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
@@ -12,6 +11,7 @@ import {testValue} from '@Launch/utils/testValue';
 import { LaunchSchedule } from '../common/simplifiedUI/LaunchSchedule';
 import { UserGuideLink } from '../common/simplifiedUI/UserGuideLink';
 import { TokenImageInput } from '../common/simplifiedUI/TokenImageInput';
+import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -114,10 +114,11 @@ const OpenStepOneSimplified = () => {
         )}
       </Grid>
       <Grid>
+        {/* Todo: get current step */}
         <LaunchSchedule stepNames={['Snapshot', 'Public Sale 1', 'Public Sale 2', 'Unlock 1', 'Unlock 2', 'Unlock 3']} currentStep={1}></LaunchSchedule>
       </Grid>
       <Box>
-        <MarkdownEditor launchMode="simplified"></MarkdownEditor>
+        <CustomMarkdownEditor />
       </Box>
     </Flex>
   );
