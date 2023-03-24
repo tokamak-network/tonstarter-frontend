@@ -133,8 +133,10 @@ interface SimplifiedProjectStep1 {
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
   snapshotTime: number | undefined;
-  publicSale1DateRange: number | undefined[];
-  publicSale2DateRange: number | undefined[];
+  publicSale1Start: number | undefined;
+  publicSale1End: number | undefined;
+  publicSale2Start: number | undefined;
+  publicSale2End: number | undefined;
 }
 interface SimplifiedProjectStep2 {
 

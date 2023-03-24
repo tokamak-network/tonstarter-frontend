@@ -5,6 +5,8 @@ import SingleCalendarPop from '../SingleCalendarPop';
 import {snapshotGap} from '@Launch/const';
 import {convertTimeStamp} from 'utils/convertTIme';
 import DoubleCalendarPop from '../../common/DoubleCalendarPop';
+import {Projects} from '@Launch/types';
+import {useFormikContext} from 'formik';
 
 type ScheduleProps = {
   stepNames: string[];
@@ -12,22 +14,25 @@ type ScheduleProps = {
 };
 
 export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
+  const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
+  const snapshotValue = values.snapshotTime;
+  const StartPublicSale1Value = values.publicSale1Start;
+  const EndPublicSale1Value = values.publicSale1End;
+  const StartPublicSale2Value = values.publicSale2Start;
+  const EndPublicSale2Value = values.publicSale2End;
   const {stepNames, currentStep} = props;
   const [maxStep, setStepMax] = useState(0);
   const {colorMode} = useColorMode();
-  const [snapshotDate, setSnapshotDate] = useState<number | undefined>(0);
+  const [snapshotDate, setSnapshotDate] = useState<number | undefined>(snapshotValue || 0);
   const [unlockDate1, setUnlockDate1] = useState<number | undefined>(0);
   const [unlockDate2, setUnlockDate2] = useState<number | undefined>(0);
   const [unlockDate3, setUnlockDate3] = useState<number | undefined>(0);
-  const [publicSale1DateRange, setPublicSale1DateRange] = useState<number[]>([
-    0, 0,
-  ]);
-  const [publicSale2DateRange, setPublicSale2DateRange] = useState<number[]>([
-    0, 0,
-  ]);
-
+  const [publicSale1StartDate, setPublicSale1StartDate] = useState<number | undefined>(StartPublicSale1Value || 0);
+  const [publicSale1EndDate, setPublicSale1EndDate] = useState<number | undefined>(EndPublicSale1Value || 0);
+  const [publicSale2StartDate, setPublicSale2StartDate] = useState<number | undefined>(StartPublicSale2Value || 0);
+  const [publicSale2EndDate, setPublicSale2EndDate] = useState<number | undefined>(EndPublicSale2Value || 0);
   /* Ensure stepMax is always set to the highest value of currentStep seen (so far) 
-       If currentStep increases beyond the current maxStep, the stepMax is updated to 
+  If currentStep increases beyond the current maxStep, the stepMax is updated to 
        reflect the new maximum value of currentStep
 
        callback func will run whenever the currentStep, or maxStep changes.
@@ -42,8 +47,6 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
    * TODO:
    * 1. Set Unlock, Public Sale date,time according to Snapshot time
    * 2. use snapshotGap to calculate Public Sale, Unlock time
-   * 3. update steps when navigating back to this component
-   * 4. Set Date range types
    */
   return (
     <Grid my={'40px'}>
@@ -145,12 +148,12 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               {step === 'Public Sale 1' && (
                 <GridItem w={'106px'} mr={'28px'}>
                   <Text>
-                    {publicSale1DateRange
+                    {publicSale1StartDate && publicSale1EndDate
                       ? `${convertTimeStamp(
-                          publicSale1DateRange[0],
+                        publicSale1StartDate,
                           'YYYY.MM.DD HH:mm:ss',
                         )} ~${convertTimeStamp(
-                          publicSale1DateRange[1],
+                          publicSale1EndDate,
                           'MM.DD HH:mm:ss',
                         )}`
                       : '0000.00.00 00:00:00'}
@@ -161,12 +164,12 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               {step === 'Public Sale 2' && (
                 <GridItem w={'106px'} mr={'40px'}>
                   <Text mr={'5px'}>
-                    {publicSale2DateRange
+                    {publicSale2StartDate && publicSale2EndDate
                       ? `${convertTimeStamp(
-                          publicSale2DateRange[0],
+                        publicSale2StartDate,
                           'YYYY.MM.DD HH:mm:ss',
                         )} ~${convertTimeStamp(
-                          publicSale2DateRange[1],
+                          publicSale2EndDate,
                           'MM.DD HH:mm:ss',
                         )}`
                       : '0000.00.00 00:00:00'}
@@ -219,7 +222,9 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               {step === 'Public Sale 1' && (
                 <Flex alignItems="center" ml={'-3px'}>
                   <DoubleCalendarPop
-                    setDate={setPublicSale1DateRange}
+                    // FIXME: 
+                    // setDate={[setPublicSale1StartDate, setPublicSale2EndDate]}
+                    setDate={setPublicSale1StartDate}
                     startTimeCap={0}></DoubleCalendarPop>
                 </Flex>
               )}
@@ -227,7 +232,9 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               {step === 'Public Sale 2' && (
                 <Flex alignItems="center" ml={'-8px'}>
                   <DoubleCalendarPop
-                    setDate={setPublicSale2DateRange}
+                    // FIXME: 
+                    // setDate={[setPublicSale2StartDate, setPublicSale2EndDate]}
+                    setDate={setPublicSale2StartDate}
                     startTimeCap={0}></DoubleCalendarPop>
                 </Flex>
               )}
