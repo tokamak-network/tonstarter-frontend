@@ -1,4 +1,4 @@
-import {Button, Flex, useTheme} from '@chakra-ui/react';
+import {Button, ButtonGroup, Flex, useTheme} from '@chakra-ui/react';
 import {
   Dispatch,
   SetStateAction,
@@ -17,13 +17,19 @@ import Steps from '@Launch/components/Steps';
 import OpenStepTwoSimplified from '@Launch/components/simplifiedLaunch/OpenStepTwoSimplified';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
+import {selectLaunch, setHashKey, fetchProjects} from '@Launch/launch.reducer';
 import OpenStepThreeSimplified from '@Launch/components/simplifiedLaunch/OpenStepThreeSimplified';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {isProduction} from './utils/checkConstants';
 import {useLocation} from 'react-router-dom';
+// Fetch deployed projects from api
+import {Project} from './components/Projects/Project';
+import {useQuery} from 'react-query';
+import axios from 'axios';
+import {fetchCampaginURL} from 'constants/index';
+import {ActionButton} from './components/common/simplifiedUI/ActionButton';
 
 const StepComponent = (props: {
   step: StepNumber;
@@ -32,9 +38,9 @@ const StepComponent = (props: {
   const {step, setDisableForStep2} = props;
   switch (step) {
     case 1:
-        return <OpenStepOneSimplified></OpenStepOneSimplified>;
+      return <OpenStepOneSimplified></OpenStepOneSimplified>;
     case 2:
-      return <OpenStepTwoSimplified></OpenStepTwoSimplified>;
+      return <OpenStepTwoSimplified setDisableForStep2={setDisableForStep2}></OpenStepTwoSimplified>;
     case 3:
       return <OpenStepThreeSimplified></OpenStepThreeSimplified>;
     default:
@@ -43,20 +49,21 @@ const StepComponent = (props: {
 };
 
 const SimplifiedMainScreen = () => {
-
-// TODO: Update to reflect simplified launch UI
   const [step, setStep] = useState<StepNumber>(1);
   const [isDisable, setDisable] = useState<boolean>(true);
   const [isDisableForStep2, setDisableForStep2] = useState<boolean>(true);
   const [isDisableForStep3, setDisableForStep3] = useState<boolean>(true);
   const theme = useTheme();
   const {account} = useActiveWeb3React();
-  const {initialValues} = useValues(account || '');
-
+  const {initialSimplifiedValues} = useValues(account || '');
+  const [project, setProject] = useState<any>();
+  const history = useHistory();
+  const [oldData, setOldData] = useState();
+  const [saveBtnDisable, setSaveBtnDisable] = useState(false);
+  const formikRef = useRef(null);
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[2];
-
   const dispatch = useAppDispatch();
   const {
     //@ts-ignore
@@ -66,25 +73,55 @@ const SimplifiedMainScreen = () => {
     data: {projects, hashKey},
   } = useAppSelector(selectLaunch);
 
-  let historyObj = useHistory();
+  const navigateToLaunchPage = useCallback(() => {
+    history.push('/launch');
+  }, [history]);
 
-  const handleOnCofirm = useCallback(() => {
-    historyObj.push('/launch');
-  }, [historyObj]);
 
   useEffect(() => {
     //@ts-ignore
-    const unBlock = historyObj.block((loc, action) => {
+    const unBlock = history.block((loc, action) => {
       if (action === 'POP') {
         return window.confirm('Are you sure you want to go back?');
       }
     });
     return () => unBlock();
-  }, [historyObj]);
+  }, [history]);
+
+  /**
+   * Fetch projects data from api
+   */
+  const {data} = useQuery(
+    ['test'],
+    () =>
+      axios.get(fetchCampaginURL, {
+        headers: {
+          account,
+        },
+      }),
+    {
+      refetchInterval: 600000,
+    },
+  );
+
+  useEffect(() => {
+    if (data) {
+      const {data: ProjectDetail} = data;
+      dispatch(fetchProjects({data: ProjectDetail}));
+      setProject(ProjectDetail.name);
+    }
+  }, [data, dispatch]);
+
+  /** Check if this project is deployed */
+  useEffect(() => {
+    dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
+  }, []);
 
   useEffect(() => {
     dispatch(
-      setHashKey({data: isExist === 'createproject' ? undefined : isExist}),
+      setHashKey({
+        data: isExist === 'createprojectsimple' ? undefined : isExist,
+      }),
     );
   }, []);
 
@@ -99,40 +136,30 @@ const SimplifiedMainScreen = () => {
     [step],
   );
 
-  // const {web3Token} = useWeb3Token();
+  const getSaveButtonColor = () => {
+    if (isDisable) {
+      return 'gray.25';
+    }
+    return step === 1 && isExist === 'project' ? 'yellow.200' : '#00c3c4';
+  };
 
-  const [oldData, setOldData] = useState();
-  const [saveBtnDisable, setSaveBtnDisable] = useState(false);
+  const handleSaveProject = (values: any, account: string, mode: boolean) => {
+    account && isExist === 'createprojectsimple' && hashKey === undefined
+    ? saveProject(values, account, mode)
+    : editProject(values, account as string, hashKey || isExist, mode);
+  };
 
-  const formikRef = useRef(null);
+  const handleSaveAndContinue = (values: any, account: string) => {
+    account && isExist === 'createprojectsimple' && hashKey === undefined
+      ? saveProject(values, account)
+      : editProject(values, account as string, hashKey || isExist);
+    handleStep(true);
+  };
 
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
-
-  if (projects[id] && projects[id]?.ownerAddress !== account) {
-    return <Redirect to={{pathname: '/launch'}}></Redirect>;
-
-    // return (
-    //   <Flex
-    //     flexDir={'column'}
-    //     justifyContent={'center'}
-    //     w={'100%'}
-    //     mt={100}
-    //     mb={'100px'}>
-    //     <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-    //       <PageHeader
-    //         title={'Create Project'}
-    //         subtitle={'You can create and manage projects.'}
-    //       />
-    //       <Flex alignItems={'center'} justifyContent="center" mt={'100px'}>
-    //         This account is not owner address of this project.
-    //       </Flex>
-    //     </Flex>
-    //   </Flex>
-    // );
-  }
-
+  
   return (
     <Flex
       flexDir={'column'}
@@ -149,21 +176,20 @@ const SimplifiedMainScreen = () => {
         <Flex mt={'50px'} mb={'20px'}>
           <Steps
             stepName={['Project & Token', 'Token Economy', 'Deploy']}
-            currentStep={step}>
-          </Steps>
+            currentStep={step}></Steps>
         </Flex>
       </Flex>
       <Formik
         innerRef={formikRef}
         initialValues={
           id && projects
-            ? {...initialValues, ...projects[id]}
-            : {...initialValues, ownerAddress: account}
+            ? {...initialSimplifiedValues, ...projects[id]}
+            : {...initialSimplifiedValues, ownerAddress: account}
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
           // console.log('--formikvalues--');
-          // console.log(values);
+          console.log(values);
           if (step === 3 && oldData !== values) {
             setOldData(values);
             hashKey === undefined
@@ -185,6 +211,7 @@ const SimplifiedMainScreen = () => {
           setSubmitting(false);
         }}>
         {({values, handleBlur, handleSubmit, isSubmitting, errors}) => {
+          
           if (Object.keys(errors).length !== 0) {
             setDisable(true);
           } else {
@@ -201,119 +228,78 @@ const SimplifiedMainScreen = () => {
                   setDisableForStep2={setDisableForStep2}
                 />
                 <Flex mt={'50px'} fontSize={14} justifyContent="center">
-                  <Button
-                    type="submit"
-                    isDisabled={isSubmitting}
-                    w={'160px'}
-                    h={'45px'}
-                    borderRadius={4}
-                    fontSize={14}
-                    _hover={{}}
-                    bg={isDisable ? 'gray.25' : '#00c3c4'}
-                    color={isDisable ? '#86929d' : 'white.100'}
-                    disabled={
-                      step === 3 || (step === 1 && isDisable) || saveBtnDisable
-                    }
-                    mr={step === 1 ? '390px' : '558px'}
-                    onClick={() =>
-                      account &&
-                      isExist === 'createproject' &&
-                      hashKey === undefined
-                        ? saveProject(values, account, true)
-                        : editProject(
-                            values,
-                            account as string,
-                            hashKey || isExist,
-                            true,
-                          )
-                    }>
-                    Save
-                  </Button>
+                  {/* Step 1 && Project is Deployed */}
+                  {step === 1 && isExist === 'project' ? (
+                    <ButtonGroup>
+                      <ActionButton
+                        bgColor="#00c3c4"
+                        btnText="List"
+                        isDisabled={isSubmitting}
+                        color="white"
+                        onClick={() => navigateToLaunchPage()}
+                      />
+                      <ActionButton
+                        bgColor="yellow.200"
+                        btnText="Save"
+                        isDisabled={isSubmitting}
+                        marginRight={step === 1 ? '190px' : '558px'}
+                        color={isDisable ? '#86929d' : 'white.100'}
+                        onClick={() => handleSaveProject(values, account, true)}
+                      />
+                    </ButtonGroup>
+                  ) : (
+                    /** Step 1 && Project is not yet deployed */ 
+                    <ActionButton
+                      bgColor={getSaveButtonColor()}
+                      btnText="Save"
+                      isDisabled={isSubmitting}
+                      disabled={
+                        step === 3 ||
+                        (step === 1 && isDisable) ||
+                        saveBtnDisable
+                      }
+                      marginRight={step === 1 ? '390px' : '558px'}
+                      color={isDisable ? '#86929d' : 'white.100'}
+                      onClick={() => handleSaveProject(values, account, true)}
+                    />
+                  )}
                   <Flex>
                     {step !== 1 && (
-                      <Button
-                        type="submit"
-                        w={'160px'}
-                        h={'45px'}
-                        bg={'blue.500'}
-                        fontSize={14}
-                        color={'white.100'}
-                        mr={'12px'}
+                      <ActionButton
+                        bgColor={'blue.500'}
+                        btnText="Prev"
+                        marginRight="12px"
                         disabled={isSubmitting}
-                        _hover={{}}
-                        borderRadius={4}
-                        onClick={() => handleStep(false)}>
-                        Prev
-                      </Button>
+                        color={'white.100'}
+                        onClick={() => handleStep(false)}
+                      />
                     )}
                     {step === 1 && (
-                      <Button
-                        type="submit"
-                        w={'160px'}
-                        h={'45px'}
-                        fontSize={14}
+                      <ActionButton
+                        bgColor={isDisable ? 'gray.25' : 'blue.500'}
+                        btnText="Save & Continue"
+                        disabled={isDisable}
                         color={isDisable ? '#86929d' : 'white.100'}
-                        bg={isDisable ? 'gray.25' : 'blue.500'}
-                        // disabled={isDisable}
-                        _hover={{}}
-                        borderRadius={4}
-                        onClick={() => {
-                          account &&
-                          isExist === 'createproject' &&
-                          hashKey === undefined
-                            ? saveProject(values, account)
-                            : editProject(
-                                values,
-                                account as string,
-                                hashKey || isExist,
-                              );
-                          handleStep(true);
-                        }}>
-                        Save & Continue
-                      </Button>
+                        onClick={() => handleSaveAndContinue(values, account)}
+                      />
                     )}
                     {step === 2 && (
-                      <Button
-                        type="submit"
-                        w={'160px'}
-                        h={'45px'}
-                        fontSize={14}
+                      <ActionButton
+                        bgColor={isDisableForStep2 ? 'gray.25' : 'blue.500'}
+                        btnText="Save & Continue"
+                        disabled={isDisableForStep2}
                         color={isDisableForStep2 ? '#86929d' : 'white.100'}
-                        bg={isDisableForStep2 ? 'gray.25' : 'blue.500'}
-                        // disabled={isDisableForStep2}
-                        _hover={{}}
-                        borderRadius={4}
-                        onClick={() => {
-                          account &&
-                          isExist === 'createprojectsimple' &&
-                          hashKey === undefined
-                            ? saveProject(values, account)
-                            : editProject(
-                                values,
-                                account as string,
-                                hashKey || isExist,
-                              );
-                          handleStep(true);
-                        }}>
-                        Save & Continue
-                      </Button>
+                        onClick={() => handleSaveAndContinue(values, account)}
+                      />
                     )}
                     {step === 3 && (
-                      <Button
-                        type="submit"
-                        w={'160px'}
-                        h={'45px'}
-                        fontSize={14}
-                        color={isDisableForStep3 ? '#86929d' : 'white.100'}
-                        bg={isDisableForStep3 ? '#gray.25' : 'blue.500'}
-                        disabled={isDisableForStep3}
-                        _hover={{}}
-                        borderRadius={4}
-                        onClick={() => {
-                          handleOnCofirm();
-                        }}>
-                        Confirm
-                      </Button>
+                       <ActionButton
+                       bgColor={isDisableForStep3 ? '#gray.25' : 'blue.500'}
+                       btnText="Complete & Go"
+                       disabled={isDisableForStep3}
+                       color={isDisableForStep3 ? '#86929d' : 'white.100'}
+                       onClick={() =>  navigateToLaunchPage()}
+                     />
                     )}
                   </Flex>
                 </Flex>

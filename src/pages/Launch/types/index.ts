@@ -126,33 +126,60 @@ interface ProjectStep3 {
   isTokenDeployedErr: boolean;
 }
 
+type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+
+interface SimplifiedVault {
+  tokenAllocation: number | undefined;
+  vaultName: SimplifiedVaultName;
+  vaultType: SimplifiedVaultType
+}
+
+
+
+type simplifiedVaultsAny = SimplifiedVault
 interface SimplifiedProjectStep1 {
   projectName: string | undefined;
   description: string | undefined;
   tokenName: string | undefined;
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
+  snapshotTime: number | undefined;
+  publicSale1DateRange: number | undefined[];
+  publicSale2DateRange: number | undefined[];
 }
 interface SimplifiedProjectStep2 {
-
+  hardCap: number | undefined;
+  marketCap: number | undefined;
+  totalSupply: number | undefined;
+  tokenPrice: number | undefined;
+  dexPrice: number | undefined;
+  growth: number | undefined;
+  stablePrice: number | undefined;
+  exchangeRate: number|undefined;
+  vaults : simplifiedVaultsAny[]
 }
-interface SimplifiedProjectStep3 {
-
-}
+interface SimplifiedProjectStep3 {}
 
 type Project = ProjectStep1 & ProjectStep2 & ProjectStep3;
-type SimplifiedProject = SimplifiedProjectStep1 & SimplifiedProjectStep2 & SimplifiedProjectStep3;
+type SimplifiedProject = SimplifiedProjectStep1 &
+  SimplifiedProjectStep2 &
+  SimplifiedProjectStep3;
 
 type Projects = {
+  
+  CreateSimplifiedProject: SimplifiedProject;
   CreateProject: Project;
-  CreateSimplifiedProject: SimplifiedProject
 };
 
+type SimpleProjects = {
+  CreateSimplifiedProject: SimplifiedProject;
+};
 type ChainNumber = 1 | 4;
 
 type StepNumber = 1 | 2 | 3;
 
-type TEconomyStepNumber = 0| 1 | 2 |3
+type TEconomyStepNumber = 0 | 1 | 2 | 3;
 
 type PublicTokenColData = {
   firstColData: [
@@ -316,13 +343,16 @@ type ProjectCardType = {
   key: string;
 };
 
-type LaunchMode = 'simplified' | 'advance'
+type LaunchMode = 'simplified' | 'advance';
 
 export type {
   Projects,
   ProjectStep1,
   ProjectStep2,
   ProjectStep3,
+  SimplifiedProjectStep1,
+  SimplifiedProjectStep2,
+  SimplifiedProjectStep3,
   ChainNumber,
   StepNumber,
   Vault,
@@ -340,5 +370,6 @@ export type {
   ProjectCardType,
   TokenType,
   LaunchMode,
-  TEconomyStepNumber
+  TEconomyStepNumber,
+  SimpleProjects,
 };

@@ -1265,7 +1265,6 @@ const PublicTokenDetail = (props: {
           }></MainTitle>
         {firstColData?.map((data: any, index: number) => {
           const {title, content, percent, formikName, err} = data;
-          console.log('formikName',formikName);
           return (
             <SubTitle
               key={title}

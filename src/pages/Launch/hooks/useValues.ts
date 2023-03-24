@@ -176,6 +176,51 @@ const initialObj: Projects['CreateProject'] = {
   ],
 };
 
+const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
+  projectName: undefined,
+  description: undefined,
+  tokenName: undefined,
+  tokenSymbol: undefined,
+  tokenSymbolImage: '',
+  snapshotTime: 0,
+  publicSale1DateRange: [],
+  publicSale2DateRange: [],
+  hardCap: undefined,
+  marketCap:  undefined,
+  totalSupply:undefined,
+  tokenPrice:  undefined,
+  dexPrice:  undefined,
+  growth: undefined,
+  stablePrice: undefined,
+  exchangeRate: undefined,
+  vaults: [{
+    tokenAllocation: undefined,
+    vaultName: 'Public',
+      vaultType: 'Public',
+  },
+  {
+    tokenAllocation: undefined,
+    vaultName: 'Ecosystem',
+      vaultType: 'Ecosystem',
+  },
+  {
+    tokenAllocation: undefined,
+    vaultName: 'Team',
+      vaultType: 'Team',
+  },
+  {
+    tokenAllocation: undefined,
+    vaultName: 'Liquidity',
+      vaultType: 'Liquidity',
+  },
+  {
+    tokenAllocation: undefined,
+    vaultName: 'TONStarter',
+      vaultType: 'TONStarter',
+  },
+]
+};
+
 const initialVaultValue: VaultC = {
   adminAddress: '',
   isMandatory: false,
@@ -194,10 +239,19 @@ const useValues = (account?: string) => {
   const initialObject = account
     ? {...initialObj, owner: account, tokenOwnerAccount: account}
     : initialObj;
+
+  const initialSimplifiedObject  = account 
+  ? {...initialSimplifiedObj}
+  : initialSimplifiedObj
+
   const [initialValues, setInitialValues] =
     useState<Projects['CreateProject']>(initialObject);
 
-  return {initialValues, setInitialValues, defaultParams, initialVaultValue};
+  const [initialSimplifiedValues, SetInitialSimplifiedValues ] = 
+    useState<Projects['CreateSimplifiedProject']>(initialSimplifiedObject);
+
+  return {initialValues, setInitialValues, defaultParams, initialVaultValue, initialSimplifiedValues, SetInitialSimplifiedValues};
 };
+
 
 export default useValues;

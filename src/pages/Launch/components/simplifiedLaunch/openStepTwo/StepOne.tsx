@@ -14,20 +14,27 @@ import {useEffect, useState} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
-
+import {VaultPublic} from '@Launch/types';
 const StepOne = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [option, setOption] = useState('');
   const {MENU_STYLE} = theme;
-  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const {vaults} = values;
-  // const publicVault = vaults[0] as VaultPublic;
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
 
 
+  const buttonStatus = (option: string) => {
+    switch (option) {
+      case '':
+        return 'Select One..';
+      case 'Other':
+        return 'Other';
+      default:
+        return ` $ ${Number(option).toLocaleString()}`;
+    }
+  };
 
-  console.log(vaults);
-  
   const themeDesign = {
     border: {
       light: 'solid 1px #dfe4ee',
@@ -48,9 +55,11 @@ const StepOne = () => {
   };
 
   const prices = [100000, 500000, 1000000];
+
   const handleSelect = (option: number) => {
     setOption(option.toString());
-    setFieldValue('vaults[0].hardCap', option)
+    setFieldValue('hardCap', option);
+    setFieldValue('marketCap', option/0.3)
   };
 
   return (
@@ -75,11 +84,8 @@ const StepOne = () => {
             h="30px"
             bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}>
             <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-              {option === ''
-                ? 'Select One...'
-                : ` $ ${Number(option).toLocaleString()}`}
+              { option !== 'Other' && values.hardCap? ` $ ${values.hardCap.toLocaleString()}`: buttonStatus(option)}
               <span>
-                {' '}
                 <ChevronDownIcon />
               </span>
             </Text>
@@ -97,37 +103,52 @@ const StepOne = () => {
                 </MenuItem>
               );
             })}
-            <MenuItem color={'blue.300'} onClick={() => setOption('other')}>
+            <MenuItem color={'blue.300'} onClick={() => setOption('Other')}>
               Other
             </MenuItem>
           </MenuList>
         </Menu>
-        {option === 'other'?  <Flex
-          h="30px"
-          w="130px"
-          alignItems={'center'}
-          borderRadius="4px"
-          bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
-          border={
-            colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
-          }
-          focusBorderColor={'#dfe4ee'}
-          pl="15px"
-          fontSize={'13px'}>
-          <Text>$</Text>
-          <NumberInput>
-            <NumberInputField
-              h="30px"
-              placeholder={'0'}
-              fontSize={'13px'}
-              border="none"
-              pl="5px"
-              textAlign={'left'}
-              _focus={{}}></NumberInputField>
-          </NumberInput>
-        </Flex>:<></>
-        }
-       
+        {option === 'Other' ? (
+          <Flex
+            h="30px"
+            w="130px"
+            alignItems={'center'}
+            borderRadius="4px"
+            bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
+            border={
+              colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
+            }
+            focusBorderColor={'#dfe4ee'}
+            pl="15px"
+            fontSize={'13px'}>
+            <Text>$</Text>
+            <NumberInput>
+              <NumberInputField
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                  }
+                }}
+                h="30px"
+                placeholder={'0'}
+                fontSize={'13px'}
+                border="none"
+                // onBlur={() => {}}
+                pl="5px"
+                step={0}
+                value={values.hardCap}
+                onChange={(e) => {
+                  
+                  setFieldValue('hardCap', parseInt(e.target.value));
+                  setFieldValue('marketCap', parseInt(e.target.value)/0.3)
+                }}
+                textAlign={'left'}
+                _focus={{}}></NumberInputField>
+            </NumberInput>
+          </Flex>
+        ) : (
+          <></>
+        )}
       </Flex>
     </Flex>
   );

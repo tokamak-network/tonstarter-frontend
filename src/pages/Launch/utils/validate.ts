@@ -171,6 +171,8 @@ function validateFormikValues(
     return result.indexOf(false) === -1 ? true : false;
   });
 
+  console.log('step2FilledOut',step2FilledOut);
+  
   return {
     result: step2FilledOut.indexOf(false) === -1 ? false : true,
     step2FilledOut,
