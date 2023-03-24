@@ -182,9 +182,11 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
   tokenName: undefined,
   tokenSymbol: undefined,
   tokenSymbolImage: '',
-  snapshotTime: 0,
-  publicSale1DateRange: [],
-  publicSale2DateRange: [],
+  snapshotTime: undefined,
+  publicSale1Start: undefined,
+  publicSale1End: undefined,
+  publicSale2Start: undefined,
+  publicSale2End: undefined,
 };
 
 const initialVaultValue: VaultC = {

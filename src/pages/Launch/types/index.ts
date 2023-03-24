@@ -138,6 +138,7 @@ interface SimplifiedProjectStep1 {
   publicSale2Start: number | undefined;
   publicSale2End: number | undefined;
 }
+
 interface SimplifiedProjectStep2 {
 
 }
