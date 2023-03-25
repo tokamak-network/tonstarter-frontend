@@ -137,6 +137,7 @@ interface SimplifiedProjectStep1 {
   publicSale1End: number | undefined;
   publicSale2Start: number | undefined;
   publicSale2End: number | undefined;
+  vaults: VaultAny[];
 }
 
 interface SimplifiedProjectStep2 {

@@ -5,7 +5,7 @@ import SingleCalendarPop from '../SingleCalendarPop';
 import {snapshotGap} from '@Launch/const';
 import {convertTimeStamp} from 'utils/convertTIme';
 import DoubleCalendarPop from '../../common/DoubleCalendarPop';
-import {Projects} from '@Launch/types';
+import {Projects, VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 
 type ScheduleProps = {
@@ -42,6 +42,35 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
       setStepMax(currentStep);
     }
   }, [currentStep, maxStep]);
+
+  const publicVault = vaults[0] as VaultPublic;
+
+  const getTimeStamp = () => {
+    stepNames.forEach(stepName => {      
+      switch (
+        stepName
+      ) {
+        case 'Snapshot': {
+          return publicVault.snapshot;
+        }
+        case 'Whitelist': {
+          return [publicVault.whitelist, publicVault.whitelistEnd];
+        }
+        case 'Public Round 1': {
+          return [publicVault.publicRound1, publicVault.publicRound1End];
+        }
+        case 'Public Round 2': {
+          return [publicVault.publicRound2, publicVault.publicRound2End];
+        }
+        case 'Start Time': {
+          //@ts-ignore
+          return vaults[1].startTime;
+        }
+        default:
+          return 0;
+      }
+    });
+  }
 
   /**
    * TODO:
