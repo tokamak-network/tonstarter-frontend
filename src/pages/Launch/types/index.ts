@@ -19,9 +19,25 @@ type VaultType =
   | 'Vesting'
   | 'C';
 
-interface Vault {
+  type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+  type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+  
+  interface Vault {
   vaultName: VaultName;
   vaultType: VaultType;
+  vaultTokenAllocation: number;
+  adminAddress: string;
+  isMandatory: boolean;
+  vaultAddress: string | undefined;
+  index: number;
+  isDeployed: boolean;
+  isSet: boolean;
+  isDeployedErr: boolean;
+}
+
+interface VaultSimplified {
+  vaultName: SimplifiedVaultName;
+  vaultType: SimplifiedVaultType;
   vaultTokenAllocation: number;
   adminAddress: string;
   isMandatory: boolean;
@@ -39,6 +55,12 @@ interface VaultSchedule {
 }
 
 type VaultCommon = Vault & {claim: VaultSchedule[]};
+
+type VaultCommonSimplified = VaultSimplified & {claim: VaultSchedule[]};
+
+type VaultEco = VaultCommonSimplified & {};
+type VaultTeam = VaultCommonSimplified & {};
+type VaultTONStarter = VaultCommonSimplified & {};
 
 type VaultDao = VaultCommon & {};
 
@@ -90,7 +112,7 @@ type VaultLiquidityIncentive = VaultCommon & {
 };
 
 type VaultAny = VaultPublic | VaultDao | VaultC | VaultLiquidityIncentive;
-
+type simplifiedVaultsAny = VaultPublic | VaultEco | VaultTeam | VaultTONStarter |VaultLiquidityIncentive
 type TokenType = 'A' | 'B' | 'C';
 
 interface ProjectStep1 {
@@ -126,8 +148,6 @@ interface ProjectStep3 {
   isTokenDeployedErr: boolean;
 }
 
-type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
-type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
 
 interface SimplifiedVault {
   tokenAllocation: number | undefined;
@@ -137,7 +157,7 @@ interface SimplifiedVault {
 
 
 
-type simplifiedVaultsAny = SimplifiedVault
+
 interface SimplifiedProjectStep1 {
   projectName: string | undefined;
   description: string | undefined;
@@ -158,12 +178,13 @@ interface SimplifiedProjectStep2 {
   growth: number | undefined;
   stablePrice: number | undefined;
   exchangeRate: number|undefined;
-  vaults : simplifiedVaultsAny[]
+  vaults : simplifiedVaultsAny[];
 }
 interface SimplifiedProjectStep3 {
   isTokenDeployed: boolean;
   isTokenDeployedErr: boolean;
   tokenAddress: string;
+  isAllDeployed: boolean;
 }
 
 type Project = ProjectStep1 & ProjectStep2 & ProjectStep3;
