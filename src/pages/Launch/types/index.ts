@@ -19,9 +19,25 @@ type VaultType =
   | 'Vesting'
   | 'C';
 
-interface Vault {
+  type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+  type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+  
+  interface Vault {
   vaultName: VaultName;
   vaultType: VaultType;
+  vaultTokenAllocation: number;
+  adminAddress: string;
+  isMandatory: boolean;
+  vaultAddress: string | undefined;
+  index: number;
+  isDeployed: boolean;
+  isSet: boolean;
+  isDeployedErr: boolean;
+}
+
+interface VaultSimplified {
+  vaultName: SimplifiedVaultName;
+  vaultType: SimplifiedVaultType;
   vaultTokenAllocation: number;
   adminAddress: string;
   isMandatory: boolean;
@@ -39,6 +55,12 @@ interface VaultSchedule {
 }
 
 type VaultCommon = Vault & {claim: VaultSchedule[]};
+
+type VaultCommonSimplified = VaultSimplified & {claim: VaultSchedule[]};
+
+type VaultEco = VaultCommonSimplified & {};
+type VaultTeam = VaultCommonSimplified & {};
+type VaultTONStarter = VaultCommonSimplified & {};
 
 type VaultDao = VaultCommon & {};
 
@@ -90,7 +112,7 @@ type VaultLiquidityIncentive = VaultCommon & {
 };
 
 type VaultAny = VaultPublic | VaultDao | VaultC | VaultLiquidityIncentive;
-
+type simplifiedVaultsAny = VaultPublic | VaultEco | VaultTeam | VaultTONStarter |VaultLiquidityIncentive
 type TokenType = 'A' | 'B' | 'C';
 
 interface ProjectStep1 {
@@ -126,12 +148,23 @@ interface ProjectStep3 {
   isTokenDeployedErr: boolean;
 }
 
+
+interface SimplifiedVault {
+  tokenAllocation: number | undefined;
+  vaultName: SimplifiedVaultName;
+  vaultType: SimplifiedVaultType
+}
+
+
+
+
 interface SimplifiedProjectStep1 {
   projectName: string | undefined;
   description: string | undefined;
   tokenName: string | undefined;
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
+  ownerAddress: string;
   snapshotTime: number | undefined;
   whitelistStart: number | undefined;
   whitelistEnd: number | undefined;
@@ -143,25 +176,42 @@ interface SimplifiedProjectStep1 {
 }
 
 interface SimplifiedProjectStep2 {
-
+  hardCap: number | undefined;
+  marketCap: number | undefined;
+  totalSupply: number | undefined;
+  tokenPrice: number | undefined;
+  dexPrice: number | undefined;
+  growth: number | undefined;
+  stablePrice: number | undefined;
+  exchangeRate: number|undefined;
+  vaults : simplifiedVaultsAny[];
 }
 interface SimplifiedProjectStep3 {
-
+  isTokenDeployed: boolean;
+  isTokenDeployedErr: boolean;
+  tokenAddress: string;
+  isAllDeployed: boolean;
 }
 
 type Project = ProjectStep1 & ProjectStep2 & ProjectStep3;
-type SimplifiedProject = SimplifiedProjectStep1 & SimplifiedProjectStep2 & SimplifiedProjectStep3;
+type SimplifiedProject = SimplifiedProjectStep1 &
+  SimplifiedProjectStep2 &
+  SimplifiedProjectStep3;
 
 type Projects = {
+  
+  CreateSimplifiedProject: SimplifiedProject;
   CreateProject: Project;
-  CreateSimplifiedProject: SimplifiedProject
 };
 
+type SimpleProjects = {
+  CreateSimplifiedProject: SimplifiedProject;
+};
 type ChainNumber = 1 | 4;
 
 type StepNumber = 1 | 2 | 3;
 
-type TEconomyStepNumber = 0| 1 | 2 |3
+type TEconomyStepNumber = 0 | 1 | 2 | 3;
 
 type PublicTokenColData = {
   firstColData: [
@@ -325,7 +375,7 @@ type ProjectCardType = {
   key: string;
 };
 
-type LaunchMode = 'simplified' | 'advance'
+type LaunchMode = 'simplified' | 'advance';
 
 export type {
   Projects,
@@ -352,5 +402,6 @@ export type {
   ProjectCardType,
   TokenType,
   LaunchMode,
-  TEconomyStepNumber
+  TEconomyStepNumber,
+  SimpleProjects,
 };

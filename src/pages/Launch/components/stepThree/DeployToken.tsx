@@ -48,6 +48,7 @@ const DeployToken = () => {
   );
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
+  
   const {
     data: {hashKey},
   } = useAppSelector(selectLaunch);

@@ -3,11 +3,23 @@ import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import StepHeader from './StepHeader';
 import StepComponent from './openStepTwo/StepComponent';
 import GraphComponent from './openStepTwo/GraphComponent';
+import validateSimplifiedFormikValues from '@Launch/utils/validateSimplifiedStep2';
+import { useFormikContext } from 'formik';
+import {Projects} from '@Launch/types';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 
-const OpenStepTwoSimplified = (props: any) => {
+const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAction<boolean>>;}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
+  const {setDisableForStep2} = props;
 
+ useEffect(() => {
+    const validation = validateSimplifiedFormikValues(values)
+    setDisableForStep2(!validation);
+    
+  }, [values, setDisableForStep2]);
+  
   return (
     <Flex
       w="774px"

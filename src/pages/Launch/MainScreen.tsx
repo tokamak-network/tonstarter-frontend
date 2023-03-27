@@ -284,7 +284,7 @@ const MainScreen = () => {
                         fontSize={14}
                         color={isDisableForStep2 ? '#86929d' : 'white.100'}
                         bg={isDisableForStep2 ? 'gray.25' : 'blue.500'}
-                        // disabled={isDisableForStep2}
+                        disabled={isDisableForStep2}
                         _hover={{}}
                         borderRadius={4}
                         onClick={() => {

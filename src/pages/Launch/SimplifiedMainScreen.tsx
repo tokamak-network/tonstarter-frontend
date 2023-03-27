@@ -77,6 +77,7 @@ const SimplifiedMainScreen = () => {
     history.push('/launch');
   }, [history]);
 
+
   useEffect(() => {
     //@ts-ignore
     const unBlock = history.block((loc, action) => {
@@ -159,7 +160,7 @@ const SimplifiedMainScreen = () => {
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
-
+  
   return (
     <Flex
       flexDir={'column'}
@@ -189,7 +190,7 @@ const SimplifiedMainScreen = () => {
         validationSchema={ProjectSchema}
         validate={(values) => {
           // console.log('--formikvalues--');
-          // console.log(values);
+          console.log(values);
           if (step === 3 && oldData !== values) {
             setOldData(values);
             hashKey === undefined
@@ -211,6 +212,7 @@ const SimplifiedMainScreen = () => {
           setSubmitting(false);
         }}>
         {({values, handleBlur, handleSubmit, isSubmitting, errors}) => {
+          
           if (Object.keys(errors).length !== 0) {
             setDisable(true);
           } else {
@@ -286,7 +288,7 @@ const SimplifiedMainScreen = () => {
                       <ActionButton
                         bgColor={isDisableForStep2 ? 'gray.25' : 'blue.500'}
                         btnText="Save & Continue"
-                        disabled={isDisable}
+                        disabled={isDisableForStep2}
                         color={isDisableForStep2 ? '#86929d' : 'white.100'}
                         onClick={() => handleSaveAndContinue(values, account)}
                       />

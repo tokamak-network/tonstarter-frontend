@@ -1,4 +1,4 @@
-import {Flex, Button, useTheme} from '@chakra-ui/react';
+import {Flex, Button, useTheme,useColorMode} from '@chakra-ui/react';
 import { useState, useCallback} from 'react';
 import {TEconomyStepNumber} from '@Launch/types';
 import StepTwoSteps from './StepTwoSteps';
@@ -26,6 +26,7 @@ const StepComp = (props: {step: TEconomyStepNumber}) => {
 const StepComponent = () => {
   const [step, setStep] = useState<TEconomyStepNumber>(0);
   const theme = useTheme();
+  const {colorMode} = useColorMode();
 
   const handleStep = useCallback(
     (isNext: boolean) => {
@@ -60,32 +61,37 @@ const StepComponent = () => {
                 <Button
                 fontSize={'12px'}
                 bg="transparent"
-                color="#2a72e5"
+                color={colorMode === 'dark'?'#535353': "#86929d"}
+                fontWeight='normal'
                 h="25px"
                 w="60px"
-                _active={{}}
-                _hover={{}}
                 _focus={{}}
+                _hover={{borderColor:'#2a72e5', color:'#2a72e5'}}
+                _active={{borderColor:'#2a72e5', color:'#fafbfc', background:'#2a72e5'}}
                 onClick={() => handleStep(false)}
-                border="1px solid #2a72e5">
+                border={colorMode === 'dark'?'1px solid #535353': "1px solid #dfe4ee"}>
                 
                 Prev
               </Button>
         )}
-        <Button
-          fontSize={'12px'}
-          bg="transparent"
-          color="#2a72e5"
-          h="25px"
-          w="60px"
-          ml='9px'
-          _active={{}}
-          _hover={{}}
-          _focus={{}}
-          onClick={() => handleStep(true)}
-          border="1px solid #2a72e5">
-          Next
-        </Button>
+        { step !== 3 && (
+           <Button
+           fontSize={'12px'}
+           bg="transparent"
+           color={colorMode === 'dark'?'#535353': "#86929d"}
+           h="25px"
+           w="60px"
+           ml='9px'
+           fontWeight='normal'
+           _focus={{}}
+           _hover={{borderColor:'#2a72e5',color:'#2a72e5'}}
+           _active={{borderColor:'#2a72e5', color:'#fafbfc',background:'#2a72e5'}}
+           onClick={() => handleStep(true)}
+           border={colorMode === 'dark'?'1px solid #535353': "1px solid #dfe4ee"}>
+           Next
+         </Button>
+        )}
+       
         </Flex>
       </Flex>
 

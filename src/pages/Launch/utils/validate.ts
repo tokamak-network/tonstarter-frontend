@@ -170,7 +170,7 @@ function validateFormikValues(
     fileds.push(thisFields);
     return result.indexOf(false) === -1 ? true : false;
   });
-
+  
   return {
     result: step2FilledOut.indexOf(false) === -1 ? false : true,
     step2FilledOut,
