@@ -133,7 +133,7 @@ interface SimplifiedProjectStep1 {
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
   snapshotTime: number | undefined;
-  whitelist: number | undefined;
+  whitelistStart: number | undefined;
   whitelistEnd: number | undefined;
   publicSale1Start: number | undefined;
   publicSale1End: number | undefined;

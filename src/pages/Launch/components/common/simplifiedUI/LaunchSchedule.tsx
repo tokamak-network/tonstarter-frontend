@@ -1,46 +1,64 @@
 import {Box, Grid, Flex, Text, useColorMode, GridItem} from '@chakra-ui/react';
-import {useEffect,useState} from 'react';
+import {useEffect, useState} from 'react';
 import React from 'react';
 import SingleCalendarPop from '../SingleCalendarPop';
 import {snapshotGap} from '@Launch/const';
 import {convertTimeStamp} from 'utils/convertTIme';
 import DoubleCalendarPop from '../../common/DoubleCalendarPop';
-import {Projects, VaultPublic} from '@Launch/types';
+import {Projects} from '@Launch/types';
 import {useFormikContext} from 'formik';
-import InputComponent from '../InputComponent';
 
 type ScheduleProps = {
-  // stepNames: string[];
   currentStep: number;
 };
 
 export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
-  const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
-  const {snapshotTime, whitelist, whitelistEnd,  publicSale1Start, publicSale1End, publicSale2Start, publicSale2End} = values;
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+  const {
+    snapshotTime,
+    whitelistStart,
+    whitelistEnd,
+    publicSale1Start,
+    publicSale1End,
+    publicSale2Start,
+    publicSale2End,
+  } = values;
   const {currentStep} = props;
   const [maxStep, setStepMax] = useState(0);
   const {colorMode} = useColorMode();
-  const [snapshotDate, setSnapshotDate] = useState<number | undefined>(snapshotTime || 0);
+  const [snapshotDate, setSnapshotDate] = useState<number | undefined>(
+    snapshotTime || 0,
+  );
   const [unlockDate1, setUnlockDate1] = useState<number | undefined>(0);
-  const [unlockDate2, setUnlockDate2] = useState<number | undefined>(0);
   const [unlockDate3, setUnlockDate3] = useState<number | undefined>(0);
-  const [publicSale1StartDate, setPublicSale1StartDate] = useState<number | undefined>(publicSale1Start || 0);
-  const [publicSale1EndDate, setPublicSale1EndDate] = useState<number | undefined>(publicSale1End || 0);
-  const [publicSale2StartDate, setPublicSale2StartDate] = useState<number | undefined>(publicSale2Start || 0);
-  const [publicSale2EndDate, setPublicSale2EndDate] = useState<number | undefined>(publicSale2End || 0);
+  const [whitelistSTC, setWhitelistSTC] = useState<number>(0);
+  const [publicSale1STC, setPublicSale1STC] = useState<number>(0);
+  const [publicSale2STC, setPublicSale2STC] = useState<number>(0);
+  const launchSteps = [
+    'Snapshot',
+    'Whitelist',
+    'Public Sale 1',
+    'Public Sale 2',
+    'Unlock 1',
+    'Unlock 3',
+  ];
   const stepName = '';
-  const launchSteps = ['Snapshot', 'Public Sale 1', 'Public Sale 2', 'Unlock 1', 'Unlock 2', 'Unlock 3']
-  
+  console.log('useFormikValues', values);
   const getTimeStamp = () => {
     switch (
       stepName as
         | 'Snapshot'
+        | 'Whitelist'
         | 'Public Sale 1'
         | 'Public Sale 2'
         | 'Unlock 1'
     ) {
       case 'Snapshot': {
         return snapshotTime;
+      }
+      case 'Whitelist': {
+        return [whitelistStart, whitelistEnd];
       }
       case 'Public Sale 1': {
         return [publicSale1Start, publicSale1End];
@@ -55,84 +73,123 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
       default:
         return 0;
     }
-  }
+  };
 
-  const [dateRange1, setDateRange1] = useState<(number | undefined)[]>(
-    getTimeStamp() as (number | undefined)[],
-  );
-  const [dateRange2, setDateRange2] = useState<(number | undefined)[]>(
-    getTimeStamp() as (number | undefined)[],
-  );
+  const [whitelistDateRange, setWhitelistDateRange] = useState<
+    (number | undefined)[]
+  >(getTimeStamp() as (number | undefined)[]);
+  const [publicSale1DateRange, setPublicSale1DateRange] = useState<
+    (number | undefined)[]
+  >(getTimeStamp() as (number | undefined)[]);
+  const [publicSale2DateRange, setPublicSale2DateRange] = useState<
+    (number | undefined)[]
+  >(getTimeStamp() as (number | undefined)[]);
 
-  /* Ensure stepMax is always set to the highest value of currentStep seen (so far) 
-  If currentStep increases beyond the current maxStep, the stepMax is updated to 
-       reflect the new maximum value of currentStep
-
-       callback func will run whenever the currentStep, or maxStep changes.
-    */
   useEffect(() => {
     if (currentStep > maxStep) {
       setStepMax(currentStep);
     }
   }, [currentStep, maxStep]);
 
-  /**
-   * TODO:
-   * 1. Set Unlock, Public Sale date,time according to Snapshot time
-   * 2. use snapshotGap to calculate Public Sale, Unlock time
-   * 3. Set current owner's account address from web3js.
-   */
+  useEffect(() => {
+    setFieldValue('snapshotTime', snapshotDate);
+    // Second after snapshot
+    setFieldValue('whitelistStart', snapshotDate && snapshotDate + 1);
+    // 5 min duration
+    setFieldValue('whitelistEnd', snapshotDate && (snapshotDate + 1) + 300);
+    setFieldValue('publicSale1Start', publicSale1DateRange[0]);
+    setFieldValue('publicSale1End', publicSale1DateRange[1]);
+    setFieldValue('publicSale2Start', publicSale2DateRange[0]);
+    setFieldValue('publicSale2End', publicSale2DateRange[1]);
+  }, [
+    snapshotDate,
+    setFieldValue,
+    publicSale1DateRange,
+    publicSale2DateRange,
+    whitelistDateRange,
+  ]);
+
+  useEffect(() => {
+    if (snapshotDate) {
+      setWhitelistSTC(snapshotDate + 1);
+    }
+  }, [snapshotDate]);
+  
+  useEffect(() => {
+    if (whitelistEnd) {
+      setPublicSale1STC(whitelistEnd + 1);
+    }
+  }, [whitelistEnd]);
+  
+  useEffect(() => {
+    if (publicSale1End) {
+      setPublicSale2STC(publicSale1End + 1);
+    }
+  }, [publicSale1End]);
+
+  useEffect(() => {
+    if(publicSale2End) {
+      setUnlockDate1(publicSale2End + 1)
+    }
+  }, [publicSale2End])
+
   return (
     <Grid my={'40px'}>
       <Box my={'20px'}>
         <Text fontSize="md">Schedule</Text>
       </Box>
       <Flex>
-          <Grid mb={2} fontSize="xs" templateColumns="repeat(8, 1fr)" textAlign={'center'} as="b">
-              <GridItem w={'62px'} mr={'59px'}>
-                <Flex as="b">
-                <Text mr={'5px'} color={'#FF3B3B'}>
-                  *
-                </Text>
-                Snapshot
-              </Flex>
-              </GridItem>
-              {/* <GridItem  w={'100px'} mr={'28px'}>
-                <Flex>
-                <Text mr={'5px'} color={'#FF3B3B'}>
-                  *
-                </Text>
-                Whitelist
-              </Flex>
-              </GridItem> */}
-              <GridItem  w={'100px'} mr={'28px'}>
-                <Flex>
-                <Text mr={'5px'} color={'#FF3B3B'}>
-                  *
-                </Text>
-                Public Sale 1
-              </Flex>
-              </GridItem>
-              <GridItem w={'100px'} mr={'40px'}>
-                <Flex>
-                <Text mr={'5px'} color={'#FF3B3B'}>
-                  *
-                </Text>
-                Public Sale 2
-              </Flex>
-              </GridItem>
-              <GridItem w={'62px'} mr={'59px'}>
-                <Text>Unlock 1</Text>
-              </GridItem>
-              <GridItem w={'62px'} mr={'62px'}>
+        <Grid
+          mb={2}
+          fontSize="xs"
+          templateColumns="repeat(8, 1fr)"
+          textAlign={'center'}
+          as="b">
+          <GridItem w={'62px'} mr={'59px'}>
+            <Flex as="b">
+              <Text mr={'5px'} color={'#FF3B3B'}>
+                *
+              </Text>
+              Snapshot
+            </Flex>
+          </GridItem>
+          <GridItem w={'100px'} mr={'28px'}>
+            <Flex>
+              <Text mr={'5px'} color={'#FF3B3B'}>
+                *
+              </Text>
+              Whitelist
+            </Flex>
+          </GridItem>
+          <GridItem w={'100px'} mr={'28px'}>
+            <Flex>
+              <Text mr={'5px'} color={'#FF3B3B'}>
+                *
+              </Text>
+              Public Sale 1
+            </Flex>
+          </GridItem>
+          <GridItem w={'100px'} mr={'40px'}>
+            <Flex>
+              <Text mr={'5px'} color={'#FF3B3B'}>
+                *
+              </Text>
+              Public Sale 2
+            </Flex>
+          </GridItem>
+          <GridItem w={'62px'} mr={'59px'}>
+            <Text>Unlock 1</Text>
+          </GridItem>
+          {/* TODO: Detailed 49-month unlock schedule */}
+          {/* <GridItem w={'62px'} mr={'62px'}>
                 <Text>...</Text>
-              </GridItem>
-              <GridItem w={'62px'} mr={'66px'}>
-                <Text>Unlock 3</Text>
-              </GridItem>
-          </Grid>
+              </GridItem> */}
+          <GridItem w={'62px'} mr={'66px'}>
+            <Text>Unlock 3</Text>
+          </GridItem>
+        </Grid>
       </Flex>
-      <Flex ml={'28px'} >
+      <Flex ml={'28px'}>
         {launchSteps.map((step: string, index: number) => {
           const indexNum = index + 1;
           const isStep = currentStep === indexNum;
@@ -172,7 +229,10 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
           );
         })}
       </Flex>
-      <Grid templateColumns="repeat(6, 1fr)" textAlign="center" style={{top:0}}>
+      <Grid
+        templateColumns="repeat(6, 1fr)"
+        textAlign="center"
+        style={{top: 0}}>
         {launchSteps.map((step: string, index: number) => {
           return (
             <Grid textAlign="center" mt={2} fontSize={'11px'}>
@@ -186,31 +246,32 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                   </Text>
                 </GridItem>
               )}
-              {/* {step === 'Whitelist' && (
+              {/* whitelist date & time */}
+              {step === 'Whitelist' && (
                 <GridItem w={'106px'} mr={'28px'}>
                   <Text>
-                    {dateRange
+                    {snapshotDate
                       ? `${convertTimeStamp(
-                        Number(wldateRange[0]),
-                        'YYYY.MM.DD HH:mm:ss',
+                          Number(snapshotDate + 1),
+                          'YYYY.MM.DD HH:mm:ss',
                         )} ~${convertTimeStamp(
-                          Number(wldateRange[1]),
+                          Number(snapshotDate + 1 + 300),
                           'MM.DD HH:mm:ss',
                         )}`
                       : '0000.00.00 00:00:00'}
                   </Text>
                 </GridItem>
-              )} */}
+              )}
               {/* Public sale 1 date & time */}
               {step === 'Public Sale 1' && (
                 <GridItem w={'106px'} mr={'28px'}>
                   <Text>
-                    {dateRange1
+                    {publicSale1DateRange
                       ? `${convertTimeStamp(
-                        Number(dateRange1[0]),
-                        'YYYY.MM.DD HH:mm:ss',
+                          Number(publicSale1DateRange[0]),
+                          'YYYY.MM.DD HH:mm:ss',
                         )} ~${convertTimeStamp(
-                          Number(dateRange1[1]),
+                          Number(publicSale1DateRange[1]),
                           'MM.DD HH:mm:ss',
                         )}`
                       : '0000.00.00 00:00:00'}
@@ -221,18 +282,19 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               {step === 'Public Sale 2' && (
                 <GridItem w={'106px'} mr={'40px'}>
                   <Text mr={'5px'}>
-                    {dateRange2
+                    {publicSale2DateRange
                       ? `${convertTimeStamp(
-                        Number(dateRange2[0]),
+                          Number(publicSale2DateRange[0]),
                           'YYYY.MM.DD HH:mm:ss',
                         )} ~${convertTimeStamp(
-                          Number(dateRange2[1]),
+                          Number(publicSale2DateRange[1]),
                           'MM.DD HH:mm:ss',
                         )}`
                       : '0000.00.00 00:00:00'}
                   </Text>
                 </GridItem>
               )}
+              {/* Vesting Round 0 ?? */}
               {step === 'Unlock 1' && (
                 <GridItem w={'62px'} mr={'60px'}>
                   <Text mr={'5px'}>
@@ -242,15 +304,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
                   </Text>
                 </GridItem>
               )}
-              {step === 'Unlock 2' && (
-                <GridItem w={'62px'} mr={'62px'}>
-                  <Text mr={'5px'}>
-                    {unlockDate2
-                      ? convertTimeStamp(unlockDate2, 'YYYY.MM.DD HH:mm:ss')
-                      : 'Message'}
-                  </Text>
-                </GridItem>
-              )}
+              {/* TODO: Calculate the last vesting round period 1440 days */}
               {step === 'Unlock 3' && (
                 <GridItem w={'62px'} mr={'66px'}>
                   <Text mr={'5px'}>
@@ -272,32 +326,27 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               {step === 'Snapshot' && (
                 <Flex alignItems="center" ml={'5px'}>
                   <SingleCalendarPop
-                    setDate={setSnapshotDate}>
+                    setDate={setSnapshotDate}
                     startTimeCap={snapshotGap}
-                    </SingleCalendarPop>
+                  />
                 </Flex>
               )}
-               {/* {step === 'Whitelist' && (
-                <Flex alignItems="center" ml={'-3px'}>
-                  <DoubleCalendarPop
-                    setDate={setWlDateRange}
-                    startTimeCap={0}></DoubleCalendarPop>
-                </Flex>
-              )} */}
               {/* Public sale 1 date & time input*/}
               {step === 'Public Sale 1' && (
                 <Flex alignItems="center" ml={'-3px'}>
                   <DoubleCalendarPop
-                    setDate={setDateRange1}
-                    startTimeCap={0}></DoubleCalendarPop>
+                    setDate={setPublicSale1DateRange}
+                    // whitelist end + 1
+                    startTimeCap={publicSale1STC} />
                 </Flex>
               )}
               {/* Public sale 2 date & time input*/}
               {step === 'Public Sale 2' && (
                 <Flex alignItems="center" ml={'-8px'}>
                   <DoubleCalendarPop
-                    setDate={setDateRange2}
-                    startTimeCap={0}></DoubleCalendarPop>
+                    setDate={setPublicSale2DateRange}
+                    // public sale end + 1
+                    startTimeCap={publicSale2STC} />
                 </Flex>
               )}
             </Grid>

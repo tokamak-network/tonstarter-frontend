@@ -38,7 +38,7 @@ const StepComponent = (props: {
   const {step, setDisableForStep2} = props;
   switch (step) {
     case 1:
-      return <OpenStepOneSimplified></OpenStepOneSimplified>;
+      return <OpenStepOneSimplified step={step}></OpenStepOneSimplified>;
     case 2:
       return <OpenStepTwoSimplified setDisableForStep2={setDisableForStep2}></OpenStepTwoSimplified>;
     case 3:
@@ -149,6 +149,7 @@ const SimplifiedMainScreen = () => {
   };
 
   const handleSaveAndContinue = (values: any, account: string) => {
+    console.log('values', values)
     account && isExist === 'createprojectsimple' && hashKey === undefined
       ? saveProject(values, account)
       : editProject(values, account as string, hashKey || isExist);
