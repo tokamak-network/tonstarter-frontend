@@ -15,6 +15,9 @@ import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {fetchTonPriceURL} from 'constants/index';
+import {fetchPoolPayload} from '@Launch/utils/fetchPoolPayload';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+
 const StepThree = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -23,6 +26,8 @@ const StepThree = () => {
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
   const [tonInDollars, setTonInDollars] = useState(0);
+  const [tonPriceInTos, setTonPriceInTos] = useState(0);
+  const {account, library} = useActiveWeb3React();
 
   useEffect(() => {
     async function getTonPrice() {
@@ -31,10 +36,16 @@ const StepThree = () => {
       );
       const tonPrice = tonPriceObj[0].current_price;
       setTonInDollars(tonPrice);
-    }
+      const poolData = await fetchPoolPayload(library);
 
+      const token0Price = Number(poolData.token0Price);
+      setTonPriceInTos(token0Price);
+      // console.log(token0Price);
+      // const tonPriceInTos =
+    }
     getTonPrice();
-  }, []);
+  }, [library]);
+
   const themeDesign = {
     border: {
       light: 'solid 1px #dfe4ee',
@@ -80,11 +91,12 @@ const StepThree = () => {
       const totalSupply = (marketCap * growth) / option;
       setFieldValue('totalSupply', totalSupply);
       const tokenPriceinDollars = marketCap / totalSupply;
-      console.log('tokenPriceinDollars',tokenPriceinDollars);
-      
-      const tokenPriceInTon = tokenPriceinDollars/tonInDollars;
-      console.log('tokenPriceInTon',tokenPriceInTon);
-      
+
+      const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
+      const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
+      setFieldValue('dexPrice',tokenPriceInTos) //dex price is the user entered token to TOS ratio
+      setFieldValue('exchangeRate', tokenPriceInTos) //exchange rate is the actual token to TOS ratio
+
       setFieldValue('tokenPrice', tokenPriceInTon);
       const publicAllocation = totalSupply * 0.3;
       const ecosystemAllocation = totalSupply * 0.35;

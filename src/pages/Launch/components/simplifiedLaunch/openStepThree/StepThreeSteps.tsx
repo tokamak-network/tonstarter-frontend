@@ -20,7 +20,9 @@ const StepThreeSteps = (props: {
   const [maxStep, setStepMax] = useState(0);
   const {colorMode} = useColorMode();
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const {vaults} = values;
+  // const {vaults} = values;
+  const vaults = Array.from(Array(12).keys())
+
   const theme = useTheme();
   const [transX, setTransX] = useState<number>(0);
   const [flowIndex, setFlowIndex] = useState<number>(0);
@@ -53,7 +55,7 @@ const StepThreeSteps = (props: {
         <motion.div
           animate={{x: transX}}
           style={{display: 'flex', width: '100%'}}>
-          {vaults.map((vault: VaultAny, index: number) => {
+          {vaults.map(( index: number) => {
             return (
               <Flex alignItems={'center'} key={index}>
                 {index !== 0 ? (

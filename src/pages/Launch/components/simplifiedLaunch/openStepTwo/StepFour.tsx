@@ -15,11 +15,8 @@ const StepFour = () => {
   const theme = useTheme();
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-  console.log('values', values);
-
   const handleInput = (e: number) => {
     
-    setFieldValue('exchangeRate', e)
     setFieldValue('dexPrice',e)
   };
 
@@ -36,6 +33,37 @@ const StepFour = () => {
         project token and TOS, which is currently set to match the market price,
         as shown below, but you can change it if you wish.
       </Text>
+
+      {/* <Flex
+        h="30px"
+        w="130px"
+        alignItems={'center'}
+        borderRadius="4px"
+        bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
+        border={
+          colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
+        }
+        focusBorderColor={'#dfe4ee'}
+        pr="15px"
+        fontSize={'13px'}>
+        <NumberInput>
+          <NumberInputField
+            h="30px"
+            placeholder={values.exchangeRate? values.exchangeRate.toString() : '0'}
+            fontSize={'13px'}
+            border="none"
+            pr="5px"
+            textAlign={'right'}
+            _focus={{}}
+            value={values.exchangeRate}
+            onChange={(e) => {
+              handleInput(parseInt(e.target.value));
+            }}></NumberInputField>
+        </NumberInput>
+        <Text>TOS</Text>
+      </Flex>  */}
+      <Flex fontSize={'13px'}  alignItems={'center'}>
+      <Text > 1 {values.tokenSymbol} = {values.tokenPrice?.toLocaleString()}TON =  </Text>
       <Flex
         h="30px"
         w="130px"
@@ -51,19 +79,22 @@ const StepFour = () => {
         <NumberInput>
           <NumberInputField
             h="30px"
-            placeholder={'0'}
+            placeholder={values.dexPrice? (values.dexPrice).toLocaleString().toString() : '0'}
             fontSize={'13px'}
             border="none"
             pr="5px"
             textAlign={'right'}
             _focus={{}}
-            value={values.exchangeRate}
+            value={values.dexPrice? values.dexPrice.toLocaleString(): '0'}
             onChange={(e) => {
               handleInput(parseInt(e.target.value));
             }}></NumberInputField>
         </NumberInput>
-        <Text>TON</Text>
+        <Text>TOS</Text>
       </Flex>
+      </Flex>
+      
+     
     </Flex>
   );
 };

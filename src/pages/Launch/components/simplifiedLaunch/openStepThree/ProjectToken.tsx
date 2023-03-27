@@ -7,22 +7,82 @@ import {
   Button,
 } from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {useFormikContext} from 'formik';
+import {Projects} from '@Launch/types';
+import {DEPLOYED} from 'constants/index';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useContract} from 'hooks/useContract';
+import * as ERC20_FACTORY_A_ABI from 'services/abis/ERC20AFactory.json';
+import {convertToWei} from 'utils/number';
+import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {ethers} from 'ethers';
+import {createToken} from 'pages/Reward/components/api';
 
 const ProjectToken = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+
+  const {ERC20AFACTORY_ADDRESS, ERC20BFACTORY_ADDRESS, ERC20CFACTORY_ADDRESS} =
+    DEPLOYED;
+  const {account} = useActiveWeb3React();
+  const ERC20_FACTORY_A = useContract(
+    ERC20AFACTORY_ADDRESS,
+    ERC20_FACTORY_A_ABI.abi,
+  );
+
+  const dispatch = useAppDispatch();
 
   const details = [
     {
       name: 'Token Name',
-      value: 'TON',
+      value: `${values.tokenName}`,
     },
     {
       name: 'Token Symbol',
-      value: 'TON',
+      value: `${values.tokenSymbol}`,
     },
-    {name: 'Total Supply', value: '50,000 TON'},
+    {
+      name: 'Total Supply',
+      value: `${values.totalSupply?.toLocaleString()} ${values.tokenSymbol}`,
+    },
   ];
+
+  const {isTokenDeployed, tokenName, totalSupply, tokenAddress, tokenSymbol} =
+    values;
+
+  async function deployToken() {
+    try {
+      const {tokenName, tokenSymbol, totalSupply, ownerAddress} = values;
+      const tx = await ERC20_FACTORY_A?.create(
+        tokenName,
+        tokenSymbol,
+        convertToWei(String(totalSupply)),
+        ownerAddress,
+      );
+
+      dispatch(
+        setTempHash({
+          data: tx.hash,
+        }),
+      );
+
+      const receipt = await tx.wait();
+      const {logs} = receipt;
+      const iface = new ethers.utils.Interface(ERC20_FACTORY_A_ABI.abi);
+      const result = iface.parseLog(logs[logs.length - 1]);
+      const {args} = result;
+      setFieldValue('tokenAddress', args[0]);
+      setFieldValue('isTokenDeployed', true);
+
+      createToken(args[0], values.tokenSymbolImage || '');
+    } catch (e) {
+      setFieldValue('isTokenDeployedErr', true);
+    }
+  }
+
   return (
     <Flex
       mt="30px"
@@ -41,8 +101,8 @@ const ProjectToken = () => {
           colorMode === 'dark' ? '1px solid #363636' : '1px solid #e6eaee'
         }>
         <Text
-         mt='19px'
-         mb='21px'
+          mt="19px"
+          mb="21px"
           fontWeight={'bold'}
           fontFamily={theme.fonts.titil}
           fontSize="20px"
@@ -93,9 +153,9 @@ const ProjectToken = () => {
       <Flex
         mt="26px"
         w="100%"
-        h='88px'
+        h="88px"
         justifyContent={'center'}
-        alignItems='center'
+        alignItems="center"
         borderTop={
           colorMode === 'dark' ? '1px solid #363636' : '1px solid #e6eaee'
         }>
@@ -108,8 +168,11 @@ const ProjectToken = () => {
           color={'white.100'}
           mr={'12px'}
           _hover={{}}
-          borderRadius={4}>
-          Deploy
+          _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
+          isDisabled={isTokenDeployed}
+          borderRadius={4}
+          onClick={() => deployToken()}>
+          {isTokenDeployed ? 'Done' : 'Deploy'}
         </Button>
       </Flex>
     </Flex>

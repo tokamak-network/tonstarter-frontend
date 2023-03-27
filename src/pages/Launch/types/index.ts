@@ -144,6 +144,7 @@ interface SimplifiedProjectStep1 {
   tokenName: string | undefined;
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
+  ownerAddress: string;
   snapshotTime: number | undefined;
   publicSale1DateRange: number | undefined[];
   publicSale2DateRange: number | undefined[];
@@ -159,7 +160,11 @@ interface SimplifiedProjectStep2 {
   exchangeRate: number|undefined;
   vaults : simplifiedVaultsAny[]
 }
-interface SimplifiedProjectStep3 {}
+interface SimplifiedProjectStep3 {
+  isTokenDeployed: boolean;
+  isTokenDeployedErr: boolean;
+  tokenAddress: string;
+}
 
 type Project = ProjectStep1 & ProjectStep2 & ProjectStep3;
 type SimplifiedProject = SimplifiedProjectStep1 &

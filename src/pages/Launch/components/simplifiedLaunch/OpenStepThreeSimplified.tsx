@@ -8,20 +8,43 @@ import Initiate from './openStepThree/Initiate';
 import ProjectToken from './openStepThree/ProjectToken';
 import Vesting from './openStepThree/Vesting';
 import Public from './openStepThree/Public';
+import {useFormikContext} from 'formik';
+import {Projects} from '@Launch/types';
+import Team from './openStepThree/Team';
+import Ecosystem from './openStepThree/Ecosystem';
+import TokenLP from './openStepThree/TokenLp';
+import TonStaker from './openStepThree/TonStaker';
+import TosStaker from './openStepThree/TosStaker';
+import WtonLP from './openStepThree/WtonLP';
 
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
   switch (vaultNum) {
-    case 0:
-      return <ProjectToken />;
+    case 0: 
+    return <Flex>Gas check</Flex>
     case 1:
-      return <InitialLiquidity />;
+      return <ProjectToken />;
     case 2:
-      return <Vesting />;
-    case 3: 
-    return <Public/>;
+      return <InitialLiquidity />;
+    case 3:
+      return <Vesting/>;
     case 4: 
+    return <Public/>;
+    case 5: 
+    return <Team/>;
+    case 6: 
+    return <Ecosystem/>;
+    case 7: 
+    return <TokenLP/>;
+    case 8: 
+    return <TonStaker/>;
+    case 9: 
+    return <TosStaker/>;
+    case 10: 
+    return <WtonLP/>;
+    case 11: 
     return <Initiate/>;
+
     default:
     return <Flex>No vault</Flex>
   }
@@ -31,7 +54,9 @@ const OpenStepThreeSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
-
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+    
   return (
     <Flex
       w="774px"
