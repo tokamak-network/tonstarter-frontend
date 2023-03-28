@@ -3,12 +3,12 @@ import {Projects} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {useEffect, useState} from 'react';
 import ReactQuill from 'react-quill';
+import Resizer from '../../../../../assets/svgs/◢ Resizer.svg';
 import 'react-quill/dist/quill.snow.css';
-type MarkdownEditorProp = {};
 
-const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
+const CustomMarkdownEditor = () => {
   const {colorMode} = useColorMode();
-  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+  const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
   const mkData = values.description;
   const [test, setTest] = useState<string>(mkData || '');
   const theme = useTheme();
@@ -45,6 +45,19 @@ const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
   .ql-editor {
     font-family: ${theme.fonts.roboto}
   }
+  .ql-editor {
+    resize: vertical;
+    overflow-y: scroll;
+}
+.ql-container {
+    resize: vertical;
+    overflow-y: scroll;
+}
+.ql-editor-resize-handle {
+  background-image: url(${Resizer})
+  background-size: cover;
+  background-position: center;
+}
   `
       : `
       .ql-toolbar.ql-snow {
@@ -119,15 +132,22 @@ const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
       stroke: #06c;
       stroke-width: 1;
       }
-      `;
+      .ql-editor {
+        resize: vertical;
+        overflow-y: scroll;
+    }
+    .ql-container {
+        resize: vertical;
+        overflow-y: scroll;
+    }`;
   useEffect(() => {
     setFieldValue('description', test);
   }, [test]);
 
   return (
     <Flex flexDir={'column'} fontSize={13}>
-      <Text h={18} mb={2.5}>
-        Description *
+    <Text h={18} mb={2.5}>
+      <Flex fontSize={13}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>Description</Flex>
       </Text>
       <style>{markdownStyles}</style>
       <ReactQuill
@@ -135,10 +155,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProp> = () => {
         placeholder="Input the project description"
         onChange={setTest}
         style={{borderColor: '#dfe4ee'}}
-        theme="snow"
+        // theme="snow"
         value={test}></ReactQuill>
     </Flex>
   );
 };
 
-export default MarkdownEditor;
+export default CustomMarkdownEditor;

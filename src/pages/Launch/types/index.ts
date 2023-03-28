@@ -177,10 +177,16 @@ interface SimplifiedProjectStep1 {
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
   ownerAddress: string;
-  snapshotTime: number | undefined;
-  publicSale1DateRange: number | undefined[];
-  publicSale2DateRange: number | undefined[];
+  // snapshotTime: number | undefined;
+  // whitelistStart: number | undefined;
+  // whitelistEnd: number | undefined;
+  // publicSale1Start: number | undefined;
+  // publicSale1End: number | undefined;
+  // publicSale2Start: number | undefined;
+  // publicSale2End: number | undefined;
+  vaults: simplifiedVaultsAny[];
 }
+
 interface SimplifiedProjectStep2 {
   marketCap: number | undefined;
   totalSupply: number | undefined;
@@ -188,8 +194,8 @@ interface SimplifiedProjectStep2 {
   dexPrice: number | undefined;
   growth: number | undefined;
   stablePrice: number | undefined;
-  exchangeRate: number | undefined;
-  vaults: simplifiedVaultsAny[];
+  exchangeRate: number|undefined;
+  // vaults : simplifiedVaultsAny[];
 }
 interface SimplifiedProjectStep3 {
   isTokenDeployed: boolean;

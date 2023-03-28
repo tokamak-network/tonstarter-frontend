@@ -2,16 +2,17 @@ import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
-import MarkdownEditor from '@Launch/components/MarkdownEditor';
 import {useEffect} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {testValue} from '@Launch/utils/testValue';
-import { LaunchSchedule } from '../common/simplifiedUI/LaunchSchedule';
-import { UserGuideLink } from '../common/simplifiedUI/UserGuideLink';
-import { TokenImageInput } from '../common/simplifiedUI/TokenImageInput';
+import {LaunchSchedule} from '../common/simplifiedUI/LaunchSchedule';
+import {UserGuideLink} from '../common/simplifiedUI/UserGuideLink';
+import {TokenImageInput} from '../common/simplifiedUI/TokenImageInput';
+import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
+
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -20,10 +21,12 @@ const filedNameList = [
   {title: 'tokenSymbolImage', requirement: false},
 ];
 
-const OpenStepOneSimplified = () => {
+const OpenStepOneSimplified = (props: any) => {
+  const {step} = props;
   const {colorMode} = useColorMode();
   const {values, setValues} = useFormikContext<Projects['CreateSimplifiedProject']>();
-  
+  console.log('useFormikContext', values);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -57,18 +60,20 @@ const OpenStepOneSimplified = () => {
           <UserGuideLink />
         </Flex>
       </Box>
-      <Box pos="relative" >
+      <Box pos="relative">
         <Box w={'774px'} pos="absolute" left={'-35px'}>
           <Line></Line>
         </Box>
         <Box mt={'14px'} float={'right'}>
-        <Flex fontSize={13}><Text mr={'5px'} color={'#FF3B3B'}>*</Text> Required Field</Flex>
+          <Flex fontSize={13}>
+            <Text mr={'5px'} color={'#FF3B3B'}>
+              *
+            </Text>{' '}
+            Required Field
+          </Flex>
         </Box>
       </Box>
-      <Grid
-        templateColumns="repeat(2, 1fr)"
-        rowGap={'20px'}
-        columnGap={'50px'}>
+      <Grid templateColumns="repeat(2, 1fr)" rowGap={'20px'} columnGap={'50px'}>
         {filedNameList.map(
           (fieldName: {title: string; requirement: boolean}, index: number) => {
             if (fieldName.title === 'tokenName') {
@@ -84,7 +89,7 @@ const OpenStepOneSimplified = () => {
             }
             if (fieldName.title === 'tokenSymbolImage') {
               return (
-                <Grid  templateColumns="repeat(2, 1fr)">
+                <Grid templateColumns="repeat(2, 1fr)">
                   <Box w={'212px'}>
                     <InputComponent
                       name={fieldName.title}
@@ -93,9 +98,7 @@ const OpenStepOneSimplified = () => {
                       requirement={fieldName.requirement}></InputComponent>
                   </Box>
                   <Box ml={'35px'} mt={'-36px'}>
-                    <TokenImageInput
-                      imageLink={values.tokenSymbolImage}
-                    />
+                    <TokenImageInput imageLink={values.tokenSymbolImage} />
                   </Box>
                 </Grid>
               );
@@ -113,10 +116,10 @@ const OpenStepOneSimplified = () => {
         )}
       </Grid>
       <Grid>
-        <LaunchSchedule stepNames={['Snapshot', 'Public Sale 1', 'Public Sale 2', 'Unlock 1', 'Unlock 2', 'Unlock 3']} currentStep={1}></LaunchSchedule>
+        <LaunchSchedule currentStep={step}></LaunchSchedule>
       </Grid>
       <Box>
-        <MarkdownEditor launchMode="simplified"></MarkdownEditor>
+        <CustomMarkdownEditor />
       </Box>
     </Flex>
   );
