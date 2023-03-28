@@ -7,12 +7,16 @@ const defaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
 ];
 
+
+
 const vestingDefaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: 50},
   {claimRound: 2, claimTime: undefined, claimTokenAllocation: 17},
   {claimRound: 3, claimTime: undefined, claimTokenAllocation: 17},
   {claimRound: 4, claimTime: undefined, claimTokenAllocation: 16},
 ];
+
+console.log(vestingDefaultParams);
 
 const {
   pools: {TOS_WTON_POOL},
@@ -110,7 +114,7 @@ const initialObj: Projects['CreateProject'] = {
       vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
-      claim: vestingDefaultParams,
+      claim: defaultParams,
       vaultAddress: undefined,
       index: 2,
       isDeployed: false,
@@ -243,9 +247,10 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       index: 0,
     },
     {
-      vaultTokenAllocation: 0,
+      
       vaultName: 'Initial Liquidity',
       vaultType: 'Initial Liquidity',
+      vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -259,12 +264,12 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       startTime: undefined,
     },
     {
+      vaultName: 'Vesting',
+      vaultType: 'Vesting',
       vaultTokenAllocation: 0,
-      vaultName: 'TOKEN-TOS LP Reward',
-      vaultType: 'TOKEN-TOS LP Reward',
       adminAddress: '',
       isMandatory: true,
-      claim: defaultParams,
+      claim: vestingDefaultParams,
       vaultAddress: undefined,
       index: 2,
       isDeployed: false,
@@ -272,9 +277,9 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployedErr: false,
     },
     {
+      vaultName: 'TON Staker',
+      vaultType: 'TON Staker',
       vaultTokenAllocation: 0,
-      vaultName: 'Ecosystem',
-      vaultType: 'Ecosystem',
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -285,9 +290,10 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployedErr: false,
     },
     {
+     
+      vaultName: 'TOS Staker',
+      vaultType: 'TOS Staker',
       vaultTokenAllocation: 0,
-      vaultName: 'Team',
-      vaultType: 'Team',
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -298,9 +304,9 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployedErr: false,
     },
     {
+      vaultName: 'WTON-TOS LP Reward',
+      vaultType: 'WTON-TOS LP Reward',
       vaultTokenAllocation: 0,
-      vaultName: 'TON Staker',
-      vaultType: 'TON Staker',
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -309,11 +315,14 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
+      poolAddress: TOS_WTON_POOL,
+      tokenPair: 'WTON-TOS',
     },
     {
+      
+      vaultName: 'TOKEN-TOS LP Reward',
+      vaultType: 'Liquidity Incentive',
       vaultTokenAllocation: 0,
-      vaultName: 'TOS Staker',
-      vaultType: 'TOS Staker',
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -323,10 +332,10 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isSet: false,
       isDeployedErr: false,
     },
-
     {
-      vaultName: 'WTON-TOS LP Reward',
-      vaultType: 'WTON-TOS LP Reward',
+     
+      vaultName: 'Ecosystem',
+      vaultType:  'C',
       vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
@@ -336,9 +345,23 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-      poolAddress: TOS_WTON_POOL,
-      tokenPair: 'WTON-TOS',
     },
+    {
+      
+      vaultName: 'Team',
+      vaultType:  'C',
+      vaultTokenAllocation: 0,
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 8,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
+   
+    
   ],
 };
 

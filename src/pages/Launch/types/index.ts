@@ -19,10 +19,27 @@ type VaultType =
   | 'Vesting'
   | 'C';
 
-  type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Initial Liquidity' | 'WTON-TOS LP Reward'| 'TON Staker' | 'TOS Staker' | 'TOKEN-TOS LP Reward'
-  type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Initial Liquidity' | 'WTON-TOS LP Reward' | 'TON Staker' | 'TOS Staker' | 'TOKEN-TOS LP Reward'
-  
-  interface Vault {
+type SimplifiedVaultName =
+  | 'Public'
+  | 'Ecosystem'
+  | 'Team'
+  | 'Initial Liquidity'
+  | 'WTON-TOS LP Reward'
+  | 'TON Staker'
+  | 'TOS Staker'
+  | 'TOKEN-TOS LP Reward'
+  | 'Vesting';
+type SimplifiedVaultType =
+  | 'Public'
+  | 'C'
+  | 'Initial Liquidity'
+  | 'WTON-TOS LP Reward'
+  | 'TON Staker'
+  | 'TOS Staker'
+  | 'Liquidity Incentive'
+  | 'Vesting';
+
+interface Vault {
   vaultName: VaultName;
   vaultType: VaultType;
   vaultTokenAllocation: number;
@@ -112,7 +129,12 @@ type VaultLiquidityIncentive = VaultCommon & {
 };
 
 type VaultAny = VaultPublic | VaultDao | VaultC | VaultLiquidityIncentive;
-type simplifiedVaultsAny = VaultPublic | VaultEco | VaultTeam | VaultTONStarter |VaultLiquidityIncentive
+type simplifiedVaultsAny =
+  | VaultPublic
+  | VaultEco
+  | VaultTeam
+  | VaultTONStarter
+  | VaultLiquidityIncentive;
 type TokenType = 'A' | 'B' | 'C';
 
 interface ProjectStep1 {
@@ -166,8 +188,8 @@ interface SimplifiedProjectStep2 {
   dexPrice: number | undefined;
   growth: number | undefined;
   stablePrice: number | undefined;
-  exchangeRate: number|undefined;
-  vaults : simplifiedVaultsAny[];
+  exchangeRate: number | undefined;
+  vaults: simplifiedVaultsAny[];
 }
 interface SimplifiedProjectStep3 {
   isTokenDeployed: boolean;
@@ -182,7 +204,6 @@ type SimplifiedProject = SimplifiedProjectStep1 &
   SimplifiedProjectStep3;
 
 type Projects = {
-  
   CreateSimplifiedProject: SimplifiedProject;
   CreateProject: Project;
 };
@@ -387,5 +408,7 @@ export type {
   LaunchMode,
   TEconomyStepNumber,
   SimpleProjects,
-  VaultEco, VaultTeam,VaultTONStarter
+  VaultEco,
+  VaultTeam,
+  VaultTONStarter,
 };

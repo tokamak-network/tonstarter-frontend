@@ -105,6 +105,14 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
         });
       }
       return rounds;
+
+      case 'Vesting': 
+      rounds.push(
+        {claimRound: 1, claimTime: monthGapTimeStamp(now, 0), claimTokenAllocation: 50},
+        {claimRound: 2, claimTime: monthGapTimeStamp(now, 1), claimTokenAllocation: 17},
+        {claimRound: 3, claimTime: monthGapTimeStamp(now, 2), claimTokenAllocation: 17},
+        {claimRound: 4, claimTime: monthGapTimeStamp(now, 3), claimTokenAllocation: 16},
+      )
   }
 
   return rounds;

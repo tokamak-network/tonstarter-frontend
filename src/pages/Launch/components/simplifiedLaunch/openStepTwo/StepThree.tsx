@@ -123,12 +123,13 @@ const StepThree = (props: {currentStep: Number}) => {
         'vaults[1].vaultTokenAllocation',
         initialLiquidityAllocation,
       );
-      setFieldValue('vaults[2].vaultTokenAllocation', tokenTOSAllocation);
-      setFieldValue('vaults[3].vaultTokenAllocation', ecosystemAllocation);
-      setFieldValue('vaults[4].vaultTokenAllocation', teamAllocation);
-      setFieldValue('vaults[5].vaultTokenAllocation', tonStakerAllocation);
-      setFieldValue('vaults[6].vaultTokenAllocation', tosStakerAllocation);
-      setFieldValue('vaults[7].vaultTokenAllocation', wtonTosAllocation);
+      // setFieldValue('vaults[2].vaultTokenAllocation', tokenTOSAllocation);
+      setFieldValue('vaults[3].vaultTokenAllocation', tonStakerAllocation);
+      setFieldValue('vaults[4].vaultTokenAllocation', tosStakerAllocation);
+      setFieldValue('vaults[5].vaultTokenAllocation', wtonTosAllocation);
+      setFieldValue('vaults[6].vaultTokenAllocation', tokenTOSAllocation);
+      setFieldValue('vaults[7].vaultTokenAllocation', ecosystemAllocation);
+      setFieldValue('vaults[8].vaultTokenAllocation', teamAllocation);
       setFieldValue('vaults[0].publicRound1Allocation', publicAllocation * 0.5);
       setFieldValue('vaults[0].publicRound2Allocation', publicAllocation * 0.5);
       setFieldValue(
