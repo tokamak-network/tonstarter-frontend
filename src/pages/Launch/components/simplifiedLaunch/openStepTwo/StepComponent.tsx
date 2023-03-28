@@ -17,7 +17,7 @@ const StepComp = (props: {step: TEconomyStepNumber}) => {
     case 1:
       return <StepTwo />;
     case 2:
-      return <StepThree />;
+      return <StepThree currentStep={step} />;
     case 3:
       return <StepFour />;
   }

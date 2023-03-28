@@ -190,7 +190,6 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
   isAllDeployed: false,
   publicSale1DateRange: [],
   publicSale2DateRange: [],
-  hardCap: undefined,
   marketCap: undefined,
   totalSupply: undefined,
   tokenPrice: undefined,
@@ -326,9 +325,9 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
     },
 
     {
-      vaultTokenAllocation: 0,
       vaultName: 'WTON-TOS LP Reward',
       vaultType: 'WTON-TOS LP Reward',
+      vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -337,6 +336,8 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
+      poolAddress: TOS_WTON_POOL,
+      tokenPair: 'WTON-TOS',
     },
   ],
 };

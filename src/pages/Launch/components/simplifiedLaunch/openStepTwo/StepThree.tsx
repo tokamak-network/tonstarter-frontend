@@ -17,8 +17,10 @@ import {Projects} from '@Launch/types';
 import {fetchTonPriceURL} from 'constants/index';
 import {fetchPoolPayload} from '@Launch/utils/fetchPoolPayload';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {schedules} from '@Launch/utils/simplifiedClaimSchedule';
 
-const StepThree = () => {
+const StepThree = (props: {currentStep: Number}) => {
+  const {currentStep} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {MENU_STYLE} = theme;
@@ -29,14 +31,16 @@ const StepThree = () => {
   const [tonPriceInTos, setTonPriceInTos] = useState(0);
   const {account, library} = useActiveWeb3React();
 
+  console.log(values);
+
   useEffect(() => {
     async function getTonPrice() {
       const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
         res.json(),
       );
       const tonPrice = tonPriceObj[0].current_price;
-      console.log('tonPrice',tonPrice);
-      
+      console.log('tonPrice', tonPrice);
+
       setTonInDollars(tonPrice);
       const poolData = await fetchPoolPayload(library);
 
@@ -46,7 +50,7 @@ const StepThree = () => {
       // const tonPriceInTos =
     }
     getTonPrice();
-  }, [library,values]);
+  }, [library, values, currentStep]);
 
   const themeDesign = {
     border: {
@@ -93,12 +97,10 @@ const StepThree = () => {
       const totalSupply = (marketCap * growth) / option;
       setFieldValue('totalSupply', totalSupply);
       const tokenPriceinDollars = marketCap / totalSupply;
-      console.log(tokenPriceinDollars,tonInDollars);
-      
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
-      setFieldValue('dexPrice',tokenPriceInTos) //dex price is the user entered token to TOS ratio
-      setFieldValue('exchangeRate', tokenPriceInTos) //exchange rate is the actual token to TOS ratio
+      setFieldValue('dexPrice', tokenPriceInTos); //dex price is the user entered token to TOS ratio
+      setFieldValue('exchangeRate', tokenPriceInTos); //exchange rate is the actual token to TOS ratio
 
       setFieldValue('tokenPrice', tokenPriceInTon);
       const publicAllocation = totalSupply * 0.3;
@@ -110,15 +112,33 @@ const StepThree = () => {
       const tonStakerAllocation = totalSupply * 0.0125;
       const tosStakerAllocation = totalSupply * 0.0125;
       const wtonTosAllocation = totalSupply * 0.025;
-      
+      const rounds = values.vaults.map((vault, index) => {
+        const roundInfo = schedules(vault.vaultName, totalSupply);
+        setFieldValue(`vaults[${index}].claim`, roundInfo);
+      });
+      setFieldValue('vaults[0].addressForReceiving', account);
+      setFieldValue('vaults[0].adminAddress', account);
       setFieldValue('vaults[0].vaultTokenAllocation', publicAllocation);
-      setFieldValue('vaults[1].vaultTokenAllocation', initialLiquidityAllocation);
+      setFieldValue(
+        'vaults[1].vaultTokenAllocation',
+        initialLiquidityAllocation,
+      );
       setFieldValue('vaults[2].vaultTokenAllocation', tokenTOSAllocation);
       setFieldValue('vaults[3].vaultTokenAllocation', ecosystemAllocation);
       setFieldValue('vaults[4].vaultTokenAllocation', teamAllocation);
       setFieldValue('vaults[5].vaultTokenAllocation', tonStakerAllocation);
       setFieldValue('vaults[6].vaultTokenAllocation', tosStakerAllocation);
       setFieldValue('vaults[7].vaultTokenAllocation', wtonTosAllocation);
+      setFieldValue('vaults[0].publicRound1Allocation', publicAllocation * 0.5);
+      setFieldValue('vaults[0].publicRound2Allocation', publicAllocation * 0.5);
+      setFieldValue(
+        'vaults[0].stosTier.fourTier.allocatedToken',
+        publicAllocation * 0.5 * 0.6,
+      );
+      setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', publicAllocation*0.5*0.06)
+      setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', publicAllocation*0.5*0.22)
+      setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', publicAllocation*0.5*0.12)
+
     }
   };
 
@@ -204,7 +224,7 @@ const StepThree = () => {
                 // onBlur={() => {}}
                 pl="5px"
                 step={0}
-                value={values.hardCap}
+                value={values.stablePrice}
                 onChange={(e) => {
                   handleInput(parseInt(e.target.value));
 

@@ -16,10 +16,7 @@ const Team = () => {
       {name: 'Vault Name', value:  `${teamVault.vaultName}`},
       {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
       {name: 'Contract', value: `${teamVault.vaultAddress? shortenAddress(teamVault.vaultAddress) : 'NA'}`},
-    {name: 'Token Allocation', value: `${teamVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
-    //   {name: 'Token Allocation', value: '50,000 TON'},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
+    {name: 'Token Allocation', value: `${teamVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`}
     ];
     const detailsClaim = [
         { name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},

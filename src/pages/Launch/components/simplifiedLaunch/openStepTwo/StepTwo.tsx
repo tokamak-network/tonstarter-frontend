@@ -13,7 +13,7 @@ import {
 import {useEffect, useState} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
-import {Projects} from '@Launch/types';
+import {Projects,VaultPublic} from '@Launch/types';
 
 const StepTwo = () => {
   const {colorMode} = useColorMode();
@@ -22,6 +22,10 @@ const StepTwo = () => {
   const [option, setOption] = useState('');
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
+    const {vaults} = values;
+    const publicVault = vaults[0] as VaultPublic;
+
+
 
   const buttonStatus = (option: string) => {
     switch (option) {
@@ -136,7 +140,7 @@ const StepTwo = () => {
                 onBlur={() => {}}
                 pr="5px"
                 step={0}
-                value={values.hardCap}
+                value={values.growth}
                 onChange={(e) => {
                   setFieldValue('growth', parseInt(e.target.value));
                 }}

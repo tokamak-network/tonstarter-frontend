@@ -8,10 +8,10 @@ const DetailComponent = () => {
     const theme = useTheme();
     const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
     
-    // const {vaults} = values;
-    // const publicVault = vaults[0] as VaultPublic;
+    const {vaults} = values;
+    const publicVault = vaults[0] as VaultPublic;
   const details = [
-    {name: 'Funding Target', detail: `$ ${values.hardCap? (values.hardCap).toLocaleString():'0'}` },
+    {name: 'Funding Target', detail: `$ ${publicVault.hardCap? (publicVault.hardCap).toLocaleString():'0'}` },
     {name: 'Current Market Cap', detail: `$ ${values.marketCap? (values.marketCap).toLocaleString():'0'}`},
     {name: 'Total Supply', detail: `${values.totalSupply? (values.totalSupply).toLocaleString():'0'} ${values.tokenSymbol}`},
     {name: 'Token Funding Price', detail: `${values.tokenPrice? (values.tokenPrice).toLocaleString():'0'} TON`},

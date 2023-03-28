@@ -18,10 +18,6 @@ const TonStaker = () => {
       {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
       {name: 'Contract', value: `${tonVault.vaultAddress? shortenAddress(tonVault.vaultAddress) : 'NA'}`},
     {name: 'Token Allocation', value: `${tonVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
-    
-    //   {name: 'Token Allocation', value: '50,000 TON'},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
     ];
     const detailsClaim = [
         { name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},

@@ -18,8 +18,6 @@ console.log(values);
     {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :'NA'}`},
     {name: 'Contract', value: `${publicVault.vaultAddress? shortenAddress(publicVault.vaultAddress):'NA'}`},
     {name: 'Token Allocation', value: `${publicVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
   ];
   const detailsClaim = [
     {name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},

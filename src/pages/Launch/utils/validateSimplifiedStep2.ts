@@ -7,7 +7,6 @@ function validateSimplifiedFormikValues(
     const fields: any[] = [];    
    const vaults = values.vaults.map((vault: any) => {
     if (vault.vaultTokenAllocation === undefined) {
-        console.log('vault',vault);
         
         fields.push(false)
     }
@@ -24,7 +23,6 @@ function validateSimplifiedFormikValues(
         fields.push(true)
     }
    })
-   console.log('fields',fields);
    
    const results = fields.filter((field: boolean) => field===false)
    

@@ -160,7 +160,6 @@ interface SimplifiedProjectStep1 {
   publicSale2DateRange: number | undefined[];
 }
 interface SimplifiedProjectStep2 {
-  hardCap: number | undefined;
   marketCap: number | undefined;
   totalSupply: number | undefined;
   tokenPrice: number | undefined;
