@@ -11,11 +11,11 @@ const DetailComponent = () => {
     const {vaults} = values;
     const publicVault = vaults[0] as VaultPublic;
   const details = [
-    {name: 'Funding Target', detail: `$ ${publicVault.hardCap? (publicVault.hardCap).toLocaleString():'0'}` },
+    {name: 'Funding Target', detail: `$ ${values.fundingTarget? (values.fundingTarget).toLocaleString():'0'}` },
     {name: 'Current Market Cap', detail: `$ ${values.marketCap? (values.marketCap).toLocaleString():'0'}`},
     {name: 'Total Supply', detail: `${values.totalSupply? (values.totalSupply).toLocaleString():'0'} ${values.tokenSymbol}`},
-    {name: 'Token Funding Price', detail: `${values.tokenPrice? (values.tokenPrice).toLocaleString():'0'} TON`},
-    {name: 'Token Listing Price (DEX)', detail: `${values.dexPrice? (values.dexPrice).toLocaleString():'0'} TOS`},
+    {name: 'Token Funding Price', detail: `${values.projectTokenPrice? (1/values.projectTokenPrice).toLocaleString():'0'} TON`},
+    {name: 'Token Listing Price (DEX)', detail: `${( 1/values.tosPrice).toLocaleString()} TOS`},
   ];
   return (
   <Flex mt="30px" flexDir={'column'}>

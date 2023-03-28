@@ -16,8 +16,6 @@ const vestingDefaultParams = [
   {claimRound: 4, claimTime: undefined, claimTokenAllocation: 16},
 ];
 
-console.log(vestingDefaultParams);
-
 const {
   pools: {TOS_WTON_POOL},
 } = DEPLOYED;
@@ -189,15 +187,21 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
   ownerAddress: '',
   isTokenDeployed: false,
   isTokenDeployedErr: false,
+  fundingTarget:undefined,
   tokenAddress: '',
+  owner: undefined,
+  sector: 'Simple',
+  tokenType: 'A',
+  tokenOwnerAccount: undefined,
   isAllDeployed:false,
   marketCap:  undefined,
   totalSupply:undefined,
-  tokenPrice:  undefined,
-  dexPrice:  undefined,
   growth: undefined,
   stablePrice: undefined,
-  exchangeRate: undefined,
+  tosPrice:0,
+  salePrice: 0,
+  projectTokenPrice: 0,
+  totalTokenAllocation: 0,
   vaults: [
     {
       vaultTokenAllocation: 0,

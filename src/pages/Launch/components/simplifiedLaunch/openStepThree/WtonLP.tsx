@@ -3,6 +3,7 @@ import {useEffect, useState, Dispatch, SetStateAction} from 'react';
 import {Projects,VaultLiquidityIncentive} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
 import {useFormikContext} from 'formik';
+import moment from 'moment';
 
 const WtonLP = () => {
     const {colorMode} = useColorMode();
@@ -10,7 +11,7 @@ const WtonLP = () => {
     const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
     
-    const wtonVault = values.vaults[7] as VaultLiquidityIncentive
+    const wtonVault = values.vaults[5] as VaultLiquidityIncentive
 
     const detailsVault = [
       {name: 'Vault Name', value:  `${wtonVault.vaultName}`},
@@ -97,10 +98,10 @@ const WtonLP = () => {
           Claim
         </Text>
         <Flex w='100%' h='45px' alignItems={'center'}>
-        <Text  fontSize={'13px'}  textAlign={'left'}>Claim Rounds ({detailsClaim.length})</Text>
+        <Text  fontSize={'13px'}  textAlign={'left'}>Claim Rounds ({wtonVault.claim.length})</Text>
         </Flex>
        
-        {detailsClaim.map((detail: any, index: Number) => {
+        {wtonVault.claim.map((claim: any, index: Number) => {
           return (
             <Flex  w="100%" justifyContent={'space-between'} h="30px" alignItems={'center'}>
               <Text
@@ -108,16 +109,23 @@ const WtonLP = () => {
                 fontFamily={theme.fonts.roboto}
                 fontWeight={500}
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                     <span style={{color:'#3d495d', marginRight:'3px'}}>0{index}</span>
-                {detail.name}
+                     <span style={{color:'#3d495d', marginRight:'3px'}}> {index < 10 ? '0' : ''}
+                  {index}</span>
+                  {moment
+                  .unix(Number(claim.claimTime))
+                  .format('YYYY.MM.DD HH:mm:ss')}
                
               </Text>
               <Text
                 fontSize={'12px'}
                 fontFamily={theme.fonts.roboto}
                 fontWeight={500}
-                color={detail.name === 'Admin' || detail.name === 'Contract'? 'blue.300': colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-                {detail.value}
+               >
+                 {claim.claimTokenAllocation.toLocaleString()} (
+                {values.totalSupply
+                  ? (claim.claimTokenAllocation / values.totalSupply) * 100
+                  : 0}
+                %)
               </Text>
             </Flex>
           );

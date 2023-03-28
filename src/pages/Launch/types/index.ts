@@ -177,24 +177,31 @@ interface SimplifiedProjectStep1 {
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
   ownerAddress: string;
+ 
   // snapshotTime: number | undefined;
   // whitelistStart: number | undefined;
   // whitelistEnd: number | undefined;
   // publicSale1Start: number | undefined;
   // publicSale1End: number | undefined;
   // publicSale2Start: number | undefined;
-  // publicSale2End: number | undefined;
+  // publicSale2End: nuåmber | undefined;
   vaults: simplifiedVaultsAny[];
 }
 
 interface SimplifiedProjectStep2 {
   marketCap: number | undefined;
   totalSupply: number | undefined;
-  tokenPrice: number | undefined;
-  dexPrice: number | undefined;
-  growth: number | undefined;
+   growth: number | undefined;
   stablePrice: number | undefined;
-  exchangeRate: number|undefined;
+  tokenType: TokenType | undefined;
+  owner: string | undefined;
+  fundingTarget: number | undefined;
+  sector: string;
+  tokenOwnerAccount: string | undefined;
+  projectTokenPrice: number;
+  totalTokenAllocation: number;
+  tosPrice: number;
+   salePrice: number;
   // vaults : simplifiedVaultsAny[];
 }
 interface SimplifiedProjectStep3 {

@@ -61,7 +61,7 @@ const StepOne = () => {
 
   const handleSelect = (option: number) => {
     setOption(option.toString());
-    setFieldValue('hardCap', option);
+    setFieldValue('vaults[0].hardCap', option);
     setFieldValue('marketCap', option/0.3)
   };
 
@@ -142,7 +142,7 @@ const StepOne = () => {
                 value={publicVault.hardCap}
                 onChange={(e) => {
                   
-                  setFieldValue('vaults[0].hardCap', parseInt(e.target.value));
+                  setFieldValue('fundingTarget', parseInt(e.target.value));
                   setFieldValue('marketCap', parseInt(e.target.value)/0.3)
                 }}
                 textAlign={'left'}

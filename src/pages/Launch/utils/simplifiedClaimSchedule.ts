@@ -5,10 +5,10 @@ const oneMonthGap = 2592000;
 
 const monthGapTimeStamp = (currentTimeStamp: number, monthes: number) => {
   const oneMonthGap = 2592000;
-  return currentTimeStamp + oneMonthGap * monthes;
+  return currentTimeStamp + (oneMonthGap * monthes);
 };
 
-export const schedules = (vaultType: String, tokenAllocation: number) => {
+export const schedules = (vaultType: String, tokenAllocation: number, public2End: number) => {
   let rounds: any[] = [];
   switch (vaultType) {
     case 'Public':
@@ -16,13 +16,13 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
         if (i === 0) {
           rounds.push({
             claimRound: 1,
-            claimTime: now,
+            claimTime: public2End+1,
             claimTokenAllocation: tokenAllocation * 0.075,
           });
         } else {
           rounds.push({
             claimRound: i + 1,
-            claimTime: monthGapTimeStamp(now, i),
+            claimTime: monthGapTimeStamp(public2End+1, i),
             claimTokenAllocation: tokenAllocation * 0.0125,
           });
         }
@@ -32,7 +32,7 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
     case 'Initial Liquidity':
       rounds.push({
         claimRound: 1,
-        claimTime: now,
+        claimTime: public2End+1,
         claimTokenAllocation: tokenAllocation * 0.03,
       });
 
@@ -42,7 +42,7 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
       for (let i = 0; i <= 18; i++) {
         rounds.push({
           claimRound: i + 1,
-          claimTime: monthGapTimeStamp(now, i),
+          claimTime: monthGapTimeStamp(public2End+1, i),
           claimTokenAllocation: tokenAllocation * 0.00631578,
         });
       }
@@ -53,13 +53,13 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
         if (i === 0 || i === 12 || i === 24) {
           rounds.push({
             claimRound: i + 1,
-            claimTime: monthGapTimeStamp(now, i),
+            claimTime: monthGapTimeStamp(public2End+1, i),
             claimTokenAllocation: tokenAllocation * 0.042,
           });
         } else {
           rounds.push({
             claimRound: i + 1,
-            claimTime: monthGapTimeStamp(now, i),
+            claimTime: monthGapTimeStamp(public2End+1, i),
             claimTokenAllocation: tokenAllocation * 0.0065882,
           });
         }
@@ -70,7 +70,7 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
       for (let i = 13; i <= 48; i++) {
         rounds.push({
           claimRound: i - 12,
-          claimTime: monthGapTimeStamp(now, i),
+          claimTime: monthGapTimeStamp(public2End+1, i),
           claimTokenAllocation: tokenAllocation * 0.0041667,
         });
       }
@@ -80,7 +80,7 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
       for (let i = 0; i <= 36; i++) {
         rounds.push({
           claimRound: i + 1,
-          claimTime: monthGapTimeStamp(now, i),
+          claimTime: monthGapTimeStamp(public2End+1, i),
           claimTokenAllocation: tokenAllocation * 0.0003378,
         });
       }
@@ -90,7 +90,7 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
       for (let i = 0; i <= 36; i++) {        
         rounds.push({
           claimRound: i + 1,
-          claimTime: monthGapTimeStamp(now, i),
+          claimTime: monthGapTimeStamp(public2End+1, i),
           claimTokenAllocation: tokenAllocation * 0.0003378,
         });
       }
@@ -100,7 +100,7 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
       for (let i = 0; i <= 36; i++) {
         rounds.push({
           claimRound: i + 1,
-          claimTime: monthGapTimeStamp(now, i),
+          claimTime: monthGapTimeStamp(public2End+1, i),
           claimTokenAllocation: tokenAllocation * 0.0006757,
         });
       }
@@ -108,10 +108,10 @@ export const schedules = (vaultType: String, tokenAllocation: number) => {
 
       case 'Vesting': 
       rounds.push(
-        {claimRound: 1, claimTime: monthGapTimeStamp(now, 0), claimTokenAllocation: 50},
-        {claimRound: 2, claimTime: monthGapTimeStamp(now, 1), claimTokenAllocation: 17},
-        {claimRound: 3, claimTime: monthGapTimeStamp(now, 2), claimTokenAllocation: 17},
-        {claimRound: 4, claimTime: monthGapTimeStamp(now, 3), claimTokenAllocation: 16},
+        {claimRound: 1, claimTime: monthGapTimeStamp(public2End+1, 0), claimTokenAllocation: 50},
+        {claimRound: 2, claimTime: monthGapTimeStamp(public2End+1, 9), claimTokenAllocation: 17},
+        {claimRound: 3, claimTime: monthGapTimeStamp(public2End+1, 18), claimTokenAllocation: 17},
+        {claimRound: 4, claimTime: monthGapTimeStamp(public2End+1, 27), claimTokenAllocation: 16},
       )
   }
 
