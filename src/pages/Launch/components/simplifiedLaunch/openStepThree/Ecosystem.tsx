@@ -1,17 +1,112 @@
 import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
-import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {Projects, VaultEco} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
 import {useFormikContext} from 'formik';
 import moment from 'moment';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useBlockNumber} from 'hooks/useBlock';
+import {useContract} from 'hooks/useContract';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {convertNumber} from 'utils/number';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {
+  checkIsIniailized,
+  returnVaultStatus,
+  deploy,
+} from '@Launch/utils/deployValues';
 
 const Ecosystem = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-
   const ecoVault = values.vaults[7] as VaultEco;
+
+  const [btnDisable, setBtnDisable] = useState(true);
+  const {account, library} = useActiveWeb3React();
+  const [vaultState, setVaultState] = useState<
+    'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
+  >('notReady');
+  const [hasToken, setHasToken] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  // @ts-ignore
+  const {blockNumber} = useBlockNumber();
+   //check vault state from contract
+   useEffect(() => {
+   
+    checkIsIniailized(
+      ecoVault.vaultType,
+      library,
+      ecoVault,
+      setFieldValue,
+    ).catch((e) => {
+      console.log('**checkIsIniailized err**');
+      console.log(e);
+    });
+  }, [blockNumber, values, ecoVault]);
+
+  //setVaultState
+  useEffect(() => {
+    returnVaultStatus(
+      values,
+      ecoVault.vaultType,
+      ecoVault,
+      hasToken,
+      setVaultState,
+    );
+  }, [hasToken, ecoVault, values, blockNumber]);
+  
+
+  const {
+    data: {hashKey},
+  } = useAppSelector(selectLaunch);
+
+  const vaultDeploy = useCallback(async () => {
+    deploy(
+      account,
+      library,
+      vaultState,
+      ecoVault.vaultType,
+      ecoVault,
+      values,
+      dispatch,
+      setFieldValue,
+      setVaultState,
+    );
+  }, [ecoVault, values, account, library, vaultState, blockNumber]);
+
+  const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
+
+  useEffect(() => {
+    async function fetchContractBalance() {
+      if (
+        ERC20_CONTRACT &&
+        ecoVault?.vaultAddress &&
+        ecoVault?.isDeployed === true
+      ) {
+        const tokenBalance = await ERC20_CONTRACT.balanceOf(
+          ecoVault.vaultAddress,
+        );
+        if (tokenBalance && ecoVault.vaultTokenAllocation) {
+          ecoVault.vaultTokenAllocation <=
+          Number(convertNumber({amount: tokenBalance.toString()}))
+            ? setHasToken(true)
+            : setHasToken(false);
+        }
+      }
+    }
+    fetchContractBalance();
+  }, [blockNumber, ERC20_CONTRACT, ecoVault]);
+
+  useEffect(() => {
+    setBtnDisable(
+      vaultState === 'readyForToken' && !values.isAllDeployed ? true : false,
+    );
+  }, [values.isAllDeployed, vaultState, blockNumber]);
+
+
 
   const detailsVault = [
     {name: 'Vault Name', value: `${ecoVault.vaultName}`},
@@ -178,8 +273,20 @@ const Ecosystem = () => {
           color={'white.100'}
           mr={'12px'}
           _hover={{}}
+          isDisabled={
+            vaultState === 'notReady' || vaultState === 'finished'
+              ? btnDisable
+              : false
+          }
+          onClick={() => {
+            vaultDeploy();
+          }}
           borderRadius={4}>
-          Deploy
+         {vaultState !== 'readyForToken'
+            ? vaultState === 'ready' || vaultState === 'notReady'
+              ? 'Deploy'
+              : 'Initialize'
+            : 'Send Token'}
         </Button>
       </Flex>
     </Flex>

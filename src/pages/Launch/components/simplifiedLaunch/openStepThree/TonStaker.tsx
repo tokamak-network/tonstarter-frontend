@@ -1,27 +1,145 @@
-import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
-import {useEffect, useState, Dispatch, SetStateAction} from 'react';
-import {Projects,VaultTONStarter} from '@Launch/types';
-import {shortenAddress} from 'utils/address';
+import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
+import {useEffect, useState, useCallback} from 'react';
+import {
+  Projects,
+  VaultTONStarter,
+} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import moment from 'moment';
+import {shortenAddress} from 'utils';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useBlockNumber} from 'hooks/useBlock';
+import {useContract} from 'hooks/useContract';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {convertNumber} from 'utils/number';
+import {selectLaunch, } from '@Launch/launch.reducer';
+
+import {
+  checkIsIniailized,
+  returnVaultStatus,
+  deploy,
+} from '@Launch/utils/deployValues';
+
+
 const TonStaker = () => {
-    const {colorMode} = useColorMode();
-    const theme = useTheme();
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const [btnDisable, setBtnDisable] = useState(true);
+  const {account, library} = useActiveWeb3React();
+  const [vaultState, setVaultState] = useState<
+    'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
+  >('notReady');
+  const [hasToken, setHasToken] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  // @ts-ignore
+  const {blockNumber} = useBlockNumber();
 
-    const {values, setFieldValue} =
+  const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-    
-    const tonVault = values.vaults[3] as VaultTONStarter
 
-    const detailsVault = [
-      {name: 'Vault Name', value:  `${tonVault.vaultName}`},
-      {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
-      {name: 'Contract', value: `${tonVault.vaultAddress? shortenAddress(tonVault.vaultAddress) : 'NA'}`},
-    {name: 'Token Allocation', value: `${tonVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
-    ];
+  const tonVault = values.vaults[3] as VaultTONStarter;
 
-    return (
-        <Flex
+ 
+
+  //check vault state from contract
+  useEffect(() => {
+   
+    checkIsIniailized(
+      tonVault.vaultType,
+      library,
+      tonVault,
+      setFieldValue,
+    ).catch((e) => {
+      console.log('**checkIsIniailized err**');
+      console.log(e);
+    });
+  }, [blockNumber, values, tonVault]);
+
+  //setVaultState
+  useEffect(() => {
+    returnVaultStatus(
+      values,
+      tonVault.vaultType,
+      tonVault,
+      hasToken,
+      setVaultState,
+    );
+  }, [hasToken, tonVault, values, blockNumber]);
+  
+
+  const {
+    data: {hashKey},
+  } = useAppSelector(selectLaunch);
+
+  const vaultDeploy = useCallback(async () => {
+    deploy(
+      account,
+      library,
+      vaultState,
+      tonVault.vaultType,
+      tonVault,
+      values,
+      dispatch,
+      setFieldValue,
+      setVaultState,
+    );
+  }, [tonVault, values, account, library, vaultState, blockNumber]);
+
+  const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
+
+  useEffect(() => {
+    async function fetchContractBalance() {
+      if (
+        ERC20_CONTRACT &&
+        tonVault?.vaultAddress &&
+        tonVault?.isDeployed === true
+      ) {
+        const tokenBalance = await ERC20_CONTRACT.balanceOf(
+          tonVault.vaultAddress,
+        );
+        if (tokenBalance && tonVault.vaultTokenAllocation) {
+          tonVault.vaultTokenAllocation <=
+          Number(convertNumber({amount: tokenBalance.toString()}))
+            ? setHasToken(true)
+            : setHasToken(false);
+        }
+      }
+    }
+    fetchContractBalance();
+  }, [blockNumber, ERC20_CONTRACT, tonVault]);
+
+  useEffect(() => {
+    setBtnDisable(
+      vaultState === 'readyForToken' && !values.isAllDeployed ? true : false,
+    );
+  }, [values.isAllDeployed, vaultState, blockNumber]);
+
+
+  const detailsVault = [
+    {name: 'Vault Name', value: `${tonVault.vaultName}`},
+    {
+      name: 'Admin',
+      value: `${
+        values.ownerAddress ? shortenAddress(values.ownerAddress) : ''
+      }`,
+    },
+    {
+      name: 'Contract',
+      value: `${
+        tonVault.vaultAddress ? shortenAddress(tonVault.vaultAddress) : 'NA'
+      }`,
+    },
+    {
+      name: 'Token Allocation',
+      value: `${tonVault.vaultTokenAllocation.toLocaleString()} ${
+        values.tokenSymbol
+      }`,
+    },
+  ];
+
+  return (
+    <Flex
       mt="30px"
       h="100%"
       w="350px"
@@ -38,14 +156,14 @@ const TonStaker = () => {
           colorMode === 'dark' ? '1px solid #363636' : '1px solid #e6eaee'
         }>
         <Text
-        lineHeight={1.5}
+          lineHeight={1.5}
           fontWeight={'bold'}
           fontFamily={theme.fonts.titil}
           fontSize="20px"
-          mt='19px'
-          mb='21px'
+          mt="19px"
+          mb="21px"
           color={colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-         TON Staker
+          TON Staker
         </Text>
       </Flex>
       <Flex
@@ -54,12 +172,16 @@ const TonStaker = () => {
         px="20px"
         w="100%"
         alignItems={'center'}>
-        <Text h='18px' mb="10px" fontSize={'13px'}>
+        <Text h="18px" mb="10px" fontSize={'13px'}>
           Vault
         </Text>
         {detailsVault.map((detail: any) => {
           return (
-            <Flex w="100%" justifyContent={'space-between'} h="45px" alignItems={'center'} >
+            <Flex
+              w="100%"
+              justifyContent={'space-between'}
+              h="45px"
+              alignItems={'center'}>
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
@@ -71,13 +193,18 @@ const TonStaker = () => {
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
                 fontWeight={500}
-                color={detail.name === 'Admin' || detail.name === 'Contract'? 'blue.300': colorMode === 'dark' ? 'white.100' : 'gray.250'}>
+                color={
+                  detail.name === 'Admin' || detail.name === 'Contract'
+                    ? 'blue.300'
+                    : colorMode === 'dark'
+                    ? 'white.100'
+                    : 'gray.250'
+                }>
                 {detail.value}
               </Text>
             </Flex>
           );
         })}
-      
       </Flex>
       <Flex
         mt="30px"
@@ -85,43 +212,52 @@ const TonStaker = () => {
         px="20px"
         w="100%"
         alignItems={'center'}>
-        <Text mb="10px" fontSize={'13px'} h='18px' >
+        <Text mb="10px" fontSize={'13px'} h="18px">
           Claim
         </Text>
-        <Flex w='100%' h='45px' alignItems={'center'}>
-        <Text  fontSize={'13px'}  textAlign={'left'}>Claim Rounds ({tonVault.claim.length})</Text>
+        <Flex w="100%" h="45px" alignItems={'center'}>
+          <Text fontSize={'13px'} textAlign={'left'}>
+            Claim Rounds ({tonVault.claim.length})
+          </Text>
         </Flex>
-       
+
         {tonVault.claim.map((claim: any, index: Number) => {
           return (
-            <Flex  w="100%" justifyContent={'space-between'} h="30px" alignItems={'center'}>
+            <Flex
+              w="100%"
+              justifyContent={'space-between'}
+              h="30px"
+              alignItems={'center'}>
               <Text
                 fontSize={'12px'}
                 fontFamily={theme.fonts.roboto}
                 fontWeight={500}
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                     <span style={{color:'#3d495d', marginRight:'3px'}}>  {index < 10 ? '0' : ''}
-                  {index}</span>
-                  {moment
+                <span style={{color: '#3d495d', marginRight: '3px'}}>
+                  {' '}
+                  {index < 10 ? '0' : ''}
+                  {index}
+                </span>
+                {moment
                   .unix(Number(claim.claimTime))
                   .format('YYYY.MM.DD HH:mm:ss')}
-               
               </Text>
               <Text
                 fontSize={'12px'}
                 fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-               >
-              {claim.claimTokenAllocation.toLocaleString()} (
+                fontWeight={500}>
+                {claim.claimTokenAllocation.toLocaleString()} (
                 {values.totalSupply
-                  ? ((claim.claimTokenAllocation / values.totalSupply) * 100).toLocaleString()
+                  ? (
+                      (claim.claimTokenAllocation / values.totalSupply) *
+                      100
+                    ).toLocaleString()
                   : 0}
                 %)
               </Text>
             </Flex>
           );
         })}
-      
       </Flex>
       <Flex
         mt="24px"
@@ -141,12 +277,24 @@ const TonStaker = () => {
           color={'white.100'}
           mr={'12px'}
           _hover={{}}
+          isDisabled={
+            vaultState === 'notReady' || vaultState === 'finished'
+              ? btnDisable
+              : false
+          }
+          onClick={() => {
+            vaultDeploy();
+          }}
           borderRadius={4}>
-          Deploy
+         {vaultState !== 'readyForToken'
+            ? vaultState === 'ready' || vaultState === 'notReady'
+              ? 'Deploy'
+              : 'Initialize'
+            : 'Send Token'}
         </Button>
       </Flex>
     </Flex>
-    )
-}
+  );
+};
 
 export default TonStaker;

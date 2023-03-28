@@ -106,9 +106,7 @@ const StepThree = (props: {currentStep: Number}) => {
       setFieldValue('projectTokenPrice',tonPriceInToken)
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
       const tosPriceInTokens = 1/tokenPriceInTos
-      
-      
-    setFieldValue('tosPrice',parseFloat(tosPriceInTokens.toFixed(2)))
+    setFieldValue('tosPrice',tosPriceInTokens)
 
     const hardCap = values.fundingTarget && values.fundingTarget/tonInDollars;
    

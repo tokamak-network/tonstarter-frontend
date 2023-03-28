@@ -1,41 +1,22 @@
 import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
-import {
-  useEffect,
-  useState,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useMemo,
-} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {useFormikContext} from 'formik';
-import {
-  Projects,
-  VaultLiquidityIncentive,
- 
-  Step3_InfoList,
- 
-} from '@Launch/types';
+import {Projects, VaultLiquidityIncentive} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
 import moment from 'moment';
-import bn from 'bignumber.js';
-import {DEPLOYED} from 'constants/index';
-import {LibraryType} from 'types';
-import {Contract} from '@ethersproject/contracts';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectApp} from 'store/app/app.reducer';
-import useVaultSelector from '@Launch/hooks/useVaultSelector';
-import {getSigner} from 'utils/contract';
-import {ethers} from 'ethers';
 import {useBlockNumber} from 'hooks/useBlock';
 import {useContract} from 'hooks/useContract';
-import InitialLiquidityAbi from 'services/abis/Vault_InitialLiquidity.json';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
-import * as InitialLiquidityVault from 'services/abis/InitialLiquidityVault.json';
-import {convertNumber, convertToWei} from 'utils/number';
-import commafy from 'utils/commafy';
-import {convertTimeStamp} from 'utils/convertTIme';
-import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
+import {convertNumber} from 'utils/number';
+
+import {selectLaunch} from '@Launch/launch.reducer';
+import {
+  checkIsIniailized,
+  returnVaultStatus,
+  deploy,
+} from '@Launch/utils/deployValues';
 
 const InitialLiquidity = () => {
   const {colorMode} = useColorMode();
@@ -51,9 +32,7 @@ const InitialLiquidity = () => {
   const [hasToken, setHasToken] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   // @ts-ignore
-  const {data: appConfig} = useAppSelector(selectApp);
-  const [infoList2, setInfoList2] = useState<Step3_InfoList | []>([]);
-  const {selectedVaultName} = useVaultSelector();
+
   const {blockNumber} = useBlockNumber();
 
   const initialVault = values.vaults[1] as VaultLiquidityIncentive;
@@ -100,46 +79,14 @@ const InitialLiquidity = () => {
     },
   ];
 
-  function encodePriceSqrt(reserve1: number, reserve0: number) {
-    return new bn(reserve1.toString())
-      .div(reserve0.toString())
-      .sqrt()
-      .multipliedBy(new bn(2).pow(96))
-      .integerValue(3)
-      .toFixed();
-  }
-
-  function getContract(library: LibraryType) {
-    const {InitialLiquidityVault} = DEPLOYED;
-    const contract = new Contract(
-      InitialLiquidityVault,
-      InitialLiquidityAbi.abi,
-      library,
-    );
-    return contract;
-  }
-
-  const {vaultName, vaultType, index} = initialVault;
-
   //check vault state from contract
   useEffect(() => {
-    async function checkIsIniailized() {
-      if (
-        initialVault.vaultAddress !== '' ||
-        initialVault.vaultAddress !== undefined
-      ) {
-        const publicVaultSecondContract = new Contract(
-          initialVault.vaultAddress as string,
-          InitialLiquidityVault.abi,
-          library,
-        );
-        const initSqrtPriceX96 =
-          await publicVaultSecondContract.initSqrtPriceX96();
-        const isInitialized = Number(initSqrtPriceX96.toString()) > 0;
-        return setFieldValue(`vaults[1].isSet`, isInitialized);
-      }
-    }
-    checkIsIniailized().catch((e) => {
+    checkIsIniailized(
+      initialVault.vaultType,
+      library,
+      initialVault,
+      setFieldValue,
+    ).catch((e) => {
       console.log('**checkIsIniailized err**');
       console.log(e);
     });
@@ -147,161 +94,42 @@ const InitialLiquidity = () => {
 
   //setVaultState
   useEffect(() => {
-    const isTokenDeployed = values.isTokenDeployed;
-    const isVaultDeployed = initialVault.isDeployed;
-    const vaultDeployReady = isTokenDeployed && !isVaultDeployed;
-    const isSet = initialVault.isSet;
-
-    if (isSet) {
-      return setVaultState('finished');
-    }
-
-    setVaultState(
-      !vaultDeployReady && !isVaultDeployed
-        ? 'notReady'
-        : vaultDeployReady
-        ? 'ready'
-        : isVaultDeployed && !hasToken
-        ? 'readyForToken'
-        : isVaultDeployed && hasToken
-        ? 'readyForSet'
-        : 'finished',
+    returnVaultStatus(
+      values,
+      initialVault.vaultType,
+      initialVault,
+      hasToken,
+      setVaultState,
     );
   }, [
     hasToken,
     initialVault.isDeployed,
     initialVault.isSet,
     values.isTokenDeployed,
-    blockNumber
+    blockNumber,
   ]);
 
   useEffect(() => {
-    const info = {
-      Vault: [
-        {
-          title: 'Vault Name',
-          content: initialVault?.vaultName || '-',
-        },
-        {
-          title: 'Admin',
-          content: `${initialVault?.adminAddress || '-'}`,
-          isHref: true,
-        },
-        {
-          title: 'Contract',
-          content: `${initialVault?.vaultAddress || '-'}`,
-          isHref: true,
-        },
-        {
-          title: 'Token Allocation',
-          content: `${commafy(initialVault?.vaultTokenAllocation) || '-'} ${
-            values.tokenName
-          }`,
-        },
-        {
-          title: 'Token Price',
-          content: `1TOS : ${values?.tosPrice}${values?.tokenSymbol}` || '',
-        },
-        {
-          title: 'Start Time',
-          content:
-            `${convertTimeStamp(
-              //@ts-ignore
-              initialVault?.startTime,
-              'DD.MM.YYYY HH:mm:ss',
-            )}` || '',
-        },
-      ],
-    };
-  }, [initialVault, values]);
-
-
-  useEffect(()=> {
-    setBtnDisable(vaultState==='readyForToken' && !values.isAllDeployed? true:false )
-  },[values.isAllDeployed, vaultState, blockNumber])
+    setBtnDisable(
+      vaultState === 'readyForToken' && !values.isAllDeployed ? true : false,
+    );
+  }, [values.isAllDeployed, vaultState, blockNumber]);
   const {
     data: {hashKey},
   } = useAppSelector(selectLaunch);
 
-  const vaultDeploy = useCallback(async () => {    
-    if (account && library && vaultState === 'ready') {
-
-      const vaultContract = getContract(library);
-      
-      const signer = getSigner(library, account);
-      try {
-        
-        const tx = await vaultContract
-          ?.connect(signer)
-          .create(
-            initialVault?.vaultName,
-            values.tokenAddress,
-            initialVault?.adminAddress,
-            100,
-            values.tosPrice * 100,
-          );
-
-        dispatch(
-          setTempHash({
-            data: tx.hash,
-          }),
-        );
-
-        const receipt = await tx.wait();
-        const {logs} = receipt;
-
-        const iface = new ethers.utils.Interface(InitialLiquidityAbi.abi);
-
-        const result = iface.parseLog(logs[logs.length - 1]);
-        const {args} = result;
-        setFieldValue(`vaults[1].vaultAddress`, args[0]);
-        setFieldValue(`vaults[1].isDeployed`, true);
-        setVaultState('readyForToken');
-      } catch (e) {
-        console.log(e);
-        setFieldValue(`vaults[1].isDeployedErr`, true);
-      }
-    }
-    if (account && library && vaultState === 'readyForSet') {
-      console.log('initialize');
-
-      const signer = getSigner(library, account);
-      try {
-        const {TOS_ADDRESS} = DEPLOYED;
-        const InitialLiquidityVault_Contract = new Contract(
-          initialVault.vaultAddress as string,
-          InitialLiquidityVault.abi,
-          library,
-        );
-        const projectTokenPrice = values.tosPrice * 100;
-        const vaultTokenAllocationWei = convertToWei(
-          String(initialVault?.vaultTokenAllocation),
-        );
-        const computePoolAddress = await InitialLiquidityVault_Contract.connect(
-          signer,
-        ).computePoolAddress(TOS_ADDRESS, values.tokenAddress, 3000);
-
-        const reserv0 =
-          computePoolAddress[1] === TOS_ADDRESS ? 100 : projectTokenPrice;
-        const reserv1 =
-          computePoolAddress[2] === TOS_ADDRESS ? 100 : projectTokenPrice;
-        const tx = await InitialLiquidityVault_Contract?.connect(
-          signer,
-        ).initialize(
-          vaultTokenAllocationWei,
-          100,
-          projectTokenPrice,
-          encodePriceSqrt(reserv1, reserv0),
-          //@ts-ignore
-          selectedVaultDetail.startTime,
-        );
-        const receipt = await tx.wait();
-        if (receipt) {
-          setFieldValue(`vaults[${initialVault?.index}].isSet`, true);
-          setVaultState('finished');
-        }
-      } catch (e) {}
-    }
+  const vaultDeploy = useCallback(async () => {
+    deploy(
+      account,
+      library,
+      vaultState,
+      initialVault.vaultType,
+      initialVault,
+      values,
+      dispatch,
+      setFieldValue,
+      setVaultState,
+    );
   }, [
     account,
     dispatch,
@@ -334,8 +162,6 @@ const InitialLiquidity = () => {
     }
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, initialVault]);
-
- 
 
   return (
     <Flex

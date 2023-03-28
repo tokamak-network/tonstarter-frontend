@@ -1,16 +1,112 @@
 import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
-import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {useEffect, useState, Dispatch, useCallback} from 'react';
 import {Projects,VaultTONStarter} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
 import {useFormikContext} from 'formik';
 import moment from 'moment';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useBlockNumber} from 'hooks/useBlock';
+import {useContract} from 'hooks/useContract';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {convertNumber} from 'utils/number';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+
+import {selectLaunch, } from '@Launch/launch.reducer';
+import {
+  checkIsIniailized,
+  returnVaultStatus,
+  deploy,
+} from '@Launch/utils/deployValues';
+
 const TosStaker = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
     const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-    
+    const [btnDisable, setBtnDisable] = useState(true);
+    const {account, library} = useActiveWeb3React();
+    const [vaultState, setVaultState] = useState<
+      'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
+    >('notReady');
+    const [hasToken, setHasToken] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+    // @ts-ignore
+  
+    const {blockNumber} = useBlockNumber();
+
     const tosVault = values.vaults[4] as VaultTONStarter
+useEffect(() => {
+   
+    checkIsIniailized(
+      tosVault.vaultType,
+      library,
+      tosVault,
+      setFieldValue,
+    ).catch((e) => {
+      console.log('**checkIsIniailized err**');
+      console.log(e);
+    });
+  }, [blockNumber, values, tosVault]);
+
+  //setVaultState
+  useEffect(() => {
+    returnVaultStatus(
+      values,
+      tosVault.vaultType,
+      tosVault,
+      hasToken,
+      setVaultState,
+    );
+  }, [hasToken, tosVault, values, blockNumber]);
+
+
+  const {
+    data: {hashKey},
+  } = useAppSelector(selectLaunch);
+
+  const vaultDeploy = useCallback(async () => {
+    deploy(
+      account,
+      library,
+      vaultState,
+      tosVault.vaultType,
+      tosVault,
+      values,
+      dispatch,
+      setFieldValue,
+      setVaultState,
+    );
+  }, [tosVault, values, account, library, vaultState, blockNumber]);
+
+  const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
+
+  useEffect(() => {
+    async function fetchContractBalance() {
+      if (
+        ERC20_CONTRACT &&
+        tosVault?.vaultAddress &&
+        tosVault?.isDeployed === true
+      ) {
+        const tokenBalance = await ERC20_CONTRACT.balanceOf(
+          tosVault.vaultAddress,
+        );
+        if (tokenBalance && tosVault.vaultTokenAllocation) {
+          tosVault.vaultTokenAllocation <=
+          Number(convertNumber({amount: tokenBalance.toString()}))
+            ? setHasToken(true)
+            : setHasToken(false);
+        }
+      }
+    }
+    fetchContractBalance();
+  }, [blockNumber, ERC20_CONTRACT, tosVault]);
+
+  useEffect(() => {
+    setBtnDisable(
+      vaultState === 'readyForToken' && !values.isAllDeployed ? true : false,
+    );
+  }, [values.isAllDeployed, vaultState, blockNumber]);
+
 
     const detailsVault = [
       {name: 'Vault Name', value:  `${tosVault.vaultName}`},
@@ -140,8 +236,20 @@ const TosStaker = () => {
           color={'white.100'}
           mr={'12px'}
           _hover={{}}
+          isDisabled={
+            vaultState === 'notReady' || vaultState === 'finished'
+              ? btnDisable
+              : false
+          }
+          onClick={() => {
+            vaultDeploy();
+          }}
           borderRadius={4}>
-          Deploy
+         {vaultState !== 'readyForToken'
+            ? vaultState === 'ready' || vaultState === 'notReady'
+              ? 'Deploy'
+              : 'Initialize'
+            : 'Send Token'}
         </Button>
       </Flex>
     </Flex>

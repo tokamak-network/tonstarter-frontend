@@ -176,13 +176,18 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   })[0];
 
+  console.log('ggg');
+  
   //check vault state from contract
-  useEffect(()=>{
-    async function checkIsIniailized  ()  {
-      switch(vaultType) {
+  useEffect(() => {
+    async function checkIsIniailized() {
+      switch (vaultType) {
         case 'Public': {
           const PublicVaultData = selectedVaultDetail as VaultPublic;
-          if(PublicVaultData.vaultAddress !== '' || PublicVaultData.vaultAddress !== undefined ) {
+          if (
+            PublicVaultData.vaultAddress !== '' ||
+            PublicVaultData.vaultAddress !== undefined
+          ) {
             const publicVaultSecondContract = new Contract(
               PublicVaultData.vaultAddress as string,
               PublicSale.abi,
@@ -197,16 +202,20 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               isInitialized,
             );
           }
-         break;
+          break;
         }
         case 'Initial Liquidity': {
-          if(selectedVaultDetail.vaultAddress !== '' || selectedVaultDetail.vaultAddress !== undefined ) {
+          if (
+            selectedVaultDetail.vaultAddress !== '' ||
+            selectedVaultDetail.vaultAddress !== undefined
+          ) {
             const publicVaultSecondContract = new Contract(
               selectedVaultDetail.vaultAddress as string,
               InitialLiquidityVault.abi,
               library,
             );
-            const initSqrtPriceX96 = await publicVaultSecondContract.initSqrtPriceX96();
+            const initSqrtPriceX96 =
+              await publicVaultSecondContract.initSqrtPriceX96();
             const isInitialized = Number(initSqrtPriceX96.toString()) > 0;
             console.log(selectedVaultDetail.vaultName);
             console.log(isInitialized);
@@ -215,13 +224,16 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               isInitialized,
             );
           }
-         break;
+          break;
         }
-        case 'DAO' :{
-           break;
+        case 'DAO': {
+          break;
         }
         default: {
-          if(selectedVaultDetail.vaultAddress !== '' || selectedVaultDetail.vaultAddress !== undefined ) {
+          if (
+            selectedVaultDetail.vaultAddress !== '' ||
+            selectedVaultDetail.vaultAddress !== undefined
+          ) {
             const vualtContract = new Contract(
               selectedVaultDetail.vaultAddress as string,
               VestingPublicFundAbi.abi,
@@ -235,16 +247,15 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               isInitialized,
             );
           }
-         break;
-        } 
-  
+          break;
+        }
       }
     }
-    checkIsIniailized().catch(e => {
-      console.log('**checkIsIniailized err**')
-      console.log(e)
-    })
-  }, [blockNumber, vaultType, selectedVaultDetail])
+    checkIsIniailized().catch((e) => {
+      console.log('**checkIsIniailized err**');
+      console.log(e);
+    });
+  }, [blockNumber, vaultType, selectedVaultDetail]);
 
   //setVaultState
   useEffect(() => {
@@ -651,7 +662,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     data: {hashKey},
   } = useAppSelector(selectLaunch);
 
-  // const saveData = useCallback(() => {
+  // const vaultDeploy = useCallback(() => {
   //   setTimeout(() => {
   //     console.log(values);
   //     hashKey === undefined

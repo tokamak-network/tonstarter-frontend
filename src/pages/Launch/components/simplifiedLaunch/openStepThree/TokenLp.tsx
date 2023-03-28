@@ -1,9 +1,21 @@
 import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
-import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {Projects,VaultTONStarter} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
 import {useFormikContext} from 'formik';
 import moment from 'moment';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {useBlockNumber} from 'hooks/useBlock';
+import {useContract} from 'hooks/useContract';
+import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {convertNumber} from 'utils/number';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {
+  checkIsIniailized,
+  returnVaultStatus,
+  deploy,
+} from '@Launch/utils/deployValues';
 
 const TokenLP = () => {
     const {colorMode} = useColorMode();
@@ -11,9 +23,89 @@ const TokenLP = () => {
 
     const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-    
     const tokenLPVault = values.vaults[6] as VaultTONStarter
+    const [btnDisable, setBtnDisable] = useState(true);
+    const {account, library} = useActiveWeb3React();
+    const [vaultState, setVaultState] = useState<
+      'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
+    >('notReady');
+    const [hasToken, setHasToken] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+    // @ts-ignore
+    const {blockNumber} = useBlockNumber();
 
+    useEffect(() => {
+   
+      checkIsIniailized(
+        tokenLPVault.vaultType,
+        library,
+        tokenLPVault,
+        setFieldValue,
+      ).catch((e) => {
+        console.log('**checkIsIniailized err**');
+        console.log(e);
+      });
+    }, [blockNumber, values, tokenLPVault]);
+  
+    //setVaultState
+    useEffect(() => {
+      returnVaultStatus(
+        values,
+        tokenLPVault.vaultType,
+        tokenLPVault,
+        hasToken,
+        setVaultState,
+      );
+    }, [hasToken, tokenLPVault, values, blockNumber]);
+    
+  
+    const {
+      data: {hashKey},
+    } = useAppSelector(selectLaunch);
+  
+    const vaultDeploy = useCallback(async () => {
+      deploy(
+        account,
+        library,
+        vaultState,
+        tokenLPVault.vaultType,
+        tokenLPVault,
+        values,
+        dispatch,
+        setFieldValue,
+        setVaultState,
+      );
+    }, [tokenLPVault, values, account, library, vaultState, blockNumber]);
+  
+    const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
+  
+    useEffect(() => {
+      async function fetchContractBalance() {
+        if (
+          ERC20_CONTRACT &&
+          tokenLPVault?.vaultAddress &&
+          tokenLPVault?.isDeployed === true
+        ) {
+          const tokenBalance = await ERC20_CONTRACT.balanceOf(
+            tokenLPVault.vaultAddress,
+          );
+          if (tokenBalance && tokenLPVault.vaultTokenAllocation) {
+            tokenLPVault.vaultTokenAllocation <=
+            Number(convertNumber({amount: tokenBalance.toString()}))
+              ? setHasToken(true)
+              : setHasToken(false);
+          }
+        }
+      }
+      fetchContractBalance();
+    }, [blockNumber, ERC20_CONTRACT, tokenLPVault]);
+  
+    useEffect(() => {
+      setBtnDisable(
+        vaultState === 'readyForToken' && !values.isAllDeployed ? true : false,
+      );
+    }, [values.isAllDeployed, vaultState, blockNumber]);
+  
 
     const detailsVault = [
       {name: 'Vault Name', value:  `${values.tokenSymbol}-TOS LP Reward`},
@@ -143,8 +235,20 @@ const TokenLP = () => {
           color={'white.100'}
           mr={'12px'}
           _hover={{}}
+          isDisabled={
+            vaultState === 'notReady' || vaultState === 'finished'
+              ? btnDisable
+              : false
+          }
+          onClick={() => {
+            vaultDeploy();
+          }}
           borderRadius={4}>
-          Deploy
+         {vaultState !== 'readyForToken'
+            ? vaultState === 'ready' || vaultState === 'notReady'
+              ? 'Deploy'
+              : 'Initialize'
+            : 'Send Token'}
         </Button>
       </Flex>
     </Flex>
