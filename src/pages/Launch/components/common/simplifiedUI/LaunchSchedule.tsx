@@ -39,7 +39,6 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
     'Unlock 48',
   ];
   const stepName = '';
-  console.log('useFormikValues', values);
   const getTimeStamp = () => {
     switch (
       stepName as

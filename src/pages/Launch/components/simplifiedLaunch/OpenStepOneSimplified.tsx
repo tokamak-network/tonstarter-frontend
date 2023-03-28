@@ -25,7 +25,6 @@ const OpenStepOneSimplified = (props: any) => {
   const {step} = props;
   const {colorMode} = useColorMode();
   const {values, setValues} = useFormikContext<Projects['CreateSimplifiedProject']>();
-  console.log('useFormikContext', values);
 
   useEffect(() => {
     window.scrollTo(0, 0);

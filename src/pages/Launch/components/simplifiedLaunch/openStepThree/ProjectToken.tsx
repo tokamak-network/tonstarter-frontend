@@ -18,6 +18,7 @@ import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {ethers} from 'ethers';
 import {createToken} from 'pages/Reward/components/api';
+import {openModal} from 'store/modal.reducer';
 
 const ProjectToken = () => {
   const {colorMode} = useColorMode();
@@ -33,7 +34,8 @@ const ProjectToken = () => {
     ERC20_FACTORY_A_ABI.abi,
   );
 
-  const dispatch = useAppDispatch();
+  
+  const dispatch:any = useAppDispatch();
 
   const details = [
     {
@@ -171,7 +173,18 @@ const ProjectToken = () => {
           _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
           isDisabled={isTokenDeployed}
           borderRadius={4}
-          onClick={() => deployToken()}>
+          onClick={() => {
+            deployToken()
+            dispatch(
+              openModal({
+                type: 'Launch_ConfirmTokenSimplified',
+                data: {
+                  tokenInfo: {tokenName, totalSupply, tokenSymbol},
+                  func: () => deployToken(),
+                },
+              }),
+            );
+          }}>
           {isTokenDeployed ? 'Done' : 'Deploy'}
         </Button>
       </Flex>

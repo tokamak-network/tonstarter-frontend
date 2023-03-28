@@ -16,7 +16,7 @@ import TokenLP from './openStepThree/TokenLp';
 import TonStaker from './openStepThree/TonStaker';
 import TosStaker from './openStepThree/TosStaker';
 import WtonLP from './openStepThree/WtonLP';
-
+import ConfirmTokenSimplifiedModal from '../modals/ConfirmTokenSimplified';
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
   switch (vaultNum) {
@@ -75,6 +75,7 @@ const OpenStepThreeSimplified = (props: any) => {
         setCurrentStep={setCurrentStep}
       />
     <VaultComp vaultNum={currentStep}/>
+    <ConfirmTokenSimplifiedModal/>
     </Flex>
   );
 };

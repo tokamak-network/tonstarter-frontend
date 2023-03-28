@@ -61,7 +61,7 @@ const StepOne = () => {
 
   const handleSelect = (option: number) => {
     setOption(option.toString());
-    setFieldValue('vaults[0].hardCap', option);
+    setFieldValue('fundingTarget', option);
     setFieldValue('marketCap', option/0.3)
   };
 
@@ -87,7 +87,7 @@ const StepOne = () => {
             h="30px"
             bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}>
             <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-              { option !== 'Other' && publicVault.hardCap? ` $ ${publicVault.hardCap.toLocaleString()}`: buttonStatus(option)}
+              { option !== 'Other' && values.fundingTarget? ` $ ${values.fundingTarget.toLocaleString()}`: buttonStatus(option)}
               <span>
                 <ChevronDownIcon />
               </span>
@@ -139,7 +139,7 @@ const StepOne = () => {
                 // onBlur={() => {}}
                 pl="5px"
                 step={0}
-                value={publicVault.hardCap}
+                value={values.fundingTarget}
                 onChange={(e) => {
                   
                   setFieldValue('fundingTarget', parseInt(e.target.value));
