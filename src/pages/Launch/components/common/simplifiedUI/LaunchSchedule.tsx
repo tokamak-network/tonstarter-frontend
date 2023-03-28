@@ -105,7 +105,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
     // whitelist start to end - 2 days duration
     setFieldValue(
       'vaults[0].whitelistEnd',
-      snapshotDate && snapshotDate + 1 + (86400 * 2),
+      snapshotDate && snapshotDate + 1 + 86400 * 2,
     );
     setFieldValue('vaults[0].publicRound1', publicSale1);
     setFieldValue('vaults[0].publicRound1End', publicSale1End);
@@ -160,15 +160,15 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
   }, [unlockDate0, lastUnlockDate]);
 
   useEffect(() => {
-    if(publicSale2DateRange) {
+    if (publicSale2DateRange) {
       setPublicSale2(publicSale2DateRange[0]);
       setPublicSale2End(publicSale2DateRange[1]);
     }
-    if(publicSale1DateRange) {
+    if (publicSale1DateRange) {
       setPublicSale1(publicSale1DateRange[0]);
       setPublicSale1End(publicSale1DateRange[1]);
     }
-  },[publicSale2DateRange, publicSale2, publicSale1DateRange, publicSale1])
+  }, [publicSale2DateRange, publicSale2, publicSale1DateRange, publicSale1]);
 
   return (
     <Grid my={'40px'}>
