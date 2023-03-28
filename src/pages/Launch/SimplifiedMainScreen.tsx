@@ -187,7 +187,7 @@ const SimplifiedMainScreen = () => {
         initialValues={
           id && projects
             ? {...initialSimplifiedValues, ...projects[id]}
-            : {...initialSimplifiedValues, ownerAddress: account}
+            : {...initialSimplifiedValues, ownerAddress: account, owner: account,tokenOwnerAccount: account}
         }
         validationSchema={ProjectSchema}
         validate={(values) => {

@@ -1,26 +1,26 @@
 import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {useFormikContext} from 'formik';
+import {Projects,VaultCommon,VaultPublic} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import moment from 'moment';
 
 
 const Vesting = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+    const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+
+  const vestingVault = values.vaults[2] as VaultCommon;
+  const publicVault = values.vaults[0] as VaultPublic;
+
     const detailsVault = [
       {name: 'Vault Name', value: 'Vesting'},
-      {name: 'Admin', value: 'TON'},
-      {name: 'Contract', value: '50,000 TON'},
-    //   {name: 'Token Allocation', value: '50,000 TON'},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
+      {name: 'Admin', value: `${shortenAddress(vestingVault.adminAddress)}`},
+      {name: 'Contract', value: vestingVault.vaultAddress? shortenAddress(vestingVault.vaultAddress) : 'NA'},
+
     ];
-    const detailsClaim = [
-        { name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-        {name: '22.02.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-        {name: '22.03.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-        {name: '22.04.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-        {name: '22.04.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-     
-      ];
 
     return (
         <Flex
@@ -91,10 +91,10 @@ const Vesting = () => {
           Claim
         </Text>
         <Flex w='100%' h='45px' alignItems={'center'}>
-        <Text  fontSize={'13px'}  textAlign={'left'}>Claim Rounds ({detailsClaim.length})</Text>
+        <Text  fontSize={'13px'}  textAlign={'left'}>Claim Rounds ({vestingVault.claim.length})</Text>
         </Flex>
        
-        {detailsClaim.map((detail: any, index: Number) => {
+        {vestingVault.claim.map((claim: any, index: Number) => {
           return (
             <Flex  w="100%" justifyContent={'space-between'} h="30px" alignItems={'center'}>
               <Text
@@ -103,15 +103,15 @@ const Vesting = () => {
                 fontWeight={500}
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                      <span style={{color:'#3d495d', marginRight:'3px'}}>0{index}</span>
-                {detail.name}
-               
+                {/* {claim.claimTime} */}
+               {moment.unix(Number(claim.claimTime)).format('YYYY.MM.DD HH:mm:ss')}
               </Text>
               <Text
                 fontSize={'12px'}
                 fontFamily={theme.fonts.roboto}
                 fontWeight={500}
-                color={detail.name === 'Admin' || detail.name === 'Contract'? 'blue.300': colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-                {detail.value}
+                >
+                {publicVault.hardCap?(publicVault.hardCap*claim.claimTokenAllocation/100).toLocaleString():0} TON ({claim.claimTokenAllocation}%)
               </Text>
             </Flex>
           );

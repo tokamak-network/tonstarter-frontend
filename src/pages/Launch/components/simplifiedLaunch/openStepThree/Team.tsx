@@ -1,29 +1,41 @@
-import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
-
+import {Projects, VaultTeam} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import {useFormikContext} from 'formik';
+import moment from 'moment';
 
 const Team = () => {
-    const {colorMode} = useColorMode();
-    const theme = useTheme();
-    const detailsVault = [
-      {name: 'Vault Name', value: 'Vesting'},
-      {name: 'Admin', value: 'TON'},
-      {name: 'Contract', value: '50,000 TON'},
-    //   {name: 'Token Allocation', value: '50,000 TON'},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
-    ];
-    const detailsClaim = [
-        { name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-        {name: '22.02.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-        {name: '22.03.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-        {name: '22.04.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-        {name: '22.04.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-     
-      ];
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
 
-    return (
-        <Flex
+  const teamVault = values.vaults[8] as VaultTeam;
+  const detailsVault = [
+    {name: 'Vault Name', value: `${teamVault.vaultName}`},
+    {
+      name: 'Admin',
+      value: `${
+        values.ownerAddress ? shortenAddress(values.ownerAddress) : ''
+      }`,
+    },
+    {
+      name: 'Contract',
+      value: `${
+        teamVault.vaultAddress ? shortenAddress(teamVault.vaultAddress) : 'NA'
+      }`,
+    },
+    {
+      name: 'Token Allocation',
+      value: `${teamVault.vaultTokenAllocation.toLocaleString()} ${
+        values.tokenSymbol
+      }`,
+    },
+  ];
+
+  return (
+    <Flex
       mt="30px"
       h="100%"
       w="350px"
@@ -40,14 +52,14 @@ const Team = () => {
           colorMode === 'dark' ? '1px solid #363636' : '1px solid #e6eaee'
         }>
         <Text
-        lineHeight={1.5}
+          lineHeight={1.5}
           fontWeight={'bold'}
           fontFamily={theme.fonts.titil}
           fontSize="20px"
-          mt='19px'
-          mb='21px'
+          mt="19px"
+          mb="21px"
           color={colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-         Team
+          Team
         </Text>
       </Flex>
       <Flex
@@ -56,12 +68,16 @@ const Team = () => {
         px="20px"
         w="100%"
         alignItems={'center'}>
-        <Text h='18px' mb="10px" fontSize={'13px'}>
+        <Text h="18px" mb="10px" fontSize={'13px'}>
           Vault
         </Text>
         {detailsVault.map((detail: any) => {
           return (
-            <Flex w="100%" justifyContent={'space-between'} h="45px" alignItems={'center'} >
+            <Flex
+              w="100%"
+              justifyContent={'space-between'}
+              h="45px"
+              alignItems={'center'}>
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
@@ -73,13 +89,18 @@ const Team = () => {
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
                 fontWeight={500}
-                color={detail.name === 'Admin' || detail.name === 'Contract'? 'blue.300': colorMode === 'dark' ? 'white.100' : 'gray.250'}>
+                color={
+                  detail.name === 'Admin' || detail.name === 'Contract'
+                    ? 'blue.300'
+                    : colorMode === 'dark'
+                    ? 'white.100'
+                    : 'gray.250'
+                }>
                 {detail.value}
               </Text>
             </Flex>
           );
         })}
-      
       </Flex>
       <Flex
         mt="30px"
@@ -87,36 +108,49 @@ const Team = () => {
         px="20px"
         w="100%"
         alignItems={'center'}>
-        <Text mb="10px" fontSize={'13px'} h='18px' >
+        <Text mb="10px" fontSize={'13px'} h="18px">
           Claim
         </Text>
-        <Flex w='100%' h='45px' alignItems={'center'}>
-        <Text  fontSize={'13px'}  textAlign={'left'}>Claim Rounds ({detailsClaim.length})</Text>
+        <Flex w="100%" h="45px" alignItems={'center'}>
+          <Text fontSize={'13px'} textAlign={'left'}>
+            Claim Rounds ({teamVault.claim.length})
+          </Text>
         </Flex>
-       
-        {detailsClaim.map((detail: any, index: Number) => {
+
+        {teamVault.claim.map((claim: any, index: Number) => {
           return (
-            <Flex  w="100%" justifyContent={'space-between'} h="30px" alignItems={'center'}>
+            <Flex
+              w="100%"
+              justifyContent={'space-between'}
+              h="30px"
+              alignItems={'center'}>
               <Text
                 fontSize={'12px'}
                 fontFamily={theme.fonts.roboto}
                 fontWeight={500}
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                     <span style={{color:'#3d495d', marginRight:'3px'}}>0{index}</span>
-                {detail.name}
-               
+                <span style={{color: '#3d495d', marginRight: '3px'}}>
+                  {' '}
+                  {index < 10 ? '0' : ''}
+                  {index}
+                </span>
+                {moment
+                  .unix(Number(claim.claimTime))
+                  .format('YYYY.MM.DD HH:mm:ss')}
               </Text>
               <Text
                 fontSize={'12px'}
                 fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={detail.name === 'Admin' || detail.name === 'Contract'? 'blue.300': colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-                {detail.value}
+                fontWeight={500}>
+                {claim.claimTokenAllocation.toLocaleString()} (
+                {values.totalSupply
+                  ? (claim.claimTokenAllocation / values.totalSupply) * 100
+                  : 0}
+                %)
               </Text>
             </Flex>
           );
         })}
-      
       </Flex>
       <Flex
         mt="24px"
@@ -141,7 +175,7 @@ const Team = () => {
         </Button>
       </Flex>
     </Flex>
-    )
-}
+  );
+};
 
 export default Team;

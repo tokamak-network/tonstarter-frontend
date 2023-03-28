@@ -6,18 +6,27 @@ import {
   Button,
 } from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {useFormikContext} from 'formik';
+import {Projects,VaultLiquidityIncentive} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import moment from 'moment';
 
 const InitialLiquidity = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {values, setFieldValue} =
+  useFormikContext<Projects['CreateSimplifiedProject']>();
 
+  const initialVault = values.vaults[1] as VaultLiquidityIncentive
+  
+  
   const details = [
-    {name: 'Vault Name', value: 'TON'},
-    {name: 'Admin', value: 'TON'},
-    {name: 'Contract', value: '50,000 TON'},
-    {name: 'Token Allocation', value: '50,000 TON'},
-    {name: 'Token Price', value: '50,000 TON'},
-    {name: 'Start Time', value: '50,000 TON'},
+    {name: 'Vault Name', value: `${initialVault.vaultName}`},
+    {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
+    {name: 'Contract', value: `${initialVault.vaultAddress? shortenAddress(initialVault.vaultAddress) : 'NA'}`},
+    {name: 'Token Allocation', value: `${initialVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
+    {name: 'Token Price', value: `${values.projectTokenPrice? (1/values.projectTokenPrice).toLocaleString():'0'} TON`},
+    {name: 'Start Time', value: `${initialVault.startTime? moment.unix(Number(initialVault.startTime)).format('YYYY.MM.DD HH:mm:ss') :'NA'}`},
   ];
 
   return (

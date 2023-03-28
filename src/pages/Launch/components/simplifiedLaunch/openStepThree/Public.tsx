@@ -2,49 +2,44 @@ import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects,VaultPublic} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import moment from 'moment';
 
 const Public = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [type, setType] = useState<'Vault' | 'Sale'>('Vault');
   const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
+console.log(values);
 
+  const publicVault = values.vaults[0] as VaultPublic
 
   const detailsVault = [
-    {name: 'Vault Name', value: 'Vesting'},
-    {name: 'Admin', value: 'TON'},
-    {name: 'Contract', value: '50,000 TON'},
-    {name: 'Token Allocation', value: '50,000 TON'},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
-  ];
-  const detailsClaim = [
-    {name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-    {name: '22.02.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-    {name: '22.03.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-    {name: '22.04.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-    {name: '22.04.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
+    {name: 'Vault Name', value: `${publicVault.vaultName}`},
+    {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :'NA'}`},
+    {name: 'Contract', value: `${publicVault.vaultAddress? shortenAddress(publicVault.vaultAddress):'NA'}`},
+    {name: 'Token Allocation', value: `${publicVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
   ];
 
   const tokenDetails = [
-    {name: 'Token', value1: '6,000,000 TON', value2: '100.00%'},
-    {name: 'Public Round 1', value1: '6,000,000 TON', value2: '6.00%'},
-    {name: 'Public Round 2', value1: '6,000,000 TON', value2: '16.00%'},
-    {name: 'Token Price', value1: '10 PROJECT TOKEN : 1 TON'},
+    {name: 'Token', value1: `${publicVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`, value2: '30%'},
+    {name: 'Public Round 1', value1: `${(publicVault.vaultTokenAllocation/2).toLocaleString()} ${values.tokenSymbol}`, value2: '50%'},
+    {name: 'Public Round 2', value1: `${(publicVault.vaultTokenAllocation/2).toLocaleString()} ${values.tokenSymbol}`, value2: '50%'},
+    {name: 'Token Price', value1: `${values.projectTokenPrice? (values.projectTokenPrice).toLocaleString():''}${values.tokenSymbol} = 1 TON`},
   ];
 
   const schedule = [
-    {name: 'Whitelist', value: '22.01.2022 17:00:00'},
-    {name: 'Public Round 1', value: '22.01.2022 17:00:00'},
-    {name: 'Public Round 1', value: '22.01.2022 17:00:00'},
-    {name: 'Claim', value: '22.01.2022 17:00:00'},
+    {name: 'Whitelist', value: `${moment.unix(Number(publicVault.whitelist)).format('YYYY.MM.DD HH:mm:ss')}`},
+    {name: 'Public Round 1', value: `${moment.unix(Number(publicVault.publicRound1)).format('YYYY.MM.DD HH:mm:ss')}`},
+    {name: 'Public Round 1', value: `${moment.unix(Number(publicVault.publicRound2)).format('YYYY.MM.DD HH:mm:ss')}`},
+    {name: 'Claim', value: `${moment.unix(Number(publicVault.publicRound2End)+1).format('YYYY.MM.DD HH:mm:ss')}`},
   ];
 
   const sTOSList = [
-    {tier: 1, requiredTos: 1000, allocationToken: 300000},
-    {tier: 2, requiredTos: 2000, allocationToken: 400000},
-    {tier: 3, requiredTos: 3000, allocationToken: 600000},
-    {tier: 4, requiredTos: 6000, allocationToken: 1000000},
+    {tier: 1, requiredTos: 600, allocationToken:  publicVault.stosTier.oneTier.allocatedToken?publicVault.stosTier.oneTier.allocatedToken:0},
+    {tier: 2, requiredTos: 1200, allocationToken: publicVault.stosTier.twoTier.allocatedToken?publicVault.stosTier.twoTier.allocatedToken:0},
+    {tier: 3, requiredTos: 2200, allocationToken: publicVault.stosTier.threeTier.allocatedToken?publicVault.stosTier.threeTier.allocatedToken:0},
+    {tier: 4, requiredTos: 6000, allocationToken: publicVault.stosTier.fourTier.allocatedToken?publicVault.stosTier.fourTier.allocatedToken:0},
   ];
   const VaultClaim = (props: {}) => {
     return (
@@ -88,19 +83,18 @@ const Public = () => {
         <Flex
           mt="30px"
           flexDir={'column'}
-          px="20px"
-          w="100%"
+        
           alignItems={'center'}>
           <Text mb="10px" fontSize={'13px'} h="18px">
             Claim
           </Text>
           <Flex w="100%" h="45px" alignItems={'center'}>
             <Text fontSize={'13px'} textAlign={'left'}>
-              Claim Rounds ({detailsClaim.length})
+              Claim Rounds ({publicVault.claim.length})
             </Text>
           </Flex>
 
-          {detailsClaim.map((detail: any, index: Number) => {
+          {publicVault.claim.map((claim: any, index: Number) => {
             return (
               <Flex
                 w="100%"
@@ -113,22 +107,16 @@ const Public = () => {
                   fontWeight={500}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   <span style={{color: '#3d495d', marginRight: '3px'}}>
-                    0{index}
+                   {index< 10? '0':''}{index}
                   </span>
-                  {detail.name}
+                  {moment.unix(Number(claim.claimTime)).format('YYYY.MM.DD HH:mm:ss')}
                 </Text>
                 <Text
                   fontSize={'12px'}
                   fontFamily={theme.fonts.roboto}
                   fontWeight={500}
-                  color={
-                    detail.name === 'Admin' || detail.name === 'Contract'
-                      ? 'blue.300'
-                      : colorMode === 'dark'
-                      ? 'white.100'
-                      : 'gray.250'
-                  }>
-                  {detail.value}
+                 >
+                  {claim.claimTokenAllocation.toLocaleString()} ({values.totalSupply?(claim.claimTokenAllocation/values.totalSupply)*100:0}%)
                 </Text>
               </Flex>
             );
@@ -161,7 +149,7 @@ const Public = () => {
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
-                <Flex>
+                <Flex alignItems={'center'}>
                   <Text
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
@@ -278,7 +266,7 @@ const Public = () => {
                   <Text
                     w={'160px'}
                     color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                    {stosInfo.allocationToken} {values.tokenName}
+                    {stosInfo.allocationToken.toLocaleString()} {values.tokenName}
                   </Text>
                 </Flex>
               );

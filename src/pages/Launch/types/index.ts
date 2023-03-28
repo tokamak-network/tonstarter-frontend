@@ -19,10 +19,27 @@ type VaultType =
   | 'Vesting'
   | 'C';
 
-  type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
-  type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
-  
-  interface Vault {
+type SimplifiedVaultName =
+  | 'Public'
+  | 'Ecosystem'
+  | 'Team'
+  | 'Initial Liquidity'
+  | 'WTON-TOS LP Reward'
+  | 'TON Staker'
+  | 'TOS Staker'
+  | 'TOKEN-TOS LP Reward'
+  | 'Vesting';
+type SimplifiedVaultType =
+  | 'Public'
+  | 'C'
+  | 'Initial Liquidity'
+  | 'WTON-TOS LP Reward'
+  | 'TON Staker'
+  | 'TOS Staker'
+  | 'Liquidity Incentive'
+  | 'Vesting';
+
+interface Vault {
   vaultName: VaultName;
   vaultType: VaultType;
   vaultTokenAllocation: number;
@@ -112,7 +129,12 @@ type VaultLiquidityIncentive = VaultCommon & {
 };
 
 type VaultAny = VaultPublic | VaultDao | VaultC | VaultLiquidityIncentive;
-type simplifiedVaultsAny = VaultPublic | VaultEco | VaultTeam | VaultTONStarter |VaultLiquidityIncentive
+type simplifiedVaultsAny =
+  | VaultPublic
+  | VaultEco
+  | VaultTeam
+  | VaultTONStarter
+  | VaultLiquidityIncentive;
 type TokenType = 'A' | 'B' | 'C';
 
 interface ProjectStep1 {
@@ -148,16 +170,6 @@ interface ProjectStep3 {
   isTokenDeployedErr: boolean;
 }
 
-
-interface SimplifiedVault {
-  tokenAllocation: number | undefined;
-  vaultName: SimplifiedVaultName;
-  vaultType: SimplifiedVaultType
-}
-
-
-
-
 interface SimplifiedProjectStep1 {
   projectName: string | undefined;
   description: string | undefined;
@@ -165,25 +177,31 @@ interface SimplifiedProjectStep1 {
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
   ownerAddress: string;
+ 
   // snapshotTime: number | undefined;
   // whitelistStart: number | undefined;
   // whitelistEnd: number | undefined;
   // publicSale1Start: number | undefined;
   // publicSale1End: number | undefined;
   // publicSale2Start: number | undefined;
-  // publicSale2End: number | undefined;
+  // publicSale2End: nuåmber | undefined;
   vaults: simplifiedVaultsAny[];
 }
 
 interface SimplifiedProjectStep2 {
-  hardCap: number | undefined;
   marketCap: number | undefined;
   totalSupply: number | undefined;
-  tokenPrice: number | undefined;
-  dexPrice: number | undefined;
-  growth: number | undefined;
+   growth: number | undefined;
   stablePrice: number | undefined;
-  exchangeRate: number|undefined;
+  tokenType: TokenType | undefined;
+  owner: string | undefined;
+  fundingTarget: number | undefined;
+  sector: string;
+  tokenOwnerAccount: string | undefined;
+  projectTokenPrice: number;
+  totalTokenAllocation: number;
+  tosPrice: number;
+   salePrice: number;
   // vaults : simplifiedVaultsAny[];
 }
 interface SimplifiedProjectStep3 {
@@ -199,7 +217,6 @@ type SimplifiedProject = SimplifiedProjectStep1 &
   SimplifiedProjectStep3;
 
 type Projects = {
-  
   CreateSimplifiedProject: SimplifiedProject;
   CreateProject: Project;
 };
@@ -404,4 +421,7 @@ export type {
   LaunchMode,
   TEconomyStepNumber,
   SimpleProjects,
+  VaultEco,
+  VaultTeam,
+  VaultTONStarter,
 };

@@ -15,11 +15,14 @@ const StepFour = () => {
   const theme = useTheme();
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
+    
   const handleInput = (e: number) => {
     
-    setFieldValue('dexPrice',e)
+    setFieldValue('tosPrice',1/e)
   };
 
+  console.log('values', values);
+  
   return (
     <Flex flexDir={'column'} h="142px" alignItems={'flex-start'}>
       {' '}
@@ -63,7 +66,7 @@ const StepFour = () => {
         <Text>TOS</Text>
       </Flex>  */}
       <Flex fontSize={'13px'}  alignItems={'center'}>
-      <Text > 1 {values.tokenSymbol} = {values.tokenPrice?.toLocaleString()}TON =  </Text>
+      <Text > 1 {values.tokenSymbol} = {(1/values.projectTokenPrice).toLocaleString()}TON =  </Text>
       <Flex
         h="30px"
         w="130px"
@@ -79,13 +82,13 @@ const StepFour = () => {
         <NumberInput>
           <NumberInputField
             h="30px"
-            placeholder={values.dexPrice? (values.dexPrice).toLocaleString().toString() : '0'}
+            placeholder={values.tosPrice? (1/values.tosPrice).toLocaleString().toString() : '0'}
             fontSize={'13px'}
             border="none"
             pr="5px"
             textAlign={'right'}
             _focus={{}}
-            value={values.dexPrice? values.dexPrice.toLocaleString(): '0'}
+            value={values.tosPrice? (1/values.tosPrice).toLocaleString(): '0'}
             onChange={(e) => {
               handleInput(parseInt(e.target.value));
             }}></NumberInputField>

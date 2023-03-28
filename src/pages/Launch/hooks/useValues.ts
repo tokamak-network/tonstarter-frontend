@@ -7,6 +7,8 @@ const defaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: undefined},
 ];
 
+
+
 const vestingDefaultParams = [
   {claimRound: 1, claimTime: undefined, claimTokenAllocation: 50},
   {claimRound: 2, claimTime: undefined, claimTokenAllocation: 17},
@@ -110,7 +112,7 @@ const initialObj: Projects['CreateProject'] = {
       vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
-      claim: vestingDefaultParams,
+      claim: defaultParams,
       vaultAddress: undefined,
       index: 2,
       isDeployed: false,
@@ -185,19 +187,25 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
   ownerAddress: '',
   isTokenDeployed: false,
   isTokenDeployedErr: false,
+  fundingTarget:undefined,
   tokenAddress: '',
+  owner: undefined,
+  sector: 'Simple',
+  tokenType: 'A',
+  tokenOwnerAccount: undefined,
   isAllDeployed:false,
-  hardCap: undefined,
   marketCap:  undefined,
   totalSupply:undefined,
-  tokenPrice:  undefined,
-  dexPrice:  undefined,
   growth: undefined,
   stablePrice: undefined,
-  exchangeRate: undefined,
-  vaults: [{
-    vaultTokenAllocation: 0,
-    vaultName: 'Public',
+  tosPrice:0,
+  salePrice: 0,
+  projectTokenPrice: 0,
+  totalTokenAllocation: 0,
+  vaults: [
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'Public',
       vaultType: 'Public',
       adminAddress: '',
       isMandatory: true,
@@ -238,11 +246,12 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       publicRound2Allocation: undefined,
       claimStart: undefined,
       index: 0,
-  },
-  {
-    vaultTokenAllocation: 0,
-    vaultName: 'Initial Liquidity',
+    },
+    {
+      
+      vaultName: 'Initial Liquidity',
       vaultType: 'Initial Liquidity',
+      vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -254,24 +263,24 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       poolAddress: undefined,
       tokenPair: undefined,
       startTime: undefined,
-  },
-  {
-    vaultTokenAllocation: 0,
-    vaultName: 'Ecosystem',
-      vaultType: 'Ecosystem',
+    },
+    {
+      vaultName: 'Vesting',
+      vaultType: 'Vesting',
+      vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
-      claim: defaultParams,
+      claim: vestingDefaultParams,
       vaultAddress: undefined,
       index: 2,
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-  },
-  {
-    vaultTokenAllocation: 0,
-    vaultName: 'Team',
-      vaultType: 'Team',
+    },
+    {
+      vaultName: 'TON Staker',
+      vaultType: 'TON Staker',
+      vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -280,12 +289,12 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-  },
-  
-  {
-    vaultTokenAllocation: 0,
-    vaultName: 'TONStarter',
-      vaultType: 'TONStarter',
+    },
+    {
+     
+      vaultName: 'TOS Staker',
+      vaultType: 'TOS Staker',
+      vaultTokenAllocation: 0,
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -294,8 +303,67 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-  },
-]
+    },
+    {
+      vaultName: 'WTON-TOS LP Reward',
+      vaultType: 'WTON-TOS LP Reward',
+      vaultTokenAllocation: 0,
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 5,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+      poolAddress: TOS_WTON_POOL,
+      tokenPair: 'WTON-TOS',
+    },
+    {
+      
+      vaultName: 'TOKEN-TOS LP Reward',
+      vaultType: 'Liquidity Incentive',
+      vaultTokenAllocation: 0,
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 6,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
+    {
+     
+      vaultName: 'Ecosystem',
+      vaultType:  'C',
+      vaultTokenAllocation: 0,
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 7,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
+    {
+      
+      vaultName: 'Team',
+      vaultType:  'C',
+      vaultTokenAllocation: 0,
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 8,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
+   
+    
+  ],
 };
 
 const initialVaultValue: VaultC = {
@@ -317,18 +385,25 @@ const useValues = (account?: string) => {
     ? {...initialObj, owner: account, tokenOwnerAccount: account}
     : initialObj;
 
-  const initialSimplifiedObject  = account 
-  ? {...initialSimplifiedObj}
-  : initialSimplifiedObj
+  const initialSimplifiedObject = account
+    ? {...initialSimplifiedObj}
+    : initialSimplifiedObj;
 
   const [initialValues, setInitialValues] =
     useState<Projects['CreateProject']>(initialObject);
 
-  const [initialSimplifiedValues, SetInitialSimplifiedValues ] = 
-    useState<Projects['CreateSimplifiedProject']>(initialSimplifiedObject);
+  const [initialSimplifiedValues, SetInitialSimplifiedValues] = useState<
+    Projects['CreateSimplifiedProject']
+  >(initialSimplifiedObject);
 
-  return {initialValues, setInitialValues, defaultParams, initialVaultValue, initialSimplifiedValues, SetInitialSimplifiedValues};
+  return {
+    initialValues,
+    setInitialValues,
+    defaultParams,
+    initialVaultValue,
+    initialSimplifiedValues,
+    SetInitialSimplifiedValues,
+  };
 };
-
 
 export default useValues;
