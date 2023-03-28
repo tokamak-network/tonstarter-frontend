@@ -1,14 +1,22 @@
 import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {Projects,VaultTeam} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import {useFormikContext} from 'formik';
 
 
 const Team = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+    const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+    
+    const teamVault = values.vaults[4] as VaultTeam
     const detailsVault = [
-      {name: 'Vault Name', value: 'Vesting'},
-      {name: 'Admin', value: 'TON'},
-      {name: 'Contract', value: '50,000 TON'},
+      {name: 'Vault Name', value:  `${teamVault.vaultName}`},
+      {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
+      {name: 'Contract', value: `${teamVault.vaultAddress? shortenAddress(teamVault.vaultAddress) : 'NA'}`},
+    {name: 'Token Allocation', value: `${teamVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
     //   {name: 'Token Allocation', value: '50,000 TON'},
     //   {name: 'Token Price', value: '50,000 TON'},
     //   {name: 'Start Time', value: '50,000 TON'},

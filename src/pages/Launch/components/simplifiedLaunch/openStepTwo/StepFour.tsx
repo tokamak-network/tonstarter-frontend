@@ -20,6 +20,8 @@ const StepFour = () => {
     setFieldValue('dexPrice',e)
   };
 
+  console.log('values', values);
+  
   return (
     <Flex flexDir={'column'} h="142px" alignItems={'flex-start'}>
       {' '}

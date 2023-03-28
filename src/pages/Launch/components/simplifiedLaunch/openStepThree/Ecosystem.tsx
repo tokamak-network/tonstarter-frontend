@@ -1,17 +1,23 @@
 import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {Projects,VaultEco} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import {useFormikContext} from 'formik';
 
 
 const Ecosystem = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+    const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+    
+    const ecoVault = values.vaults[3] as VaultEco
+
     const detailsVault = [
-      {name: 'Vault Name', value: 'Vesting'},
-      {name: 'Admin', value: 'TON'},
-      {name: 'Contract', value: '50,000 TON'},
-    //   {name: 'Token Allocation', value: '50,000 TON'},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
+      {name: 'Vault Name', value:  `${ecoVault.vaultName}`},
+      {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
+      {name: 'Contract', value: `${ecoVault.vaultAddress? shortenAddress(ecoVault.vaultAddress) : 'NA'}`},
+    {name: 'Token Allocation', value: `${ecoVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
     ];
     const detailsClaim = [
         { name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},

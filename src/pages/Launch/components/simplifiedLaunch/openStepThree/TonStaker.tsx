@@ -1,14 +1,24 @@
 import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
-
+import {Projects,VaultTONStarter} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import {useFormikContext} from 'formik';
 
 const TonStaker = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+
+    const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+    
+    const tonVault = values.vaults[5] as VaultTONStarter
+
     const detailsVault = [
-      {name: 'Vault Name', value: 'Vesting'},
-      {name: 'Admin', value: 'TON'},
-      {name: 'Contract', value: '50,000 TON'},
+      {name: 'Vault Name', value:  `${tonVault.vaultName}`},
+      {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
+      {name: 'Contract', value: `${tonVault.vaultAddress? shortenAddress(tonVault.vaultAddress) : 'NA'}`},
+    {name: 'Token Allocation', value: `${tonVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
+    
     //   {name: 'Token Allocation', value: '50,000 TON'},
     //   {name: 'Token Price', value: '50,000 TON'},
     //   {name: 'Start Time', value: '50,000 TON'},

@@ -2,19 +2,22 @@ import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects,VaultPublic} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
 
 const Public = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [type, setType] = useState<'Vault' | 'Sale'>('Vault');
   const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
+console.log(values);
 
+  const publicVault = values.vaults[0] as VaultPublic
 
   const detailsVault = [
-    {name: 'Vault Name', value: 'Vesting'},
-    {name: 'Admin', value: 'TON'},
-    {name: 'Contract', value: '50,000 TON'},
-    {name: 'Token Allocation', value: '50,000 TON'},
+    {name: 'Vault Name', value: `${publicVault.vaultName}`},
+    {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :'NA'}`},
+    {name: 'Contract', value: `${publicVault.vaultAddress? shortenAddress(publicVault.vaultAddress):'NA'}`},
+    {name: 'Token Allocation', value: `${publicVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
     //   {name: 'Token Price', value: '50,000 TON'},
     //   {name: 'Start Time', value: '50,000 TON'},
   ];
@@ -27,10 +30,10 @@ const Public = () => {
   ];
 
   const tokenDetails = [
-    {name: 'Token', value1: '6,000,000 TON', value2: '100.00%'},
+    {name: 'Token', value1: `${publicVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`, value2: '30%'},
     {name: 'Public Round 1', value1: '6,000,000 TON', value2: '6.00%'},
     {name: 'Public Round 2', value1: '6,000,000 TON', value2: '16.00%'},
-    {name: 'Token Price', value1: '10 PROJECT TOKEN : 1 TON'},
+    {name: 'Token Price', value1: `${values.tokenPrice? (1/values.tokenPrice).toLocaleString():''}${values.tokenSymbol} = 1 TON`},
   ];
 
   const schedule = [
@@ -41,9 +44,9 @@ const Public = () => {
   ];
 
   const sTOSList = [
-    {tier: 1, requiredTos: 1000, allocationToken: 300000},
-    {tier: 2, requiredTos: 2000, allocationToken: 400000},
-    {tier: 3, requiredTos: 3000, allocationToken: 600000},
+    {tier: 1, requiredTos: 600, allocationToken: 300000},
+    {tier: 2, requiredTos: 1200, allocationToken: 400000},
+    {tier: 3, requiredTos: 2200, allocationToken: 600000},
     {tier: 4, requiredTos: 6000, allocationToken: 1000000},
   ];
   const VaultClaim = (props: {}) => {
@@ -161,7 +164,7 @@ const Public = () => {
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
-                <Flex>
+                <Flex alignItems={'center'}>
                   <Text
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}

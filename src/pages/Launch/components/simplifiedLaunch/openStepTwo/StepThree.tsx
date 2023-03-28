@@ -35,6 +35,8 @@ const StepThree = () => {
         res.json(),
       );
       const tonPrice = tonPriceObj[0].current_price;
+      console.log('tonPrice',tonPrice);
+      
       setTonInDollars(tonPrice);
       const poolData = await fetchPoolPayload(library);
 
@@ -44,7 +46,7 @@ const StepThree = () => {
       // const tonPriceInTos =
     }
     getTonPrice();
-  }, [library]);
+  }, [library,values]);
 
   const themeDesign = {
     border: {
@@ -91,7 +93,8 @@ const StepThree = () => {
       const totalSupply = (marketCap * growth) / option;
       setFieldValue('totalSupply', totalSupply);
       const tokenPriceinDollars = marketCap / totalSupply;
-
+      console.log(tokenPriceinDollars,tonInDollars);
+      
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
       setFieldValue('dexPrice',tokenPriceInTos) //dex price is the user entered token to TOS ratio
@@ -99,15 +102,23 @@ const StepThree = () => {
 
       setFieldValue('tokenPrice', tokenPriceInTon);
       const publicAllocation = totalSupply * 0.3;
+      const initialLiquidityAllocation = totalSupply * 0.03;
+      const tokenTOSAllocation = totalSupply * 0.12;
+
       const ecosystemAllocation = totalSupply * 0.35;
       const teamAllocation = totalSupply * 0.15;
-      const liquidityAllocation = totalSupply * 0.15;
-      const tonstarterAllocation = totalSupply * 0.05;
-      setFieldValue('vaults[0].tokenAllocation', publicAllocation);
-      setFieldValue('vaults[1].tokenAllocation', ecosystemAllocation);
-      setFieldValue('vaults[2].tokenAllocation', teamAllocation);
-      setFieldValue('vaults[3].tokenAllocation', liquidityAllocation);
-      setFieldValue('vaults[4].tokenAllocation', tonstarterAllocation);
+      const tonStakerAllocation = totalSupply * 0.0125;
+      const tosStakerAllocation = totalSupply * 0.0125;
+      const wtonTosAllocation = totalSupply * 0.025;
+      
+      setFieldValue('vaults[0].vaultTokenAllocation', publicAllocation);
+      setFieldValue('vaults[1].vaultTokenAllocation', initialLiquidityAllocation);
+      setFieldValue('vaults[2].vaultTokenAllocation', tokenTOSAllocation);
+      setFieldValue('vaults[3].vaultTokenAllocation', ecosystemAllocation);
+      setFieldValue('vaults[4].vaultTokenAllocation', teamAllocation);
+      setFieldValue('vaults[5].vaultTokenAllocation', tonStakerAllocation);
+      setFieldValue('vaults[6].vaultTokenAllocation', tosStakerAllocation);
+      setFieldValue('vaults[7].vaultTokenAllocation', wtonTosAllocation);
     }
   };
 

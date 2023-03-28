@@ -189,7 +189,6 @@ const SimplifiedMainScreen = () => {
         validationSchema={ProjectSchema}
         validate={(values) => {
           // console.log('--formikvalues--');
-          console.log(values);
           if (step === 3 && oldData !== values) {
             setOldData(values);
             hashKey === undefined

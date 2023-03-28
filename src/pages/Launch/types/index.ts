@@ -19,8 +19,8 @@ type VaultType =
   | 'Vesting'
   | 'C';
 
-  type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
-  type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Liquidity' | 'TONStarter'
+  type SimplifiedVaultName = 'Public' | 'Ecosystem' | 'Team' | 'Initial Liquidity' | 'WTON-TOS LP Reward'| 'TON Staker' | 'TOS Staker' | 'TOKEN-TOS LP Reward'
+  type SimplifiedVaultType = 'Public'| 'Ecosystem' | 'Team' | 'Initial Liquidity' | 'WTON-TOS LP Reward' | 'TON Staker' | 'TOS Staker' | 'TOKEN-TOS LP Reward'
   
   interface Vault {
   vaultName: VaultName;
@@ -147,16 +147,6 @@ interface ProjectStep3 {
   tokenAddress: string;
   isTokenDeployedErr: boolean;
 }
-
-
-interface SimplifiedVault {
-  tokenAllocation: number | undefined;
-  vaultName: SimplifiedVaultName;
-  vaultType: SimplifiedVaultType
-}
-
-
-
 
 interface SimplifiedProjectStep1 {
   projectName: string | undefined;
@@ -398,4 +388,5 @@ export type {
   LaunchMode,
   TEconomyStepNumber,
   SimpleProjects,
+  VaultEco, VaultTeam,VaultTONStarter
 };

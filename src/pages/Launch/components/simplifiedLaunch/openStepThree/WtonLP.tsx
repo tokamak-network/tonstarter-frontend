@@ -1,17 +1,23 @@
 import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
-
+import {Projects,VaultLiquidityIncentive} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import {useFormikContext} from 'formik';
 
 const WtonLP = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+    const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+    
+    const wtonVault = values.vaults[7] as VaultLiquidityIncentive
+
     const detailsVault = [
-      {name: 'Vault Name', value: 'Vesting'},
-      {name: 'Admin', value: 'TON'},
-      {name: 'Contract', value: '50,000 TON'},
-    //   {name: 'Token Allocation', value: '50,000 TON'},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
+      {name: 'Vault Name', value:  `${wtonVault.vaultName}`},
+      {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
+      {name: 'Contract', value: `${wtonVault.vaultAddress? shortenAddress(wtonVault.vaultAddress) : 'NA'}`},
+    {name: 'Token Allocation', value: `${wtonVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
+    
     ];
     const detailsClaim = [
         { name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},

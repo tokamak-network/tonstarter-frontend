@@ -1,17 +1,25 @@
 import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {Projects,VaultTONStarter} from '@Launch/types';
+import {shortenAddress} from 'utils/address';
+import {useFormikContext} from 'formik';
 
 
 const TokenLP = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+
+    const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+    
+    const tokenLPVault = values.vaults[2] as VaultTONStarter
+
+
     const detailsVault = [
-      {name: 'Vault Name', value: 'Vesting'},
-      {name: 'Admin', value: 'TON'},
-      {name: 'Contract', value: '50,000 TON'},
-    //   {name: 'Token Allocation', value: '50,000 TON'},
-    //   {name: 'Token Price', value: '50,000 TON'},
-    //   {name: 'Start Time', value: '50,000 TON'},
+      {name: 'Vault Name', value:  `${values.tokenSymbol}-TOS LP Reward`},
+      {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
+      {name: 'Contract', value: `${tokenLPVault.vaultAddress? shortenAddress(tokenLPVault.vaultAddress) : 'NA'}`},
+    {name: 'Token Allocation', value: `${tokenLPVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
     ];
     const detailsClaim = [
         { name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
@@ -47,7 +55,7 @@ const TokenLP = () => {
           mt='19px'
           mb='21px'
           color={colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-         Token-TOS LP Reward
+         {values.tokenSymbol}-TOS LP Reward
         </Text>
       </Flex>
       <Flex

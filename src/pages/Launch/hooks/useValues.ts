@@ -187,20 +187,21 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
   isTokenDeployed: false,
   isTokenDeployedErr: false,
   tokenAddress: '',
-  isAllDeployed:false,
+  isAllDeployed: false,
   publicSale1DateRange: [],
   publicSale2DateRange: [],
   hardCap: undefined,
-  marketCap:  undefined,
-  totalSupply:undefined,
-  tokenPrice:  undefined,
-  dexPrice:  undefined,
+  marketCap: undefined,
+  totalSupply: undefined,
+  tokenPrice: undefined,
+  dexPrice: undefined,
   growth: undefined,
   stablePrice: undefined,
   exchangeRate: undefined,
-  vaults: [{
-    vaultTokenAllocation: 0,
-    vaultName: 'Public',
+  vaults: [
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'Public',
       vaultType: 'Public',
       adminAddress: '',
       isMandatory: true,
@@ -241,10 +242,10 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       publicRound2Allocation: undefined,
       claimStart: undefined,
       index: 0,
-  },
-  {
-    vaultTokenAllocation: 0,
-    vaultName: 'Initial Liquidity',
+    },
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'Initial Liquidity',
       vaultType: 'Initial Liquidity',
       adminAddress: '',
       isMandatory: true,
@@ -257,11 +258,11 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       poolAddress: undefined,
       tokenPair: undefined,
       startTime: undefined,
-  },
-  {
-    vaultTokenAllocation: 0,
-    vaultName: 'Ecosystem',
-      vaultType: 'Ecosystem',
+    },
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'TOKEN-TOS LP Reward',
+      vaultType: 'TOKEN-TOS LP Reward',
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -270,11 +271,11 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-  },
-  {
-    vaultTokenAllocation: 0,
-    vaultName: 'Team',
-      vaultType: 'Team',
+    },
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'Ecosystem',
+      vaultType: 'Ecosystem',
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -283,12 +284,11 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-  },
-  
-  {
-    vaultTokenAllocation: 0,
-    vaultName: 'TONStarter',
-      vaultType: 'TONStarter',
+    },
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'Team',
+      vaultType: 'Team',
       adminAddress: '',
       isMandatory: true,
       claim: defaultParams,
@@ -297,8 +297,48 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
-  },
-]
+    },
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'TON Staker',
+      vaultType: 'TON Staker',
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 5,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'TOS Staker',
+      vaultType: 'TOS Staker',
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 6,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
+
+    {
+      vaultTokenAllocation: 0,
+      vaultName: 'WTON-TOS LP Reward',
+      vaultType: 'WTON-TOS LP Reward',
+      adminAddress: '',
+      isMandatory: true,
+      claim: defaultParams,
+      vaultAddress: undefined,
+      index: 7,
+      isDeployed: false,
+      isSet: false,
+      isDeployedErr: false,
+    },
+  ],
 };
 
 const initialVaultValue: VaultC = {
@@ -320,18 +360,25 @@ const useValues = (account?: string) => {
     ? {...initialObj, owner: account, tokenOwnerAccount: account}
     : initialObj;
 
-  const initialSimplifiedObject  = account 
-  ? {...initialSimplifiedObj}
-  : initialSimplifiedObj
+  const initialSimplifiedObject = account
+    ? {...initialSimplifiedObj}
+    : initialSimplifiedObj;
 
   const [initialValues, setInitialValues] =
     useState<Projects['CreateProject']>(initialObject);
 
-  const [initialSimplifiedValues, SetInitialSimplifiedValues ] = 
-    useState<Projects['CreateSimplifiedProject']>(initialSimplifiedObject);
+  const [initialSimplifiedValues, SetInitialSimplifiedValues] = useState<
+    Projects['CreateSimplifiedProject']
+  >(initialSimplifiedObject);
 
-  return {initialValues, setInitialValues, defaultParams, initialVaultValue, initialSimplifiedValues, SetInitialSimplifiedValues};
+  return {
+    initialValues,
+    setInitialValues,
+    defaultParams,
+    initialVaultValue,
+    initialSimplifiedValues,
+    SetInitialSimplifiedValues,
+  };
 };
-
 
 export default useValues;
