@@ -51,7 +51,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
     'Unlock 48',
   ];
   const stepName = '';
-  console.log('useFormikValues', values);
+
   const getTimeStamp = () => {
     switch (
       stepName as
@@ -102,10 +102,10 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
     // Second after snapshot
     setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
-    // whitelist start to end - 5 min duration
+    // whitelist start to end - 2 days duration
     setFieldValue(
       'vaults[0].whitelistEnd',
-      snapshotDate && snapshotDate + 1 + 300,
+      snapshotDate && snapshotDate + 1 + (86400 * 2),
     );
     setFieldValue('vaults[0].publicRound1', publicSale1);
     setFieldValue('vaults[0].publicRound1End', publicSale1End);

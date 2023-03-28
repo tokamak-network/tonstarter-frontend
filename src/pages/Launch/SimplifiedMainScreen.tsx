@@ -10,7 +10,7 @@ import {
 import OpenStepOneSimplified from '@Launch/components/simplifiedLaunch/OpenStepOneSimplified';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
-import type {LaunchMode, StepNumber, VaultCommon} from '@Launch/types';
+import type {LaunchMode, StepNumber, VaultCommon, VaultPublic} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
@@ -33,12 +33,13 @@ import {ActionButton} from './components/common/simplifiedUI/ActionButton';
 
 const StepComponent = (props: {
   step: StepNumber;
+  setDisableForStep1: Dispatch<SetStateAction<boolean>>;
   setDisableForStep2: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const {step, setDisableForStep2} = props;
+  const {step, setDisableForStep2, setDisableForStep1} = props;
   switch (step) {
     case 1:
-      return <OpenStepOneSimplified step={step} setDisableForStep2={setDisableForStep2}></OpenStepOneSimplified>;
+      return <OpenStepOneSimplified step={step} setDisableForStep1={setDisableForStep1}></OpenStepOneSimplified>;
     case 2:
       return <OpenStepTwoSimplified setDisableForStep2={setDisableForStep2}></OpenStepTwoSimplified>;
     case 3:
@@ -52,6 +53,7 @@ const SimplifiedMainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
   const [isDisable, setDisable] = useState<boolean>(true);
   const [isDisableForStep2, setDisableForStep2] = useState<boolean>(true);
+  const [isDisableForStep1, setDisableForStep1] = useState<boolean>(true);
   const [isDisableForStep3, setDisableForStep3] = useState<boolean>(true);
   const theme = useTheme();
   const {account} = useActiveWeb3React();
@@ -226,6 +228,7 @@ const SimplifiedMainScreen = () => {
                 fontFamily={theme.fonts.roboto}>
                 <StepComponent
                   step={step}
+                  setDisableForStep1={setDisableForStep1}
                   setDisableForStep2={setDisableForStep2}
                 />
                 <Flex mt={'50px'} fontSize={14} justifyContent="center">
@@ -279,7 +282,7 @@ const SimplifiedMainScreen = () => {
                       <ActionButton
                         bgColor={isDisable ? 'gray.25' : 'blue.500'}
                         btnText="Save & Continue"
-                        disabled={isDisable}
+                        disabled={isDisable || isDisableForStep1}
                         color={isDisable ? '#86929d' : 'white.100'}
                         onClick={() => handleSaveAndContinue(values, account)}
                       />
