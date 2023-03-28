@@ -13,6 +13,7 @@ import {UserGuideLink} from '../common/simplifiedUI/UserGuideLink';
 import {TokenImageInput} from '../common/simplifiedUI/TokenImageInput';
 import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
 
+
 const filedNameList = [
   {title: 'projectName', requirement: true},
   {title: 'tokenName', requirement: true},
@@ -24,9 +25,8 @@ const OpenStepOneSimplified = (props: any) => {
   const {step} = props;
   const {colorMode} = useColorMode();
   const {values, setValues} = useFormikContext<Projects['CreateSimplifiedProject']>();
-
   console.log('useFormikContext', values);
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

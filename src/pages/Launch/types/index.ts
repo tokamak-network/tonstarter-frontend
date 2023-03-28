@@ -165,14 +165,14 @@ interface SimplifiedProjectStep1 {
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
   ownerAddress: string;
-  snapshotTime: number | undefined;
-  whitelistStart: number | undefined;
-  whitelistEnd: number | undefined;
-  publicSale1Start: number | undefined;
-  publicSale1End: number | undefined;
-  publicSale2Start: number | undefined;
-  publicSale2End: number | undefined;
-  // vaults: VaultAny[];
+  // snapshotTime: number | undefined;
+  // whitelistStart: number | undefined;
+  // whitelistEnd: number | undefined;
+  // publicSale1Start: number | undefined;
+  // publicSale1End: number | undefined;
+  // publicSale2Start: number | undefined;
+  // publicSale2End: number | undefined;
+  vaults: simplifiedVaultsAny[];
 }
 
 interface SimplifiedProjectStep2 {
@@ -184,7 +184,7 @@ interface SimplifiedProjectStep2 {
   growth: number | undefined;
   stablePrice: number | undefined;
   exchangeRate: number|undefined;
-  vaults : simplifiedVaultsAny[];
+  // vaults : simplifiedVaultsAny[];
 }
 interface SimplifiedProjectStep3 {
   isTokenDeployed: boolean;

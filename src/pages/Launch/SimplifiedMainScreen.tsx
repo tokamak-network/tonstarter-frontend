@@ -38,7 +38,7 @@ const StepComponent = (props: {
   const {step, setDisableForStep2} = props;
   switch (step) {
     case 1:
-      return <OpenStepOneSimplified step={step}></OpenStepOneSimplified>;
+      return <OpenStepOneSimplified step={step} setDisableForStep2={setDisableForStep2}></OpenStepOneSimplified>;
     case 2:
       return <OpenStepTwoSimplified setDisableForStep2={setDisableForStep2}></OpenStepTwoSimplified>;
     case 3:
@@ -190,7 +190,7 @@ const SimplifiedMainScreen = () => {
         validationSchema={ProjectSchema}
         validate={(values) => {
           // console.log('--formikvalues--');
-          console.log(values);
+          // console.log(values);
           if (step === 3 && oldData !== values) {
             setOldData(values);
             hashKey === undefined
