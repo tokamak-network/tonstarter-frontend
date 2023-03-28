@@ -597,23 +597,12 @@ const Public = () => {
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, publicVault]);
 
-  const statusTitle = useMemo(() => {
-    switch (vaultState) {
-      case 'notReady':
-        return 'Status';
-      case 'ready':
-        return 'Ready to deploy';
-      case 'readyForToken':
-        return 'Wating for token';
-      case 'readyForSet':
-        return 'Ready to initialize (final)';
-      case 'finished':
-        return 'Completed';
-      default:
-        break;
-    }
-  }, [vaultState]);
 
+  useEffect(()=> {
+    setBtnDisable(vaultState==='readyForToken' && !values.isAllDeployed? true:false )
+  },[values.isAllDeployed, vaultState, blockNumber])
+
+  
   const VaultClaim = (props: {}) => {
     return (
       <Flex flexDir={'column'} w="100%" px="20px">

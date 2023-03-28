@@ -52,7 +52,6 @@ const InitialLiquidity = () => {
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
-  const [infoList, setInfoList] = useState<Step3_InfoList | []>([]);
   const [infoList2, setInfoList2] = useState<Step3_InfoList | []>([]);
   const {selectedVaultName} = useVaultSelector();
   const {blockNumber} = useBlockNumber();
@@ -336,22 +335,7 @@ const InitialLiquidity = () => {
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, initialVault]);
 
-  const statusTitle = useMemo(() => {
-    switch (vaultState) {
-      case 'notReady':
-        return 'Status';
-      case 'ready':
-        return 'Ready to deploy';
-      case 'readyForToken':
-        return 'Wating for token';
-      case 'readyForSet':
-        return 'Ready to initialize (final)';
-      case 'finished':
-        return 'Completed';
-      default:
-        break;
-    }
-  }, [vaultState]);
+ 
 
   return (
     <Flex
