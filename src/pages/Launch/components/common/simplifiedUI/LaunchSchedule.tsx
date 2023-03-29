@@ -24,6 +24,18 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
   const [snapshotDate, setSnapshotDate] = useState<number | undefined>(
     publicVault.snapshot || 0,
   );
+  const [publicSale1, setPublicSale1] = useState<number | undefined>(
+    publicVault.publicRound1 || 0,
+  );
+  const [publicSale1End, setPublicSale1End] = useState<number | undefined>(
+    publicVault.publicRound1End || 0,
+  );
+  const [publicSale2, setPublicSale2] = useState<number | undefined>(
+    publicVault.publicRound2 || 0,
+  );
+  const [publicSale2End, setPublicSale2End] = useState<number | undefined>(
+    publicVault.publicRound2End || 0,
+  );
   const [unlockDate0, setUnlockDate0] = useState<number | undefined>(0);
   // STC : Start Time Cap
   const [whitelistSTC, setWhitelistSTC] = useState<number>(0);
@@ -89,21 +101,25 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
     // Second after snapshot
     setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
-    // whitelist start to end - 5 min duration
+    // whitelist start to end - 2 days duration
     setFieldValue(
       'vaults[0].whitelistEnd',
-      snapshotDate && snapshotDate + 1 + 300,
+      snapshotDate && snapshotDate + 1 + 86400 * 2,
     );
-    setFieldValue('vaults[0].publicRound1', publicSale1DateRange[0]);
-    setFieldValue('vaults[0].publicRound1End', publicSale1DateRange[1]);
-    setFieldValue('vaults[0].publicRound2', publicSale2DateRange[0]);
-    setFieldValue('vaults[0].publicRound2End', publicSale2DateRange[1]);
+    setFieldValue('vaults[0].publicRound1', publicSale1);
+    setFieldValue('vaults[0].publicRound1End', publicSale1End);
+    setFieldValue('vaults[0].publicRound2', publicSale2);
+    setFieldValue('vaults[0].publicRound2End', publicSale2End);
   }, [
     snapshotDate,
     setFieldValue,
-    publicSale1DateRange,
+    publicSale1,
+    publicSale1End,
+    publicSale2,
+    publicSale2End,
     publicSale2DateRange,
     whitelistDateRange,
+    publicSale1DateRange,
   ]);
 
   // Update the start time caps for calendar inputs according to any date range changes
@@ -141,6 +157,17 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
       setLastUnlockDate(lastUnlock);
     }
   }, [unlockDate0, lastUnlockDate]);
+
+  useEffect(() => {
+    if (publicSale2DateRange) {
+      setPublicSale2(publicSale2DateRange[0]);
+      setPublicSale2End(publicSale2DateRange[1]);
+    }
+    if (publicSale1DateRange) {
+      setPublicSale1(publicSale1DateRange[0]);
+      setPublicSale1End(publicSale1DateRange[1]);
+    }
+  }, [publicSale2DateRange, publicSale2, publicSale1DateRange, publicSale1]);
 
   return (
     <Grid my={'40px'}>
@@ -279,16 +306,16 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               {/* Public sale 1 date & time */}
               {step === 'Public Sale 1' && (
                 <GridItem w={'106px'} mr={'28px'}>
-                  {!publicSale1DateRange ? (
+                  {!publicSale1 || !publicSale1End ? (
                     <Text color="red.400" ml={'20px'} w={'62px'}>
                       {'Choose Date & Time'}
                     </Text>
                   ) : (
                     <Text>{`${convertTimeStamp(
-                      Number(publicSale1DateRange[0]),
+                      Number(publicSale1),
                       'YYYY.MM.DD HH:mm:ss',
                     )} ~${convertTimeStamp(
-                      Number(publicSale1DateRange[1]),
+                      Number(publicSale1End),
                       'MM.DD HH:mm:ss',
                     )}`}</Text>
                   )}
@@ -297,16 +324,16 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
               {/* Public sale 2 date & time */}
               {step === 'Public Sale 2' && (
                 <GridItem w={'106px'} mr={'40px'}>
-                  {!publicSale2DateRange ? (
+                  {!publicSale2 || !publicSale2End ? (
                     <Text color="red.400" ml={'20px'} w={'62px'}>
                       {'Choose Date & Time'}
                     </Text>
                   ) : (
                     <Text>{`${convertTimeStamp(
-                      Number(publicSale2DateRange[0]),
+                      Number(publicSale2),
                       'YYYY.MM.DD HH:mm:ss',
                     )} ~${convertTimeStamp(
-                      Number(publicSale2DateRange[1]),
+                      Number(publicSale2End),
                       'MM.DD HH:mm:ss',
                     )}`}</Text>
                   )}

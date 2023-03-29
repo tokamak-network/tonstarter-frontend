@@ -70,11 +70,12 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     useExpanded,
     usePagination,
   );
+  
   const match = useRouteMatch();
   const {url} = match;
   const {colorMode} = useColorMode();
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-
+  
   const theme = useTheme();
   const {account, library, chainId} = useActiveWeb3React();
   const focusTarget = useRef<any>([]);
@@ -82,9 +83,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     ProjectTokenProxy,
     ProjectTokenABI.abi,
     library,
-  );
-
-  
+    );
+    
   useEffect(() => {
     async function getNFTInfo() {
       if (account === null || account === undefined || library === undefined) {
@@ -297,6 +297,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       tokenID,
                     } = cell.row.original;
                     const type = cell.column.id;
+                    // {/* TODO: Change this check value to isSimplified later */}
+                    const marketCap = project?.marketCap;
                     return (
                       <chakra.td
                         key={index}
@@ -367,7 +369,9 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                             w={'312px'}
                             justifyContent={'center'}
                             gap={'10px'}>
-                            <Link to={`${url}/${key}`}>
+                              {/* TODO: Change this check value to isSimplified later */}
+                            { marketCap ?
+                            (<Link to={`${url}/simplified/${key}/`}>
                               <Button
                                 fontWeight={'normal'}
                                 w={'90px'}
@@ -381,7 +385,22 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                                 _active={{bg: 'transparent'}}>
                                 Edit
                               </Button>
-                            </Link>
+                            </Link>) : 
+                            (<Link to={`${url}/${key}/`}>
+                              <Button
+                                fontWeight={'normal'}
+                                w={'90px'}
+                                h={'40px'}
+                                mx={'5px'}
+                                bg={'transparent'}
+                                color={'#2a72e5'}
+                                fontSize={'12px'}
+                                border={'solid 1px #2a72e5'}
+                                _hover={{bg: 'transparent'}}
+                                _active={{bg: 'transparent'}}>
+                                Edit
+                              </Button>
+                            </Link>)}
                             {status === true ? (
                               listed === true ? (
                                 tokenID !== null ? (

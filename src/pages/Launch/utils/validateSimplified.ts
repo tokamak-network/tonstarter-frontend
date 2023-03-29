@@ -1,0 +1,248 @@
+import {Projects, VaultPublic, VaultSchedule} from '@Launch/types';
+import {snapshotGap} from '@Launch/const';
+import {isArray} from 'lodash';
+
+function validateSimplifiedFormikValues(
+  values: Projects['CreateSimplifiedProject'],
+) {
+  const fields: any[] = [];
+  const fieldsStep2: any[] = [];
+
+  //get public vault properties
+  const {
+    snapshot,
+    whitelistEnd,
+    publicRound1,
+    publicRound1End,
+    publicRound2,
+    publicRound2End,
+    publicRound1Allocation,
+    publicRound2Allocation,
+    vaultTokenAllocation,
+    stosTier,
+    claim,
+  } = values.vaults[0] as VaultPublic;
+
+  const step1FilledOut = () => {
+    if (snapshot && snapshot < snapshotGap) {
+      fields.push(false);
+    } else {
+      fields.push(true);
+    }
+
+    // Public sale 1 should be later than snapshot
+    if (publicRound1 && snapshot && snapshot < publicRound1) {
+      fields.push(true);
+    } else {
+      fields.push(false);
+    }
+
+    // Public sale 1 should be later than whitelist
+    if (publicRound1 && whitelistEnd && whitelistEnd < publicRound1) {
+      fields.push(true);
+    } else {
+      fields.push(false);
+    }
+
+    const getDuration = (start: any, end: any) => {
+      console.log('getDuration', Math.round((end - start) / 86400));
+      return Math.round((end - start) / 86400);
+    };
+
+    // Is there 2 day gap btw publicRound1 ~ publicRound1End
+    if (publicRound1 && publicRound1End) {
+      getDuration(publicRound1, publicRound1End) <= 2
+        ? fields.push(true)
+        : fields.push(false);
+    }
+
+    // Is there 2 day gap btw publicRound2 ~ publicRound2End
+    if (publicRound2 && publicRound2End) {
+      getDuration(publicRound2, publicRound2End) <= 2
+        ? fields.push(true)
+        : fields.push(false);
+    }
+
+    // Public sale 2 start time should be later than Public sale 1 end time
+    if (publicRound2 && publicRound1End && publicRound1End < publicRound2) {
+      fields.push(true);
+    } else {
+      fields.push(false);
+    }
+
+    if (values.description !== '<p><br></p>') {
+      fields.push(true);
+    } else {
+      fields.push(false);
+    }
+    
+    const results = fields.filter((field: boolean) => field === false)
+    return results.length > 0 ? false : true;
+  };
+
+  const step2FilledOut = () => {
+    const thisFields: any[] = [];
+    // Is Funding target, marketCap, or totalSupply undefined?
+    if (
+      values.fundingTarget !== undefined ||
+      values.marketCap !== undefined ||
+      values.totalSupply !== undefined
+    ) {
+      fieldsStep2.push(true);
+    } else {
+      fieldsStep2.push(false);
+    }
+
+    // // For the calculation of Token funding price
+    if (values.projectTokenPrice !== undefined) {
+      fieldsStep2.push(true);
+    } else {
+      fieldsStep2.push(false);
+    }
+
+    // //  For the calculation of Token Listing Price (DEX)
+    if (values.tosPrice !== undefined && !Number.isNaN(values.tosPrice)) {
+      fieldsStep2.push(true);
+    } else {
+      fieldsStep2.push(false);
+    }
+
+    values.vaults.map((vault: any) => {
+    Object.values(vault).some((val) => {
+      if (typeof val === 'object') {
+        //STOS Tier Object handle
+        if (val?.hasOwnProperty('oneTier')) {
+          for (const property in val) {
+            if (
+              //@ts-ignore
+              val[property].requiredStos === undefined ||
+              //@ts-ignore
+              val[property].requiredStos === '' ||
+              //@ts-ignore
+              val[property].allocatedToken === undefined ||
+              //@ts-ignore
+              val[property].allocatedToken === ''
+            ) {
+              // thisFields.push(property);
+              return fieldsStep2.push(false);
+            }
+            return fieldsStep2.push(true);
+          }
+        }
+        // Claim array handle
+        if (isArray(val)) {
+          if (vault.index === 1) {
+            return fieldsStep2.push(true);
+          }
+
+          const isMatchingTotalAllocation = val.reduce(
+            (prev, cur: VaultSchedule) => {
+              if (
+                cur.claimTokenAllocation !== undefined &&
+                cur.claimTokenAllocation !== null
+              ) {
+                return prev + Number(cur?.claimTokenAllocation);
+              }
+            },
+            0,
+          );
+
+          //For public vault only
+          if (vault.index === 0) {
+            const {oneTier, twoTier, threeTier, fourTier} = stosTier;
+            const numVaultTokenAllocation = Number(vaultTokenAllocation);
+            const numPublicRound1Allocation = Number(publicRound1Allocation);
+            const numPublicRound2Allocation = Number(publicRound2Allocation);
+            const stosTierAllocation =
+              Number(oneTier.allocatedToken) +
+              Number(twoTier.allocatedToken) +
+              Number(threeTier.allocatedToken) +
+              Number(fourTier.allocatedToken);
+
+            //for Token tab
+            if (
+              numVaultTokenAllocation !==
+              numPublicRound1Allocation + numPublicRound2Allocation
+            ) {
+              thisFields.push('publicRound');
+            }
+
+            //for Schedule tab
+            if (claim) {
+              if (claim[0] && claim[0].claimTime !== undefined) {
+                fieldsStep2.push(true);
+            }else {
+              fieldsStep2.push(false);
+            }
+
+            //for sTOS Tier tab
+            if (numVaultTokenAllocation !== stosTierAllocation) {
+              thisFields.push('stos tier');
+            }
+          }
+
+          //claimRound
+          if (
+            isMatchingTotalAllocation === undefined ||
+            isMatchingTotalAllocation === 0
+          ) {
+            thisFields.push('claimTokenAllocation');
+            fieldsStep2.push(false);
+          }
+
+          if (
+            vault.vaultTokenAllocation !== 0 &&
+            (vault.vaultTokenAllocation === undefined ||
+              isMatchingTotalAllocation !== vault.vaultTokenAllocation)
+          ) {
+            thisFields.push('vaultTokenAllocation');
+            fieldsStep2.push(false);
+          }
+
+          //need to add validate to compare total and allocation
+          val.map((claimSchedule: VaultSchedule, index: number) => {
+            if (
+              claimSchedule.claimTime === undefined ||
+              claimSchedule.claimTokenAllocation === undefined ||
+              claimSchedule.claimTime === null ||
+              claimSchedule.claimTokenAllocation === null
+            ) {
+              thisFields.push('claimSchedule');
+              fieldsStep2.push(false);
+            }
+
+            if (
+              publicRound2End &&
+              claimSchedule &&
+              claimSchedule.claimTime !== undefined &&
+              claimSchedule.claimTime < publicRound2End
+            ) {
+              thisFields.push('claimSchedule');
+              return fieldsStep2.push(false);
+            }
+
+            return fieldsStep2.push(true);
+          });
+        }
+      }
+      // if (val === undefined || val === '') {
+      //   return fieldsStep2.push(false);
+      // } else {
+      //   return fieldsStep2.push(true);
+      // }
+    }});
+    });
+
+    console.log('Check this fields', thisFields);
+
+  };
+
+  step1FilledOut();
+  step2FilledOut();
+  const results = fields.filter((field: boolean) => field === false) || fieldsStep2.filter((field: boolean) => field === false);
+  
+  console.log('results from validation', results)
+  return results.length > 0 ? false : true;
+}
+
+export default validateSimplifiedFormikValues;

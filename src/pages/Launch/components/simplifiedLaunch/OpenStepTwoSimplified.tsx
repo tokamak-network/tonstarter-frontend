@@ -3,7 +3,7 @@ import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import StepHeader from './StepHeader';
 import StepComponent from './openStepTwo/StepComponent';
 import GraphComponent from './openStepTwo/GraphComponent';
-import validateSimplifiedFormikValues from '@Launch/utils/validateSimplifiedStep2';
+import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import { useFormikContext } from 'formik';
 import {Projects} from '@Launch/types';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';

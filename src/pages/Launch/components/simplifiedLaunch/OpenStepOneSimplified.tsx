@@ -12,7 +12,7 @@ import {LaunchSchedule} from '../common/simplifiedUI/LaunchSchedule';
 import {UserGuideLink} from '../common/simplifiedUI/UserGuideLink';
 import {TokenImageInput} from '../common/simplifiedUI/TokenImageInput';
 import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
-
+import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -22,15 +22,21 @@ const filedNameList = [
 ];
 
 const OpenStepOneSimplified = (props: any) => {
-  const {step} = props;
+  const {step, setDisableForStep1} = props;
   const {colorMode} = useColorMode();
-  const {values, setValues} = useFormikContext<Projects['CreateSimplifiedProject']>();
+  const {values, setValues} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const testvalues = testValue();
+
+  useEffect(() => {
+    const validation = validateSimplifiedFormikValues(values);
+    setDisableForStep1(!validation);
+  }, [values, setDisableForStep1]);
 
   return (
     <Flex

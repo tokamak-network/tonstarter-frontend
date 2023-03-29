@@ -179,6 +179,7 @@ const initialObj: Projects['CreateProject'] = {
 };
 
 const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
+  isSimplified: true,
   projectName: undefined,
   description: undefined,
   tokenName: undefined,

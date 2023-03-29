@@ -10,7 +10,7 @@ import {
 import OpenStepOneSimplified from '@Launch/components/simplifiedLaunch/OpenStepOneSimplified';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
-import type {LaunchMode, StepNumber, VaultCommon} from '@Launch/types';
+import type {LaunchMode, StepNumber, VaultCommon, VaultPublic} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
@@ -33,12 +33,13 @@ import {ActionButton} from './components/common/simplifiedUI/ActionButton';
 
 const StepComponent = (props: {
   step: StepNumber;
+  setDisableForStep1: Dispatch<SetStateAction<boolean>>;
   setDisableForStep2: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const {step, setDisableForStep2} = props;
+  const {step, setDisableForStep2, setDisableForStep1} = props;
   switch (step) {
     case 1:
-      return <OpenStepOneSimplified step={step} setDisableForStep2={setDisableForStep2}></OpenStepOneSimplified>;
+      return <OpenStepOneSimplified step={step} setDisableForStep1={setDisableForStep1}></OpenStepOneSimplified>;
     case 2:
       return <OpenStepTwoSimplified setDisableForStep2={setDisableForStep2}></OpenStepTwoSimplified>;
     case 3:
@@ -52,11 +53,12 @@ const SimplifiedMainScreen = () => {
   const [step, setStep] = useState<StepNumber>(1);
   const [isDisable, setDisable] = useState<boolean>(true);
   const [isDisableForStep2, setDisableForStep2] = useState<boolean>(true);
+  const [isDisableForStep1, setDisableForStep1] = useState<boolean>(true);
   const [isDisableForStep3, setDisableForStep3] = useState<boolean>(true);
   const theme = useTheme();
   const {account} = useActiveWeb3React();
   const {initialSimplifiedValues} = useValues(account || '');
-  const [project, setProject] = useState<any>();
+  // const [project, setProject] = useState<any>();
   const history = useHistory();
   const [oldData, setOldData] = useState();
   const [saveBtnDisable, setSaveBtnDisable] = useState(false);
@@ -91,31 +93,31 @@ const SimplifiedMainScreen = () => {
   /**
    * Fetch projects data from api
    */
-  const {data} = useQuery(
-    ['test'],
-    () =>
-      axios.get(fetchCampaginURL, {
-        headers: {
-          account,
-        },
-      }),
-    {
-      refetchInterval: 600000,
-    },
-  );
+  // const {data} = useQuery(
+  //   ['test'],
+  //   () =>
+  //     axios.get(fetchCampaginURL, {
+  //       headers: {
+  //         account,
+  //       },
+  //     }),
+  //   {
+  //     refetchInterval: 600000,
+  //   },
+  // );
 
-  useEffect(() => {
-    if (data) {
-      const {data: ProjectDetail} = data;
-      dispatch(fetchProjects({data: ProjectDetail}));
-      setProject(ProjectDetail.name);
-    }
-  }, [data, dispatch]);
+  // useEffect(() => {
+  //   if (data) {
+  //     const {data: ProjectDetail} = data;
+  //     dispatch(fetchProjects({data: ProjectDetail}));
+  //     setProject(ProjectDetail.name);
+  //   }
+  // }, [data, dispatch]);
 
   /** Check if this project is deployed */
-  useEffect(() => {
-    dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
+  // }, []);
 
   useEffect(() => {
     dispatch(
@@ -140,19 +142,21 @@ const SimplifiedMainScreen = () => {
     if (isDisable) {
       return 'gray.25';
     }
-    return step === 1 && isExist === 'project' ? 'yellow.200' : '#00c3c4';
+    return step === 1 && isExist !== 'createprojectsimple' && hashKey ? 'yellow.200' : '#00c3c4';
   };
 
-  const handleSaveProject = (values: any, account: string, mode: boolean) => {
+  const handleSaveProject = (values: any, account: string, mode: boolean
+) => {
     account && isExist === 'createprojectsimple' && hashKey === undefined
     ? saveProject(values, account, mode)
     : editProject(values, account as string, hashKey || isExist, mode);
+    console.log('hashKey', hashKey); 
   };
 
   const handleSaveAndContinue = (values: any, account: string) => {
     console.log('values', values)
     account && isExist === 'createprojectsimple' && hashKey === undefined
-      ? saveProject(values, account)
+      ? saveProject(values, account, true)
       : editProject(values, account as string, hashKey || isExist);
     handleStep(true);
   };
@@ -226,6 +230,7 @@ const SimplifiedMainScreen = () => {
                 fontFamily={theme.fonts.roboto}>
                 <StepComponent
                   step={step}
+                  setDisableForStep1={setDisableForStep1}
                   setDisableForStep2={setDisableForStep2}
                 />
                 <Flex mt={'50px'} fontSize={14} justifyContent="center">
@@ -279,7 +284,7 @@ const SimplifiedMainScreen = () => {
                       <ActionButton
                         bgColor={isDisable ? 'gray.25' : 'blue.500'}
                         btnText="Save & Continue"
-                        disabled={isDisable}
+                        disabled={isDisable || isDisableForStep1}
                         color={isDisable ? '#86929d' : 'white.100'}
                         onClick={() => handleSaveAndContinue(values, account)}
                       />
