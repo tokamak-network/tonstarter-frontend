@@ -58,7 +58,7 @@ const SimplifiedMainScreen = () => {
   const theme = useTheme();
   const {account} = useActiveWeb3React();
   const {initialSimplifiedValues} = useValues(account || '');
-  const [project, setProject] = useState<any>();
+  // const [project, setProject] = useState<any>();
   const history = useHistory();
   const [oldData, setOldData] = useState();
   const [saveBtnDisable, setSaveBtnDisable] = useState(false);
@@ -93,31 +93,31 @@ const SimplifiedMainScreen = () => {
   /**
    * Fetch projects data from api
    */
-  const {data} = useQuery(
-    ['test'],
-    () =>
-      axios.get(fetchCampaginURL, {
-        headers: {
-          account,
-        },
-      }),
-    {
-      refetchInterval: 600000,
-    },
-  );
+  // const {data} = useQuery(
+  //   ['test'],
+  //   () =>
+  //     axios.get(fetchCampaginURL, {
+  //       headers: {
+  //         account,
+  //       },
+  //     }),
+  //   {
+  //     refetchInterval: 600000,
+  //   },
+  // );
 
-  useEffect(() => {
-    if (data) {
-      const {data: ProjectDetail} = data;
-      dispatch(fetchProjects({data: ProjectDetail}));
-      setProject(ProjectDetail.name);
-    }
-  }, [data, dispatch]);
+  // useEffect(() => {
+  //   if (data) {
+  //     const {data: ProjectDetail} = data;
+  //     dispatch(fetchProjects({data: ProjectDetail}));
+  //     setProject(ProjectDetail.name);
+  //   }
+  // }, [data, dispatch]);
 
   /** Check if this project is deployed */
-  useEffect(() => {
-    dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
+  // }, []);
 
   useEffect(() => {
     dispatch(
@@ -142,19 +142,21 @@ const SimplifiedMainScreen = () => {
     if (isDisable) {
       return 'gray.25';
     }
-    return step === 1 && isExist === 'project' ? 'yellow.200' : '#00c3c4';
+    return step === 1 && isExist !== 'createprojectsimple' && hashKey ? 'yellow.200' : '#00c3c4';
   };
 
-  const handleSaveProject = (values: any, account: string, mode: boolean) => {
+  const handleSaveProject = (values: any, account: string, mode: boolean
+) => {
     account && isExist === 'createprojectsimple' && hashKey === undefined
     ? saveProject(values, account, mode)
     : editProject(values, account as string, hashKey || isExist, mode);
+    console.log('hashKey', hashKey); 
   };
 
   const handleSaveAndContinue = (values: any, account: string) => {
     console.log('values', values)
     account && isExist === 'createprojectsimple' && hashKey === undefined
-      ? saveProject(values, account)
+      ? saveProject(values, account, true)
       : editProject(values, account as string, hashKey || isExist);
     handleStep(true);
   };

@@ -171,20 +171,13 @@ interface ProjectStep3 {
 }
 
 interface SimplifiedProjectStep1 {
+  isSimplified: boolean;
   projectName: string | undefined;
   description: string | undefined;
   tokenName: string | undefined;
   tokenSymbol: string | undefined;
   tokenSymbolImage: string;
   ownerAddress: string;
- 
-  // snapshotTime: number | undefined;
-  // whitelistStart: number | undefined;
-  // whitelistEnd: number | undefined;
-  // publicSale1Start: number | undefined;
-  // publicSale1End: number | undefined;
-  // publicSale2Start: number | undefined;
-  // publicSale2End: nuåmber | undefined;
   vaults: simplifiedVaultsAny[];
 }
 
