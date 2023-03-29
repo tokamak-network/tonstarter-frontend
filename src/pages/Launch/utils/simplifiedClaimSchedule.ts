@@ -108,10 +108,10 @@ export const schedules = (vaultType: String, tokenAllocation: number, public2End
 
       case 'Vesting': 
       rounds.push(
-        {claimRound: 1, claimTime: monthGapTimeStamp(public2End+1, 0), claimTokenAllocation: 50},
-        {claimRound: 2, claimTime: monthGapTimeStamp(public2End+1, 9), claimTokenAllocation: 17},
-        {claimRound: 3, claimTime: monthGapTimeStamp(public2End+1, 18), claimTokenAllocation: 17},
-        {claimRound: 4, claimTime: monthGapTimeStamp(public2End+1, 27), claimTokenAllocation: 16},
+        {claimRound: 1, claimTime: monthGapTimeStamp(public2End+1, 0), claimTokenAllocation: 40},
+        {claimRound: 2, claimTime: monthGapTimeStamp(public2End+1, 12), claimTokenAllocation: 20},
+        {claimRound: 3, claimTime: monthGapTimeStamp(public2End+1, 24), claimTokenAllocation: 20},
+        {claimRound: 4, claimTime: monthGapTimeStamp(public2End+1, 36), claimTokenAllocation: 20},
       )
   }
 

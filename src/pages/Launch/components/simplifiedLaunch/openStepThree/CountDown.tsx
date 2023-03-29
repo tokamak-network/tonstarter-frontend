@@ -15,7 +15,6 @@ const CountDown = () => {
   const calculateDuration = (snapshot: number) => moment.duration(Math.max(snapshot - (Math.floor(Date.now() / 1000)), 0), 'seconds');
 const [duration, setDuration] = useState(calculateDuration(snapshot? snapshot: 0));
 
-const timerRef = useRef(0);
   const timerCallback = useCallback(() => {
     setDuration(calculateDuration(snapshot? snapshot: 0));
   }, [snapshot])
