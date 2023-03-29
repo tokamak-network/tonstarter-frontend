@@ -36,8 +36,8 @@ const StepHeader = (props: {deploySteps: boolean; deployStep?: number, title:str
       )}
       {deploySteps && deployStep ? (
         <Flex color='blue.200' fontSize={'13px'}>
-          <Text color={'white.100'} mr='2px'>Progress</Text>
-          <Text>{deployStep}/10</Text>
+          {/* <Text color={'white.100'} mr='2px'>Progress</Text>
+          <Text>{deployStep}/10</Text> */}
         </Flex>
       ) : (
         <></>
