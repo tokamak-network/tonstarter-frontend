@@ -54,6 +54,8 @@ const MyProjects = () => {
     ProjectTokenABI.abi,
     library,
   );
+
+
   useEffect(() => {
     async function getData () {
       if (data) {
@@ -177,7 +179,7 @@ const MyProjects = () => {
     ],
     [],
   );
-
+  
   return (
     <Flex flexDir={'row'} alignSelf="center" w={'1102px'} h={'100%'}>
       <Box display={'flex'} flexDir={'column'}>
