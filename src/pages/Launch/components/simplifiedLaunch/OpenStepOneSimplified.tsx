@@ -47,7 +47,8 @@ const OpenStepOneSimplified = (props: any) => {
       borderRadius={'10px'}
       border={colorMode === 'light' ? '' : '1px solid #373737'}
       flexDir="column">
-      {isProduction() === false && (
+        {/* TODO: add a test value file for simplified launch */}
+      {/* {isProduction() === false && (
         <Flex
           justifyContent={'center'}
           pos="absolute"
@@ -58,7 +59,7 @@ const OpenStepOneSimplified = (props: any) => {
             //@ts-ignore
             func={() => setValues(testvalues)}></CustomButton>
         </Flex>
-      )}
+      )} */}
       <Box mb={'23px'}>
         <Flex>
           <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>

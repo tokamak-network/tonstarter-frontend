@@ -17,32 +17,35 @@ import TonStaker from './openStepThree/TonStaker';
 import TosStaker from './openStepThree/TosStaker';
 import WtonLP from './openStepThree/WtonLP';
 import ConfirmTokenSimplifiedModal from '../modals/ConfirmTokenSimplified';
+import {useModal} from 'hooks/useModal';
+import EstimateGasModal from './openStepThree/EstimateGas';
+
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
   switch (vaultNum) {
-    case 0: 
-    return <Flex>Gas check</Flex>
-    case 1:
+    // case 0: 
+    // return <Flex>Gas check</Flex>
+    case 0:
       return <ProjectToken />;
-    case 2:
+    case 1:
       return <InitialLiquidity />;
-    case 3:
+    case 2:
       return <Vesting/>;
-    case 4: 
+    case 3: 
     return <Public/>;
-    case 5: 
+    case 4: 
     return <TonStaker/>;
-    case 6: 
+    case 5: 
     return <TosStaker/>;
-    case 7: 
+    case 6: 
     return  <WtonLP/>;
-    case 8: 
+    case 7: 
     return <TokenLP/>;
-    case 9: 
+    case 8: 
     return <Ecosystem/>;
-    case 10: 
+    case 9: 
     return <Team/>;
-    case 11: 
+    case 10: 
     return <Distribute/>;
 
     default:
@@ -56,6 +59,13 @@ const OpenStepThreeSimplified = (props: any) => {
   const [currentStep, setCurrentStep] = useState(0);
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
+
+    const {openAnyModal} = useModal();
+    useState(() => {
+      openAnyModal('Launch_EstimateGas', {
+        from: 'launch/createprojectsimple',
+      })}
+    )
     
   return (
     <Flex
@@ -76,6 +86,7 @@ const OpenStepThreeSimplified = (props: any) => {
       />
     <VaultComp vaultNum={currentStep}/>
     <ConfirmTokenSimplifiedModal/>
+    <EstimateGasModal />
     </Flex>
   );
 };
