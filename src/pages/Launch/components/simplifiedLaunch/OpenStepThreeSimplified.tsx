@@ -4,7 +4,7 @@ import StepHeader from './StepHeader';
 import StepThreeSteps from './openStepThree/StepThreeSteps';
 import {useState} from 'react';
 import InitialLiquidity from './openStepThree/InitialLiquidity';
-import Initiate from './openStepThree/Initiate';
+import Distribute from './openStepThree/Distribute';
 import ProjectToken from './openStepThree/ProjectToken';
 import Vesting from './openStepThree/Vesting';
 import Public from './openStepThree/Public';
@@ -31,19 +31,19 @@ const VaultComp = (props: {vaultNum: Number}) => {
     case 4: 
     return <Public/>;
     case 5: 
-    return <Team/>;
-    case 6: 
-    return <Ecosystem/>;
-    case 7: 
-    return <TokenLP/>;
-    case 8: 
     return <TonStaker/>;
-    case 9: 
+    case 6: 
     return <TosStaker/>;
+    case 7: 
+    return  <WtonLP/>;
+    case 8: 
+    return <TokenLP/>;
+    case 9: 
+    return <Ecosystem/>;
     case 10: 
-    return <WtonLP/>;
+    return <Team/>;
     case 11: 
-    return <Initiate/>;
+    return <Distribute/>;
 
     default:
     return <Flex>No vault</Flex>

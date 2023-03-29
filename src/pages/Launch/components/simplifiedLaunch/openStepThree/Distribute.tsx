@@ -1,10 +1,16 @@
 import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {useFormikContext} from 'formik';
 
+import {Projects, VaultLiquidityIncentive} from '@Launch/types';
 
-const Initiate = () => {
+const Distribute = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+
+    const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+
     return (
         <Flex
         mt="30px"
@@ -37,11 +43,11 @@ const Initiate = () => {
           mr={'12px'}
           _hover={{}}
           borderRadius={4}>
-          Deploy
+          Distribute
         </Button>
       </Flex>
         </Flex>
     )
 }
 
-export default Initiate;
+export default Distribute;

@@ -109,12 +109,6 @@ const TonStaker = () => {
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, tonVault]);
 
-  useEffect(() => {
-    setBtnDisable(
-      vaultState === 'readyForToken' && !values.isAllDeployed ? true : false,
-    );
-  }, [values.isAllDeployed, vaultState, blockNumber]);
-
 
   const detailsVault = [
     {name: 'Vault Name', value: `${tonVault.vaultName}`},
@@ -279,9 +273,12 @@ const TonStaker = () => {
           _hover={{}}
           isDisabled={
             vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable
+              ? btnDisable :
+              vaultState === 'readyForToken' && !values.isAllDeployed ? true
               : false
           }
+          _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
+
           onClick={() => {
             vaultDeploy();
           }}
