@@ -15,7 +15,7 @@ const DetailComponent = () => {
     {name: 'Current Market Cap', detail: `$ ${values.marketCap? (values.marketCap).toLocaleString():'0'}`},
     {name: 'Total Supply', detail: `${values.totalSupply? (values.totalSupply).toLocaleString():'0'} ${values.tokenSymbol}`},
     {name: 'Token Funding Price', detail: `${values.projectTokenPrice? (1/values.projectTokenPrice).toLocaleString():'0'} TON`},
-    {name: 'Token Listing Price (DEX)', detail: `${( 1/values.tosPrice).toLocaleString()} TOS`},
+    {name: 'Token Listing Price (DEX)', detail: `${values.tosPrice !== 0? ( 1/values.tosPrice).toLocaleString():0} TOS`},
   ];
   return (
   <Flex mt="30px" flexDir={'column'}>
