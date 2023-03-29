@@ -113,6 +113,8 @@ function validateSimplifiedFormikValues(
         //STOS Tier Object handle
         if (val?.hasOwnProperty('oneTier')) {
           for (const property in val) {
+            console.log(val);
+            
             if (
               //@ts-ignore
               val[property].requiredStos === undefined ||
@@ -176,7 +178,7 @@ function validateSimplifiedFormikValues(
             }
 
             //for sTOS Tier tab
-            if (numVaultTokenAllocation !== stosTierAllocation) {
+            if (numPublicRound1Allocation !== stosTierAllocation) {
               thisFields.push('stos tier');
             }
           }

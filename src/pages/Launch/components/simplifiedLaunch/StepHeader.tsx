@@ -1,5 +1,6 @@
 import {Flex, useColorMode, Text, useTheme, Image} from '@chakra-ui/react';
 import iconUserGuide from 'assets/images/iconUserGuide.png';
+import CountDown from './openStepThree/CountDown';
 const StepHeader = (props: {deploySteps: boolean; deployStep?: number, title:string}) => {
   const {deploySteps, deployStep,title} = props;
   const {colorMode} = useColorMode();
@@ -30,6 +31,9 @@ const StepHeader = (props: {deploySteps: boolean; deployStep?: number, title:str
           User Guide
         </Text>
       </Flex>
+      {deploySteps && (
+        <CountDown/>
+      )}
       {deploySteps && deployStep ? (
         <Flex color='blue.200' fontSize={'13px'}>
           <Text color={'white.100'} mr='2px'>Progress</Text>

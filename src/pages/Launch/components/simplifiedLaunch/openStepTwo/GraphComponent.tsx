@@ -7,11 +7,11 @@ const GraphComponent = () => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
     const colors = [
-        '#1b3c6b',
+        '#f17235',
         '#2b66aa',
-        '#5da344',
+        '#f23c35',
         '#f7b729',
-        '#80b1d3',
+        '#5da344',
         '#fdb462',
         '#ffffb3',
         '#fccde5',

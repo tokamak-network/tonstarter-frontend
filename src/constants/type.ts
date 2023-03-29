@@ -41,6 +41,7 @@ export type DEPLOYED_TYPE = {
   DAOVault: string;
   AutoCoinageSnapshot2_ADDRESS: string;
   TokenDividendProxyPool_ADDRESS: string;
+  TokenDistribute: string;
   pools: {
     TOS_WTON_POOL: string;
     ETH_WTON_Address: string;

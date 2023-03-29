@@ -100,6 +100,12 @@ const Public = () => {
 
   const schedule = [
     {
+      name: 'Snapshot',
+      value: `${moment
+        .unix(Number(publicVault.snapshot))
+        .format('YYYY.MM.DD HH:mm:ss')}`,
+    },
+    {
       name: 'Whitelist',
       value: `${moment
         .unix(Number(publicVault.whitelist))
