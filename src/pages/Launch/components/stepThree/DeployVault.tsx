@@ -176,7 +176,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
     }
   })[0];
 
-  console.log('ggg');
   
   //check vault state from contract
   useEffect(() => {

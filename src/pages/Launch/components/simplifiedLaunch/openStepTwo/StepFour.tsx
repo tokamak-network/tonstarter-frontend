@@ -20,8 +20,6 @@ const StepFour = () => {
     
     setFieldValue('tosPrice',1/e)
   };
-
-  console.log('values', values);
   
   return (
     <Flex flexDir={'column'} h="142px" alignItems={'flex-start'}>

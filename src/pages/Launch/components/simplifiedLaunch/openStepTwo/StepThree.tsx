@@ -40,14 +40,12 @@ const StepThree = (props: {currentStep: Number}) => {
         res.json(),
       );      
       const tonPrice = tonPriceObj[0].current_price;
-      console.log('tonPrice',tonPrice);
       
       setTonInDollars(tonPrice);
       const poolData = await fetchPoolPayload(library);
 
       const token0Price = Number(poolData.token0Price);
-      console.log('token0Price',token0Price);
-      
+        
       setTonPriceInTos(token0Price);
       // console.log(token0Price);
       // const tonPriceInTos =

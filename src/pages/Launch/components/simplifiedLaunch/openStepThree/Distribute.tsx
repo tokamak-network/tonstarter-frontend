@@ -53,10 +53,7 @@ const Distribute = () => {
           ) {
             const tokenBalance = await ERC20_CONTRACT.balanceOf(
               vault.vaultAddress,
-            );
-
-            console.log('tokenBalance',tokenBalance);
-            
+            );            
 
             if (tokenBalance && vault.vaultTokenAllocation) {
               const hasToken =
