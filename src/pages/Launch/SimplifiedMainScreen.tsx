@@ -114,7 +114,7 @@ const SimplifiedMainScreen = () => {
   //   }
   // }, [data, dispatch]);
 
-  /** Check if this project is deployed */
+  // /** Check if this project is deployed */
   // useEffect(() => {
   //   dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
   // }, []);
@@ -150,7 +150,6 @@ const SimplifiedMainScreen = () => {
     account && isExist === 'createprojectsimple' && hashKey === undefined
     ? saveProject(values, account, mode)
     : editProject(values, account as string, hashKey || isExist, mode);
-    console.log('hashKey', hashKey); 
   };
 
   const handleSaveAndContinue = (values: any, account: string) => {
@@ -235,7 +234,7 @@ const SimplifiedMainScreen = () => {
                 />
                 <Flex mt={'50px'} fontSize={14} justifyContent="center">
                   {/* Step 1 && Project is Deployed */}
-                  {step === 1 && isExist === 'project' ? (
+                  {step === 1 && hashKey !== undefined && isExist !== 'createprojectsimple' ? (
                     <ButtonGroup>
                       <ActionButton
                         bgColor="#00c3c4"
@@ -260,7 +259,6 @@ const SimplifiedMainScreen = () => {
                       btnText="Save"
                       isDisabled={isSubmitting}
                       disabled={
-                        step === 3 ||
                         (step === 1 && isDisable) ||
                         saveBtnDisable
                       }
