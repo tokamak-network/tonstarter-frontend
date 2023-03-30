@@ -78,7 +78,6 @@ const EstimateGasModal = () => {
             </Text>
           </Flex>
           <Flex flexDir={'column'} w={'100%'} textAlign={'center'}>
-            {/* TODO: Update image. text is strange */}
             <Image src={gasIcon} px={'120px'} py={'45px'} />
 
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
