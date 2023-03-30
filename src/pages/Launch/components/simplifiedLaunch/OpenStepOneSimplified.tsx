@@ -26,7 +26,6 @@ const OpenStepOneSimplified = (props: any) => {
   const {values, setValues} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
 
-    console.log('formik values', values);
 
   useEffect(() => {
     window.scrollTo(0, 0);

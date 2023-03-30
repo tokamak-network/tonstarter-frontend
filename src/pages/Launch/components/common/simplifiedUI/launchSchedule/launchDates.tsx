@@ -29,6 +29,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
   const publicVault = vaults[0] as VaultPublic;
   const theme = useTheme();
 
+  // Check if the public vault is deployed & disable calendar icons
+  const isPublicVaultDeployed = publicVault.isDeployed;
+
   const [snapshotDate, setSnapshotDate] = useState<number | undefined>(
     publicVault.snapshot || 0,
   );
@@ -184,12 +187,14 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 ) : (
                   <Text color="#ff3b3b">Choose</Text>
                 )}
-                <Grid mt={'9px'} justifyContent={'center'}>
-                  <SingleCalendarPop
-                    setDate={setSnapshotDate}
-                    startTimeCap={snapshotGap}
-                  />
-                </Grid>
+                {!isPublicVaultDeployed && (
+                  <Grid mt={'9px'} justifyContent={'center'}>
+                    <SingleCalendarPop
+                      setDate={setSnapshotDate}
+                      startTimeCap={snapshotGap}
+                    />
+                  </Grid>
+                )}
               </GridItem>
             )}
             {/* whitelist date & time */}
@@ -227,13 +232,17 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 ) : (
                   <Text color="#ff3b3b">Choose</Text>
                 )}
-                <Grid mt={'9px'} justifyContent={'center'}>
-                  {/* Public sale 1 date & time input whitelist end + 1s*/}
-                  <DoubleCalendarPop
-                    setDate={setPublicSale1DateRange}
-                    startTimeCap={publicSale1STC}
-                  />
-                </Grid>
+                {!isPublicVaultDeployed && (
+                  <Grid justifyContent={'center'}>
+                    {/* Public sale 1 date & time input whitelist end + 1s*/}
+                    <Grid mt={'9px'} justifyContent={'center'}>
+                      <DoubleCalendarPop
+                        setDate={setPublicSale1DateRange}
+                        startTimeCap={publicSale1STC}
+                      />
+                    </Grid>
+                  </Grid>
+                )}
               </GridItem>
             )}
             {/* Public sale 2 date & time */}
@@ -251,12 +260,16 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 ) : (
                   <Text color="#ff3b3b">Choose</Text>
                 )}
-                <Grid mt={'9px'} justifyContent={'center'}>
-                  <DoubleCalendarPop
-                    // public sale end + 1
-                    setDate={setPublicSale2DateRange}
-                    startTimeCap={publicSale2STC}
-                  />
+                <Grid justifyContent={'center'}>
+                  <Grid mt={'9px'} justifyContent={'center'}>
+                    {!isPublicVaultDeployed && (
+                      <DoubleCalendarPop
+                        // public sale end + 1
+                        setDate={setPublicSale2DateRange}
+                        startTimeCap={publicSale2STC}
+                      />
+                    )}
+                  </Grid>
                 </Grid>
               </GridItem>
             )}
