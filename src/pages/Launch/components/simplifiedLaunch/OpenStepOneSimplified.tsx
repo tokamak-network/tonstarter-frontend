@@ -6,7 +6,6 @@ import {useEffect} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
-import {CustomButton} from 'components/Basic/CustomButton';
 import {testValue} from '@Launch/utils/testValue';
 import {LaunchSchedule} from '../common/simplifiedUI/LaunchSchedule';
 import {UserGuideLink} from '../common/simplifiedUI/UserGuideLink';
@@ -26,6 +25,8 @@ const OpenStepOneSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const {values, setValues} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
+
+    console.log('formik values', values);
 
   useEffect(() => {
     window.scrollTo(0, 0);
