@@ -63,7 +63,6 @@ const ProjectScreen = () => {
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
-      console.log(datas[name]);
       
       setProject(datas[name]);
     }

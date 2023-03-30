@@ -31,10 +31,7 @@ export const ProjectTokenComponent: FC<ProjectTokenProps> = ({project}) => {
       ['link', 'image', 'video', 'color'],
       ['clean'],
     ], // options here
-  };
-
-  console.log('projectlux',project);
-  
+  };  
 
   useEffect(() => {
     const setTos = async () => {

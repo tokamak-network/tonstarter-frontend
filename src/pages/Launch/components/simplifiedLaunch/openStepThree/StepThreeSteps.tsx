@@ -20,8 +20,7 @@ const StepThreeSteps = (props: {
   const [maxStep, setStepMax] = useState(0);
   const {colorMode} = useColorMode();
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  // const {vaults} = values;
-  const vaults = Array.from(Array(12).keys())
+  const vaults = Array.from(Array(11).keys())
 
   const theme = useTheme();
   const [transX, setTransX] = useState<number>(0);
@@ -126,47 +125,7 @@ const StepThreeSteps = (props: {
             setFlowIndex(flowIndex + 1);
           }
         }}></HoverImage>
-      {/* <Flex w='316px' overflow={'scroll'}>
-      {vaults.map((vault: VaultAny, index: number) => {
-        return (
-          <Flex alignItems={'center'} key={index}>
-            {index !== 0 ? (
-              <Flex
-                w="18px"
-                h="2px"
-                bg={Number(currentStep) === index ? 'blue.100':colorMode === 'dark' ? '#353d48' : '#e6eaee'}></Flex>
-            ) : (
-              <></>
-            )}
-            <Flex
-              h="24px"
-              w="24px"
-              borderRadius={'50%'}
-              justifyContent='center'
-              alignItems={'center'}
-            
-              bg={Number(currentStep) === index ? 'blue.100' : 'transparent'}
-              color={Number(currentStep) === index ?'white.100' :'blue.100'}
-              border={
-                Number(currentStep) === index
-                  ? 'none'
-                  : colorMode === 'dark'
-                  ? '1px solid #353d48'
-                  : '1px solid #e6eaee'
-              }>
-                <Text   fontFamily={theme.fonts.titil} fontSize='14px'>{index+1}</Text></Flex>
-            {index !== vaults.length-1 ? (
-              <Flex
-                w="18px"
-                h="2px"
-                bg={Number(currentStep) === index ? 'blue.100':colorMode === 'dark' ? '#353d48' : '#e6eaee'}></Flex>
-            ) : (
-              <></>
-            )}
-          </Flex>
-        );
-      })}
-      </Flex> */}
+     
     </Flex>
   );
 };
