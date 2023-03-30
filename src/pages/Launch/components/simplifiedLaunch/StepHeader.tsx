@@ -1,10 +1,19 @@
-import {Flex, useColorMode, Text, useTheme, Image} from '@chakra-ui/react';
+import {Flex, useColorMode, Text, useTheme, Image,Link} from '@chakra-ui/react';
 import iconUserGuide from 'assets/images/iconUserGuide.png';
 import CountDown from './openStepThree/CountDown';
+import {useFormikContext} from 'formik';
+import {Projects, VaultAny} from '@Launch/types';
+import { useState } from 'react';
+
+
 const StepHeader = (props: {deploySteps: boolean; deployStep?: number, title:string}) => {
   const {deploySteps, deployStep,title} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
+  const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
+
+const [steps, setSteps] = useState(0)
+
   return (
     <Flex
       h="73px"
@@ -23,21 +32,21 @@ const StepHeader = (props: {deploySteps: boolean; deployStep?: number, title:str
           {title}
         </Text>
         <Image ml="21px" src={iconUserGuide} w="18px" h="18px"></Image>
-        <Text
+        <Link  isExternal
           ml="6px"
           fontSize={'13px'}
           fontFamily={'Titillium Web, sans-serif'}
-          color={colorMode === 'dark' ? 'gray.475' : 'gray.400'}>
-          User Guide
-        </Text>
+          color={colorMode === 'dark' ? 'gray.475' : 'gray.400'}
+              href={'https://tokamaknetwork.gitbook.io/home/02-service-guide/tosv2'} cursor='pointer'> User Guide</Link>
+       
       </Flex>
       {deploySteps && (
         <CountDown/>
       )}
-      {deploySteps && deployStep ? (
+      {deploySteps  ? (
         <Flex color='blue.200' fontSize={'13px'}>
-          {/* <Text color={'white.100'} mr='2px'>Progress</Text>
-          <Text>{deployStep}/10</Text> */}
+          <Text color={'white.100'} mr='2px'>Progress</Text>
+          <Text>{deployStep}/11</Text>
         </Flex>
       ) : (
         <></>

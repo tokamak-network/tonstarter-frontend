@@ -79,7 +79,7 @@ const OpenStepThreeSimplified = (props: any) => {
       boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}
       borderRadius="10px"
       alignItems={'center'}>
-      <StepHeader deploySteps={true} deployStep={1} title={'Deploy'} />
+      <StepHeader deploySteps={true} deployStep={currentStep+1} title={'Deploy'} />
       <StepThreeSteps
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}

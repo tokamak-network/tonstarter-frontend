@@ -1,4 +1,4 @@
-import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme, Text, Button, Link} from '@chakra-ui/react';
 import {
   useEffect,
   useState,
@@ -23,6 +23,7 @@ import {
   returnVaultStatus,
   deploy,
 } from '@Launch/utils/deployValues';
+import {BASE_PROVIDER} from 'constants/index';
 
 const Public = () => {
   const {colorMode} = useColorMode();
@@ -38,6 +39,7 @@ const Public = () => {
   const [hasToken, setHasToken] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   // @ts-ignore
+  const network = BASE_PROVIDER._network.name;
 
   const {blockNumber} = useBlockNumber();
   const publicVault = values.vaults[0] as VaultPublic;
@@ -47,14 +49,14 @@ const Public = () => {
     {
       name: 'Admin',
       value: `${
-        values.ownerAddress ? shortenAddress(values.ownerAddress) : 'NA'
+        values.ownerAddress ? (values.ownerAddress) : 'NA'
       }`,
     },
     {
       name: 'Contract',
       value: `${
         publicVault.vaultAddress
-          ? shortenAddress(publicVault.vaultAddress)
+          ? (publicVault.vaultAddress)
           : 'NA'
       }`,
     },
@@ -260,6 +262,24 @@ const Public = () => {
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
+                {(detail.name === 'Admin' || detail.name === 'Contract') && detail.value !== 'NA' ? (
+                <Link
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={'blue.300'}
+                  isExternal
+                  href={
+                    detail.value && network === 'goerli'
+                      ? `https://goerli.etherscan.io/address/${detail.value}`
+                      : detail.value && network !== 'goerli'
+                      ? `https://etherscan.io/address/${detail.value}`
+                      : ''
+                  }
+                  _hover={{color: '#2a72e5'}}>
+                  {detail.value ? shortenAddress(detail.value) : 'NA'}
+                </Link>
+              ) : (
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
@@ -273,6 +293,7 @@ const Public = () => {
                   }>
                   {detail.value}
                 </Text>
+              )}
               </Flex>
             );
           })}

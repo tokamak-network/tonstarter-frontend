@@ -1,4 +1,4 @@
-import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme, Text, Button, Link} from '@chakra-ui/react';
 import {useEffect, useState, useCallback} from 'react';
 import {Projects, VaultTeam} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
@@ -16,6 +16,7 @@ import {
   returnVaultStatus,
   deploy,
 } from '@Launch/utils/deployValues';
+import {BASE_PROVIDER} from 'constants/index';
 
 
 const Team = () => {
@@ -34,6 +35,8 @@ const Team = () => {
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {blockNumber} = useBlockNumber();
+  const network = BASE_PROVIDER._network.name;
+
    //check vault state from contract
    useEffect(() => {
    
@@ -106,13 +109,13 @@ const Team = () => {
     {
       name: 'Admin',
       value: `${
-        values.ownerAddress ? shortenAddress(values.ownerAddress) : ''
+        values.ownerAddress ? (values.ownerAddress) : ''
       }`,
     },
     {
       name: 'Contract',
       value: `${
-        teamVault.vaultAddress ? shortenAddress(teamVault.vaultAddress) : 'NA'
+        teamVault.vaultAddress ? (teamVault.vaultAddress) : 'NA'
       }`,
     },
     {
@@ -174,19 +177,38 @@ const Team = () => {
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
-              <Text
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={
-                  detail.name === 'Admin' || detail.name === 'Contract'
-                    ? 'blue.300'
-                    : colorMode === 'dark'
-                    ? 'white.100'
-                    : 'gray.250'
-                }>
-                {detail.value}
-              </Text>
+              {(detail.name === 'Admin' || detail.name === 'Contract') && detail.value !== 'NA'? (
+                <Link
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={'blue.300'}
+                  isExternal
+                  href={
+                    detail.value && network === 'goerli'
+                      ? `https://goerli.etherscan.io/address/${detail.value}`
+                      : detail.value && network !== 'goerli'
+                      ? `https://etherscan.io/address/${detail.value}`
+                      : ''
+                  }
+                  _hover={{color: '#2a72e5'}}>
+                  {detail.value ? shortenAddress(detail.value) : 'NA'}
+                </Link>
+              ) : (
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={
+                    detail.name === 'Admin' || detail.name === 'Contract'
+                      ? 'blue.300'
+                      : colorMode === 'dark'
+                      ? 'white.100'
+                      : 'gray.250'
+                  }>
+                  {detail.value}
+                </Text>
+              )}
             </Flex>
           );
         })}
