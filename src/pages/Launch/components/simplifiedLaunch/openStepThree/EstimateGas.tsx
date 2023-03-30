@@ -20,7 +20,7 @@ import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import Line from '@Launch/components/common/Line';
 import {useRouteMatch} from 'react-router-dom';
-import gasIcon from 'assets/svgs/gas-graphic.svg';
+import gasIcon from 'assets/images/gas-graphic.png';
 
 const EstimateGasModal = () => {
   const {data} = useAppSelector(selectModalType);
