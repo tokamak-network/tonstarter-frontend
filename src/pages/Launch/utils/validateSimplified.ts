@@ -49,16 +49,16 @@ function validateSimplifiedFormikValues(
       return Math.round((end - start) / 86400);
     };
 
-    // Is there 2 day gap btw publicRound1 ~ publicRound1End
-    if (publicRound1 && publicRound1End) {
-      getDuration(publicRound1, publicRound1End) <= 2
+    // Is there 2 day gap btw whitelist end ~ publicRound1
+    if (whitelistEnd && publicRound1) {
+      getDuration(whitelistEnd, publicRound1) <= 2
         ? fields.push(true)
         : fields.push(false);
     }
 
-    // Is there 2 day gap btw publicRound2 ~ publicRound2End
-    if (publicRound2 && publicRound2End) {
-      getDuration(publicRound2, publicRound2End) <= 2
+    // Is there 2 day gap btw publicRound1End ~ publicRound2
+    if (publicRound1End && publicRound2) {
+      getDuration(publicRound1End, publicRound2) <= 2
         ? fields.push(true)
         : fields.push(false);
     }
