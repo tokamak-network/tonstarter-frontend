@@ -25,8 +25,7 @@ import {
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
 
-const Public = (props:{step:string}) => {
-  const {step} = props
+const PublicInitialize = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [type, setType] = useState<'Vault' | 'Sale'>('Vault');
@@ -613,11 +612,11 @@ const Public = (props:{step:string}) => {
             vaultDeploy();
           }}
           borderRadius={4}>
-         {step}
+         Initialize
         </Button>
       </Flex>
     </Flex>
   );
 };
 
-export default Public;
+export default PublicInitialize;

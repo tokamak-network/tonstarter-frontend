@@ -20,7 +20,7 @@ const StepThreeSteps = (props: {
   const [maxStep, setStepMax] = useState(0);
   const {colorMode} = useColorMode();
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const vaults = Array.from(Array(11).keys())
+  const vaults = Array.from(Array(20).keys())
 
   const theme = useTheme();
   const [transX, setTransX] = useState<number>(0);

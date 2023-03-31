@@ -13,7 +13,7 @@ import {
   useColorMode,
   Spacer,
 } from '@chakra-ui/react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
@@ -21,6 +21,12 @@ import {CloseButton} from 'components/Modal';
 import Line from '@Launch/components/common/Line';
 import {useRouteMatch} from 'react-router-dom';
 import gasIcon from 'assets/images/gas-graphic.png';
+import {DEPLOYED} from 'constants/index';
+import * as PublicSaleVaultCreateAbi from 'services/abis/PublicSaleVaultCreateAbi.json';
+import {Contract} from '@ethersproject/contracts';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {BigNumber, ethers} from 'ethers';
+import {convertNumber} from 'utils/number';
 
 const EstimateGasModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -28,20 +34,50 @@ const EstimateGasModal = () => {
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [isCheck, setIsCheck] = useState<boolean>(false);
-
-
+  const {PublicSaleVault} = DEPLOYED;
+  const {library, account} = useActiveWeb3React();
   const match = useRouteMatch();
   const {url} = match;
-
+  const [recommended, setRecommended] = useState(0);
+  const [ethBalance, setEthBalance] = useState(0);
   // Todo: Set Calculated Eth values
-  const recommendedEth = 1.5434;
-  const ownersEth = 2.4456;
-
+  // const recommendedEth = 1.5434;
+  // const ownersEth = 2.4456;
 
   const closeModal = () => {
     setIsCheck(false);
     handleCloseModal();
   };
+
+  const contract = new Contract(
+    PublicSaleVault,
+    PublicSaleVaultCreateAbi.abi,
+    library,
+  );
+
+  useEffect(() => {
+    async function getGasFee() {
+      if (account) {
+        const feeData = await contract.provider.getFeeData();
+
+        const {maxFeePerGas} = feeData;
+        const totalGasEstimate = 2402827 * 10 + 344776 * 9 + 478876;
+
+        if (maxFeePerGas) {
+          const gasPrice = BigNumber.from(totalGasEstimate + 42000).mul(
+            maxFeePerGas,
+          );
+          const gas = convertNumber({amount: String(gasPrice)});
+          setRecommended(Number(gas) + 1);
+
+          const eth0 = await library?.getBalance(account);
+          const balance = convertNumber({amount: String(eth0)});
+          setEthBalance(Number(balance));
+        }
+      }
+    }
+    getGasFee();
+  }, [contract.provider, library]);
 
   return (
     <Modal
@@ -83,20 +119,20 @@ const EstimateGasModal = () => {
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
               <Text fontSize={13}>Recommended</Text>
               <Spacer />
-              <Text fontSize={15}>{`${recommendedEth} ETH`}</Text>
+              <Text fontSize={15}>{`${recommended} ETH`}</Text>
             </Flex>
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
               <Text fontSize={13}>You have</Text>
               <Spacer />
-              {ownersEth <= recommendedEth ? (
+              {ethBalance <= recommended ? (
                 <Text
-                fontSize={15}
-                color={'#ff3b3b'}>{`${ownersEth} ETH`}</Text>
+                  fontSize={15}
+                  color={'#ff3b3b'}>{`${ethBalance} ETH`}</Text>
               ) : (
-                <Text fontSize={15}>{`${ownersEth} ETH`}</Text>
+                <Text fontSize={15}>{`${ethBalance} ETH`}</Text>
               )}
             </Flex>
-            {ownersEth <= recommendedEth && (
+            {ethBalance <= recommended && (
               <Flex
                 flexDir={'column'}
                 w={'100%'}
@@ -119,6 +155,7 @@ const EstimateGasModal = () => {
                 h={'38px'}
                 color={'#fff'}
                 border-radius={'4px'}
+                onClick={() => closeModal()}
                 bg={'#257eee'}>
                 Done
               </Button>

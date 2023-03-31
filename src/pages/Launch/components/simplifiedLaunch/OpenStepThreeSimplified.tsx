@@ -19,7 +19,7 @@ import WtonLP from './openStepThree/WtonLP';
 import ConfirmTokenSimplifiedModal from '../modals/ConfirmTokenSimplified';
 import {useModal} from 'hooks/useModal';
 import EstimateGasModal from './openStepThree/EstimateGas';
-
+import PublicInitialize from './openStepThree/PublicInitialize';
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
   switch (vaultNum) {
@@ -32,7 +32,7 @@ const VaultComp = (props: {vaultNum: Number}) => {
     case 2:
       return <Vesting/>;
     case 3: 
-    return <Public/>;
+    return <Public step='Deploy'/>;
     case 4: 
     return <TonStaker/>;
     case 5: 
@@ -47,6 +47,24 @@ const VaultComp = (props: {vaultNum: Number}) => {
     return <Team/>;
     case 10: 
     return <Distribute/>;
+    case 11:
+      return <InitialLiquidity />;
+    case 12:
+      return <Vesting/>;
+    case 13: 
+    return <Public step='Initialize'/>;
+    case 14: 
+    return <TonStaker/>;
+    case 15: 
+    return <TosStaker/>;
+    case 16: 
+    return  <WtonLP/>;
+    case 17: 
+    return <TokenLP/>;
+    case 18: 
+    return <Ecosystem/>;
+    case 19: 
+    return <Team/>;
 
     default:
     return <Flex>No vault</Flex>
