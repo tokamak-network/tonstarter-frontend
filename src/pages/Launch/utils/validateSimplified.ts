@@ -24,11 +24,12 @@ function validateSimplifiedFormikValues(
   } = values.vaults[0] as VaultPublic;
 
   const step1FilledOut = () => {
-    if (snapshot && snapshot < snapshotGap) {
-      fields.push(false);
-    } else {
-      fields.push(true);
-    }
+    // TODO: Add snapshot validation after testing
+    // if (snapshot && snapshot < snapshotGap) {
+    //   fields.push(false);
+    // } else {
+    //   fields.push(true);
+    // }
 
     // Public sale 1 should be later than snapshot
     if (publicRound1 && snapshot && snapshot < publicRound1) {

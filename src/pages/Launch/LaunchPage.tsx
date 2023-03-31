@@ -177,7 +177,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                 openAnyModal('Launch_ConfirmTerms', {
                   from: 'advance-mode',
                 });
-              }}>Advance Mode</Button>
+              }}>Advance Launch</Button>
             </ButtonGroup>}
           </Flex>
           <Flex
