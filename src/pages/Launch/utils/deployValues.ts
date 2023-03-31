@@ -148,8 +148,7 @@ async function checkIsIniailized(
         );
         const snapshot = await publicVaultSecondContract.snapshot();
         const isInitialized = Number(snapshot.toString()) !== 0;
-        console.log(selectedVaultDetail.vaultName);
-        console.log(isInitialized);
+       
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,
@@ -170,8 +169,7 @@ async function checkIsIniailized(
         const initSqrtPriceX96 =
           await publicVaultSecondContract.initSqrtPriceX96();
         const isInitialized = Number(initSqrtPriceX96.toString()) > 0;
-        console.log(selectedVaultDetail.vaultName);
-        console.log(isInitialized);
+      
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,
@@ -191,8 +189,7 @@ async function checkIsIniailized(
           library,
         );
         const isInitialized = await vualtContract.settingCheck();
-        console.log(selectedVaultDetail.vaultName);
-        console.log(isInitialized);
+       
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,

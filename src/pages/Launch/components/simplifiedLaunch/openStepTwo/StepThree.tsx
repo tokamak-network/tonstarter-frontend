@@ -13,11 +13,12 @@ import {
 import {useEffect, useState} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
-import {Projects,VaultPublic} from '@Launch/types';
-import {fetchTonPriceURL} from 'constants/index';
+import {Projects, VaultPublic} from '@Launch/types';
+import {fetchUsdPriceURL, fetchTonPriceURL} from 'constants/index';
 import {fetchPoolPayload} from '@Launch/utils/fetchPoolPayload';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {schedules} from '@Launch/utils/simplifiedClaimSchedule';
+import truncNumber from 'utils/truncNumber';
 
 const StepThree = (props: {currentStep: Number}) => {
   const {currentStep} = props;
@@ -30,28 +31,34 @@ const StepThree = (props: {currentStep: Number}) => {
   const [tonInDollars, setTonInDollars] = useState(0);
   const [tonPriceInTos, setTonPriceInTos] = useState(0);
   const {account, library} = useActiveWeb3React();
-  
+
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
 
   useEffect(() => {
-    async function getTonPrice() {      
-      const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
+    async function getTonPrice() {
+      const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
         res.json(),
-      );      
-      const tonPrice = tonPriceObj[0].current_price;
-      
-      setTonInDollars(tonPrice);
+      );
+
+      const tonPriceObj = await fetch(fetchTonPriceURL).then((res)=>res.json())
+
+      const tonPriceKRW = tonPriceObj[0].trade_price;
+      const krwInUsd = usdPriceObj.rates.USD;
+         
+     const tonPriceInUsd = tonPriceKRW*krwInUsd
+     
+      setTonInDollars(tonPriceInUsd);
       const poolData = await fetchPoolPayload(library);
 
       const token0Price = Number(poolData.token0Price);
-        
+
       setTonPriceInTos(token0Price);
       // console.log(token0Price);
       // const tonPriceInTos =
     }
     getTonPrice();
-  }, [library, values.vaults[0],option, currentStep]);
+  }, [library, values.vaults[0], option, currentStep]);
 
   const themeDesign = {
     border: {
@@ -95,65 +102,76 @@ const StepThree = (props: {currentStep: Number}) => {
     const marketCap = values.marketCap;
     const growth = values.growth;
     if (marketCap && growth) {
-      const totalSupply = (marketCap * growth) / option;
+      const totalSupply = parseInt(((marketCap * growth) / option).toString());
       setFieldValue('totalSupply', totalSupply);
-      const tokenPriceinDollars = marketCap / totalSupply;      
+      const tokenPriceinDollars = marketCap / totalSupply;
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
-      const tonPriceInToken = 1/tokenPriceInTon
-      setFieldValue('salePrice',tonPriceInToken )
-      setFieldValue('projectTokenPrice',tonPriceInToken)
+      const tonPriceInToken = 1 / tokenPriceInTon;
+      setFieldValue('salePrice', tonPriceInToken);
+      setFieldValue('projectTokenPrice', tonPriceInToken);
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
-      const tosPriceInTokens = 1/tokenPriceInTos
-    setFieldValue('tosPrice',tosPriceInTokens)
+      const tosPriceInTokens = 1 / tokenPriceInTos;
+      setFieldValue('tosPrice', tosPriceInTokens);
 
-    const hardCap = values.fundingTarget && values.fundingTarget/tonInDollars;
-   
-    setFieldValue(`vaults[0].hardCap`, hardCap);
-      
+      const hardCap =
+        values.fundingTarget && values.fundingTarget / tonInDollars;
+
+      setFieldValue(`vaults[0].hardCap`, hardCap);
+
       const publicAllocation = totalSupply * 0.3;
-      const initialLiquidityAllocation = totalSupply * 0.03;
-      const tokenTOSAllocation = totalSupply * 0.12;
 
-      const ecosystemAllocation = totalSupply * 0.35;
-      const teamAllocation = totalSupply * 0.15;
-      const tonStakerAllocation = totalSupply * 0.0125;
-      const tosStakerAllocation = totalSupply * 0.0125;
-      const wtonTosAllocation = totalSupply * 0.025;
       const rounds = values.vaults.map((vault, index) => {
-        const roundInfo = schedules(vault.vaultName, totalSupply,publicVault.publicRound2End? publicVault.publicRound2End : 0);
+        const roundInfo = schedules(
+          vault.vaultName,
+          totalSupply,
+          publicVault.publicRound2End ? publicVault.publicRound2End : 0,
+        );
+
+        const tot = roundInfo.reduce(
+          (acc, round) => acc + round.claimTokenAllocation,
+          0,
+        );
+        //  const totalTokenAllocation =
         setFieldValue(`vaults[${index}].claim`, roundInfo);
         setFieldValue(`vaults[${index}].adminAddress`, account);
-
+        setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot-100);
       });
+      setFieldValue('vaults[2].vaultTokenAllocation', 0);
       setFieldValue('vaults[0].addressForReceiving', account);
       setFieldValue('vaults[0].adminAddress', account);
-      setFieldValue('vaults[0].vaultTokenAllocation', publicAllocation);
-      setFieldValue(
-        'vaults[1].vaultTokenAllocation',
-        initialLiquidityAllocation,
-      );
-      // setFieldValue('vaults[2].vaultTokenAllocation', tokenTOSAllocation);
-      setFieldValue('vaults[3].vaultTokenAllocation', tonStakerAllocation);
-      setFieldValue('vaults[4].vaultTokenAllocation', tosStakerAllocation);
-      setFieldValue('vaults[5].vaultTokenAllocation', wtonTosAllocation);
-      setFieldValue('vaults[6].vaultTokenAllocation', tokenTOSAllocation);
-      setFieldValue('vaults[7].vaultTokenAllocation', ecosystemAllocation);
-      setFieldValue('vaults[8].vaultTokenAllocation', teamAllocation);
+
       setFieldValue('vaults[0].publicRound1Allocation', publicAllocation * 0.5);
       setFieldValue('vaults[0].publicRound2Allocation', publicAllocation * 0.5);
-      setFieldValue('vaults[0].stosTier.fourTier.allocatedToken',publicAllocation * 0.5 * 0.6,);
-      setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', publicAllocation*0.5*0.06)
-      setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', publicAllocation*0.5*0.22)
-      setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', publicAllocation*0.5*0.12)
-      setFieldValue('vaults[1].startTime', publicVault.publicRound2End?publicVault.publicRound2End+1:0)
-      setFieldValue('vaults[0].claimStart', publicVault.publicRound2End?publicVault.publicRound2End+1:0)
+      setFieldValue(
+        'vaults[0].stosTier.fourTier.allocatedToken',
+        publicAllocation * 0.5 * 0.6,
+      );
+      setFieldValue(
+        'vaults[0].stosTier.oneTier.allocatedToken',
+        publicAllocation * 0.5 * 0.06,
+      );
+      setFieldValue(
+        'vaults[0].stosTier.threeTier.allocatedToken',
+        publicAllocation * 0.5 * 0.22,
+      );
+      setFieldValue(
+        'vaults[0].stosTier.twoTier.allocatedToken',
+        publicAllocation * 0.5 * 0.12,
+      );
+      setFieldValue(
+        'vaults[1].startTime',
+        publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+      );
+      setFieldValue(
+        'vaults[0].claimStart',
+        publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+      );
 
       const sumTotalToken = vaults.reduce((acc, cur) => {
         const {vaultTokenAllocation} = cur;
         return vaultTokenAllocation + acc;
       }, 0);
       setFieldValue('totalTokenAllocation', sumTotalToken);
-      
     }
   };
 

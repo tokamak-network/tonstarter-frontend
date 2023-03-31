@@ -20,10 +20,11 @@ export const REACT_APP_RINKEBY_OPENCAMPAGIN_API = process.env
 export const REACT_APP_TOS_PRICE = process.env.REACT_APP_TOS_PRICE as string;
 export const REACT_APP_ETH_PRICE = process.env.REACT_APP_ETH_PRICE as string;
 export const REACT_APP_TON_PRICE = process.env.REACT_APP_TON_PRICE as string;
+export const REACT_APP_USD_PRICE = process.env.REACT_APP_USD_PRICE as string
+
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 5 : 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-
 export const API_SERVER =
   REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
 export const API_SERVER_LAUNCH =
@@ -50,6 +51,7 @@ export const fetchCampaginURL = `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT
 export const fetchTosPriceURL = REACT_APP_TOS_PRICE;
 export const fetchEthPriceURL = REACT_APP_ETH_PRICE;
 export const fetchTonPriceURL = REACT_APP_TON_PRICE;
+export const fetchUsdPriceURL = REACT_APP_USD_PRICE;
 export const permitTOSAddress =
   REACT_APP_MODE === 'DEV' ? '0x865264b30eb29A2978b9503B8AfE2A2DDa33eD7E' : '';
 
