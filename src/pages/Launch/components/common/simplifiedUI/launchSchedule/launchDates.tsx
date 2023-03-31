@@ -6,6 +6,12 @@ import {
   Image,
   useTheme,
   Link,
+  PopoverTrigger,
+  PopoverContent,
+  Popover,
+  PopoverBody,
+  PopoverArrow,
+  PopoverCloseButton,
 } from '@chakra-ui/react';
 import React, {useState, useEffect} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
@@ -290,28 +296,31 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     <Text>
                       49 times unlock <br /> 4 times vesting <br />
                     </Text>
-                    {/* FIXME: make link on the content clickable */}
                     <Grid justifyItems={'center'} mt={'6px'}>
-                      <Tooltip
-                        hasArrow
-                        w={'200px'}
-                        h={'60px'}
-                        fontSize={'12px'}
-                        placement="bottom"
-                        closeDelay={900}
-                        label={
-                          <>
-                            Each vault unlocks a set amount each month over a
-                            period of up to 48 months.&nbsp;
-                            <Link to="https://docs.google.com/spreadsheets/d/1GzeAls343c4STphxg_KqB407fdHalDh88aceCuZx6C0/edit?usp=sharing">
-                              Learn more...
-                            </Link>
-                          </>
-                        }
-                        color={theme.colors.white[100]}
-                        bg={'#353c48'}>
-                        <Image src={tooltipIcon} />
-                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Image src={tooltipIcon} />
+                        </PopoverTrigger>
+                        <PopoverContent
+                          w={'200px'}
+                          h={'60px'}
+                          bg={'#353c48'}
+                          color={'#fff'}
+                          border={0}>
+                          <PopoverArrow bg={'#353c48'} />
+                          <PopoverBody>
+                            <>
+                              Each vault unlocks a set amount each month over a
+                              period of up to 48 months.&nbsp;
+                              <Link
+                                href="https://docs.google.com/spreadsheets/d/1GzeAls343c4STphxg_KqB407fdHalDh88aceCuZx6C0/edit?usp=sharing"
+                                target="_blank">
+                                Learn more...
+                              </Link>
+                            </>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
                     </Grid>
                   </>
                 ) : (
