@@ -179,6 +179,7 @@ async function checkIsIniailized(
     }
    
     default: {
+      
       if (
         selectedVaultDetail.vaultAddress !== '' ||
         selectedVaultDetail.vaultAddress !== undefined
@@ -267,10 +268,11 @@ async function deploy(
   ) => void,
   setVaultState: React.Dispatch<React.SetStateAction<any>>,
 ) {
-  if (account && library && vaultState === 'ready') {
+  if (account && library && vaultState === 'Deploy') {
     const vaultContract = getContract(vaultType, library);
     const signer = getSigner(library, account);
-
+    console.log('create');
+    
     try {
       switch (vaultType) {
         case 'Initial Liquidity': {            
@@ -651,8 +653,9 @@ async function deploy(
     }
   }
 
-  if (account && library && vaultState === 'readyForSet') {
+  if (account && library && vaultState === 'Initialize') {
     const signer = getSigner(library, account);
+console.log('initialize');
 
     try {
       switch (vaultType) {

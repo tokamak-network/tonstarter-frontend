@@ -26,7 +26,9 @@ import {
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
 
-const TosStaker = () => {
+const TosStaker = (props:{step:string}) => {
+  const {step} = props;
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values, setFieldValue} =
@@ -75,7 +77,7 @@ const TosStaker = () => {
     deploy(
       account,
       library,
-      vaultState,
+      step,
       tosVault.vaultType,
       tosVault,
       values,
@@ -83,7 +85,7 @@ const TosStaker = () => {
       setFieldValue,
       setVaultState,
     );
-  }, [tosVault, values, account, library, vaultState, blockNumber]);
+  }, [tosVault, values, account, library, step, blockNumber]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
 
@@ -282,9 +284,11 @@ const TosStaker = () => {
           mr={'12px'}
           _hover={{}}
           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable
-              : vaultState === 'readyForToken' && !values.isAllDeployed
+            step === 'Deploy'
+              ? tosVault.vaultAddress === undefined
+                ? false
+                : true
+              : (tosVault.isSet === true || tosVault.vaultAddress === undefined)
               ? true
               : false
           }
@@ -297,11 +301,7 @@ const TosStaker = () => {
             vaultDeploy();
           }}
           borderRadius={4}>
-          {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+           {step}
         </Button>
       </Flex>
     </Flex>

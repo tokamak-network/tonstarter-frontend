@@ -18,7 +18,9 @@ import {
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
 
-const Ecosystem = () => {
+const Ecosystem = (props:{step:string} ) => {
+  const {step} = props;
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values, setFieldValue} =
@@ -61,6 +63,8 @@ const Ecosystem = () => {
     );
   }, [hasToken, ecoVault, values, blockNumber]);
   
+  console.log('ecoVault.vaultAddress',ecoVault.vaultAddress);
+  
 
   const {
     data: {hashKey},
@@ -70,7 +74,7 @@ const Ecosystem = () => {
     deploy(
       account,
       library,
-      vaultState,
+      step,
       ecoVault.vaultType,
       ecoVault,
       values,
@@ -78,7 +82,7 @@ const Ecosystem = () => {
       setFieldValue,
       setVaultState,
     );
-  }, [ecoVault, values, account, library, vaultState, blockNumber]);
+  }, [ecoVault, values, account, library, step, blockNumber]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
 
@@ -282,22 +286,22 @@ const Ecosystem = () => {
           mr={'12px'}
           _hover={{}}
           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable :
-              vaultState === 'readyForToken' && !values.isAllDeployed ? true
+            step === 'Deploy'
+              ? ecoVault.vaultAddress === undefined
+                ? false
+                : true
+              :( ecoVault.isSet === true ||  ecoVault.vaultAddress === undefined)
+              ? true
               : false
           }
+        
           _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
 
           onClick={() => {
             vaultDeploy();
           }}
           borderRadius={4}>
-         {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+         {step}
         </Button>
       </Flex>
     </Flex>

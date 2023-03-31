@@ -26,7 +26,9 @@ import {
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
 
-const TonStaker = () => {
+const TonStaker = (props:{step:string} ) => {
+  const {step} = props;
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [btnDisable, setBtnDisable] = useState(true);
@@ -77,7 +79,7 @@ const TonStaker = () => {
     deploy(
       account,
       library,
-      vaultState,
+      step,
       tonVault.vaultType,
       tonVault,
       values,
@@ -85,7 +87,7 @@ const TonStaker = () => {
       setFieldValue,
       setVaultState,
     );
-  }, [tonVault, values, account, library, vaultState, blockNumber]);
+  }, [account, library, step, tonVault, values, dispatch, setFieldValue]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
 
@@ -288,9 +290,11 @@ const TonStaker = () => {
           mr={'12px'}
           _hover={{}}
           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable
-              : vaultState === 'readyForToken' && !values.isAllDeployed
+            step === 'Deploy'
+              ? tonVault.vaultAddress === undefined
+                ? false
+                : true
+              : (tonVault.isSet === true || tonVault.vaultAddress === undefined)
               ? true
               : false
           }
@@ -303,11 +307,7 @@ const TonStaker = () => {
             vaultDeploy();
           }}
           borderRadius={4}>
-          {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+           {step}
         </Button>
       </Flex>
     </Flex>

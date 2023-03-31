@@ -26,7 +26,8 @@ import {
   deploy,
 } from '@Launch/utils/deployValues';
 
-const InitialLiquidity = () => {
+const InitialLiquidity = (props:{step:string}) => {
+  const {step} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [btnDisable, setBtnDisable] = useState(true);
@@ -95,21 +96,6 @@ const InitialLiquidity = () => {
   }, [blockNumber, initialVault, library, setFieldValue]);
 
   //setVaultState
-  useEffect(() => {
-    returnVaultStatus(
-      values,
-      initialVault.vaultType,
-      initialVault,
-      hasToken,
-      setVaultState,
-    );
-  }, [
-    hasToken,
-    initialVault.isDeployed,
-    initialVault.isSet,
-    values.isTokenDeployed,
-    blockNumber,
-  ]);
 
   // useEffect(() => {
   //   setBtnDisable(
@@ -125,7 +111,7 @@ const InitialLiquidity = () => {
     deploy(
       account,
       library,
-      vaultState,
+      step,
       initialVault.vaultType,
       initialVault,
       values,
@@ -133,16 +119,7 @@ const InitialLiquidity = () => {
       setFieldValue,
       setVaultState,
     );
-  }, [
-    account,
-    dispatch,
-    initialVault,
-    library,
-    setFieldValue,
-    values,
-    vaultState,
-    blockNumber,
-  ]);
+  }, [account, dispatch, initialVault, library, setFieldValue, values, step]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
   useEffect(() => {
@@ -289,28 +266,26 @@ const InitialLiquidity = () => {
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
-          isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable
-              : vaultState === 'readyForToken' && !values.isAllDeployed
-              ? true
-              : false
-          }
           _disabled={{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',
           }}
+          isDisabled={
+            step === 'Deploy'
+              ? initialVault.vaultAddress === undefined
+                ? false
+                : true
+              : (initialVault.isSet === true || initialVault.vaultAddress === undefined)
+              ? true
+              : false
+          }
           onClick={() => {
             vaultDeploy();
           }}
           _hover={{}}
           borderRadius={4}>
-          {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+           {step}
         </Button>
       </Flex>
     </Flex>

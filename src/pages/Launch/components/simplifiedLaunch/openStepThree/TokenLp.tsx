@@ -18,9 +18,10 @@ import {
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
 
-const TokenLP = () => {
+const TokenLP = (props:{step:string}) => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+    const {step} = props;
 
     const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
@@ -69,7 +70,7 @@ const TokenLP = () => {
       deploy(
         account,
         library,
-        vaultState,
+        step,
         tokenLPVault.vaultType,
         tokenLPVault,
         values,
@@ -77,7 +78,7 @@ const TokenLP = () => {
         setFieldValue,
         setVaultState,
       );
-    }, [tokenLPVault, values, account, library, vaultState, blockNumber]);
+    }, [account, library, step, tokenLPVault, values, dispatch, setFieldValue]);
   
     const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
   
@@ -256,9 +257,12 @@ const TokenLP = () => {
           mr={'12px'}
           _hover={{}}
           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable :
-              vaultState === 'readyForToken' && !values.isAllDeployed ? true
+            step === 'Deploy'
+              ? tokenLPVault.vaultAddress === undefined
+                ? false
+                : true
+              : (tokenLPVault.isSet === true || tokenLPVault.vaultAddress === undefined)
+              ? true
               : false
           }
           _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
@@ -267,11 +271,7 @@ const TokenLP = () => {
             vaultDeploy();
           }}
           borderRadius={4}>
-         {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+         {step}
         </Button>
       </Flex>
     </Flex>
