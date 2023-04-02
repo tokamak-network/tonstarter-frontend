@@ -1,6 +1,13 @@
-import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
+import {
+  Flex,
+  useColorMode,
+  useTheme,
+  Text,
+  Button,
+  Link,
+} from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, useCallback} from 'react';
-import {Projects,VaultTONStarter} from '@Launch/types';
+import {Projects, VaultTONStarter} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
 import {useFormikContext} from 'formik';
 import moment from 'moment';
@@ -11,32 +18,35 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {convertNumber} from 'utils/number';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 
-import {selectLaunch, } from '@Launch/launch.reducer';
+import {selectLaunch} from '@Launch/launch.reducer';
 import {
   checkIsIniailized,
   returnVaultStatus,
   deploy,
 } from '@Launch/utils/deployValues';
+import {BASE_PROVIDER} from 'constants/index';
 
-const TosStaker = () => {
-    const {colorMode} = useColorMode();
-    const theme = useTheme();
-    const {values, setFieldValue} =
+const TosStaker = (props:{step:string}) => {
+  const {step} = props;
+
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-    const [btnDisable, setBtnDisable] = useState(true);
-    const {account, library} = useActiveWeb3React();
-    const [vaultState, setVaultState] = useState<
-      'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
-    >('notReady');
-    const [hasToken, setHasToken] = useState<boolean>(false);
-    const dispatch = useAppDispatch();
-    // @ts-ignore
-  
-    const {blockNumber} = useBlockNumber();
+  const [btnDisable, setBtnDisable] = useState(true);
+  const {account, library} = useActiveWeb3React();
+  const [vaultState, setVaultState] = useState<
+    'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
+  >('notReady');
+  const [hasToken, setHasToken] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  // @ts-ignore
+  const network = BASE_PROVIDER._network.name;
 
-    const tosVault = values.vaults[4] as VaultTONStarter
-useEffect(() => {
-   
+  const {blockNumber} = useBlockNumber();
+
+  const tosVault = values.vaults[4] as VaultTONStarter;
+  useEffect(() => {
     checkIsIniailized(
       tosVault.vaultType,
       library,
@@ -59,7 +69,6 @@ useEffect(() => {
     );
   }, [hasToken, tosVault, values, blockNumber]);
 
-
   const {
     data: {hashKey},
   } = useAppSelector(selectLaunch);
@@ -68,7 +77,7 @@ useEffect(() => {
     deploy(
       account,
       library,
-      vaultState,
+      step,
       tosVault.vaultType,
       tosVault,
       values,
@@ -76,7 +85,7 @@ useEffect(() => {
       setFieldValue,
       setVaultState,
     );
-  }, [tosVault, values, account, library, vaultState, blockNumber]);
+  }, [tosVault, values, account, library, step, blockNumber]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
 
@@ -101,15 +110,23 @@ useEffect(() => {
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, tosVault]);
 
-    const detailsVault = [
-      {name: 'Vault Name', value:  `${tosVault.vaultName}`},
-      {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
-      {name: 'Contract', value: `${tosVault.vaultAddress? shortenAddress(tosVault.vaultAddress) : 'NA'}`},
-    {name: 'Token Allocation', value: `${tosVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
-    ];
+  const detailsVault = [
+    {name: 'Vault Name', value: `${tosVault.vaultName}`},
+    {name: 'Admin', value: `${values.ownerAddress ? values.ownerAddress : ''}`},
+    {
+      name: 'Contract',
+      value: `${tosVault.vaultAddress ? tosVault.vaultAddress : 'NA'}`,
+    },
+    {
+      name: 'Token Allocation',
+      value: `${tosVault.vaultTokenAllocation.toLocaleString()} ${
+        values.tokenSymbol
+      }`,
+    },
+  ];
 
-    return (
-        <Flex
+  return (
+    <Flex
       mt="30px"
       h="100%"
       w="350px"
@@ -126,14 +143,14 @@ useEffect(() => {
           colorMode === 'dark' ? '1px solid #363636' : '1px solid #e6eaee'
         }>
         <Text
-        lineHeight={1.5}
+          lineHeight={1.5}
           fontWeight={'bold'}
           fontFamily={theme.fonts.titil}
           fontSize="20px"
-          mt='19px'
-          mb='21px'
+          mt="19px"
+          mb="21px"
           color={colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-         TOS Staker
+          TOS Staker
         </Text>
       </Flex>
       <Flex
@@ -142,12 +159,16 @@ useEffect(() => {
         px="20px"
         w="100%"
         alignItems={'center'}>
-        <Text h='18px' mb="10px" fontSize={'13px'}>
+        <Text h="18px" mb="10px" fontSize={'13px'}>
           Vault
         </Text>
         {detailsVault.map((detail: any) => {
           return (
-            <Flex w="100%" justifyContent={'space-between'} h="45px" alignItems={'center'} >
+            <Flex
+              w="100%"
+              justifyContent={'space-between'}
+              h="45px"
+              alignItems={'center'}>
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
@@ -155,17 +176,42 @@ useEffect(() => {
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
-              <Text
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={detail.name === 'Admin' || detail.name === 'Contract'? 'blue.300': colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-                {detail.value}
-              </Text>
+              {(detail.name === 'Admin' || detail.name === 'Contract') &&
+              detail.value !== 'NA' ? (
+                <Link
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={'blue.300'}
+                  isExternal
+                  href={
+                    detail.value && network === 'goerli'
+                      ? `https://goerli.etherscan.io/address/${detail.value}`
+                      : detail.value && network !== 'goerli'
+                      ? `https://etherscan.io/address/${detail.value}`
+                      : ''
+                  }
+                  _hover={{color: '#2a72e5'}}>
+                  {detail.value ? shortenAddress(detail.value) : 'NA'}
+                </Link>
+              ) : (
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={
+                    detail.name === 'Admin' || detail.name === 'Contract'
+                      ? 'blue.300'
+                      : colorMode === 'dark'
+                      ? 'white.100'
+                      : 'gray.250'
+                  }>
+                  {detail.value}
+                </Text>
+              )}
             </Flex>
           );
         })}
-      
       </Flex>
       <Flex
         mt="30px"
@@ -173,43 +219,51 @@ useEffect(() => {
         px="20px"
         w="100%"
         alignItems={'center'}>
-        <Text mb="10px" fontSize={'13px'} h='18px' >
+        <Text mb="10px" fontSize={'13px'} h="18px">
           Claim
         </Text>
-        <Flex w='100%' h='45px' alignItems={'center'}>
-        <Text  fontSize={'13px'}  textAlign={'left'}>Claim Rounds ({tosVault.claim.length})</Text>
+        <Flex w="100%" h="45px" alignItems={'center'}>
+          <Text fontSize={'13px'} textAlign={'left'}>
+            Claim Rounds ({tosVault.claim.length})
+          </Text>
         </Flex>
-       
+
         {tosVault.claim.map((claim: any, index: Number) => {
           return (
-            <Flex  w="100%" justifyContent={'space-between'} h="30px" alignItems={'center'}>
+            <Flex
+              w="100%"
+              justifyContent={'space-between'}
+              h="30px"
+              alignItems={'center'}>
               <Text
                 fontSize={'12px'}
                 fontFamily={theme.fonts.roboto}
                 fontWeight={500}
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                     <span style={{color:'#3d495d', marginRight:'3px'}}>{index < 10 ? '0' : ''}
-                  {index}</span>
-                     {moment
+                <span style={{color: '#3d495d', marginRight: '3px'}}>
+                  {index < 10 ? '0' : ''}
+                  {index}
+                </span>
+                {moment
                   .unix(Number(claim.claimTime))
                   .format('YYYY.MM.DD HH:mm:ss')}
-               
               </Text>
               <Text
                 fontSize={'12px'}
                 fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                >
+                fontWeight={500}>
                 {claim.claimTokenAllocation.toLocaleString()} (
                 {values.totalSupply
-                  ?( (claim.claimTokenAllocation / values.totalSupply) * 100).toLocaleString()
+                  ? (
+                      (claim.claimTokenAllocation / values.totalSupply) *
+                      100
+                    ).toLocaleString()
                   : 0}
                 %)
               </Text>
             </Flex>
           );
         })}
-      
       </Flex>
       <Flex
         mt="24px"
@@ -230,26 +284,28 @@ useEffect(() => {
           mr={'12px'}
           _hover={{}}
           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable :
-              vaultState === 'readyForToken' && !values.isAllDeployed ? true
+            step === 'Deploy'
+              ? tosVault.vaultAddress === undefined
+                ? false
+                : true
+              : (tosVault.isSet === true || tosVault.vaultAddress === undefined)
+              ? true
               : false
           }
-          _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
-
+          _disabled={{
+            background: colorMode === 'dark' ? '#353535' : '#e9edf1',
+            color: colorMode === 'dark' ? '#838383' : '#86929d',
+            cursor: 'not-allowed',
+          }}
           onClick={() => {
             vaultDeploy();
           }}
           borderRadius={4}>
-         {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+           {step}
         </Button>
       </Flex>
     </Flex>
-    )
-}
+  );
+};
 
 export default TosStaker;

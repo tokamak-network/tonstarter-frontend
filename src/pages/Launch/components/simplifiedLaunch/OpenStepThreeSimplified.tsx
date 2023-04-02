@@ -28,25 +28,43 @@ const VaultComp = (props: {vaultNum: Number}) => {
     case 0:
       return <ProjectToken />;
     case 1:
-      return <InitialLiquidity />;
+      return <InitialLiquidity step='Deploy'/>;
     case 2:
-      return <Vesting/>;
+      return <Vesting step='Deploy'/>;
     case 3: 
-    return <Public/>;
+    return <Public step='Deploy'/>;
     case 4: 
-    return <TonStaker/>;
+    return <TonStaker step='Deploy'/>;
     case 5: 
-    return <TosStaker/>;
+    return <TosStaker step='Deploy'/>;
     case 6: 
-    return  <WtonLP/>;
+    return  <WtonLP step='Deploy'/>;
     case 7: 
-    return <TokenLP/>;
+    return <TokenLP step='Deploy'/>;
     case 8: 
-    return <Ecosystem/>;
+    return <Ecosystem step='Deploy'/>;
     case 9: 
-    return <Team/>;
+    return <Team step='Deploy'/>;
     case 10: 
     return <Distribute/>;
+    case 11:
+      return <InitialLiquidity step='Initialize'/>;
+    case 12:
+      return <Vesting step='Initialize'/>;
+    case 13: 
+    return <Public step='Initialize'/>;
+    case 14: 
+    return <TonStaker step='Initialize'/>;
+    case 15: 
+    return <TosStaker step='Initialize'/>;
+    case 16: 
+    return  <WtonLP step='Initialize'/>;
+    case 17: 
+    return <TokenLP step='Initialize'/>;
+    case 18: 
+    return <Ecosystem step='Initialize'/>;
+    case 19: 
+    return <Team step='Initialize'/>;
 
     default:
     return <Flex>No vault</Flex>
@@ -79,7 +97,7 @@ const OpenStepThreeSimplified = (props: any) => {
       boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}
       borderRadius="10px"
       alignItems={'center'}>
-      <StepHeader deploySteps={true} deployStep={1} title={'Deploy'} />
+      <StepHeader deploySteps={true} deployStep={currentStep+1} title={'Deploy'} />
       <StepThreeSteps
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}

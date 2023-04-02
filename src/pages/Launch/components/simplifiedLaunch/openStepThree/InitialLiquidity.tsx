@@ -1,4 +1,11 @@
-import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
+import {
+  Flex,
+  useColorMode,
+  useTheme,
+  Text,
+  Button,
+  Link,
+} from '@chakra-ui/react';
 import {useEffect, useState, useCallback} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects, VaultLiquidityIncentive} from '@Launch/types';
@@ -10,6 +17,7 @@ import {useBlockNumber} from 'hooks/useBlock';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {convertNumber} from 'utils/number';
+import {BASE_PROVIDER} from 'constants/index';
 
 import {selectLaunch} from '@Launch/launch.reducer';
 import {
@@ -18,7 +26,8 @@ import {
   deploy,
 } from '@Launch/utils/deployValues';
 
-const InitialLiquidity = () => {
+const InitialLiquidity = (props:{step:string}) => {
+  const {step} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [btnDisable, setBtnDisable] = useState(true);
@@ -32,7 +41,7 @@ const InitialLiquidity = () => {
   const [hasToken, setHasToken] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   // @ts-ignore
-
+  const network = BASE_PROVIDER._network.name;
   const {blockNumber} = useBlockNumber();
 
   const initialVault = values.vaults[1] as VaultLiquidityIncentive;
@@ -41,17 +50,11 @@ const InitialLiquidity = () => {
     {name: 'Vault Name', value: `${initialVault.vaultName}`},
     {
       name: 'Admin',
-      value: `${
-        values.ownerAddress ? shortenAddress(values.ownerAddress) : ''
-      }`,
+      value: `${values.ownerAddress ? values.ownerAddress : ''}`,
     },
     {
       name: 'Contract',
-      value: `${
-        initialVault.vaultAddress
-          ? shortenAddress(initialVault.vaultAddress)
-          : 'NA'
-      }`,
+      value: `${initialVault.vaultAddress ? initialVault.vaultAddress : 'NA'}`,
     },
     {
       name: 'Token Allocation',
@@ -93,21 +96,6 @@ const InitialLiquidity = () => {
   }, [blockNumber, initialVault, library, setFieldValue]);
 
   //setVaultState
-  useEffect(() => {
-    returnVaultStatus(
-      values,
-      initialVault.vaultType,
-      initialVault,
-      hasToken,
-      setVaultState,
-    );
-  }, [
-    hasToken,
-    initialVault.isDeployed,
-    initialVault.isSet,
-    values.isTokenDeployed,
-    blockNumber,
-  ]);
 
   // useEffect(() => {
   //   setBtnDisable(
@@ -123,7 +111,7 @@ const InitialLiquidity = () => {
     deploy(
       account,
       library,
-      vaultState,
+      step,
       initialVault.vaultType,
       initialVault,
       values,
@@ -131,16 +119,7 @@ const InitialLiquidity = () => {
       setFieldValue,
       setVaultState,
     );
-  }, [
-    account,
-    dispatch,
-    initialVault,
-    library,
-    setFieldValue,
-    values,
-    vaultState,
-    blockNumber,
-  ]);
+  }, [account, dispatch, initialVault, library, setFieldValue, values, step]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
   useEffect(() => {
@@ -164,9 +143,6 @@ const InitialLiquidity = () => {
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, initialVault]);
 
-
-  console.log('vaultState',vaultState);
-  
   return (
     <Flex
       mt="30px"
@@ -218,19 +194,39 @@ const InitialLiquidity = () => {
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
-              <Text
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={
-                  detail.name === 'Admin' || detail.name === 'Contract'
-                    ? 'blue.300'
-                    : colorMode === 'dark'
-                    ? 'white.100'
-                    : 'gray.250'
-                }>
-                {detail.value}
-              </Text>
+             
+              {(detail.name === 'Admin' || detail.name === 'Contract') && detail.value !== 'NA'? (
+                <Link
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={'blue.300'}
+                  isExternal
+                  href={
+                    detail.value && network === 'goerli'
+                      ? `https://goerli.etherscan.io/address/${detail.value}`
+                      : detail.value && network !== 'goerli'
+                      ? `https://etherscan.io/address/${detail.value}`
+                      : ''
+                  }
+                  _hover={{color: '#2a72e5'}}>
+                  {detail.value ? shortenAddress(detail.value) : 'NA'}
+                </Link>
+              ) : (
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={
+                    detail.name === 'Admin' || detail.name === 'Contract'
+                      ? 'blue.300'
+                      : colorMode === 'dark'
+                      ? 'white.100'
+                      : 'gray.250'
+                  }>
+                  {detail.value}
+                </Text>
+              )}
             </Flex>
           );
         })}
@@ -270,24 +266,26 @@ const InitialLiquidity = () => {
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
+          _disabled={{
+            background: colorMode === 'dark' ? '#353535' : '#e9edf1',
+            color: colorMode === 'dark' ? '#838383' : '#86929d',
+            cursor: 'not-allowed',
+          }}
           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable :
-              vaultState === 'readyForToken' && !values.isAllDeployed ? true
+            step === 'Deploy'
+              ? initialVault.vaultAddress === undefined
+                ? false
+                : true
+              : (initialVault.isSet === true || initialVault.vaultAddress === undefined)
+              ? true
               : false
           }
-          _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
-
           onClick={() => {
             vaultDeploy();
           }}
           _hover={{}}
           borderRadius={4}>
-          {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+           {step}
         </Button>
       </Flex>
     </Flex>

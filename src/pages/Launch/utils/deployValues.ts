@@ -148,8 +148,7 @@ async function checkIsIniailized(
         );
         const snapshot = await publicVaultSecondContract.snapshot();
         const isInitialized = Number(snapshot.toString()) !== 0;
-        console.log(selectedVaultDetail.vaultName);
-        console.log(isInitialized);
+       
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,
@@ -170,8 +169,7 @@ async function checkIsIniailized(
         const initSqrtPriceX96 =
           await publicVaultSecondContract.initSqrtPriceX96();
         const isInitialized = Number(initSqrtPriceX96.toString()) > 0;
-        console.log(selectedVaultDetail.vaultName);
-        console.log(isInitialized);
+      
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,
@@ -181,6 +179,7 @@ async function checkIsIniailized(
     }
    
     default: {
+      
       if (
         selectedVaultDetail.vaultAddress !== '' ||
         selectedVaultDetail.vaultAddress !== undefined
@@ -191,8 +190,7 @@ async function checkIsIniailized(
           library,
         );
         const isInitialized = await vualtContract.settingCheck();
-        console.log(selectedVaultDetail.vaultName);
-        console.log(isInitialized);
+       
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,
@@ -270,10 +268,11 @@ async function deploy(
   ) => void,
   setVaultState: React.Dispatch<React.SetStateAction<any>>,
 ) {
-  if (account && library && vaultState === 'ready') {
+  if (account && library && vaultState === 'Deploy') {
     const vaultContract = getContract(vaultType, library);
     const signer = getSigner(library, account);
-
+    console.log('create');
+    
     try {
       switch (vaultType) {
         case 'Initial Liquidity': {            
@@ -654,8 +653,9 @@ async function deploy(
     }
   }
 
-  if (account && library && vaultState === 'readyForSet') {
+  if (account && library && vaultState === 'Initialize') {
     const signer = getSigner(library, account);
+console.log('initialize');
 
     try {
       switch (vaultType) {

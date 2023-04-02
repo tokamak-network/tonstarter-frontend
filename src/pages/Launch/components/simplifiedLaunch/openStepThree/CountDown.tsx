@@ -28,7 +28,7 @@ const [duration, setDuration] = useState(calculateDuration(snapshot? snapshot: 0
   }, [snapshot]);
 
   return( 
-  <Flex flexDir={'column'} fontSize='13px' justifyContent={'center'} alignItems='center'>
+  <Flex  flexDir={'column'} fontSize='13px' justifyContent={'center'} alignItems='center'>
     <Text color={colorMode==='light'? '#304156':'#ffffff'}>
         Deadline
     </Text>

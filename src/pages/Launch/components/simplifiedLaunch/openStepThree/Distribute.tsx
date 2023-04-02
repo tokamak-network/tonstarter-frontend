@@ -141,7 +141,7 @@ const Distribute = () => {
           color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}
           fontSize={'16px'}
           textAlign={'center'}>
-          (beside Vesting Vaullt)
+          (Besides Vesting Vaullt)
         </Text>
       </Flex>
       <Flex

@@ -1,4 +1,4 @@
-import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme, Text, Button, Link} from '@chakra-ui/react';
 import {useEffect, useState, useCallback} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects, VaultCommon, VaultPublic} from '@Launch/types';
@@ -16,8 +16,10 @@ import {
   returnVaultStatus,
   deploy,
 } from '@Launch/utils/deployValues';
+import {BASE_PROVIDER} from 'constants/index';
 
-const Vesting = () => {
+const Vesting = (props: {step:string}) => {
+  const {step} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values, setFieldValue} =
@@ -31,6 +33,7 @@ const Vesting = () => {
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {blockNumber} = useBlockNumber();
+  const network = BASE_PROVIDER._network.name;
 
   const vestingVault = values.vaults[2] as VaultCommon;
   const publicVault = values.vaults[0] as VaultPublic;
@@ -73,7 +76,7 @@ const Vesting = () => {
     deploy(
       account,
       library,
-      vaultState,
+      step,
       vestingVault.vaultType,
       vestingVault,
       values,
@@ -81,7 +84,7 @@ const Vesting = () => {
       setFieldValue,
       setVaultState,
     );
-  }, [vestingVault, values, account, library, vaultState, blockNumber]);
+  }, [vestingVault, values, account, library, step, blockNumber]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
 
@@ -115,11 +118,11 @@ const Vesting = () => {
 
   const detailsVault = [
     {name: 'Vault Name', value: 'Vesting'},
-    {name: 'Admin', value: `${shortenAddress(vestingVault.adminAddress)}`},
+    {name: 'Admin', value: `${vestingVault.adminAddress}`},
     {
       name: 'Contract',
       value: vestingVault.vaultAddress
-        ? shortenAddress(vestingVault.vaultAddress)
+        ? vestingVault.vaultAddress
         : 'NA',
     },
   ];
@@ -175,19 +178,38 @@ const Vesting = () => {
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
-              <Text
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={
-                  detail.name === 'Admin' || detail.name === 'Contract'
-                    ? 'blue.300'
-                    : colorMode === 'dark'
-                    ? 'white.100'
-                    : 'gray.250'
-                }>
-                {detail.value}
-              </Text>
+              {(detail.name === 'Admin' || detail.name === 'Contract') && detail.value !== 'NA' ? (
+                <Link
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={'blue.300'}
+                  isExternal
+                  href={
+                    detail.value && network === 'goerli'
+                      ? `https://goerli.etherscan.io/address/${detail.value}`
+                      : detail.value && network !== 'goerli'
+                      ? `https://etherscan.io/address/${detail.value}`
+                      : ''
+                  }
+                  _hover={{color: '#2a72e5'}}>
+                  {detail.value ? shortenAddress(detail.value) : 'NA'}
+                </Link>
+              ) : (
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={
+                    detail.name === 'Admin' || detail.name === 'Contract'
+                      ? 'blue.300'
+                      : colorMode === 'dark'
+                      ? 'white.100'
+                      : 'gray.250'
+                  }>
+                  {detail.value}
+                </Text>
+              )}
             </Flex>
           );
         })}
@@ -261,10 +283,13 @@ const Vesting = () => {
           color={'white.100'}
           mr={'12px'}
           _hover={{}}
-           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable :
-              vaultState === 'readyForToken' && !values.isAllDeployed ? true
+          isDisabled={
+            step === 'Deploy'
+              ? vestingVault.vaultAddress === undefined
+                ? false
+                : true
+              : (vestingVault.isSet === true || vestingVault.vaultAddress === undefined)
+              ? true
               : false
           }
           _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
@@ -273,11 +298,7 @@ const Vesting = () => {
             vaultDeploy();
           }}
           borderRadius={4}>
-          {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+          {step}
         </Button>
       </Flex>
     </Flex>

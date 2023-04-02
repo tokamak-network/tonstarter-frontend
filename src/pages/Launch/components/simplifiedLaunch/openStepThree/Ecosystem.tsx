@@ -1,4 +1,4 @@
-import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme, Text, Button, Link} from '@chakra-ui/react';
 import {useEffect, useState, useCallback} from 'react';
 import {Projects, VaultEco} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
@@ -16,8 +16,11 @@ import {
   returnVaultStatus,
   deploy,
 } from '@Launch/utils/deployValues';
+import {BASE_PROVIDER} from 'constants/index';
 
-const Ecosystem = () => {
+const Ecosystem = (props:{step:string} ) => {
+  const {step} = props;
+
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values, setFieldValue} =
@@ -33,6 +36,8 @@ const Ecosystem = () => {
   const dispatch = useAppDispatch();
   // @ts-ignore
   const {blockNumber} = useBlockNumber();
+  const network = BASE_PROVIDER._network.name;
+
    //check vault state from contract
    useEffect(() => {
    
@@ -58,6 +63,8 @@ const Ecosystem = () => {
     );
   }, [hasToken, ecoVault, values, blockNumber]);
   
+  console.log('ecoVault.vaultAddress',ecoVault.vaultAddress);
+  
 
   const {
     data: {hashKey},
@@ -67,7 +74,7 @@ const Ecosystem = () => {
     deploy(
       account,
       library,
-      vaultState,
+      step,
       ecoVault.vaultType,
       ecoVault,
       values,
@@ -75,7 +82,7 @@ const Ecosystem = () => {
       setFieldValue,
       setVaultState,
     );
-  }, [ecoVault, values, account, library, vaultState, blockNumber]);
+  }, [ecoVault, values, account, library, step, blockNumber]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
 
@@ -105,13 +112,13 @@ const Ecosystem = () => {
     {
       name: 'Admin',
       value: `${
-        values.ownerAddress ? shortenAddress(values.ownerAddress) : ''
+        values.ownerAddress ? (values.ownerAddress) : ''
       }`,
     },
     {
       name: 'Contract',
       value: `${
-        ecoVault.vaultAddress ? shortenAddress(ecoVault.vaultAddress) : 'NA'
+        ecoVault.vaultAddress ? (ecoVault.vaultAddress) : 'NA'
       }`,
     },
     {
@@ -121,13 +128,7 @@ const Ecosystem = () => {
       }`,
     },
   ];
-  const detailsClaim = [
-    {name: '22.01.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-    {name: '22.02.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-    {name: '22.03.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-    {name: '22.04.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-    {name: '22.04.2022 17:00:00', value: '6,000,000 TON (6.00%)'},
-  ];
+
 
   return (
     <Flex
@@ -180,19 +181,38 @@ const Ecosystem = () => {
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
-              <Text
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={
-                  detail.name === 'Admin' || detail.name === 'Contract'
-                    ? 'blue.300'
-                    : colorMode === 'dark'
-                    ? 'white.100'
-                    : 'gray.250'
-                }>
-                {detail.value}
-              </Text>
+              {(detail.name === 'Admin' || detail.name === 'Contract') && detail.value !== 'NA'? (
+                <Link
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={'blue.300'}
+                  isExternal
+                  href={
+                    detail.value && network === 'goerli'
+                      ? `https://goerli.etherscan.io/address/${detail.value}`
+                      : detail.value && network !== 'goerli'
+                      ? `https://etherscan.io/address/${detail.value}`
+                      : ''
+                  }
+                  _hover={{color: '#2a72e5'}}>
+                  {detail.value ? shortenAddress(detail.value) : 'NA'}
+                </Link>
+              ) : (
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={
+                    detail.name === 'Admin' || detail.name === 'Contract'
+                      ? 'blue.300'
+                      : colorMode === 'dark'
+                      ? 'white.100'
+                      : 'gray.250'
+                  }>
+                  {detail.value}
+                </Text>
+              )}
             </Flex>
           );
         })}
@@ -266,22 +286,22 @@ const Ecosystem = () => {
           mr={'12px'}
           _hover={{}}
           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable :
-              vaultState === 'readyForToken' && !values.isAllDeployed ? true
+            step === 'Deploy'
+              ? ecoVault.vaultAddress === undefined
+                ? false
+                : true
+              :( ecoVault.isSet === true ||  ecoVault.vaultAddress === undefined)
+              ? true
               : false
           }
+        
           _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
 
           onClick={() => {
             vaultDeploy();
           }}
           borderRadius={4}>
-         {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+         {step}
         </Button>
       </Flex>
     </Flex>

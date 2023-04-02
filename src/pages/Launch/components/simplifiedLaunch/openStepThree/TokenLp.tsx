@@ -1,4 +1,4 @@
-import {Flex, useColorMode, useTheme, Text,  Button} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme, Text,  Button, Link} from '@chakra-ui/react';
 import {useEffect, useState, useCallback} from 'react';
 import {Projects,VaultTONStarter} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
@@ -16,10 +16,12 @@ import {
   returnVaultStatus,
   deploy,
 } from '@Launch/utils/deployValues';
+import {BASE_PROVIDER} from 'constants/index';
 
-const TokenLP = () => {
+const TokenLP = (props:{step:string}) => {
     const {colorMode} = useColorMode();
     const theme = useTheme();
+    const {step} = props;
 
     const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
@@ -33,6 +35,7 @@ const TokenLP = () => {
     const dispatch = useAppDispatch();
     // @ts-ignore
     const {blockNumber} = useBlockNumber();
+    const network = BASE_PROVIDER._network.name;
 
     useEffect(() => {
    
@@ -67,7 +70,7 @@ const TokenLP = () => {
       deploy(
         account,
         library,
-        vaultState,
+        step,
         tokenLPVault.vaultType,
         tokenLPVault,
         values,
@@ -75,7 +78,7 @@ const TokenLP = () => {
         setFieldValue,
         setVaultState,
       );
-    }, [tokenLPVault, values, account, library, vaultState, blockNumber]);
+    }, [account, library, step, tokenLPVault, values, dispatch, setFieldValue]);
   
     const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
   
@@ -102,8 +105,8 @@ const TokenLP = () => {
 
     const detailsVault = [
       {name: 'Vault Name', value:  `${values.tokenSymbol}-TOS LP Reward`},
-      {name: 'Admin', value: `${values.ownerAddress?shortenAddress(values.ownerAddress) :''}`},
-      {name: 'Contract', value: `${tokenLPVault.vaultAddress? shortenAddress(tokenLPVault.vaultAddress) : 'NA'}`},
+      {name: 'Admin', value: `${values.ownerAddress?(values.ownerAddress) :''}`},
+      {name: 'Contract', value: `${tokenLPVault.vaultAddress? (tokenLPVault.vaultAddress) : 'NA'}`},
     {name: 'Token Allocation', value: `${tokenLPVault.vaultTokenAllocation.toLocaleString()} ${values.tokenSymbol}`},
     ];
 
@@ -154,13 +157,38 @@ const TokenLP = () => {
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
-              <Text
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={detail.name === 'Admin' || detail.name === 'Contract'? 'blue.300': colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-                {detail.value}
-              </Text>
+              {(detail.name === 'Admin' || detail.name === 'Contract') && detail.value !== 'NA'? (
+                <Link
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={'blue.300'}
+                  isExternal
+                  href={
+                    detail.value && network === 'goerli'
+                      ? `https://goerli.etherscan.io/address/${detail.value}`
+                      : detail.value && network !== 'goerli'
+                      ? `https://etherscan.io/address/${detail.value}`
+                      : ''
+                  }
+                  _hover={{color: '#2a72e5'}}>
+                  {detail.value ? shortenAddress(detail.value) : 'NA'}
+                </Link>
+              ) : (
+                <Text
+                  fontSize={'13px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={
+                    detail.name === 'Admin' || detail.name === 'Contract'
+                      ? 'blue.300'
+                      : colorMode === 'dark'
+                      ? 'white.100'
+                      : 'gray.250'
+                  }>
+                  {detail.value}
+                </Text>
+              )}
             </Flex>
           );
         })}
@@ -229,9 +257,12 @@ const TokenLP = () => {
           mr={'12px'}
           _hover={{}}
           isDisabled={
-            vaultState === 'notReady' || vaultState === 'finished'
-              ? btnDisable :
-              vaultState === 'readyForToken' && !values.isAllDeployed ? true
+            step === 'Deploy'
+              ? tokenLPVault.vaultAddress === undefined
+                ? false
+                : true
+              : (tokenLPVault.isSet === true || tokenLPVault.vaultAddress === undefined)
+              ? true
               : false
           }
           _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
@@ -240,11 +271,7 @@ const TokenLP = () => {
             vaultDeploy();
           }}
           borderRadius={4}>
-         {vaultState !== 'readyForToken'
-            ? vaultState === 'ready' || vaultState === 'notReady'
-              ? 'Deploy'
-              : 'Initialize'
-            : 'Send Token'}
+         {step}
         </Button>
       </Flex>
     </Flex>
