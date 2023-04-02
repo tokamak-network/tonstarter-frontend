@@ -12,6 +12,7 @@ import {UserGuideLink} from '../common/simplifiedUI/UserGuideLink';
 import {TokenImageInput} from '../common/simplifiedUI/TokenImageInput';
 import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
+import StepHeader from './StepHeader';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -40,45 +41,19 @@ const OpenStepOneSimplified = (props: any) => {
 
   return (
     <Flex
-      p={'35px'}
-      pt={'24px'}
       w={'774px'}
       bg={colorMode === 'light' ? 'white.100' : 'none'}
       borderRadius={'10px'}
       border={colorMode === 'light' ? '' : '1px solid #373737'}
       flexDir="column">
-        {/* TODO: add a test value file for simplified launch */}
-      {/* {isProduction() === false && (
-        <Flex
-          justifyContent={'center'}
-          pos="absolute"
-          w={'100%'}
-          left={'300px'}>
-          <CustomButton
-            text="set a test value"
-            //@ts-ignore
-            func={() => setValues(testvalues)}></CustomButton>
-        </Flex>
-      )} */}
-      <Box mb={'23px'}>
-        <Flex>
-          <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
-          <UserGuideLink />
-        </Flex>
-      </Box>
-      <Box pos="relative">
-        <Box w={'774px'} pos="absolute" left={'-35px'}>
-          <Line></Line>
-        </Box>
-        <Box mt={'14px'} float={'right'}>
-          <Flex fontSize={13}>
+      <StepHeader deploySteps={false} title={'Project & Token'}/>
+      <Grid px={'35px'} pb={'35px'}>
+          <Flex fontSize={12} mt={'14px'} ml={'615px'}>
             <Text mr={'5px'} color={'#FF3B3B'}>
               *
-            </Text>{' '}
+            </Text>
             Required Field
           </Flex>
-        </Box>
-      </Box>
       <Grid templateColumns="repeat(2, 1fr)" rowGap={'20px'} columnGap={'50px'}>
         {filedNameList.map(
           (fieldName: {title: string; requirement: boolean}, index: number) => {
@@ -127,6 +102,7 @@ const OpenStepOneSimplified = (props: any) => {
       <Box>
         <CustomMarkdownEditor />
       </Box>
+    </Grid>
     </Flex>
   );
 };
