@@ -63,7 +63,6 @@ const Ecosystem = (props:{step:string} ) => {
     );
   }, [hasToken, ecoVault, values, blockNumber]);
   
-  console.log('ecoVault.vaultAddress',ecoVault.vaultAddress);
   
 
   const {
