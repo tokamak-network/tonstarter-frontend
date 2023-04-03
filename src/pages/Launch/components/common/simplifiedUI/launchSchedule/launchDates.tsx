@@ -34,8 +34,8 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
   const publicVault = vaults[0] as VaultPublic;
   const theme = useTheme();
 
-  // Check if the public vault is deployed & disable calendar icons
-  const isPublicVaultDeployed = publicVault.isDeployed;
+  // Do not show calendar icons if public vault is initialized
+  const isPublicVaultDeployed = publicVault.isSet;
 
   const [snapshotDate, setSnapshotDate] = useState<number | undefined>(
     publicVault.snapshot || 0,
@@ -59,6 +59,13 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
   const [publicSale1STC, setPublicSale1STC] = useState<number>(0);
   const [publicSale2STC, setPublicSale2STC] = useState<number>(0);
   const [lastUnlockDate, setLastUnlockDate] = useState<number>(0);
+
+  //  popover as a tooltip
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
 
   const stepName = '';
   const getTimeStamp = () => {
@@ -296,9 +303,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                       49 times unlock <br /> 4 times vesting <br />
                     </Text>
                     <Grid justifyItems={'center'} mt={'6px'}>
-                      <Popover>
+                      <Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
                         <PopoverTrigger>
-                          <Image src={tooltipIcon} />
+                          <Image src={tooltipIcon} onMouseEnter={handleMouseEnter}/>
                         </PopoverTrigger>
                         <PopoverContent
                           w={'200px'}
