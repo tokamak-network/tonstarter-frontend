@@ -11,7 +11,6 @@ import {
   Popover,
   PopoverBody,
   PopoverArrow,
-  PopoverCloseButton,
 } from '@chakra-ui/react';
 import React, {useState, useEffect} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';

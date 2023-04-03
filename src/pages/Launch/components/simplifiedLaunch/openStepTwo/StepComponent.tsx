@@ -49,7 +49,7 @@ const StepComponent = () => {
       flexDir={'column'}
       mt="40px"
       fontFamily={theme.fonts.roboto}>
-        <Flex   w="327px">
+        <Flex w="327px">
         <StepComp step={step} />
         </Flex>
    

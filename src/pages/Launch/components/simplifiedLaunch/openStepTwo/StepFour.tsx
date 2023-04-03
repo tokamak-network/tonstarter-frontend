@@ -22,7 +22,7 @@ const StepFour = () => {
   };
   
   return (
-    <Flex flexDir={'column'} h="142px" alignItems={'flex-start'}>
+    <Flex flexDir={'column'} mb={'15px'} alignItems={'flex-start'}>
       {' '}
       <Text
         fontSize={'14px'}
@@ -63,11 +63,12 @@ const StepFour = () => {
         </NumberInput>
         <Text>TOS</Text>
       </Flex>  */}
-      <Flex fontSize={'13px'}  alignItems={'center'}>
-      <Text > 1 {values.tokenSymbol} = {(1/values.projectTokenPrice).toLocaleString()}TON =  </Text>
+      <Flex fontSize={'14px'}  alignItems={'center'}  color={'#7e8993'} fontWeight={500}>
+      <Text> 1 {values.tokenSymbol} = {(1/values.projectTokenPrice).toLocaleString()}TON = {' '}</Text>
       <Flex
         h="30px"
         w="130px"
+        ml={'6px'}
         alignItems={'center'}
         borderRadius="4px"
         bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
