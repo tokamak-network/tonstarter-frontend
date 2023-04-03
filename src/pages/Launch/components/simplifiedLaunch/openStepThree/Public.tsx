@@ -24,6 +24,7 @@ import {
   deploy,
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
+import {Scrollbars} from 'react-custom-scrollbars-2';
 
 const Public = (props: {step: string}) => {
   const {step} = props;
@@ -308,7 +309,10 @@ const Public = (props: {step: string}) => {
                   fontWeight={500}>
                   {claim.claimTokenAllocation.toLocaleString()} (
                   {values.totalSupply
-                    ? ((claim.claimTokenAllocation / values.totalSupply) * 100).toLocaleString()
+                    ? (
+                        (claim.claimTokenAllocation / values.totalSupply) *
+                        100
+                      ).toLocaleString()
                     : 0}
                   %)
                 </Text>
@@ -500,61 +504,90 @@ const Public = (props: {step: string}) => {
           Public
         </Text>
       </Flex>
-      <Flex w="272px" h="26px" fontSize={'12px'} mb="30px" mt="15px">
+      <Scrollbars
+        style={{
+          width: '100%',
+          height: '440px',
+          display: 'flex',
+          position: 'relative',
+         
+          justifyContent: 'center',
+        }}
+        thumbSize={70}
+        renderThumbVertical={() => (
+          <div
+            style={{
+              background: '#007aff',
+              position: 'relative',
+              right: '-2px',
+              marginTop: '10px',
+              borderRadius: '3px',
+            }}></div>
+        )}
+        renderThumbHorizontal={() => <div style={{background: 'black'}}></div>}>
         <Flex
-          w="50%"
-          border={
-            type === 'Vault'
-              ? '1px solid #2a72e5'
-              : colorMode === 'dark'
-              ? '1px solid #535353'
-              : '1px solid #d7d9df'
-          }
-          cursor="pointer"
-          borderLeftRadius="5px"
-          borderRight={type !== 'Vault' ? 'none' : ''}
-          alignItems={'center'}
-          onClick={() => setType('Vault')}
-          justifyContent={'center'}>
-          <Text
-            color={
+          w="272px"
+          h="26px"
+          fontSize={'12px'}
+          mb="30px"
+          mt="15px"
+          ml="40px">
+          <Flex
+            w="50%"
+            border={
               type === 'Vault'
-                ? 'blue.300'
+                ? '1px solid #2a72e5'
                 : colorMode === 'dark'
-                ? 'white.100'
-                : 'gray.250'
-            }>
-            Vault & Claim
-          </Text>
-        </Flex>
-        <Flex
-          w="50%"
-          border={
-            type === 'Sale'
-              ? '1px solid #2a72e5'
-              : colorMode === 'dark'
-              ? '1px solid #535353'
-              : '1px solid #d7d9df'
-          }
-          cursor="pointer"
-          onClick={() => setType('Sale')}
-          borderLeft={type !== 'Sale' ? 'none' : ''}
-          borderRightRadius="5px"
-          alignItems={'center'}
-          justifyContent={'center'}>
-          <Text
-            color={
+                ? '1px solid #535353'
+                : '1px solid #d7d9df'
+            }
+            cursor="pointer"
+            borderLeftRadius="5px"
+            borderRight={type !== 'Vault' ? 'none' : ''}
+            alignItems={'center'}
+            onClick={() => setType('Vault')}
+            justifyContent={'center'}>
+            <Text
+              color={
+                type === 'Vault'
+                  ? 'blue.300'
+                  : colorMode === 'dark'
+                  ? 'white.100'
+                  : 'gray.250'
+              }>
+              Vault & Claim
+            </Text>
+          </Flex>
+          <Flex
+            w="50%"
+            border={
               type === 'Sale'
-                ? 'blue.300'
+                ? '1px solid #2a72e5'
                 : colorMode === 'dark'
-                ? 'white.100'
-                : 'gray.250'
-            }>
-            Sale
-          </Text>
+                ? '1px solid #535353'
+                : '1px solid #d7d9df'
+            }
+            cursor="pointer"
+            onClick={() => setType('Sale')}
+            borderLeft={type !== 'Sale' ? 'none' : ''}
+            borderRightRadius="5px"
+            alignItems={'center'}
+            justifyContent={'center'}>
+            <Text
+              color={
+                type === 'Sale'
+                  ? 'blue.300'
+                  : colorMode === 'dark'
+                  ? 'white.100'
+                  : 'gray.250'
+              }>
+              Sale
+            </Text>
+          </Flex>
         </Flex>
-      </Flex>
-      {type === 'Sale' ? <Sale /> : <VaultClaim />}
+
+        {type === 'Sale' ? <Sale /> : <VaultClaim />}
+      </Scrollbars>
 
       <Flex
         mt="24px"
@@ -579,7 +612,8 @@ const Public = (props: {step: string}) => {
               ? publicVault.vaultAddress === undefined
                 ? false
                 : true
-              : (publicVault.isSet === true || publicVault.vaultAddress === undefined)
+              : publicVault.isSet === true ||
+                publicVault.vaultAddress === undefined
               ? true
               : false
           }

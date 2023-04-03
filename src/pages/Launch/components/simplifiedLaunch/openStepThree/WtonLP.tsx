@@ -24,6 +24,7 @@ import {
   deploy,
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
+import Scrollbars from 'react-custom-scrollbars-2';
 
 const WtonLP = (props: {step: string}) => {
   const {step} = props;
@@ -169,6 +170,28 @@ const WtonLP = (props: {step: string}) => {
           WTON-TOS LP Reward
         </Text>
       </Flex>
+      <Scrollbars
+        style={{
+          width: '100%',
+          height: '440px',
+          display: 'flex',
+          position: 'relative',
+         
+          justifyContent: 'center',
+        }}
+        thumbSize={70}
+        renderThumbVertical={() => (
+          <div
+            style={{
+              marginTop: '10px',
+              background: '#007aff',
+              position: 'relative',
+              right: '-2px',
+              borderRadius: '3px',
+            }}></div>
+        )}
+        renderThumbHorizontal={() => <div style={{background: 'black'}}></div>}>
+       
       <Flex
         mt="30px"
         flexDir={'column'}
@@ -279,6 +302,7 @@ const WtonLP = (props: {step: string}) => {
           );
         })}
       </Flex>
+      </Scrollbars>
       <Flex
         mt="24px"
         w="100%"
