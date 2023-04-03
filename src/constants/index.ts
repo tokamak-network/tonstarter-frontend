@@ -34,7 +34,7 @@ export const API_SERVER_LAUNCH =
 
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
-    ? ethers.getDefaultProvider("goerli")
+    ? ethers.getDefaultProvider('goerli')
     : ethers.getDefaultProvider('mainnet');
 
 export const OPENSEA =
@@ -118,6 +118,7 @@ const MAINNET_DEPLOYED = {
   },
   StakingV2Proxy: '0x14fb0933Ec45ecE75A431D10AFAa1DDF7BfeE44C',
   Quoter: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+  LibPublicSaleLogic: '',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -166,7 +167,7 @@ const RINKEBY_DEPLOYED = {
   DAOVault: '0x4d3cF0B03326E549841330C425b23416F8075bce',
   TokenDistribute: '0x3239F4953E6BBCFbbe209eC406a2B117F26f6d0f',
   pools: {
-    TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+    TOS_WTON_POOL: '0x8DF54aDA313293E80634f981820969BE7542CEe9',
     ETH_WTON_Address: '0x8DF54aDA313293E80634f981820969BE7542CEe9',
     TOS_WTON_Address: '',
     TOS_ETH_Address: '0x3b466f5d9b49aedd65f6124d5986a9f30b1f5442',
@@ -182,6 +183,7 @@ const RINKEBY_DEPLOYED = {
   },
   StakingV2Proxy: '0x2fF6D99EbEE9A61430FE4909745FFa9C69a3FCD0',
   Quoter: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+  LibPublicSaleLogic: '0xe4BEcc92204B8D9d2aC223c98DD859E0a3DC7Ca6'
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =

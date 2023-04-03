@@ -13,8 +13,11 @@ import {
   useTheme,
   Image,
   useColorMode,
+  Avatar,
+  NumberInput,
+  NumberInputField,
 } from '@chakra-ui/react';
-import React, {useCallback, useState, useEffect} from 'react';
+import React, {useCallback, useState, useEffect, useMemo} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {swapWTONtoTOS} from '../actions';
@@ -26,37 +29,82 @@ import {convertToRay} from 'utils/number';
 // import {LoadingDots} from 'components/Loader/LoadingDots';
 import swapArrow from 'assets/svgs/swap-arrow-icon.svg';
 import commafy from 'utils/commafy';
+import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
+import TOS_SYMBOL from 'assets/tokens/TOS_symbol.svg';
+import TOS_symbolDark from 'assets/tokens/TOS_symbolDark.svg';
+import {useSwapModal} from '@Launch/hooks/useSwapModal';
+import {useSwapMax} from '@Launch/hooks/useSwapMax';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useActiveWeb3React();
+  const [inputAmount, setInputAmount] = useState<string>('0');
+  const [max, setMax] = useState<string>('0');
+
   const {
     data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
   } = sub;
 
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const [value, setValue] = useState<number>(0);
-  const [swapValue, setSwapValue] = useState<number>(0);
 
   const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
 
-  const setMax = useCallback((_e) => setValue(swapBalance), [swapBalance]);
-
-  const handleChange = useCallback((e) => {
-    setValue(e.target.value);
-    /*eslint-disable*/
-  }, []);
+  const maxAmount = useSwapMax(Number(swapBalance));
+  const maxInput = useSwapMax(Number(inputAmount.replaceAll(',', '')));
 
   useEffect(() => {
-    setSwapValue(value * Number(currentTosPrice));
-  }, [value, currentTosPrice]);
+    if (Number(inputAmount.replaceAll(',', '')) !== 0) {
+      setMax(maxInput);
+    } else {
+      setMax(maxAmount);
+    }
+  }, [inputAmount, maxAmount, maxInput]);
+
+
+  const {tosAmountOut: basicPrice} = useSwapModal(1);
+
+  const {tosAmountOut} = useSwapModal(
+    isNaN(Number(inputAmount.replaceAll(',', ''))) ||
+      Number(inputAmount.replaceAll(',', '')) === 0
+      ? 0
+      : Number(inputAmount.replaceAll(',', '')),
+   
+  );
 
   const handleCloseModal = () => {
     handleCloseConfirmModal();
-    setValue(0);
+    setInputAmount('0');
   };
+
+  const priceImpact = useMemo(() => {
+    const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
+
+    const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
+
+    const numInputAmount = Number(inputAmount.replaceAll(',', ''));
+
+    const theoreticalValue = numInputAmount * numBasicPrice;
+
+    const priceDiff = (theoreticalValue - numTosAmountOut) / theoreticalValue;
+    const result = priceDiff * 100;
+
+    return isNaN(result) || result === Infinity || result === -Infinity
+      ? '-'
+      : commafy(result);
+  }, [tosAmountOut, basicPrice,inputAmount]);
+
+  useEffect(() => {
+    if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
+      setInputAmount(inputAmount.slice(1, inputAmount.length));
+    }
+    if (inputAmount.split('.')[1] !== undefined) {
+      return setInputAmount(
+        `${inputAmount.split('.')[0]}.${inputAmount.split('.')[1].slice(0, 2)}`,
+      );
+    }
+  }, [inputAmount, setInputAmount]);
 
   return (
     <Modal
@@ -68,7 +116,7 @@ export const SwapModal = () => {
         fontFamily={theme.fonts.roboto}
         bg={colorMode === 'light' ? 'white.100' : 'black.200'}
         w="350px"
-        pt="25px"
+        pt="20px"
         pb="25px">
         <CloseButton closeFunc={handleCloseModal}></CloseButton>
         <ModalBody p={0}>
@@ -96,57 +144,97 @@ export const SwapModal = () => {
             w={'full'}>
             <Flex
               w={'300px'}
-              border={'1px solid #d7d9df'}
+              border={
+                colorMode === 'light'
+                  ? '1px solid #d7d9df'
+                  : '1px solid #535353'
+              }
               flexDir={'column'}
               borderRadius={10}
+              pt="12px"
               pl={'25px'}
               pr={'14px'}>
               <Flex
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 pt={'16px'}>
+                <Avatar
+                  src={TON_SYMBOL}
+                  backgroundColor={'transparent'}
+                  bg="transparent"
+                  color="#c7d1d8"
+                  name={'token_image'}
+                  border={
+                    colorMode === 'light'
+                      ? '1px solid #e7edf3'
+                      : '1px solid #3c3c3c'
+                  }
+                  borderRadius={25}
+                  h="26px"
+                  w="26px"
+                  mr="6px"
+                />
+
                 <Text
                   fontSize={16}
                   fontWeight={600}
-                  color={'#3d495d'}
+                  color={colorMode === 'dark' ? '#ffffff' : '#3d495d'}
                   textAlign={'center'}
                   lineHeight={'24px'}>
                   TON
                 </Text>
-                <Input
-                  h={'24px'}
-                  variant={'outline'}
-                  borderWidth={0}
-                  textAlign={'right'}
-                  value={value}
-                  onChange={handleChange}
-                  placeholder={'0.00'}
-                  fontSize={20}
-                  fontWeight={'bold'}
-                  _placeholder={{
-                    color: '#dee4ef',
-                  }}
-                  _focus={{
-                    borderWidth: 0,
-                  }}
-                />
+                <NumberInput
+                  h="24px"
+                  value={Number(inputAmount) <= 0 ? 0 : inputAmount}
+                  onChange={(value) => {
+                    if (
+                      (value === '0' || value === '00') &&
+                      value.length <= 2
+                    ) {
+                      return null;
+                    }
+                    if (value === '') {
+                      return setInputAmount('0');
+                    }
+                    return setInputAmount(value);
+                  }}>
+                  <NumberInputField
+                    placeholder="0.00"
+                    h="24px"
+                    textAlign={'right'}
+                    errorBorderColor="red.300"
+                    verticalAlign={'sub'}
+                    fontSize={20}
+                    fontWeight={'bold'}
+                    border="none"
+                    _focus={{
+                      borderWidth: 0,
+                    }}
+                    pr="0px"
+                    _active={{
+                      borderWidth: 0,
+                    }}></NumberInputField>
+                </NumberInput>
               </Flex>
               <Flex alignItems={'center'} pb={'14px'} pt={'13px'}>
                 <Text
-                  fontSize={12}
-                  fontWeight={600}
-                  color={'#808992'}
+                  fontSize={'12px'}
+                  fontWeight={500}
+                  color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
+                  lineHeight={1.33}
                   mr={'10px'}>
-                  Balance: {swapBalance || '-'} TON
+                  Balance: {Number(swapBalance).toLocaleString() || '-'} TON
                 </Text>
+
                 <Button
                   w={'50px'}
                   h={'20px'}
                   fontSize={12}
                   fontWeight={600}
-                  onClick={setMax}
+                  onClick={() => setInputAmount(max.replace(/,/g, ''))}
                   type={'button'}
                   variant="outline"
+                  borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
                   _focus={{
                     outline: 'none',
                   }}>
@@ -156,7 +244,7 @@ export const SwapModal = () => {
             </Flex>
           </Stack>
           <Stack
-            pt="27px"
+            pt="20px"
             as={Flex}
             flexDir={'row'}
             justifyContent={'center'}
@@ -165,7 +253,7 @@ export const SwapModal = () => {
             <Image src={swapArrow} w={5} h={5} alt="" />
           </Stack>
           <Stack
-            pt="27px"
+            pt="20px"
             as={Flex}
             flexDir={'row'}
             justifyContent={'center'}
@@ -173,7 +261,11 @@ export const SwapModal = () => {
             w={'full'}>
             <Flex
               w={'300px'}
-              border={'1px solid #d7d9df'}
+              border={
+                colorMode === 'light'
+                  ? '1px solid #d7d9df'
+                  : '1px solid #535353'
+              }
               flexDir={'column'}
               borderRadius={10}
               pl={'25px'}
@@ -182,43 +274,62 @@ export const SwapModal = () => {
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 pt={'16px'}>
+               <Flex>
+               <Avatar
+                  src={colorMode === 'light' ? TOS_SYMBOL : TOS_symbolDark}
+                  backgroundColor={'transparent'}
+                  bg="transparent"
+                  color="#c7d1d8"
+                  name={'token_image'}
+                  border={
+                    colorMode === 'light'
+                      ? '1px solid #e7edf3'
+                      : '1px solid #3c3c3c'
+                  }
+                  borderRadius={25}
+                  h="26px"
+                  w="26px"
+                  mr="6px"
+                />
                 <Text
                   fontSize={16}
                   fontWeight={600}
-                  color={'#3d495d'}
+                  color={colorMode === 'dark' ? '#ffffff' : '#3d495d'}
                   textAlign={'center'}
                   lineHeight={'24px'}>
                   TOS
                 </Text>
-                <Input
-                  h={'24px'}
-                  variant={'outline'}
-                  borderWidth={0}
-                  textAlign={'right'}
-                  value={
-                    isNaN(Number(swapValue))
-                      ? '0'
-                      : Number(swapValue).toFixed(2)
-                  }
-                  placeholder={'0.00'}
-                  fontSize={20}
+               </Flex>
+                
+
+                <Text
+                  fontFamily={theme.fonts.roboto}
+                  color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
                   fontWeight={'bold'}
-                  _placeholder={{
-                    color: '#dee4ef',
-                  }}
-                  _focus={{
-                    borderWidth: 0,
-                  }}
-                />
+                  lineHeight={1.5}
+                  fontSize="20px">
+                  {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)}
+                </Text>
               </Flex>
               <Flex alignItems={'center'} pb={'16px'} pt={'13px'}>
                 <Flex flexDir={'column'} h={'30px'}>
-                  <Text fontSize={12} fontWeight={600} color={'#808992'}>
-                    Current price : {currentTosPrice} TOS / WTON
+                  <Text
+                    fontSize={'12px'}
+                    fontWeight={500}
+                    color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
+                    lineHeight={1.33}>
+                    1 TON = {commafy(basicPrice)} TOS
                   </Text>
-                  <Text fontSize={12} fontWeight={600} color={'#808992'}>
+                  <Text
+                    fontSize={'12px'}
+                    fontWeight={500}
+                    color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
+                    lineHeight={1.33}>
+                    Price Impact : {priceImpact}%
+                  </Text>
+                  {/* <Text fontSize={12} fontWeight={600} color={'#808992'}>
                     Minimum amount TOS : {commafy(swapValue * 0.95 * 0.9)}
-                  </Text>
+                  </Text> */}
                 </Flex>
               </Flex>
             </Flex>
@@ -240,30 +351,26 @@ export const SwapModal = () => {
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
             mb={'25px'}></Stack> */}
-          <Box
-            pt={'35px'}
-            pb={'25px'}
-            pr={'25px'}
-            pl={'25px'}
-            fontSize={12}
-            textAlign={'center'}>
-            <Text>
-              Depending on the liquidity of the WTON-TOS pool, slippage may
-              occur.{' '}
-              <span style={{color: '#ff3b3b'}}>
-                If slippage of 10% or more occurs, the operation will be
-                cancelled. Please note that even if the job is canceled, the gas
-                fee will be paid. Therefore, it is recommended to input an
-                appropriate amount of TON according to the liquidity of the
-                pool.
-              </span>
-              {''}
-              If the exchange rate of WTON-TOS is not within the range of the
-              average exchange rate of the last 2 minutes + -5% of the exchange
-              rate of WTON-TOS, the operation will be canceled.
+          {Number(priceImpact) >= 10 ? (
+            <Text
+              margin={'0px 25px 25px'}
+              fontSize="12px"
+              textAlign={'center'}
+              color={'#ff3b3b'}
+              mt="30px">
+              Price impact has to be less than 10%
             </Text>
-          </Box>
+          ) : null}
 
+          <Text
+            margin={'0px 25px 25px'}
+            fontSize="12px"
+            textAlign={'center'}
+            mt="30px">
+            This interface is designed to prevent sandwich attack. The txn will
+            revert if the conditions for the price impact and the average price
+            are not met.
+          </Text>
           <Box
             as={Flex}
             justifyContent={'center'}
@@ -279,11 +386,11 @@ export const SwapModal = () => {
               _hover={{...theme.btnHover}}
               onClick={() => {
                 const isBalance = checkBalance(
-                  Number(value),
+                  Number(inputAmount),
                   Number(swapBalance),
                 );
                 if (isBalance) {
-                  const amountRay = convertToRay(value.toString());
+                  const amountRay = convertToRay(inputAmount.toString());
                   swapWTONtoTOS({
                     userAddress: account,
                     amount:

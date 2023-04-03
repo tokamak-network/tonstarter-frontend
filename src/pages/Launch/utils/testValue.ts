@@ -4,7 +4,7 @@ const monthGapTimeStamp = (currentTimeStamp: number, monthes: number) => {
 };
 export const testValue = () => {
   //Plus 15 min to currentTime
-  const currentTimeStamp = Date.now() / 1000 + 900;
+  const currentTimeStamp = Math.floor(Date.now() / 1000 + 900);
   const round2EndTime = currentTimeStamp + 1200;
   const afterRound2EndTime = round2EndTime + 1;
   const defaultData = {

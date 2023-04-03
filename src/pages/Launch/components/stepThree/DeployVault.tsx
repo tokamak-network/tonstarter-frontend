@@ -155,7 +155,12 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {account, library} = useActiveWeb3React();
   const [vaultState, setVaultState] = useState<
-    'notReady' | 'ready' | 'readyForToken' | 'readyForSet' | 'finished'
+    | 'notReady'
+    | 'ready'
+    | 'readyForToken'
+    | 'readyForSet'
+    | 'finished'
+    | 'waitForPublic'
   >('notReady');
   const [hasToken, setHasToken] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -194,7 +199,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             );
             const snapshot = await publicVaultSecondContract.snapshot();
             const isInitialized = Number(snapshot.toString()) !== 0;
-           
             return setFieldValue(
               `vaults[${selectedVaultDetail?.index}].isSet`,
               isInitialized,
@@ -215,7 +219,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
             const initSqrtPriceX96 =
               await publicVaultSecondContract.initSqrtPriceX96();
             const isInitialized = Number(initSqrtPriceX96.toString()) > 0;
-           
             return setFieldValue(
               `vaults[${selectedVaultDetail?.index}].isSet`,
               isInitialized,
@@ -237,7 +240,6 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               library,
             );
             const isInitialized = await vualtContract.settingCheck();
-           
             return setFieldValue(
               `vaults[${selectedVaultDetail?.index}].isSet`,
               isInitialized,
@@ -276,11 +278,14 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
 
     if (vaultType === 'Vesting') {
       const publicVault = values.vaults[0];
+
       return setVaultState(
         !vaultDeployReady && !isVaultDeployed
           ? 'notReady'
           : vaultDeployReady && !isVaultDeployed
           ? 'ready'
+          : publicVault.isDeployed === false && isVaultDeployed
+          ? 'notReady'
           : isVaultDeployed &&
             publicVault.isDeployed &&
             publicVault.vaultAddress
@@ -598,7 +603,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   )}`,
                   content: `${commafy(
                     claimData.claimTokenAllocation,
-                  )} ${'TON'}`,
+                  )} ${'% (TON)'}`,
                 };
               },
             ),
@@ -822,7 +827,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                   `vaults[${selectedVaultDetail?.index}].isDeployed`,
                   true,
                 );
-                setVaultState('readyForSet');
+                setVaultState('notReady');
               }
               break;
             }

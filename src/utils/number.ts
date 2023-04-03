@@ -70,7 +70,9 @@ export function convertNumber(args: ConverNumberFunc): string | undefined {
     if (amount === '0' || amount === undefined || amount === '') {
       return '0.00';
     }
-    const numAmount = BigNumber.from(amount);
+
+    
+    const numAmount = BigNumber.from(amount);    
     const numberType: string = type ? type : 'wei';
     const optRound = round ?? undefined;
     const decimalPoint: number = decimalPlaces ? decimalPlaces : 3;

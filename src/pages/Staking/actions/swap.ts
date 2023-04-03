@@ -19,7 +19,6 @@ export const swapWTONtoTOS = async (args: UnstakeFromLayer2) => {
     if (userAddress === null || userAddress === undefined) {
       return;
     }
-
     const StakeTONContract = new Contract(
       contractAddress,
       TokamakStakeUpgrade.abi,
