@@ -21,7 +21,7 @@ export const REACT_APP_TOS_PRICE = process.env.REACT_APP_TOS_PRICE as string;
 export const REACT_APP_ETH_PRICE = process.env.REACT_APP_ETH_PRICE as string;
 export const REACT_APP_TON_PRICE = process.env.REACT_APP_TON_PRICE as string;
 export const REACT_APP_USD_PRICE = process.env.REACT_APP_USD_PRICE as string
-
+//
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 5 : 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
