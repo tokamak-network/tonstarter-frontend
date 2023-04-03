@@ -119,7 +119,7 @@ const EstimateGasModal = () => {
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
               <Text fontSize={13}>Recommended</Text>
               <Spacer />
-              <Text fontSize={15}>{`${recommended} ETH`}</Text>
+              <Text fontSize={15}>{`${recommended.toLocaleString()} ETH`}</Text>
             </Flex>
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
               <Text fontSize={13}>You have</Text>
