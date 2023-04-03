@@ -308,7 +308,7 @@ const Public = (props: {step: string}) => {
                   fontWeight={500}>
                   {claim.claimTokenAllocation.toLocaleString()} (
                   {values.totalSupply
-                    ? (claim.claimTokenAllocation / values.totalSupply) * 100
+                    ? ((claim.claimTokenAllocation / values.totalSupply) * 100).toLocaleString()
                     : 0}
                   %)
                 </Text>

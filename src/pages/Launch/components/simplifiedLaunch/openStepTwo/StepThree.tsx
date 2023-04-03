@@ -13,7 +13,7 @@ import {
 import {useEffect, useState} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
-import {Projects, VaultPublic} from '@Launch/types';
+import {Projects, VaultCommon, VaultPublic} from '@Launch/types';
 import {fetchUsdPriceURL, fetchTonPriceURL} from 'constants/index';
 import {fetchPoolPayload} from '@Launch/utils/fetchPoolPayload';
 import {useActiveWeb3React} from 'hooks/useWeb3';
@@ -40,11 +40,9 @@ const StepThree = (props: {currentStep: Number}) => {
       const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
         res.json(),
       );
-
       const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
         res.json(),
       );
-
       const tonPriceKRW = tonPriceObj[0].trade_price;
       const krwInUsd = usdPriceObj.rates.USD;
 
@@ -186,12 +184,10 @@ const StepThree = (props: {currentStep: Number}) => {
     if (marketCap && growth) {
       const totalSupply = parseInt(((marketCap * growth) / option).toString());
       setFieldValue('totalSupply', totalSupply);
-      console.log('values', values);
-
       const tokenPriceinDollars = marketCap / totalSupply;
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
       const tonPriceInToken = 1 / tokenPriceInTon;
-      setFieldValue('salePrice', tonPriceInToken);
+      setFieldValue('salePrice', truncNumber(tonPriceInToken,2));
       setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
 
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
@@ -200,13 +196,9 @@ const StepThree = (props: {currentStep: Number}) => {
 
       const hardCap =
         values.fundingTarget && values.fundingTarget / tonInDollars;
-      console.log('hardCap', hardCap);
-
       setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
 
       const publicAllocation = totalSupply * 0.3;
-      console.log('publicAllocation',truncNumber(publicAllocation,2));
-      
 
       const rounds = values.vaults.map((vault, index) => {
         const roundInfo = schedules(
@@ -215,6 +207,8 @@ const StepThree = (props: {currentStep: Number}) => {
           publicVault.publicRound2End ? publicVault.publicRound2End : 0,
         );
 
+        // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
+
         const tot = roundInfo.reduce(
           (acc, round) => acc + round.claimTokenAllocation,
           0,
@@ -222,8 +216,10 @@ const StepThree = (props: {currentStep: Number}) => {
         //  const totalTokenAllocation =
         setFieldValue(`vaults[${index}].claim`, roundInfo);
         setFieldValue(`vaults[${index}].adminAddress`, account);
-        setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot - 100);
+        setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
+        return tot;
       });
+
       setFieldValue('vaults[2].vaultTokenAllocation', 0);
       setFieldValue('vaults[0].addressForReceiving', account);
       setFieldValue('vaults[0].adminAddress', account);
@@ -255,10 +251,10 @@ const StepThree = (props: {currentStep: Number}) => {
         publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
       );
 
-      const sumTotalToken = vaults.reduce((acc, cur) => {
-        const {vaultTokenAllocation} = cur;
-        return vaultTokenAllocation + acc;
-      }, 0);
+      const mainVaults = rounds.splice(2, 1);
+
+      const sumTotalToken = rounds.reduce((partialSum, a) => partialSum + a, 0);
+
       setFieldValue('totalTokenAllocation', sumTotalToken);
     }
   };
