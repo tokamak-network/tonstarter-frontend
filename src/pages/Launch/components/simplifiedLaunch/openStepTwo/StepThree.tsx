@@ -41,13 +41,15 @@ const StepThree = (props: {currentStep: Number}) => {
         res.json(),
       );
 
-      const tonPriceObj = await fetch(fetchTonPriceURL).then((res)=>res.json())
+      const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
+        res.json(),
+      );
 
       const tonPriceKRW = tonPriceObj[0].trade_price;
       const krwInUsd = usdPriceObj.rates.USD;
-         
-     const tonPriceInUsd = tonPriceKRW*krwInUsd
-     
+
+      const tonPriceInUsd = tonPriceKRW * krwInUsd;
+
       setTonInDollars(tonPriceInUsd);
       const poolData = await fetchPoolPayload(library);
 
@@ -97,6 +99,86 @@ const StepThree = (props: {currentStep: Number}) => {
     handleInput(option);
   };
 
+  // useEffect(() => {
+  //   const marketCap = values.marketCap;
+  //   const growth = values.growth;
+  //   const stablePrice = values.stablePrice
+  //   if (marketCap && growth && stablePrice) {
+  //     const totalSupply = parseInt(((marketCap * growth) / stablePrice).toString());
+  //     const tokenPriceinDollars = marketCap / totalSupply;
+  //     setFieldValue('totalSupply', totalSupply);
+  //     const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
+  //     const tonPriceInToken = 1 / tokenPriceInTon;
+  //     setFieldValue('salePrice', tonPriceInToken);
+  //     setFieldValue('projectTokenPrice', tonPriceInToken);
+  //     const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
+  //     const tosPriceInTokens = 1 / tokenPriceInTos;
+  //     setFieldValue('tosPrice', tosPriceInTokens);
+  //     const hardCap =
+  //     values.fundingTarget && values.fundingTarget / tonInDollars;
+
+  //     console.log('ddddd');
+
+  //   setFieldValue(`vaults[0].hardCap`, hardCap);
+
+  //   const publicAllocation = totalSupply * 0.3;
+
+  //   const rounds = values.vaults.map((vault, index) => {
+  //     const roundInfo = schedules(
+  //       vault.vaultName,
+  //       totalSupply,
+  //       publicVault.publicRound2End ? publicVault.publicRound2End : 0,
+  //     );
+
+  //     const tot = roundInfo.reduce(
+  //       (acc, round) => acc + round.claimTokenAllocation,
+  //       0,
+  //     );
+  //     //  const totalTokenAllocation =
+  //     setFieldValue(`vaults[${index}].claim`, roundInfo);
+  //     setFieldValue(`vaults[${index}].adminAddress`, account);
+  //     setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot-100);
+  //   });
+  //   setFieldValue('vaults[2].vaultTokenAllocation', 0);
+  //   setFieldValue('vaults[0].addressForReceiving', account);
+  //   setFieldValue('vaults[0].adminAddress', account);
+
+  //   setFieldValue('vaults[0].publicRound1Allocation', publicAllocation * 0.5);
+  //   setFieldValue('vaults[0].publicRound2Allocation', publicAllocation * 0.5);
+  //   setFieldValue(
+  //     'vaults[0].stosTier.fourTier.allocatedToken',
+  //     publicAllocation * 0.5 * 0.6,
+  //   );
+  //   setFieldValue(
+  //     'vaults[0].stosTier.oneTier.allocatedToken',
+  //     publicAllocation * 0.5 * 0.06,
+  //   );
+  //   setFieldValue(
+  //     'vaults[0].stosTier.threeTier.allocatedToken',
+  //     publicAllocation * 0.5 * 0.22,
+  //   );
+  //   setFieldValue(
+  //     'vaults[0].stosTier.twoTier.allocatedToken',
+  //     publicAllocation * 0.5 * 0.12,
+  //   );
+  //   setFieldValue(
+  //     'vaults[1].startTime',
+  //     publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+  //   );
+  //   setFieldValue(
+  //     'vaults[0].claimStart',
+  //     publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+  //   );
+
+  //   const sumTotalToken = vaults.reduce((acc, cur) => {
+  //     const {vaultTokenAllocation} = cur;
+  //     return vaultTokenAllocation + acc;
+  //   }, 0);
+  //   setFieldValue('totalTokenAllocation', sumTotalToken);
+
+  //   }
+  // },[])
+
   const handleInput = (option: number) => {
     setFieldValue('stablePrice', option);
     const marketCap = values.marketCap;
@@ -104,21 +186,27 @@ const StepThree = (props: {currentStep: Number}) => {
     if (marketCap && growth) {
       const totalSupply = parseInt(((marketCap * growth) / option).toString());
       setFieldValue('totalSupply', totalSupply);
+      console.log('values', values);
+
       const tokenPriceinDollars = marketCap / totalSupply;
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
       const tonPriceInToken = 1 / tokenPriceInTon;
       setFieldValue('salePrice', tonPriceInToken);
-      setFieldValue('projectTokenPrice', tonPriceInToken);
+      setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
+
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
       const tosPriceInTokens = 1 / tokenPriceInTos;
-      setFieldValue('tosPrice', tosPriceInTokens);
+      setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
 
       const hardCap =
         values.fundingTarget && values.fundingTarget / tonInDollars;
+      console.log('hardCap', hardCap);
 
-      setFieldValue(`vaults[0].hardCap`, hardCap);
+      setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
 
       const publicAllocation = totalSupply * 0.3;
+      console.log('publicAllocation',truncNumber(publicAllocation,2));
+      
 
       const rounds = values.vaults.map((vault, index) => {
         const roundInfo = schedules(
@@ -134,7 +222,7 @@ const StepThree = (props: {currentStep: Number}) => {
         //  const totalTokenAllocation =
         setFieldValue(`vaults[${index}].claim`, roundInfo);
         setFieldValue(`vaults[${index}].adminAddress`, account);
-        setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot-100);
+        setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot - 100);
       });
       setFieldValue('vaults[2].vaultTokenAllocation', 0);
       setFieldValue('vaults[0].addressForReceiving', account);
