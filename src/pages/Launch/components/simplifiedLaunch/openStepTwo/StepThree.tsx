@@ -187,7 +187,7 @@ const StepThree = (props: {currentStep: Number}) => {
       const tokenPriceinDollars = marketCap / totalSupply;
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
       const tonPriceInToken = 1 / tokenPriceInTon;
-      setFieldValue('salePrice', truncNumber(tonPriceInToken,2));
+      setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
       setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
 
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
@@ -198,7 +198,7 @@ const StepThree = (props: {currentStep: Number}) => {
         values.fundingTarget && values.fundingTarget / tonInDollars;
       setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
 
-      const publicAllocation = totalSupply * 0.3;
+      const publicAllocation = parseInt((totalSupply * 0.3).toString());
 
       const rounds = values.vaults.map((vault, index) => {
         const roundInfo = schedules(
@@ -224,24 +224,30 @@ const StepThree = (props: {currentStep: Number}) => {
       setFieldValue('vaults[0].addressForReceiving', account);
       setFieldValue('vaults[0].adminAddress', account);
 
-      setFieldValue('vaults[0].publicRound1Allocation', publicAllocation * 0.5);
-      setFieldValue('vaults[0].publicRound2Allocation', publicAllocation * 0.5);
-      setFieldValue(
-        'vaults[0].stosTier.fourTier.allocatedToken',
-        publicAllocation * 0.5 * 0.6,
-      );
-      setFieldValue(
-        'vaults[0].stosTier.oneTier.allocatedToken',
-        publicAllocation * 0.5 * 0.06,
-      );
-      setFieldValue(
-        'vaults[0].stosTier.threeTier.allocatedToken',
-        publicAllocation * 0.5 * 0.22,
-      );
-      setFieldValue(
-        'vaults[0].stosTier.twoTier.allocatedToken',
-        publicAllocation * 0.5 * 0.12,
-      );
+      // setFieldValue(
+      //   'vaults[0].publicRound1Allocation',
+      //   Number(parseInt((publicAllocation * 0.5).toString())),
+      // );
+      // setFieldValue(
+      //   'vaults[0].publicRound2Allocation',
+      //   publicAllocation -
+      //     Number(parseInt((publicAllocation * 0.5).toString())),
+      // );
+
+      const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
+      const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);
+      const tier3 = truncNumber(publicAllocation * 0.5 * 0.22, 0);
+      const tier4 = truncNumber(publicAllocation * 0.5 * 0.6, 0);
+
+      const public1All = tier1 + tier2 + tier3 + tier4;
+
+      setFieldValue('vaults[0].stosTier.fourTier.allocatedToken', tier4);
+      setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', tier1);
+      setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
+      setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
+      setFieldValue('vaults[0].publicRound1Allocation', public1All);
+      setFieldValue('vaults[0].publicRound2Allocation',publicAllocation - public1All );
+      
       setFieldValue(
         'vaults[1].startTime',
         publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,

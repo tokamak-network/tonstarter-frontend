@@ -49,16 +49,19 @@ const Distribute = () => {
           if (
             ERC20_CONTRACT &&
             vault?.vaultAddress &&
-            vault?.isDeployed === true
+            vault?.isDeployed === true && vault.vaultType !== 'Vesting'
           ) {
             const tokenBalance = await ERC20_CONTRACT.balanceOf(
               vault.vaultAddress,
-            );            
+            );                     
 
+            console.log(vault.vaultType, vault.vaultTokenAllocation,  Number(convertNumber({amount: tokenBalance.toString()})));
+            
             if (tokenBalance && vault.vaultTokenAllocation) {
               const hasToken =
-                vault.vaultTokenAllocation <=
-                Number(convertNumber({amount: tokenBalance.toString()}));
+               
+                Number(convertNumber({amount: tokenBalance.toString()})) >0;
+                
               return hasToken;
             }
           } else {
@@ -66,6 +69,10 @@ const Distribute = () => {
           }
         }),
       );
+      const hasTokenAll = res.indexOf(true) !== -1 
+      console.log('hasTokenAll',hasTokenAll,res);
+      
+      setNotDeployedAll(hasTokenAll)           
     }
     fetchContractBalance();
   }, [ERC20_CONTRACT, values, vaults]);
@@ -94,6 +101,9 @@ const Distribute = () => {
         );
       });
 
+      console.log('params',params);
+      
+
       const totalAmount = deployedVaults.reduce(
         (accumulator, vault) => accumulator + vault.vaultTokenAllocation,
         0,
@@ -104,6 +114,7 @@ const Distribute = () => {
       const stringArray = Array(deployedVaults.length)
         .fill(['address', 'uint256'])
         .flat();
+console.log('stringArray',stringArray);
 
       const paramsData = ethers.utils.solidityPack(stringArray, params);      
 

@@ -9,7 +9,7 @@ import {
 import {useEffect, useState} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
-
+import truncNumber from 'utils/truncNumber';
 const StepFour = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -18,7 +18,7 @@ const StepFour = () => {
     
   const handleInput = (e: number) => {
     
-    setFieldValue('tosPrice',1/e)
+    setFieldValue('tosPrice',truncNumber(1/e,2))
   };
   
   return (

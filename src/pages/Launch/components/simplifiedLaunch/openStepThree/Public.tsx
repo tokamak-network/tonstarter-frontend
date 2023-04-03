@@ -45,6 +45,7 @@ const Public = (props: {step: string}) => {
 
   const {blockNumber} = useBlockNumber();
   const publicVault = values.vaults[0] as VaultPublic;
+// console.log('publicVault',publicVault);
 
   const detailsVault = [
     {name: 'Vault Name', value: `${publicVault.vaultName}`},
@@ -74,14 +75,14 @@ const Public = (props: {step: string}) => {
     },
     {
       name: 'Public Round 1',
-      value1: `${(publicVault.vaultTokenAllocation / 2).toLocaleString()} ${
+      value1: `${publicVault.publicRound1Allocation? (publicVault.publicRound1Allocation ).toLocaleString():0} ${
         values.tokenSymbol
       }`,
       value2: '50%',
     },
     {
       name: 'Public Round 2',
-      value1: `${(publicVault.vaultTokenAllocation / 2).toLocaleString()} ${
+      value1: `${publicVault.publicRound2Allocation?(publicVault.publicRound2Allocation).toLocaleString():0} ${
         values.tokenSymbol
       }`,
       value2: '50%',

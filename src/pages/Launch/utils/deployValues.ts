@@ -5,6 +5,7 @@ import {
   VaultType,
   VaultSchedule,
   Step3_InfoList,
+  VaultLiquidityIncentive,
   VaultPublic,
 } from '@Launch/types';
 import {DEPLOYED} from 'constants/index';
@@ -47,6 +48,7 @@ import {convertTimeStamp} from 'utils/convertTIme';
 import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import bn from 'bignumber.js';
 import {AppDispatch} from 'store';
+import truncNumber from 'utils/truncNumber';
 
 function encodePriceSqrt(reserve1: number, reserve0: number) {
   return new bn(reserve1.toString())
@@ -148,7 +150,7 @@ async function checkIsIniailized(
         );
         const snapshot = await publicVaultSecondContract.snapshot();
         const isInitialized = Number(snapshot.toString()) !== 0;
-       
+
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,
@@ -169,7 +171,7 @@ async function checkIsIniailized(
         const initSqrtPriceX96 =
           await publicVaultSecondContract.initSqrtPriceX96();
         const isInitialized = Number(initSqrtPriceX96.toString()) > 0;
-      
+
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,
@@ -177,9 +179,8 @@ async function checkIsIniailized(
       }
       break;
     }
-   
+
     default: {
-      
       if (
         selectedVaultDetail.vaultAddress !== '' ||
         selectedVaultDetail.vaultAddress !== undefined
@@ -190,7 +191,7 @@ async function checkIsIniailized(
           library,
         );
         const isInitialized = await vualtContract.settingCheck();
-       
+
         return setFieldValue(
           `vaults[${selectedVaultDetail?.index}].isSet`,
           isInitialized,
@@ -247,7 +248,7 @@ const returnVaultStatus = (
       ? 'ready'
       : isVaultDeployed && !hasToken
       ? 'readyForToken'
-      : isVaultDeployed && hasToken 
+      : isVaultDeployed && hasToken
       ? 'readyForSet'
       : 'finished',
   );
@@ -258,7 +259,7 @@ async function deploy(
   library: LibraryType,
   vaultState: string,
   vaultType: VaultType,
-  selectedVaultDetail: VaultAny,
+  selectedVaultDetail: VaultLiquidityIncentive | VaultAny,
   values: Projects['CreateSimplifiedProject'],
   dispatch: any,
   setFieldValue: (
@@ -272,10 +273,10 @@ async function deploy(
     const vaultContract = getContract(vaultType, library);
     const signer = getSigner(library, account);
     console.log('create');
-    
+
     try {
       switch (vaultType) {
-        case 'Initial Liquidity': {            
+        case 'Initial Liquidity': {
           const tx = await vaultContract
             ?.connect(signer)
             .create(
@@ -640,7 +641,7 @@ async function deploy(
           }
           break;
         }
-        
+
         default:
           break;
       }
@@ -655,21 +656,12 @@ async function deploy(
 
   if (account && library && vaultState === 'Initialize') {
     const signer = getSigner(library, account);
-console.log('initialize');
+
+    console.log(selectedVaultDetail);
 
     try {
       switch (vaultType) {
         case 'Initial Liquidity': {
-          // New interface example
-          // await initialLiquidityVault
-          //   .connect(poolInfo.admin)
-          //   .initialize(
-          //     poolInfo.totalAllocatedAmount,
-          //     price.tos,
-          //     price.projectToken,
-          //     price.initSqrtPrice,
-          //   );
-
           const {TOS_ADDRESS} = DEPLOYED;
           const InitialLiquidityVault_Contract = new Contract(
             selectedVaultDetail.vaultAddress as string,
@@ -687,10 +679,21 @@ console.log('initialize');
               signer,
             ).computePoolAddress(TOS_ADDRESS, values.tokenAddress, 3000);
 
+          const selected = selectedVaultDetail as VaultLiquidityIncentive;
+
           const reserv0 =
             computePoolAddress[1] === TOS_ADDRESS ? 100 : projectTokenPrice;
           const reserv1 =
             computePoolAddress[2] === TOS_ADDRESS ? 100 : projectTokenPrice;
+
+          console.log(
+            vaultTokenAllocationWei,
+            100,
+            projectTokenPrice,
+            encodePriceSqrt(reserv1, reserv0),
+
+            selected.startTime,
+          );
 
           const tx = await InitialLiquidityVault_Contract?.connect(
             signer,
@@ -728,6 +731,8 @@ console.log('initialize');
           // _Tier[6] : Tier3의 percent
           // (Tier[4]~Tier[7]의 합은 10000)
           // _Tier[7] : Tier4의 percent
+          // console.log('PublicVaultData',(Number(PublicVaultData.stosTier.oneTier.allocatedToken as number) *
+          // 10000));
 
           const tier1RequiredStosWei = convertToWei(
             String(PublicVaultData.stosTier.oneTier.requiredStos),
@@ -742,27 +747,52 @@ console.log('initialize');
             String(PublicVaultData.stosTier.fourTier.requiredStos),
           );
 
-          const param0: any[] = [
-            tier1RequiredStosWei,
-            tier2RequiredStosWei,
-            tier3RequiredStosWei,
-            tier4RequiredStosWei,
+          const countDecimalPlaces = (val: number) => {
+            const decimalPosition = String(val).indexOf('.');
+            if (decimalPosition === -1) {
+              return 0;
+            } else {
+              return String(val).length - decimalPosition - 1;
+            }
+          };
+          console.log(
             (Number(PublicVaultData.stosTier.oneTier.allocatedToken as number) *
               10000) /
               publicRound1TokenAllocation,
+          );
+
+          const t1 = truncNumber(
+            (Number(PublicVaultData.stosTier.oneTier.allocatedToken as number) *
+              10000) /
+              publicRound1TokenAllocation,
+            0,
+          );
+          const t2 = truncNumber(
             (Number(PublicVaultData.stosTier.twoTier.allocatedToken as number) *
               10000) /
               publicRound1TokenAllocation,
+            0,
+          );
+          const t3 = truncNumber(
             (Number(
               PublicVaultData.stosTier.threeTier.allocatedToken as number,
             ) *
               10000) /
               publicRound1TokenAllocation,
-            (Number(
-              PublicVaultData.stosTier.fourTier.allocatedToken as number,
-            ) *
-              10000) /
-              publicRound1TokenAllocation,
+            0,
+          );
+          const t4 =
+           ( (publicRound1TokenAllocation * 10000) /
+              publicRound1TokenAllocation) -
+            (t1 + t2 + t3);
+
+         
+
+          const param0: any[] = [
+            tier1RequiredStosWei,
+            tier2RequiredStosWei,
+            tier3RequiredStosWei,
+            tier4RequiredStosWei, t1,t2,t3,t4
           ];
           // _amount[0] : Round1에서의 토큰 판매수량
           // _amount[1] : Round2에서의 토큰 판매수량
@@ -816,8 +846,8 @@ console.log('initialize');
           //   (PublicVaultData.publicRound2Allocation as number)
           const param4: number[] = PublicVaultData.claim.map(
             (claimRound: VaultSchedule) =>
-              ((claimRound.claimTokenAllocation as number) * 100) /
-              allTokenAllocation,
+             truncNumber( ((claimRound.claimTokenAllocation as number) * 100) /
+              allTokenAllocation,0)
           ) as number[];
 
           console.log('--params--');
@@ -1108,4 +1138,4 @@ console.log('initialize');
   }
 }
 
-export {checkIsIniailized, returnVaultStatus,deploy};
+export {checkIsIniailized, returnVaultStatus, deploy};
