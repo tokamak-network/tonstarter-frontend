@@ -127,6 +127,20 @@ const SimplifiedMainScreen = () => {
     );
   }, []);
 
+  // Prevent reloading page when setting up project
+  // useEffect(() => {
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handleBeforeUnload);
+  //   };
+  // }, []);
+
+  // const handleBeforeUnload = (event: any) => {
+  //   event.preventDefault();
+  //   event.returnValue = '';
+  // };
+
+
   const handleStep = useCallback(
     (isNext: boolean) => {
       const prevStepNum =
@@ -153,7 +167,6 @@ const SimplifiedMainScreen = () => {
   };
 
   const handleSaveAndContinue = (values: any, account: string) => {
-    console.log('values', values)
     account && isExist === 'createprojectsimple' && hashKey === undefined
       ? saveProject(values, account, true)
       : editProject(values, account as string, hashKey || isExist);

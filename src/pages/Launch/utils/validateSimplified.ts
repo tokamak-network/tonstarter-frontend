@@ -71,7 +71,7 @@ function validateSimplifiedFormikValues(
       fields.push(false);
     }
 
-    if (values.description !== '<p><br></p>') {
+    if (values.description !== '' && values.description !== undefined) {
       fields.push(true);
     } else {
       fields.push(false);
@@ -84,9 +84,16 @@ function validateSimplifiedFormikValues(
   const step2FilledOut = () => {
     const thisFields: any[] = [];
     // Is Funding target, marketCap, or totalSupply undefined?
+
+    // funding target
+    if(values.fundingTarget !== undefined || values.fundingTarget !== 0){
+      fieldsStep2.push(true);
+    } else {
+      fieldsStep2.push(false);
+    }
+
     if (
-      values.fundingTarget !== undefined ||
-      values.marketCap !== undefined ||
+      values.marketCap !== undefined &&
       values.totalSupply !== undefined
     ) {
       fieldsStep2.push(true);
@@ -228,7 +235,7 @@ function validateSimplifiedFormikValues(
           });
         }
       }
-      // if (val === undefined || val === '') {
+      // if (val === undefined && val === '') {
       //   return fieldsStep2.push(false);
       // } else {
       //   return fieldsStep2.push(true);

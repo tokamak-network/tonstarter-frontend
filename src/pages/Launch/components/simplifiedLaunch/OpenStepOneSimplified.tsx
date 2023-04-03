@@ -1,14 +1,10 @@
 import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
-import StepTitle from '@Launch/components/common/StepTitle';
-import Line from '@Launch/components/common/Line';
 import {useEffect} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
-import {isProduction} from '@Launch/utils/checkConstants';
 import {testValue} from '@Launch/utils/testValue';
 import {LaunchSchedule} from '../common/simplifiedUI/LaunchSchedule';
-import {UserGuideLink} from '../common/simplifiedUI/UserGuideLink';
 import {TokenImageInput} from '../common/simplifiedUI/TokenImageInput';
 import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
@@ -26,7 +22,7 @@ const OpenStepOneSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const {values, setValues} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-
+    
 
   useEffect(() => {
     window.scrollTo(0, 0);
