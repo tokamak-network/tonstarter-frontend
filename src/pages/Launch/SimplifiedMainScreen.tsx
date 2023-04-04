@@ -1,4 +1,12 @@
-import {Button, ButtonGroup, Flex, useTheme} from '@chakra-ui/react';
+import {
+  ButtonGroup,
+  Text,
+  Image,
+  Flex,
+  Link,
+  useTheme,
+  useColorMode,
+} from '@chakra-ui/react';
 import {
   Dispatch,
   SetStateAction,
@@ -10,7 +18,7 @@ import {
 import OpenStepOneSimplified from '@Launch/components/simplifiedLaunch/OpenStepOneSimplified';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
-import type {LaunchMode, StepNumber, VaultCommon, VaultPublic} from '@Launch/types';
+import type {StepNumber, VaultCommon} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
@@ -21,14 +29,6 @@ import {selectLaunch, setHashKey, fetchProjects} from '@Launch/launch.reducer';
 import OpenStepThreeSimplified from '@Launch/components/simplifiedLaunch/OpenStepThreeSimplified';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
-import {CustomButton} from 'components/Basic/CustomButton';
-import {isProduction} from './utils/checkConstants';
-import {useLocation} from 'react-router-dom';
-// Fetch deployed projects from api
-import {Project} from './components/Projects/Project';
-import {useQuery} from 'react-query';
-import axios from 'axios';
-import {fetchCampaginURL} from 'constants/index';
 import {ActionButton} from './components/common/simplifiedUI/ActionButton';
 
 const StepComponent = (props: {
@@ -56,9 +56,9 @@ const SimplifiedMainScreen = () => {
   const [isDisableForStep1, setDisableForStep1] = useState<boolean>(true);
   const [isDisableForStep3, setDisableForStep3] = useState<boolean>(true);
   const theme = useTheme();
+  const {colorMode} = useColorMode();
   const {account} = useActiveWeb3React();
   const {initialSimplifiedValues} = useValues(account || '');
-  // const [project, setProject] = useState<any>();
   const history = useHistory();
   const [oldData, setOldData] = useState();
   const [saveBtnDisable, setSaveBtnDisable] = useState(false);
@@ -89,35 +89,6 @@ const SimplifiedMainScreen = () => {
     });
     return () => unBlock();
   }, [history]);
-
-  /**
-   * Fetch projects data from api
-   */
-  // const {data} = useQuery(
-  //   ['test'],
-  //   () =>
-  //     axios.get(fetchCampaginURL, {
-  //       headers: {
-  //         account,
-  //       },
-  //     }),
-  //   {
-  //     refetchInterval: 600000,
-  //   },
-  // );
-
-  // useEffect(() => {
-  //   if (data) {
-  //     const {data: ProjectDetail} = data;
-  //     dispatch(fetchProjects({data: ProjectDetail}));
-  //     setProject(ProjectDetail.name);
-  //   }
-  // }, [data, dispatch]);
-
-  // /** Check if this project is deployed */
-  // useEffect(() => {
-  //   dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
-  // }, []);
 
   useEffect(() => {
     dispatch(
@@ -176,13 +147,12 @@ const SimplifiedMainScreen = () => {
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
-  
+
   return (
     <Flex
       flexDir={'column'}
       justifyContent={'center'}
       w={'100%'}
-      mt={100}
       mb={'100px'}
       pos="relative">
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
