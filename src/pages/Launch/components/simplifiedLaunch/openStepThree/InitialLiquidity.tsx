@@ -43,7 +43,7 @@ const InitialLiquidity = (props:{step:string}) => {
   // @ts-ignore
   const network = BASE_PROVIDER._network.name;
   const {blockNumber} = useBlockNumber();
-
+  
   const initialVault = values.vaults[1] as VaultLiquidityIncentive;
 
   const details = [

@@ -18,6 +18,7 @@ import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {convertNumber} from 'utils/number';
 import {selectLaunch} from '@Launch/launch.reducer';
+import {Scrollbars} from 'react-custom-scrollbars-2';
 
 import {
   checkIsIniailized,
@@ -158,6 +159,27 @@ const TonStaker = (props:{step:string} ) => {
           TON Staker
         </Text>
       </Flex>
+      <Scrollbars
+        style={{
+          width: '100%',
+          height: '440px',
+          display: 'flex',
+          position: 'relative',
+         
+          justifyContent: 'center',
+        }}
+        thumbSize={70}
+        renderThumbVertical={() => (
+          <div
+            style={{
+              background: '#007aff',
+              position: 'relative',
+              right: '-2px',
+              marginTop: '10px',
+              borderRadius: '3px',
+            }}></div>
+        )}
+        renderThumbHorizontal={() => <div style={{background: 'black'}}></div>}>
       <Flex
         mt="30px"
         flexDir={'column'}
@@ -271,6 +293,7 @@ const TonStaker = (props:{step:string} ) => {
           );
         })}
       </Flex>
+      </Scrollbars>
       <Flex
         mt="24px"
         w="100%"

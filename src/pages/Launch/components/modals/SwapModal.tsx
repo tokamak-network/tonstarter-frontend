@@ -17,7 +17,7 @@ import {
   Image,
   Progress,
 } from '@chakra-ui/react';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
@@ -30,34 +30,103 @@ import {useSwapModal} from '@Launch/hooks/useSwapModal';
 import TokamakSymbol from 'assets/svgs/tokamak_favicon.svg';
 import TosSymbol from 'assets/svgs/tos_symbol.svg';
 import commafy from 'utils/commafy';
-
+import {selectTransactionType} from 'store/refetch.reducer';
+import * as PublicSaleLogicAbi from 'services/abis/PublicSaleLogic.json';
+import {useContract} from 'hooks/useContract';
+import {convertToRay, convertToWei} from 'utils/number';
+import * as LibPublicSale from 'services/abis/LibPublicSale.json';
+import {useSwapMax} from '@Launch/hooks/useSwapMax';
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
-  const {TON_ADDRESS, WTON_ADDRESS} = DEPLOYED;
+  const {pools} = DEPLOYED;
   const {account, library} = useActiveWeb3React();
+  const [balance, setBalance] = useState<string>('0');
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [inputAmount, setInputAmount] = useState<string>('0');
+  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const [max, setMax] = useState<string>('0');
+  const PublicVaultContract = useContract(
+    data?.data?.publicVaultAddress,
+    PublicSaleLogicAbi.abi,
+  );  
 
-  const {WTON_BALANCE, tosAmountOut} = useSwapModal(
-    data?.data?.publicVaultAddress,
-    Number(inputAmount.replaceAll(',', '')),
-  );
-  const {tosAmountOut: basicPrice} = useSwapModal(
-    data?.data?.publicVaultAddress,
+  const {WTON_BALANCE, tosAmountOut: basicPrice} = useSwapModal(
     1,
+    data?.data?.publicVaultAddress,
   );
+
+  useEffect(() => {
+    const getDetails = async () => {
+      if (PublicVaultContract && WTON_BALANCE !== '-') {
+        const isExchangeTOS = await PublicVaultContract.exchangeTOS();
+
+        const bal = isExchangeTOS
+          ? WTON_BALANCE
+          : (data?.data?.hardcap).toString();
+        setBalance(bal);
+      }
+    };
+
+    getDetails();
+  }, [PublicVaultContract, WTON_BALANCE, data, transactionType, blockNumber]);
+
+  const maxAmount = useSwapMax(Number(balance.replaceAll(',', '')));
+  const maxInput = useSwapMax(Number(inputAmount.replaceAll(',', '')));
+
+  const {tosAmountOut} = useSwapModal(
+    isNaN(Number(inputAmount.replaceAll(',', ''))) ||
+      Number(inputAmount.replaceAll(',', '')) === 0
+      ? 0
+      : Number(inputAmount.replaceAll(',', '')),
+    data?.data?.publicVaultAddress,
+  );
+
+  useEffect(() => {
+    if (Number(inputAmount.replaceAll(',', '')) !== 0) {
+      setMax(maxInput);
+    } else {
+      setMax(maxAmount);
+    }
+  }, [inputAmount, maxAmount, maxInput]);
 
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
-    const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
-    const numInputAmount = Number(inputAmount.replaceAll(',', ''));
-    const priceDiff = numTosAmountOut / numInputAmount / numBasicPrice;
-    const result = 100 - priceDiff * 100;
 
-    return isNaN(result) ? '-' : commafy(result);
+    const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
+
+    const numInputAmount = Number(inputAmount.replaceAll(',', ''));
+
+    const theoreticalValue = numInputAmount * numBasicPrice;
+
+    const priceDiff = (theoreticalValue - numTosAmountOut) / theoreticalValue;
+    const result = priceDiff * 100;
+
+    return isNaN(result) || result === Infinity || result === -Infinity
+      ? '-'
+      : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
+
+  const exchangeTonToTos = useCallback(() => {    
+
+    //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
+    try {
+      if (PublicVaultContract && inputAmount && pools) {
+        const inputAmountRay = convertToRay(inputAmount);
+        const {TOS_WTON_POOL} = pools;
+
+         PublicVaultContract.exchangeWTONtoTOS(
+          inputAmountRay,
+          TOS_WTON_POOL,
+        );
+      return  handleCloseModal()
+      }
+      
+    } catch (e) {
+      console.log(e);
+    }
+  }, [PublicVaultContract, inputAmount, pools]);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -69,7 +138,7 @@ const SwapModal = () => {
       );
     }
   }, [inputAmount, setInputAmount]);
-
+  
   return (
     <Modal
       isOpen={data.modal === 'Launch_Swap' ? true : false}
@@ -113,7 +182,7 @@ const SwapModal = () => {
               h="78px"
               border={
                 colorMode === 'light'
-                  ? '1px solid #d7d9df'
+                  ? '1px solid #d7d9df' 
                   : '1px solid #535353'
               }
               borderRadius="10px"
@@ -170,7 +239,7 @@ const SwapModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {WTON_BALANCE} {'WTON'}
+                  Balance: {balance} {'WTON'}
                 </Text>
                 <Button
                   fontSize={'12px'}
@@ -187,9 +256,7 @@ const SwapModal = () => {
                       ? '1px solid #535353'
                       : '1px solid #d7d9df'
                   }
-                  onClick={() =>
-                    setInputAmount(WTON_BALANCE.replace(/,/g, ''))
-                  }>
+                  onClick={() => setInputAmount(max.replace(/,/g, ''))}>
                   MAX
                 </Button>
               </Flex>
@@ -231,7 +298,7 @@ const SwapModal = () => {
                   fontWeight={'bold'}
                   lineHeight={1.5}
                   fontSize="20px">
-                  {tosAmountOut}
+                  {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)}
                 </Text>
               </Flex>
               <Text
@@ -240,7 +307,7 @@ const SwapModal = () => {
                 fontWeight={500}
                 color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
                 lineHeight={1.33}>
-                1 TON = {basicPrice} TOS
+                1 TON = {commafy(basicPrice)} TOS
               </Text>
               <Text
                 fontSize={'12px'}
@@ -249,13 +316,13 @@ const SwapModal = () => {
                 lineHeight={1.33}>
                 Price Impact : {priceImpact}%
               </Text>
-              <Text
+              {/* <Text
                 fontSize={'12px'}
                 fontWeight={500}
                 color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
                 lineHeight={1.33}>
                 Average Price Impact : 5%
-              </Text>
+              </Text> */}
             </Flex>
             {/* progress bar part                                   */}
             <Flex
@@ -286,7 +353,13 @@ const SwapModal = () => {
                     height={'23px'}
                     lineHeight={'27px'}
                     verticalAlign={'bottom'}>
-                    65.4%
+                    {(
+                      ((Number(data?.data?.transferredTon) +
+                        Number(inputAmount)) /
+                        data?.data?.hardcap) *
+                      100
+                    ).toLocaleString()}{' '}
+                    %
                   </Text>
                 </Flex>
                 <Text
@@ -295,15 +368,20 @@ const SwapModal = () => {
                   height={'23px'}
                   lineHeight={'27px'}
                   verticalAlign={'bottom'}>
-                  3,981,532 / 5,000,000 TON
+                  {Number(data?.data?.transferredTon) + Number(inputAmount)} /
+                  {data?.data?.hardcap} TON
                 </Text>
               </Box>
               <Progress
-                value={65.4}
                 w={'100%'}
                 h={'6px'}
                 mt={'5px'}
-                borderRadius={'100px'}></Progress>
+                borderRadius={'100px'}
+                value={
+                  ((data?.data?.transferredTon + Number(inputAmount)) /
+                    data?.data?.hardcap) *
+                  100
+                }></Progress>
             </Flex>
             <Text margin={'0px 25px 25px'} fontSize="12px" textAlign={'center'}>
               This interface is designed to prevent sandwich attack. The txn
@@ -327,7 +405,14 @@ const SwapModal = () => {
             _active={{background: ''}}
             _focus={{background: ''}}
             fontSize="14px"
-            color="white">
+            _disabled={{
+              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              color: colorMode === 'light' ? '#86929d' : '#838383',
+              cursor: 'not-allowed',
+            }}
+            color="white"
+            disabled={Number(balance) < Number(inputAmount) || Number(priceImpact)> 10}
+            onClick={() => exchangeTonToTos()}>
             Swap & Send
           </Button>
         </ModalFooter>

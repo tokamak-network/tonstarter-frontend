@@ -17,6 +17,7 @@ import {
   deploy,
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
+import Scrollbars from 'react-custom-scrollbars-2';
 
 const Ecosystem = (props:{step:string} ) => {
   const {step} = props;
@@ -63,7 +64,6 @@ const Ecosystem = (props:{step:string} ) => {
     );
   }, [hasToken, ecoVault, values, blockNumber]);
   
-  console.log('ecoVault.vaultAddress',ecoVault.vaultAddress);
   
 
   const {
@@ -158,6 +158,28 @@ const Ecosystem = (props:{step:string} ) => {
           Ecosystem
         </Text>
       </Flex>
+      <Scrollbars
+        style={{
+          width: '100%',
+          height: '440px',
+          display: 'flex',
+          position: 'relative',
+         
+          justifyContent: 'center',
+        }}
+        thumbSize={70}
+        renderThumbVertical={() => (
+          <div
+            style={{
+              marginTop: '10px',
+              background: '#007aff',
+              position: 'relative',
+              right: '-2px',
+              borderRadius: '3px',
+            }}></div>
+        )}
+        renderThumbHorizontal={() => <div style={{background: 'black'}}></div>}>
+       
       <Flex
         mt="30px"
         flexDir={'column'}
@@ -259,7 +281,7 @@ const Ecosystem = (props:{step:string} ) => {
                 fontWeight={500}>
                 {claim.claimTokenAllocation.toLocaleString()} (
                 {values.totalSupply
-                  ? (claim.claimTokenAllocation / values.totalSupply) * 100
+                  ? ((claim.claimTokenAllocation / values.totalSupply) * 100).toLocaleString()
                   : 0}
                 %)
               </Text>
@@ -267,6 +289,7 @@ const Ecosystem = (props:{step:string} ) => {
           );
         })}
       </Flex>
+      </Scrollbars>
       <Flex
         mt="24px"
         w="100%"

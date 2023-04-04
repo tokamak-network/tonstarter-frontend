@@ -27,6 +27,7 @@ import {Contract} from '@ethersproject/contracts';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {BigNumber, ethers} from 'ethers';
 import {convertNumber} from 'utils/number';
+import {CustomTooltip} from 'components/Tooltip';
 
 const EstimateGasModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -117,9 +118,15 @@ const EstimateGasModal = () => {
             <Image src={gasIcon} px={'120px'} py={'45px'} />
 
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
-              <Text fontSize={13}>Recommended</Text>
+              <Text fontSize={13} mr='5px'>Recommended</Text>
+              <CustomTooltip
+                  toolTipW={200}
+                  toolTipH={'50px'}
+                  msg={[
+                    `Recommended ETH amount includes a safety margin of 1ETH`,
+                  ]}></CustomTooltip>
               <Spacer />
-              <Text fontSize={15}>{`${recommended} ETH`}</Text>
+              <Text fontSize={15}>{`${recommended.toLocaleString()} ETH`}</Text>
             </Flex>
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
               <Text fontSize={13}>You have</Text>

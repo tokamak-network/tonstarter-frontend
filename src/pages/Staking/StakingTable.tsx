@@ -449,13 +449,17 @@ export const StakingTable: FC<StakingTableProps> = ({
                         fontSize={type === 'name' ? '15px' : '13px'}
                         fontWeight={type === 'name' ? 600 : 0}
                         {...cell.getCellProps()}>
+
                         {type === 'name' ? getCircle(status) : ''}
                         {type === 'name' ? (
                           <>
                             <Box ml={'10px'} mr={'12px'}>
                               <TokenImage imageLink={TON_SYMBOL}></TokenImage>
+                           
                             </Box>
                             <Text w={'176px'}>{name}</Text>
+                            <Button onClick={()=>openModal({type: 'manage', data: {...data}})}>manage</Button>
+
                             <Flex
                               justifyContent="flex-start"
                               w={'80px'}

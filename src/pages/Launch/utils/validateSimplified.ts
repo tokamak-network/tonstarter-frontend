@@ -46,7 +46,7 @@ function validateSimplifiedFormikValues(
     }
 
     const getDuration = (start: any, end: any) => {
-      console.log('getDuration', Math.round((end - start) / 86400));
+      // console.log('getDuration', Math.round((end - start) / 86400));
       return Math.round((end - start) / 86400);
     };
 
@@ -121,7 +121,7 @@ function validateSimplifiedFormikValues(
         //STOS Tier Object handle
         if (val?.hasOwnProperty('oneTier')) {
           for (const property in val) {
-            console.log(val);
+            // console.log(val);
             
             if (
               //@ts-ignore
@@ -243,7 +243,7 @@ function validateSimplifiedFormikValues(
     }});
     });
 
-    console.log('Check this fields', thisFields);
+    // console.log('Check this fields', thisFields);
 
   };
 
@@ -251,7 +251,7 @@ function validateSimplifiedFormikValues(
   step2FilledOut();
   const results = fields.filter((field: boolean) => field === false) || fieldsStep2.filter((field: boolean) => field === false);
   
-  console.log('results from validation', results)
+  // console.log('results from validation', results)
   return results.length > 0 ? false : true;
 }
 

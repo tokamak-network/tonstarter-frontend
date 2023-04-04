@@ -21,7 +21,7 @@ export const REACT_APP_TOS_PRICE = process.env.REACT_APP_TOS_PRICE as string;
 export const REACT_APP_ETH_PRICE = process.env.REACT_APP_ETH_PRICE as string;
 export const REACT_APP_TON_PRICE = process.env.REACT_APP_TON_PRICE as string;
 export const REACT_APP_USD_PRICE = process.env.REACT_APP_USD_PRICE as string
-
+//
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 5 : 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -34,7 +34,7 @@ export const API_SERVER_LAUNCH =
 
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
-    ? ethers.getDefaultProvider("goerli")
+    ? ethers.getDefaultProvider('goerli')
     : ethers.getDefaultProvider('mainnet');
 
 export const OPENSEA =
@@ -118,6 +118,7 @@ const MAINNET_DEPLOYED = {
   },
   StakingV2Proxy: '0x14fb0933Ec45ecE75A431D10AFAa1DDF7BfeE44C',
   Quoter: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+  LibPublicSaleLogic: '',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -145,7 +146,7 @@ const RINKEBY_DEPLOYED = {
   DividendPoolProxy_ADDRESS: '',
   StakeTonControl_ADDRESS: '0xF049030A9D6faCbD6C76E08794CC751b1Dbaa072',
   LockTOSDividend_ADDRESS: '0xa59B0e009BebC5496ca38A2EE5611f6cFe343dAB',
-  PublicSale_ADDRESS: '0x561e901F100A8C5338Cc988079f985b2C10bc72B',
+  PublicSale_ADDRESS: '0x12845Ba2DF2594FE16Fda3066545b9e619AC9a24',
   unstakeLayer2All: '0xeeEa9CA7a496651577ff1FD353570F8B70580955',
   PowerTONSwapper_ADDRESS: '',
   DoMsaleContractAddress: '0xe04dac5A48be774254d5537b3438d015Adc2af03',
@@ -158,7 +159,7 @@ const RINKEBY_DEPLOYED = {
   AutoCoinageSnapshot2_ADDRESS: '0xa441fc0670be48284e1d2f3b2a72c017b5dbaade',
   TokenDividendProxyPool_ADDRESS: '0x9aCb022B3A8a334618f5cea15A046C10FEE1352f',
   // proxy pool direct address: '0x9d88de4c13081855d880c36fe5fa6d11effa5528',
-  PublicSaleVault: '0x82460E7D90e19cF778a2C09DcA75Fc9f79Da877C',
+  PublicSaleVault: '0x12845Ba2DF2594FE16Fda3066545b9e619AC9a24',
   TonStakerVault: '0xC3A41ff1AfCB1Fb5755aDdD68c5C01f77B4Efb7b',
   TosStakerVault: '0xCEA6e5F2d46EaD8FA5E037b98bb6Bd1C766b9eC3',
   LPrewardVault: '0x02901517F8384f0c252a86D2Fff348D51748130d',
@@ -166,7 +167,7 @@ const RINKEBY_DEPLOYED = {
   DAOVault: '0x4d3cF0B03326E549841330C425b23416F8075bce',
   TokenDistribute: '0x3239F4953E6BBCFbbe209eC406a2B117F26f6d0f',
   pools: {
-    TOS_WTON_POOL: '0x516e1af7303a94f81e91e4ac29e20f4319d4ecaf',
+    TOS_WTON_POOL: '0x8DF54aDA313293E80634f981820969BE7542CEe9',
     ETH_WTON_Address: '0x8DF54aDA313293E80634f981820969BE7542CEe9',
     TOS_WTON_Address: '',
     TOS_ETH_Address: '0x3b466f5d9b49aedd65f6124d5986a9f30b1f5442',
@@ -182,6 +183,7 @@ const RINKEBY_DEPLOYED = {
   },
   StakingV2Proxy: '0x2fF6D99EbEE9A61430FE4909745FFa9C69a3FCD0',
   Quoter: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+  LibPublicSaleLogic: '0x31512fA8D38d0aD35c0FF8A2F4385dCE0003a368'
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =
