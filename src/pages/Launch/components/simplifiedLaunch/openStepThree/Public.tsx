@@ -610,11 +610,10 @@ const Public = (props: {step: string}) => {
           _hover={{}}
           isDisabled={
             step === 'Deploy'
-              ? publicVault.vaultAddress === undefined
-                ? false
-                : true
-              : publicVault.isSet === true ||
-                publicVault.vaultAddress === undefined
+              ? values.isTokenDeployed ===  false || publicVault.vaultAddress !== undefined
+                ? true
+                : false
+              : publicVault.isSet === true || !hasToken
               ? true
               : false
           }

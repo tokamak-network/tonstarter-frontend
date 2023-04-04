@@ -49,7 +49,11 @@ import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import bn from 'bignumber.js';
 import {AppDispatch} from 'store';
 import truncNumber from 'utils/truncNumber';
-
+import {setTx} from 'application';
+import store from 'store';
+import {setTxPending} from 'store/tx.reducer';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 function encodePriceSqrt(reserve1: number, reserve0: number) {
   return new bn(reserve1.toString())
     .div(reserve0.toString())
@@ -292,7 +296,8 @@ async function deploy(
               data: tx.hash,
             }),
           );
-
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
 
@@ -363,7 +368,8 @@ async function deploy(
               data: tx.hash,
             }),
           );
-
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
 
@@ -402,7 +408,8 @@ async function deploy(
               data: tx.hash,
             }),
           );
-
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
 
@@ -443,7 +450,8 @@ async function deploy(
               data: tx.hash,
             }),
           );
-
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
 
@@ -482,7 +490,8 @@ async function deploy(
               data: tx.hash,
             }),
           );
-
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
 
@@ -525,7 +534,8 @@ async function deploy(
               data: tx.hash,
             }),
           );
-
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
 
@@ -582,6 +592,8 @@ async function deploy(
               data: tx.hash,
             }),
           );
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
 
           const receipt = await tx.wait();
           const {logs} = receipt;
@@ -619,7 +631,8 @@ async function deploy(
               data: tx.hash,
             }),
           );
-
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
 
@@ -705,7 +718,11 @@ async function deploy(
             //@ts-ignore
             selectedVaultDetail.startTime,
           );
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
+
           const receipt = await tx.wait();
+
           if (receipt) {
             setFieldValue(`vaults[${selectedVaultDetail?.index}].isSet`, true);
             setVaultState('finished');
@@ -747,19 +764,6 @@ async function deploy(
             String(PublicVaultData.stosTier.fourTier.requiredStos),
           );
 
-          const countDecimalPlaces = (val: number) => {
-            const decimalPosition = String(val).indexOf('.');
-            if (decimalPosition === -1) {
-              return 0;
-            } else {
-              return String(val).length - decimalPosition - 1;
-            }
-          };
-          console.log(
-            (Number(PublicVaultData.stosTier.oneTier.allocatedToken as number) *
-              10000) /
-              publicRound1TokenAllocation,
-          );
 
           const t1 = truncNumber(
             (Number(PublicVaultData.stosTier.oneTier.allocatedToken as number) *
@@ -850,18 +854,15 @@ async function deploy(
           const param4: number[] = PublicVaultData.claim.map(
             (claimRound: VaultSchedule, index: number) =>
               truncNumber(
-                ((claimRound.claimTokenAllocation as number) * 100) /
+                ((claimRound.claimTokenAllocation as number) * 10000) /
                   allTokenAllocation,
                 0,
               ),
           ) as number[];
 
           const xx = param4.reduce((partialSum, a) => partialSum + a, 0);
-          const lastEl = param4[param4.length - 1] + (100 - xx);
-          console.log(lastEl);
-          param4[param4.length - 1] = lastEl
-          console.log('xx', xx, param4);
-
+          const lastEl = param4[param4.length - 1] + (10000 - xx);
+          param4[param4.length - 1] = lastEl;
           console.log('--params--');
           console.log(param0, param1, param2, param3, param4);
 
@@ -874,6 +875,8 @@ async function deploy(
           const tx = await publicVaultSecondContract
             ?.connect(signer)
             .setAllsetting(param0, param1, param2, param3, param4);
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           if (receipt) {
             setFieldValue(`vaults[${selectedVaultDetail?.index}].isSet`, true);
@@ -913,6 +916,8 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
           if (receipt) {
@@ -962,6 +967,8 @@ async function deploy(
             claimAmountsParam,
             3000,
           );
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
           if (receipt) {
@@ -1007,6 +1014,8 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
           if (receipt) {
@@ -1047,6 +1056,8 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
           if (receipt) {
@@ -1088,6 +1099,8 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
           if (receipt) {
@@ -1128,6 +1141,8 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
+          store.dispatch(setTxPending({tx: true}));
+          toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
           if (receipt) {

@@ -309,10 +309,10 @@ const TosStaker = (props:{step:string}) => {
           _hover={{}}
           isDisabled={
             step === 'Deploy'
-              ? tosVault.vaultAddress === undefined
-                ? false
-                : true
-              : (tosVault.isSet === true || tosVault.vaultAddress === undefined)
+            ? values.isTokenDeployed ===  false || tosVault.vaultAddress !== undefined
+            ? true
+            : false
+              : (tosVault.isSet === true || !hasToken)
               ? true
               : false
           }

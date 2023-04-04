@@ -314,10 +314,10 @@ const TonStaker = (props:{step:string} ) => {
           _hover={{}}
           isDisabled={
             step === 'Deploy'
-              ? tonVault.vaultAddress === undefined
-                ? false
-                : true
-              : (tonVault.isSet === true || tonVault.vaultAddress === undefined)
+            ? values.isTokenDeployed ===  false || tonVault.vaultAddress !== undefined
+            ? true
+            : false
+              : (tonVault.isSet === true || !hasToken)
               ? true
               : false
           }

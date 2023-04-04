@@ -313,9 +313,9 @@ const Vesting = (props: {step: string}) => {
           _hover={{}}
           isDisabled={
             step === 'Deploy'
-              ? vestingVault.vaultAddress === undefined
-                ? false
-                : true
+            ? values.isTokenDeployed ===  false || vestingVault.vaultAddress !== undefined
+            ? true
+            : false
               : vestingVault.isSet === true ||
                 vestingVault.vaultAddress === undefined
               ? true
