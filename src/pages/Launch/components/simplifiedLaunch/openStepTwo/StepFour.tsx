@@ -26,7 +26,7 @@ const StepFour = () => {
       {' '}
       <Text
         fontSize={'14px'}
-        fontWeight={500}
+        fontWeight={'bold'}
         color={colorMode === 'dark' ? 'white.100' : 'gray.150'}
         mb="18px">
         In order to list on a DEX, you need to set the{' '}
@@ -71,9 +71,9 @@ const StepFour = () => {
         ml={'6px'}
         alignItems={'center'}
         borderRadius="4px"
-        bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
+        bg={ 'transparent'}
         border={
-          colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
+          colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
         }
         focusBorderColor={'#dfe4ee'}
         pr="15px"

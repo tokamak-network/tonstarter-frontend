@@ -75,7 +75,7 @@ const GraphComponent = () => {
           color={colorMode === 'dark' ? 'white.100' : 'gray.375'}>
           Token Distribution
         </Text>
-        <Flex w={'331px'} h={'257px'}>
+        <Flex w={'331px'} h={'257px'} >
           <ResponsivePie
             data={formattedData}
             padAngle={0.7}
@@ -126,7 +126,7 @@ const GraphComponent = () => {
                 anchor: 'left',
                 direction: 'column',
                 justify: false,
-                translateX: 81,
+                translateX: 50,
                 translateY: 148,
                 itemsSpacing: 0,
                 itemWidth: 123,
@@ -148,7 +148,7 @@ const GraphComponent = () => {
                 anchor: 'left',
                 direction: 'column',
                 justify: false,
-                translateX: 234,
+                translateX: 200,
                 translateY: 148,
                 itemsSpacing: 0,
                 itemWidth: 123,

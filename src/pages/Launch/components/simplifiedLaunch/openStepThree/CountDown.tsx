@@ -33,7 +33,7 @@ const [duration, setDuration] = useState(calculateDuration(snapshot? snapshot: 0
         Deadline
     </Text>
     <Text fontSize={'15px'} color={'#0070ed'}>
-    {duration.days()} : {duration.hours()} : {duration.minutes()} : {duration.seconds()} 
+    {duration.days()}:{duration.hours()}:{duration.minutes()}:{duration.seconds()} 
     </Text>
   </Flex>);
 };
