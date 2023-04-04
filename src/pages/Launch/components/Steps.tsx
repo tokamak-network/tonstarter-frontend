@@ -2,6 +2,7 @@ import {Box, Flex, useColorMode} from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import tickIcon from 'assets/svgs/tick-icon.svg';
 import {StepComponent} from '@Admin/types';
+import '@fontsource/titillium-web';
 
 const Steps: React.FC<StepComponent> = (props) => {
   const {stepName, currentStep} = props;
@@ -46,6 +47,7 @@ const Steps: React.FC<StepComponent> = (props) => {
               )}
             </Flex>
             <Box
+              fontFamily={'Titillium Web, sans-serif'}
               fontWeight={isStep ? 'bold' : ''}
               color={
                 colorMode === 'light'
