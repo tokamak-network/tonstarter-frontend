@@ -782,17 +782,19 @@ async function deploy(
             0,
           );
           const t4 =
-           ( (publicRound1TokenAllocation * 10000) /
-              publicRound1TokenAllocation) -
+            (publicRound1TokenAllocation * 10000) /
+              publicRound1TokenAllocation -
             (t1 + t2 + t3);
-
-         
 
           const param0: any[] = [
             tier1RequiredStosWei,
             tier2RequiredStosWei,
             tier3RequiredStosWei,
-            tier4RequiredStosWei, t1,t2,t3,t4
+            tier4RequiredStosWei,
+            t1,
+            t2,
+            t3,
+            t4,
           ];
           // _amount[0] : Round1에서의 토큰 판매수량
           // _amount[1] : Round2에서의 토큰 판매수량
@@ -844,11 +846,21 @@ async function deploy(
             Number(publicRound1Allocation as number) +
             Number(publicRound2Allocation as number);
           //   (PublicVaultData.publicRound2Allocation as number)
+
           const param4: number[] = PublicVaultData.claim.map(
-            (claimRound: VaultSchedule) =>
-             truncNumber( ((claimRound.claimTokenAllocation as number) * 100) /
-              allTokenAllocation,0)
+            (claimRound: VaultSchedule, index: number) =>
+              truncNumber(
+                ((claimRound.claimTokenAllocation as number) * 100) /
+                  allTokenAllocation,
+                0,
+              ),
           ) as number[];
+
+          const xx = param4.reduce((partialSum, a) => partialSum + a, 0);
+          const lastEl = param4[param4.length - 1] + (100 - xx);
+          console.log(lastEl);
+          param4[param4.length - 1] = lastEl
+          console.log('xx', xx, param4);
 
           console.log('--params--');
           console.log(param0, param1, param2, param3, param4);
