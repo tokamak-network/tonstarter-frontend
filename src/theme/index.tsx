@@ -1,7 +1,7 @@
 import {extendTheme} from '@chakra-ui/react';
 import {createBreakpoints, mode} from '@chakra-ui/theme-tools';
 import {Text, TextProps as TextPropsOriginal} from 'rebass';
-import '@fontsource/titillium-web/400.css';
+import '@fontsource/titillium-web/700.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/rajdhani/600.css';
 import '@fontsource/open-sans';
@@ -15,7 +15,7 @@ const fonts = {
   heading: 'Roboto',
   roboto: 'Roboto',
   body: 'TitilliumWeb, sans-serif',
-  titil: 'TitilliumWeb, sans-serif',
+  titil: 'Titillium Web, sans-serif',
   fld: 'Rajdhani, sans-serif',
   openSans: 'Open Sans, sans-serif',
   poppins: 'Poppins',

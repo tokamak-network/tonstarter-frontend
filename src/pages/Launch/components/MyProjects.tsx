@@ -194,7 +194,7 @@ const MyProjects = () => {
         <Box mt={'20px'}>
           <MyProjectTable
             projects={projectsForTable}
-            data={projectsData}
+            data={projectsData.reverse()}
             columns={columns}
             isLoading={isProcessing}
           />

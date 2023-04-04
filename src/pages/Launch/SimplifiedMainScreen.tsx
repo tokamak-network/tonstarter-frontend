@@ -65,7 +65,8 @@ const SimplifiedMainScreen = () => {
   const formikRef = useRef(null);
   const match = useRouteMatch();
   const {url} = match;
-  const isExist = url.split('/')[2];
+  const isExist = url.split('/')[3];
+
   const dispatch = useAppDispatch();
   const {
     //@ts-ignore
@@ -90,35 +91,6 @@ const SimplifiedMainScreen = () => {
     return () => unBlock();
   }, [history]);
 
-  /**
-   * Fetch projects data from api
-   */
-  // const {data} = useQuery(
-  //   ['test'],
-  //   () =>
-  //     axios.get(fetchCampaginURL, {
-  //       headers: {
-  //         account,
-  //       },
-  //     }),
-  //   {
-  //     refetchInterval: 600000,
-  //   },
-  // );
-
-  // useEffect(() => {
-  //   if (data) {
-  //     const {data: ProjectDetail} = data;
-  //     dispatch(fetchProjects({data: ProjectDetail}));
-  //     setProject(ProjectDetail.name);
-  //   }
-  // }, [data, dispatch]);
-
-  // /** Check if this project is deployed */
-  // useEffect(() => {
-  //   dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
-  // }, []);
-
   useEffect(() => {
     dispatch(
       setHashKey({
@@ -126,19 +98,6 @@ const SimplifiedMainScreen = () => {
       }),
     );
   }, []);
-
-  // Prevent reloading page when setting up project
-  // useEffect(() => {
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //   };
-  // }, []);
-
-  // const handleBeforeUnload = (event: any) => {
-  //   event.preventDefault();
-  //   event.returnValue = '';
-  // };
 
 
   const handleStep = useCallback(
@@ -160,7 +119,7 @@ const SimplifiedMainScreen = () => {
   };
 
   const handleSaveProject = (values: any, account: string, mode: boolean
-) => {
+) => {  
     account && isExist === 'createprojectsimple' && hashKey === undefined
     ? saveProject(values, account, mode)
     : editProject(values, account as string, hashKey || isExist, mode);
@@ -173,9 +132,17 @@ const SimplifiedMainScreen = () => {
     handleStep(true);
   };
 
+  const handleComplete = (values: any, account: string, mode: boolean)=> {
+    editProject(values, account as string, hashKey || isExist);
+    history.push('/launch');
+  }
+
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
+
+
+
   
   return (
     <Flex
@@ -311,11 +278,11 @@ const SimplifiedMainScreen = () => {
                     )}
                     {step === 3 && (
                        <ActionButton
-                       bgColor={isDisableForStep3 ? '#gray.25' : 'blue.500'}
+                       bgColor={'blue.500'}
                        btnText="Complete & Go"
                        disabled={isDisableForStep3}
-                       color={isDisableForStep3 ? '#86929d' : 'white.100'}
-                       onClick={() =>  navigateToLaunchPage()}
+                       color={'white.100'}
+                       onClick={() =>  handleComplete(values, account,true)}
                      />
                     )}
                   </Flex>

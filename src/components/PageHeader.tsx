@@ -26,8 +26,9 @@ export const PageHeader: FC<HeadProps> = ({
   return (
     <Container pt='70px' maxW={'100%'}>
       <Flex flexDir="column" alignItems="center" justifyContent="center">
+
         <Heading
-          fontWeight={'bold'}
+          fontWeight={600}
           fontSize={'38'}
           className={'page-title'}
           color={
@@ -37,6 +38,7 @@ export const PageHeader: FC<HeadProps> = ({
               ? theme.colors.gray[250]
               : '#ffffff'
           }
+          
           fontFamily={theme.fonts.titil}
           mb="10px">
           {title}

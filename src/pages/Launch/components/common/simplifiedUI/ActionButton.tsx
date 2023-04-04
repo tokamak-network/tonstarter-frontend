@@ -1,4 +1,4 @@
-import {Button} from '@chakra-ui/react';
+import {Button, useColorMode} from '@chakra-ui/react';
 
 type ButtonProps = {
   bgColor: string;
@@ -27,6 +27,7 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
     marginBottom,
     disabled,
   } = props;
+  const {colorMode} = useColorMode();
 
   return (
     <Button
@@ -39,6 +40,7 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
       mb={marginBottom}
       color={color}
       isDisabled={isDisabled}
+      _disabled={{bg: colorMode === 'dark'?'#353535':'#e9edf1', color: colorMode === 'dark'? '#838383':'#86929d'}}
       disabled={disabled}
       bg={bgColor}
       borderRadius={4}
