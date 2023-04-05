@@ -10,6 +10,7 @@ import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
 import RescheduleModal from '../common/simplifiedUI/Reschedule';
+import {useModal} from 'hooks/useModal';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -23,8 +24,7 @@ const OpenStepOneSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const {values, setValues} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-  let timeLeftToDeploy = 0;
-    
+  const {openAnyModal} = useModal();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -38,19 +38,23 @@ const OpenStepOneSimplified = (props: any) => {
   }, [values, setDisableForStep1]);
 
   useEffect(() => {
-   
-    const publicVault = values.vaults[0] as VaultPublic;
-    const snapshot = publicVault.snapshot;
-    console.log('snapshot', snapshot);
-
-    const currentTime = Math.floor(Date.now() / 1000);
-    console.log('current time', currentTime);
-
-    if(snapshot) {
-      timeLeftToDeploy = Math.floor((snapshot - currentTime)/60)
-      console.log('timeLeftToDeploy', timeLeftToDeploy)
+    if (!values.vaults || values.vaults.length === 0) {
+      return;
     }
-  }, [values])
+    const publicVault = values.vaults[0] as VaultPublic;
+    if (!publicVault.snapshot) {
+      return;
+    }
+    const currentTime = Math.floor(Date.now() / 1000);
+    const timeLeftToDeploy = Math.floor(
+      (publicVault.snapshot - currentTime) / 60,
+    );
+    if (timeLeftToDeploy < 60 ) {
+      openAnyModal('Reschedule', {
+        from: 'launch/createprojectsimple',
+      })}
+
+  }, [values.vaults, openAnyModal]);
 
   return (
     <Flex
@@ -59,64 +63,70 @@ const OpenStepOneSimplified = (props: any) => {
       borderRadius={'10px'}
       border={colorMode === 'light' ? '' : '1px solid #373737'}
       flexDir="column">
-      <StepHeader deploySteps={false} title={'Project & Token'}/>
-      <RescheduleModal time={timeLeftToDeploy}/>
+      <StepHeader deploySteps={false} title={'Project & Token'} />
+      <RescheduleModal />
       <Grid px={'35px'} pb={'35px'}>
-          <Flex fontSize={12} mt={'14px'} ml={'615px'}>
-            <Text mr={'5px'} color={'#FF3B3B'}>
-              *
-            </Text>
-            Required Field
-          </Flex>
-      <Grid templateColumns="repeat(2, 1fr)" rowGap={'20px'} columnGap={'50px'}>
-        {filedNameList.map(
-          (fieldName: {title: string; requirement: boolean}, index: number) => {
-            if (fieldName.title === 'tokenName') {
-              return (
-                <Grid w={'212px'}>
-                  <InputComponent
-                    name={fieldName.title}
-                    placeHolder={`input ${fieldName.title}`}
-                    key={fieldName.title}
-                    requirement={fieldName.requirement}></InputComponent>
-                </Grid>
-              );
-            }
-            if (fieldName.title === 'tokenSymbolImage') {
-              return (
-                <Grid templateColumns="repeat(2, 1fr)">
-                  <Box w={'212px'}>
+        <Flex fontSize={12} mt={'14px'} ml={'615px'}>
+          <Text mr={'5px'} color={'#FF3B3B'}>
+            *
+          </Text>
+          Required Field
+        </Flex>
+        <Grid
+          templateColumns="repeat(2, 1fr)"
+          rowGap={'20px'}
+          columnGap={'50px'}>
+          {filedNameList.map(
+            (
+              fieldName: {title: string; requirement: boolean},
+              index: number,
+            ) => {
+              if (fieldName.title === 'tokenName') {
+                return (
+                  <Grid w={'212px'}>
                     <InputComponent
                       name={fieldName.title}
                       placeHolder={`input ${fieldName.title}`}
                       key={fieldName.title}
                       requirement={fieldName.requirement}></InputComponent>
-                  </Box>
-                  <Box ml={'35px'} mt={'-36px'}>
-                    <TokenImageInput imageLink={values.tokenSymbolImage} />
-                  </Box>
-                </Grid>
+                  </Grid>
+                );
+              }
+              if (fieldName.title === 'tokenSymbolImage') {
+                return (
+                  <Grid templateColumns="repeat(2, 1fr)">
+                    <Box w={'212px'}>
+                      <InputComponent
+                        name={fieldName.title}
+                        placeHolder={`input ${fieldName.title}`}
+                        key={fieldName.title}
+                        requirement={fieldName.requirement}></InputComponent>
+                    </Box>
+                    <Box ml={'35px'} mt={'-36px'}>
+                      <TokenImageInput imageLink={values.tokenSymbolImage} />
+                    </Box>
+                  </Grid>
+                );
+              }
+              return (
+                <GridItem w={'327px'}>
+                  <InputComponent
+                    name={fieldName.title}
+                    placeHolder={`input ${fieldName.title}`}
+                    key={fieldName.title}
+                    requirement={fieldName.requirement}></InputComponent>
+                </GridItem>
               );
-            }
-            return (
-              <GridItem w={'327px'}>
-                <InputComponent
-                  name={fieldName.title}
-                  placeHolder={`input ${fieldName.title}`}
-                  key={fieldName.title}
-                  requirement={fieldName.requirement}></InputComponent>
-              </GridItem>
-            );
-          },
-        )}
+            },
+          )}
+        </Grid>
+        <Grid>
+          <LaunchSchedule currentStep={step}></LaunchSchedule>
+        </Grid>
+        <Box>
+          <CustomMarkdownEditor />
+        </Box>
       </Grid>
-      <Grid>
-        <LaunchSchedule currentStep={step}></LaunchSchedule>
-      </Grid>
-      <Box>
-        <CustomMarkdownEditor />
-      </Box>
-    </Grid>
     </Flex>
   );
 };

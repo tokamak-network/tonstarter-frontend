@@ -5,20 +5,42 @@ import StepComponent from './openStepTwo/StepComponent';
 import GraphComponent from './openStepTwo/GraphComponent';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import { useFormikContext } from 'formik';
-import {Projects} from '@Launch/types';
+import {Projects, VaultPublic} from '@Launch/types';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import RescheduleModal from '../common/simplifiedUI/Reschedule';
+import {useModal} from 'hooks/useModal';
 
 const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAction<boolean>>;}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
   const {setDisableForStep2} = props;
+  const {openAnyModal} = useModal();
 
  useEffect(() => {
     const validation = validateSimplifiedFormikValues(values)
     setDisableForStep2(!validation);
     
   }, [values, setDisableForStep2]);
+
+  useEffect(() => {
+    if (!values.vaults || values.vaults.length === 0) {
+      return;
+    }
+    const publicVault = values.vaults[0] as VaultPublic;
+    if (!publicVault.snapshot) {
+      return;
+    }
+    const currentTime = Math.floor(Date.now() / 1000);
+    const timeLeftToDeploy = Math.floor(
+      (publicVault.snapshot - currentTime) / 60,
+    );
+    if (timeLeftToDeploy < 60 ) {
+      openAnyModal('Reschedule', {
+        from: 'launch/createprojectsimple',
+      })}
+
+  }, [values.vaults, openAnyModal]);
 
   return (
     <Flex
@@ -35,6 +57,7 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
         <StepComponent/>
          <GraphComponent/>
         </Flex>
+        <RescheduleModal />
       </Flex>
   );
 };

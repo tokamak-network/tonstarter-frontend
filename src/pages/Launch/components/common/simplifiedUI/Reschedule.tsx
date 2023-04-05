@@ -8,44 +8,32 @@ import {
   Text,
   Flex,
   Button,
-  Image,
   useTheme,
   useColorMode,
-  Spacer,
 } from '@chakra-ui/react';
-import React, {useEffect, useCallback, useState} from 'react';
-import {useHistory} from 'react-router-dom';
+import React, {useState} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import Line from '@Launch/components/common/Line';
-import {useRouteMatch} from 'react-router-dom';
-import gasIcon from 'assets/images/gas-graphic.png';
-import {DEPLOYED} from 'constants/index';
-import {useActiveWeb3React} from 'hooks/useWeb3';
-import {useFormikContext} from 'formik';
-import {Projects, VaultPublic} from '@Launch/types';
-import moment from 'moment';
 
-const RescheduleModal = (props: any) => {
-  const {time} = props;
+const RescheduleModal = () => {
+  // const {step} = props;
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
-  const history = useHistory();
   const [isCheck, setIsCheck] = useState<boolean>(false);
-  const {values} = useFormikContext<Projects['CreateSimplifiedProject']>();
 
   const closeModal = () => {
     setIsCheck(false);
     handleCloseModal();
   };
- console.log('time to dep', time)
+
   return (
     <Modal
-      isOpen={data.modal === 'Reschedule' && time < 30 ? true : false}
+      isOpen={data.modal === 'Reschedule' ? true : false}
       isCentered
       onClose={() => closeModal()}>
       <ModalOverlay />
@@ -81,20 +69,20 @@ const RescheduleModal = (props: any) => {
             </Text>
           </Flex>
           <Flex alignSelf={'center'} w={'320px'}>
-              <Line />
-            </Flex>
-
-            <Flex alignItems={'center'} w={'320px'} mx={'100px'} mt={'25px'}>
-              <Button
-                w={'150px'}
-                h={'38px'}
-                color={'#fff'}
-                border-radius={'4px'}
-                onClick={() => closeModal()}
-                bg={'#257eee'}>
-                Go
-              </Button>
-            </Flex>
+            <Line />
+          </Flex>
+          {/* FIXME: When clicking 'Go' button, navigate to step 1*/}
+          <Flex alignItems={'center'} w={'320px'} mx={'100px'} mt={'25px'}>
+            <Button
+              w={'150px'}
+              h={'38px'}
+              color={'#fff'}
+              border-radius={'4px'}
+              onClick={() => closeModal()}
+              bg={'#257eee'}>
+              Go
+            </Button>
+          </Flex>
         </ModalBody>
       </ModalContent>
     </Modal>
