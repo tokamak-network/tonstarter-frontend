@@ -34,7 +34,8 @@ type LaunchModal =
   | 'Launch_Vesting'
   | 'Launch_ConfirmTokenSimplified'
   | 'Launch_EstimateGas'
-  | 'Reschedule';
+  | 'Reschedule'
+  | 'Launch_Warning';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search' | 'information' | 'confirmMulticall';
