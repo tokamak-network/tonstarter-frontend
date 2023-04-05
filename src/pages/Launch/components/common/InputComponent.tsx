@@ -45,7 +45,7 @@ const getPlaceHolder = (name: string) => {
     case 'Discord ':
       return 'https://dsc.gg/dragonsmidgard';
     case 'Token Symbol Image ':
-      return '“URL” is required';
+      return 'URL';
     default:
       return `Input ${name}`;
   }
