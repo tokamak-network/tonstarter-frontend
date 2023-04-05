@@ -55,14 +55,14 @@ function validateSimplifiedFormikValues(
     // Is there 2 day gap btw whitelist end ~ publicRound1
     if (isProduction() === false) {
       if (whitelistEnd && publicRound1) {
-        getDuration(whitelistEnd, publicRound1) <= 1
+        getDuration(whitelistEnd, publicRound1) >= 1
           ? fields.push(true)
           : fields.push(false);
       }
   
       // Is there 2 day gap btw publicRound1End ~ publicRound2
       if (publicRound1End && publicRound2) {
-        getDuration(publicRound1End, publicRound2) <= 1
+        getDuration(publicRound1End, publicRound2) >= 1
           ? fields.push(true)
           : fields.push(false);
       }
