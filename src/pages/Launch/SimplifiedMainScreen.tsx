@@ -127,7 +127,7 @@ const SimplifiedMainScreen = () => {
 
   const handleSaveAndContinue = (values: any, account: string) => {
     account && isExist === 'createprojectsimple' && hashKey === undefined
-      ? saveProject(values, account, true)
+      ? saveProject(values, account)
       : editProject(values, account as string, hashKey || isExist);
     handleStep(true);
   };
@@ -223,7 +223,7 @@ const SimplifiedMainScreen = () => {
                         bgColor="yellow.200"
                         btnText="Save"
                         isDisabled={isSubmitting}
-                        marginRight={step === 1 ? '190px' : '558px'}
+                        marginRight={step === 1 ? '190px' : '' ? '10px' : '558px'}
                         color={isDisable ? '#86929d' : 'white.100'}
                         onClick={() => handleSaveProject(values, account, true)}
                       />
@@ -268,6 +268,7 @@ const SimplifiedMainScreen = () => {
                         bgColor={isDisableForStep2 ? 'gray.25' : 'blue.500'}
                         btnText="Save & Continue"
                         disabled={isDisableForStep2}
+                        marginRight={step === 2 ? '390px' : '558px'}
                         color={isDisableForStep2 ? '#86929d' : 'white.100'}
                         onClick={() => handleSaveAndContinue(values, account)}
                       />
@@ -277,6 +278,7 @@ const SimplifiedMainScreen = () => {
                        bgColor={'blue.500'}
                        btnText="Complete & Go"
                        disabled={isDisableForStep3}
+                       marginRight={step === 3 ? '390px' : '558px'}
                        color={'white.100'}
                        onClick={() =>  handleComplete(values, account,true)}
                      />
