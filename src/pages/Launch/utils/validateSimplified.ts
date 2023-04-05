@@ -1,6 +1,8 @@
 import {Projects, VaultPublic, VaultSchedule} from '@Launch/types';
 import {snapshotGap} from '@Launch/const';
 import {isArray} from 'lodash';
+import {isProduction} from './checkConstants';
+
 
 function validateSimplifiedFormikValues(
   values: Projects['CreateSimplifiedProject'],
@@ -46,23 +48,39 @@ function validateSimplifiedFormikValues(
     }
 
     const getDuration = (start: any, end: any) => {
-      // console.log('getDuration', Math.round((end - start) / 86400));
-      return Math.round((end - start) / 86400);
+      console.log('getDuration', Math.round((end - start)));
+      return Math.round((end - start));
     };
 
     // Is there 2 day gap btw whitelist end ~ publicRound1
-    if (whitelistEnd && publicRound1) {
-      getDuration(whitelistEnd, publicRound1) <= 2
-        ? fields.push(true)
-        : fields.push(false);
+    if (isProduction() === false) {
+      if (whitelistEnd && publicRound1) {
+        getDuration(whitelistEnd, publicRound1) <= 1
+          ? fields.push(true)
+          : fields.push(false);
+      }
+  
+      // Is there 2 day gap btw publicRound1End ~ publicRound2
+      if (publicRound1End && publicRound2) {
+        getDuration(publicRound1End, publicRound2) <= 1
+          ? fields.push(true)
+          : fields.push(false);
+      }
+    } else {
+      if (whitelistEnd && publicRound1) {
+        getDuration(whitelistEnd, publicRound1) <=  86400 * 2
+          ? fields.push(true)
+          : fields.push(false);
+      }
+  
+      // Is there 2 day gap btw publicRound1End ~ publicRound2
+      if (publicRound1End && publicRound2) {
+        getDuration(publicRound1End, publicRound2) <= 86400 * 2
+          ? fields.push(true)
+          : fields.push(false);
+      }
     }
-
-    // Is there 2 day gap btw publicRound1End ~ publicRound2
-    if (publicRound1End && publicRound2) {
-      getDuration(publicRound1End, publicRound2) <= 2
-        ? fields.push(true)
-        : fields.push(false);
-    }
+ 
 
     // Public sale 2 start time should be later than Public sale 1 end time
     if (publicRound2 && publicRound1End && publicRound1End < publicRound2) {

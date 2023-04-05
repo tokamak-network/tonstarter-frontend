@@ -21,6 +21,7 @@ import {snapshotGap} from '@Launch/const';
 import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
+import { isProduction } from '@Launch/utils/checkConstants';
 
 type LaunchDateProps = {
   launchSteps: string[];
@@ -112,11 +113,18 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
     // Second after snapshot
     setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
-    // whitelist start to end - 2 days duration
-    setFieldValue(
-      'vaults[0].whitelistEnd',
-      snapshotDate && snapshotDate + 1 + 86400 * 2,
-    );
+    // whitelist start to end - 2 days duration (in development)
+    if(isProduction() === false) {
+      setFieldValue(
+        'vaults[0].whitelistEnd',
+        snapshotDate && snapshotDate + 1,
+      );
+    }else {
+      setFieldValue(
+        'vaults[0].whitelistEnd',
+        snapshotDate && snapshotDate + 1 + 86400 * 2,
+      );
+    }
     setFieldValue('vaults[0].publicRound1', publicSale1);
     setFieldValue('vaults[0].publicRound1End', publicSale1End);
     setFieldValue('vaults[0].publicRound2', publicSale2);
@@ -220,7 +228,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     )}
                     <br />~
                     {convertTimeStamp(
-                      Number(snapshotDate + 1 + 86400 * 2),
+                      // mainnet: 2 days after snapshot time
+                      // testnet: 1 second after whitelist start time, which is snapshot start time + 1s.
+                      Number(isProduction() === false ? snapshotDate + 2 : snapshotDate + 1 + 86400 * 2),
                       'MM.DD HH:mm:ss',
                     )}
                   </Text>
