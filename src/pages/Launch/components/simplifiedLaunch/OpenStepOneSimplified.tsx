@@ -33,7 +33,10 @@ const OpenStepOneSimplified = (props: any) => {
   const testvalues = testValue();
 
   useEffect(() => {
-    const validation = validateSimplifiedFormikValues(values);
+    const {resultsStep1} = validateSimplifiedFormikValues(values);
+    console.log('resultsStep1',resultsStep1);
+    
+    const validation = resultsStep1.length > 0 ? false : true
     setDisableForStep1(!validation);
   }, [values, setDisableForStep1]);
 

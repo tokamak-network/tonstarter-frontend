@@ -18,7 +18,12 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
   const {openAnyModal} = useModal();
 
  useEffect(() => {
-    const validation = validateSimplifiedFormikValues(values)
+    const {resultsStep2} = validateSimplifiedFormikValues(values)
+    console.log('resultsStep2',resultsStep2);
+    
+    const validation = resultsStep2.length > 0 ? false : true
+    console.log('v',validation);
+    
     setDisableForStep2(!validation);
     
   }, [values, setDisableForStep2]);

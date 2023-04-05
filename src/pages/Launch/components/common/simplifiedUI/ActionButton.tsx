@@ -39,9 +39,10 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
       mt={marginTop}
       mb={marginBottom}
       color={color}
+      // _focus={{bg: '#2a72e5'}}
+      _active={{bg: bgColor === '#00c3c4'? '#00c3c4':bgColor === '#fecf05'?'#fecf05': '#2a72e5'}}
       isDisabled={isDisabled}
       _disabled={{bg: colorMode === 'dark'?'#353535':'#e9edf1', color: colorMode === 'dark'? '#838383':'#86929d', cursor:'not-allowed'}}
-      disabled={disabled}
       bg={bgColor}
       borderRadius={4}
       _hover={{}}

@@ -60,7 +60,6 @@ const MainScreen = () => {
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[2];
-console.log('isExist',isExist);
 
   const dispatch = useAppDispatch();
   const {
@@ -71,7 +70,6 @@ console.log('isExist',isExist);
     data: {projects, hashKey},
   } = useAppSelector(selectLaunch);
 
-  console.log('hashKey',hashKey);
   
   let historyObj = useHistory();
 

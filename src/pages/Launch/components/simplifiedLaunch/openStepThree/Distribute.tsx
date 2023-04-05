@@ -42,6 +42,7 @@ const Distribute = () => {
     });
 
     const nonDeployedExists = isDeployed.indexOf(false) !== -1;
+    setFieldValue('isAllDeployed', !nonDeployedExists)
     setNotDeployedAll(nonDeployedExists);
 
     async function fetchContractBalance() {
