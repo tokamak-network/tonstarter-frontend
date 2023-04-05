@@ -117,7 +117,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     if(isProduction() === false) {
       setFieldValue(
         'vaults[0].whitelistEnd',
-        snapshotDate && snapshotDate + 1,
+        snapshotDate && snapshotDate + 2,
       );
     }else {
       setFieldValue(
