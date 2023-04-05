@@ -768,9 +768,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
                 <Text
                   fontFamily={theme.fonts.fld}
-                  w={'100px'}
+                  w={'110px'}
                   textAlign={'right'}>
-                  {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}{' '}
+                  {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}
+                  <br></br>{' '}
                   {`~`}{' '}
                   {moment.unix(vault.whitelistEnd).format('MM.DD HH:mm:ss')}
                 </Text>
@@ -788,11 +789,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
                 <Text
                   fontFamily={theme.fonts.fld}
-                  w={'100px'}
+                  w={'110px'}
                   textAlign={'right'}>
                   {moment
                     .unix(vault.publicRound1)
                     .format('YYYY.MM.DD HH:mm:ss')}{' '}
+                     <br></br>{' '}
                   {`~`}{' '}
                   {moment.unix(vault.publicRound1End).format('MM.DD HH:mm:ss')}
                 </Text>
@@ -810,11 +812,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Text>
                 <Text
                   fontFamily={theme.fonts.fld}
-                  w={'100px'}
+                  w={'110px'}
                   textAlign={'right'}>
                   {moment
                     .unix(vault.publicRound2)
-                    .format('YYYY.MM.DD HH:mm:ss')}{' '}
+                    .format('YYYY.MM.DD HH:mm:ss')}
+                     <br></br>
                   {`~`}{' '}
                   {moment.unix(vault.publicRound2End).format('MM.DD HH:mm:ss')}
                 </Text>
