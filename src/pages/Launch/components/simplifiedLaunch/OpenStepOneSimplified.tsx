@@ -64,7 +64,7 @@ const OpenStepOneSimplified = (props: any) => {
       border={colorMode === 'light' ? '' : '1px solid #373737'}
       flexDir="column">
       <StepHeader deploySteps={false} title={'Project & Token'} />
-      <RescheduleModal />
+      {/* <RescheduleModal /> */}
       <Grid px={'35px'} pb={'35px'}>
         <Flex fontSize={12} mt={'14px'} ml={'615px'}>
           <Text mr={'5px'} color={'#FF3B3B'}>

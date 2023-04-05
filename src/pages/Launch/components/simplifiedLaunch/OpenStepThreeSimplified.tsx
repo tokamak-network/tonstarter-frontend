@@ -125,7 +125,7 @@ const OpenStepThreeSimplified = (props: any) => {
     <VaultComp vaultNum={currentStep}/>
     <ConfirmTokenSimplifiedModal/>
     <EstimateGasModal />
-    <RescheduleModal />
+    {/* <RescheduleModal /> */}
     </Flex>
   );
 };

@@ -57,7 +57,7 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
         <StepComponent/>
          <GraphComponent/>
         </Flex>
-        <RescheduleModal />
+        {/* <RescheduleModal /> */}
       </Flex>
   );
 };
