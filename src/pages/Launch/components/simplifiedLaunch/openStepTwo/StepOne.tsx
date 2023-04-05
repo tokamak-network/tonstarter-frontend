@@ -28,7 +28,7 @@ const StepOne = () => {
   const [tonInDollars, setTonInDollars] = useState(0);
   const [tonPriceInTos, setTonPriceInTos] = useState(0);
   const {account, library} = useActiveWeb3React();
-
+const [focus,setFocus] = useState(false)
   const {MENU_STYLE} = theme;
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
@@ -252,10 +252,18 @@ const StepOne = () => {
             borderRadius="4px"
             bg={'transparent'}
             border={
-              colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
+               focus? '1px solid #2a72e5':  colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
             }
+            onFocus={()=> setFocus(true)}
+            onBlur={()=> setFocus(false)}
+            // _active={{
+            //   border: '1px solid #2a72e5'
+            // }}
+          
+    
             _focus={{border: '1px solid #2a72e5'}}
-            focusBorderColor={'#2a72e5'}
+            // focusBorderColor={'#2a72e5'}
+            // focus={{outline: '1px solid #2a72e5'}}
             pl="15px"
             fontSize={'13px'}>
             <Text>$</Text>

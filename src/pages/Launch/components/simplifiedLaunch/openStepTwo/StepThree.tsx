@@ -31,6 +31,7 @@ const StepThree = (props: {currentStep: Number}) => {
   const [tonInDollars, setTonInDollars] = useState(0);
   const [tonPriceInTos, setTonPriceInTos] = useState(0);
   const {account, library} = useActiveWeb3React();
+  const [focus,setFocus] = useState(false)
 
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
@@ -252,8 +253,10 @@ const StepThree = (props: {currentStep: Number}) => {
             borderRadius="4px"
             bg={ 'transparent'}
             border={
-              colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
-            }
+              focus? '1px solid #2a72e5':  colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
+           }
+           onFocus={()=> setFocus(true)}
+           onBlur={()=> setFocus(false)}
             focusBorderColor={'#dfe4ee'}
             pl="15px"
             fontSize={'13px'}>

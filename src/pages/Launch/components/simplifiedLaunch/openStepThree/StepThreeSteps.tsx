@@ -52,7 +52,7 @@ const StepThreeSteps = (props: {
   const [transX, setTransX] = useState<number>(0);
   const [flowIndex, setFlowIndex] = useState<number>(0);
   const [startIndex, setStartIndex] = useState<number>(vaults.length);
-  const [hasToken, setHasToken] = useState(false)
+  const [hasToken, setHasToken] = useState(false);
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
 
   useEffect(() => {
@@ -72,17 +72,14 @@ const StepThreeSteps = (props: {
           values.vaults[0].vaultAddress,
         );
         if (Number(balance) > 0) {
-          setHasToken(true)
-        }
-        else {
-          setHasToken(false)
+          setHasToken(true);
+        } else {
+          setHasToken(false);
         }
       }
     }
-    checkBalance()
-  },[ERC20_CONTRACT, values])
-
-  
+    checkBalance();
+  }, [ERC20_CONTRACT, values]);
 
   const StepButton: React.FC<step> = (props) => {
     const {vault, index} = props;
@@ -296,12 +293,14 @@ const StepThreeSteps = (props: {
     );
   };
 
+  console.log('flowIndex',flowIndex);
+  
   return (
     <Flex w="350px" alignItems={'center'} mt="41px">
       <HoverImage
-        additionalStyles={{height: '26px'}}
+        additionalStyles={{height: '26px', cursor: flowIndex !== 0?'default':"not-allowed"}}
         img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
-        hoverImg={arrowHoverLeft}
+        hoverImg={flowIndex !== 0?arrowHoverLeft:colorMode === 'light' ? arrowLeft : arrowLeftDark }
         action={() => {
           if (flowIndex !== 0) {
             setTransX(transX + 60);
@@ -353,8 +352,8 @@ const StepThreeSteps = (props: {
       </Flex>
       <HoverImage
         img={colorMode === 'light' ? arrowRight : arrowRightDark}
-        hoverImg={arrowHoverRight}
-        additionalStyles={{height: '26px'}}
+        hoverImg={ flowIndex < vaults.length - 5? arrowHoverRight:colorMode === 'light' ? arrowRight : arrowRightDark }
+        additionalStyles={{height: '26px', cursor: flowIndex < vaults.length - 5?'default':"not-allowed"}}
         action={() => {
           if (flowIndex < vaults.length - 5) {
             setTransX(transX - 60);

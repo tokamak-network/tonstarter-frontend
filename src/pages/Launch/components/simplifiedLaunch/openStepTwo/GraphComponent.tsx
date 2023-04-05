@@ -189,6 +189,7 @@ const GraphComponent = () => {
                 <div>3. TOS Staker (1.25%)</div>
               </>
             }
+            color={colorMode === 'dark'? '#ffffff':'#ffffff'}
             fontSize="12px"
             hasArrow
             placement="bottom"
