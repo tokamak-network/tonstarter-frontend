@@ -15,7 +15,8 @@ const StepFour = () => {
   const theme = useTheme();
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-    
+    const [focus,setFocus] = useState(false)
+
   const handleInput = (e: number) => {
     
     setFieldValue('tosPrice',truncNumber(1/e,2))
@@ -26,7 +27,7 @@ const StepFour = () => {
       {' '}
       <Text
         fontSize={'14px'}
-        fontWeight={500}
+        fontWeight={'bold'}
         color={colorMode === 'dark' ? 'white.100' : 'gray.150'}
         mb="18px">
         In order to list on a DEX, you need to set the{' '}
@@ -35,34 +36,6 @@ const StepFour = () => {
         as shown below, but you can change it if you wish.
       </Text>
 
-      {/* <Flex
-        h="30px"
-        w="130px"
-        alignItems={'center'}
-        borderRadius="4px"
-        bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
-        border={
-          colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
-        }
-        focusBorderColor={'#dfe4ee'}
-        pr="15px"
-        fontSize={'13px'}>
-        <NumberInput>
-          <NumberInputField
-            h="30px"
-            placeholder={values.exchangeRate? values.exchangeRate.toString() : '0'}
-            fontSize={'13px'}
-            border="none"
-            pr="5px"
-            textAlign={'right'}
-            _focus={{}}
-            value={values.exchangeRate}
-            onChange={(e) => {
-              handleInput(parseInt(e.target.value));
-            }}></NumberInputField>
-        </NumberInput>
-        <Text>TOS</Text>
-      </Flex>  */}
       <Flex fontSize={'14px'}  alignItems={'center'}  color={'#7e8993'} fontWeight={500}>
       <Text> 1 {values.tokenSymbol} = {(1/values.projectTokenPrice).toLocaleString()}TON = {' '}</Text>
       <Flex
@@ -71,11 +44,12 @@ const StepFour = () => {
         ml={'6px'}
         alignItems={'center'}
         borderRadius="4px"
-        bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
+        bg={ 'transparent'}
         border={
-          colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
-        }
-        focusBorderColor={'#dfe4ee'}
+          focus? '1px solid #2a72e5':  colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
+       }
+       onFocus={()=> setFocus(true)}
+       onBlur={()=> setFocus(false)}
         pr="15px"
         fontSize={'13px'}>
         <NumberInput>

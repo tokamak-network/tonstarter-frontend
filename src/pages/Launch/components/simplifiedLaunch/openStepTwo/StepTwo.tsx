@@ -14,12 +14,22 @@ import {useEffect, useState} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
 import {Projects,VaultPublic} from '@Launch/types';
+import {fetchUsdPriceURL, fetchTonPriceURL} from 'constants/index';
+import {fetchPoolPayload} from '@Launch/utils/fetchPoolPayload';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import truncNumber from 'utils/truncNumber';
+import {schedules} from '@Launch/utils/simplifiedClaimSchedule';
 
 const StepTwo = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {MENU_STYLE} = theme;
   const [option, setOption] = useState('');
+  const [tonInDollars, setTonInDollars] = useState(0);
+  const [tonPriceInTos, setTonPriceInTos] = useState(0);
+  const {account, library} = useActiveWeb3React();
+  const [focus,setFocus] = useState(false)
+
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
     const {vaults} = values;
@@ -38,10 +48,109 @@ const StepTwo = () => {
     }
   };
 
+  useEffect(() => {
+    async function getTonPrice() {
+      const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
+        res.json(),
+      );
+      const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
+        res.json(),
+      );
+      const tonPriceKRW = tonPriceObj[0].trade_price;
+      const krwInUsd = usdPriceObj.rates.USD;
+
+      const tonPriceInUsd = tonPriceKRW * krwInUsd;
+
+      setTonInDollars(tonPriceInUsd);
+      const poolData = await fetchPoolPayload(library);
+
+      const token0Price = Number(poolData.token0Price);
+
+      setTonPriceInTos(token0Price);
+      // console.log(token0Price);
+      // const tonPriceInTos =
+    }
+    getTonPrice();
+  }, [library, values.vaults[0], option]);
+
   const handleSelect = (option: number) => {
     setOption(option.toString());
-    setFieldValue('growth', option);
+    handleInput(option);
+   
   };
+  const handleInput = (option: number) => {
+    setFieldValue('growth', option);
+    if (values.marketCap && values.totalSupply && values.stablePrice) {
+      const growth = option;
+      const stablePrice = values.stablePrice;
+      const marketCap = values.marketCap
+      const totalSupply = parseInt(
+        ((marketCap * growth) / stablePrice).toString(),
+      );   
+      setFieldValue('totalSupply', totalSupply);
+      const tokenPriceinDollars = marketCap / totalSupply;      
+      const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
+      const tonPriceInToken = 1 / tokenPriceInTon;
+      setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
+      setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
+      const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
+      const tosPriceInTokens = 1 / tokenPriceInTos;
+      setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
+      const hardCap =
+      values.fundingTarget && values.fundingTarget / tonInDollars;
+    setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
+
+    const publicAllocation = parseInt((totalSupply * 0.3).toString());
+
+    const rounds = values.vaults.map((vault, index) => {
+      const roundInfo = schedules(
+        vault.vaultName,
+        totalSupply,
+        publicVault.publicRound2End ? publicVault.publicRound2End : 0,
+      );
+
+      const tot = roundInfo.reduce(
+        (acc, round) => acc + round.claimTokenAllocation,
+        0,
+      );
+      setFieldValue(`vaults[${index}].claim`, roundInfo);
+      setFieldValue(`vaults[${index}].adminAddress`, account);
+      setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
+      return tot;
+    });
+    setFieldValue('vaults[2].vaultTokenAllocation', 0);
+      setFieldValue('vaults[0].addressForReceiving', account);
+      setFieldValue('vaults[0].adminAddress', account);
+      const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
+      const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);
+      const tier3 = truncNumber(publicAllocation * 0.5 * 0.22, 0);
+      const tier4 = truncNumber(publicAllocation * 0.5 * 0.6, 0);
+
+      const public1All = tier1 + tier2 + tier3 + tier4;
+
+      setFieldValue('vaults[0].stosTier.fourTier.allocatedToken', tier4);
+      setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', tier1);
+      setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
+      setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
+      setFieldValue('vaults[0].publicRound1Allocation', public1All);
+      setFieldValue('vaults[0].publicRound2Allocation',publicAllocation - public1All );
+      
+      setFieldValue(
+        'vaults[1].startTime',
+        publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+      );
+      setFieldValue(
+        'vaults[0].claimStart',
+        publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+      );
+
+      const mainVaults = rounds.splice(2, 1);
+
+      const sumTotalToken = rounds.reduce((partialSum, a) => partialSum + a, 0);
+
+      setFieldValue('totalTokenAllocation', sumTotalToken);
+    }
+  }
 
   const themeDesign = {
     border: {
@@ -67,7 +176,7 @@ const StepTwo = () => {
     <Flex flexDir={'column'} alignItems={'flex-start'} h="142px">
       <Text
         fontSize={'14px'}
-        fontWeight={500}
+        fontWeight={'bold'}
         color={colorMode === 'dark' ? 'white.100' : 'gray.150'}
         mb="18px">
         Once your project has passed its growth phase and is stabilizing,{' '}
@@ -80,11 +189,12 @@ const StepTwo = () => {
             pl="15px"
             textAlign={'left'}
             fontSize={'13px'}
-            border={themeDesign.border[colorMode]}
+            border={colorMode === 'dark'? '1px solid #424242':'1px solid #dfe4ee'}
+            borderRadius={'4px'}
             {...MENU_STYLE.buttonStyle({colorMode})}
             w="115px"
             h="30px"
-            bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}>
+            bg={colorMode === 'dark' ? 'transparent' : '#ffffff'}>
             <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
               {option !== 'Other' && values.growth
                 ? ` ${values.growth.toLocaleString()} times`
@@ -100,15 +210,18 @@ const StepTwo = () => {
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             fontSize="13px"
             minWidth="115px">
-            <MenuItem onClick={() => setOption('')}>Select One...</MenuItem>
+            <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
+                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}  onClick={() => setOption('')}>Select One...</MenuItem>
             {prices.map((price: number, index: number) => {
               return (
-                <MenuItem key={index} onClick={() => handleSelect(price)}>
+                <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
+                color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}  key={index} onClick={() => handleSelect(price)}>
                   {price.toLocaleString()} times
                 </MenuItem>
               );
             })}
-            <MenuItem color={'blue.300'} onClick={() => setOption('Other')}>
+            <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
+                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}   onClick={() => setOption('Other')}>
               Other
             </MenuItem>
           </MenuList>
@@ -119,10 +232,12 @@ const StepTwo = () => {
             w="130px"
             alignItems={'center'}
             borderRadius="4px"
-            bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
+            bg={ 'transparent'}
             border={
-              colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
-            }
+              focus? '1px solid #2a72e5':  colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
+           }
+           onFocus={()=> setFocus(true)}
+           onBlur={()=> setFocus(false)}
             focusBorderColor={'#dfe4ee'}
             pr="15px"
             fontSize={'13px'}>
@@ -142,7 +257,7 @@ const StepTwo = () => {
                 step={0}
                 value={values.growth}
                 onChange={(e) => {
-                  setFieldValue('growth', parseInt(e.target.value));
+                   handleInput(parseInt(e.target.value))
                 }}
                 textAlign={'right'}
                 _focus={{}}></NumberInputField>

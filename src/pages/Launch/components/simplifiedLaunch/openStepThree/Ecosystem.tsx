@@ -310,10 +310,10 @@ const Ecosystem = (props:{step:string} ) => {
           _hover={{}}
           isDisabled={
             step === 'Deploy'
-              ? ecoVault.vaultAddress === undefined
-                ? false
-                : true
-              :( ecoVault.isSet === true ||  ecoVault.vaultAddress === undefined)
+            ? values.isTokenDeployed ===  false || ecoVault.vaultAddress !== undefined
+            ? true
+            : false
+              :( ecoVault.isSet === true || !hasToken)
               ? true
               : false
           }

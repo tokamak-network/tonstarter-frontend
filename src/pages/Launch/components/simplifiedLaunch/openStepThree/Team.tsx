@@ -305,10 +305,10 @@ const Team = (props: {step:string}) => {
           _hover={{}}
           isDisabled={
             step === 'Deploy'
-              ? teamVault.vaultAddress === undefined
-                ? false
-                : true
-              : (teamVault.isSet === true || teamVault.vaultAddress === undefined)
+            ? values.isTokenDeployed ===  false || teamVault.vaultAddress !== undefined
+            ? true
+            : false
+              : (teamVault.isSet === true || !hasToken)
               ? true
               : false
           }

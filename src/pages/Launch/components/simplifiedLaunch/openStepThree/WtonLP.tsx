@@ -323,10 +323,10 @@ const WtonLP = (props: {step: string}) => {
           _hover={{}}
           isDisabled={
             step === 'Deploy'
-              ? wtonVault.vaultAddress === undefined
-                ? false
-                : true
-              : (wtonVault.isSet === true || wtonVault.vaultAddress === undefined)
+            ? values.isTokenDeployed ===  false || wtonVault.vaultAddress !== undefined
+            ? true
+            : false
+              : (wtonVault.isSet === true || !hasToken)
               ? true
               : false
           }

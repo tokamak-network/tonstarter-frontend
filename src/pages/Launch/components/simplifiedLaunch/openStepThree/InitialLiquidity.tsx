@@ -273,10 +273,10 @@ const InitialLiquidity = (props:{step:string}) => {
           }}
           isDisabled={
             step === 'Deploy'
-              ? initialVault.vaultAddress === undefined
-                ? false
-                : true
-              : (initialVault.isSet === true || initialVault.vaultAddress === undefined)
+              ? values.isTokenDeployed ===  false || initialVault.vaultAddress !== undefined
+                ? true
+                : false
+              : (initialVault.isSet === true || !hasToken  )
               ? true
               : false
           }

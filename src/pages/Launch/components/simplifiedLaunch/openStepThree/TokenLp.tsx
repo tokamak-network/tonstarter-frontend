@@ -281,10 +281,10 @@ const TokenLP = (props:{step:string}) => {
           _hover={{}}
           isDisabled={
             step === 'Deploy'
-              ? tokenLPVault.vaultAddress === undefined
-                ? false
-                : true
-              : (tokenLPVault.isSet === true || tokenLPVault.vaultAddress === undefined)
+            ? values.isTokenDeployed ===  false || tokenLPVault.vaultAddress !== undefined
+            ? true
+            : false
+              : (tokenLPVault.isSet === true || !hasToken)
               ? true
               : false
           }

@@ -58,25 +58,6 @@ const StepHeader = (props: {
           temp += 1;
           setSteps(temp);
         }
-
-        // const xx = await Promise.all(
-        //   values.vaults.map(async (vault: VaultCommon) => {
-        //     if (vault.vaultAddress) {
-        //       const tokenBalance = await ERC20_CONTRACT.balanceOf(
-        //         vault?.vaultAddress,
-        //       );
-        //       if (Number(tokenBalance) > 0) {
-        //         return true;
-        //       }
-
-        //     }
-        //   }),
-        // );
-
-        // if (xx.indexOf(true) !== -1) {
-        //   temp += 1
-        //   setSteps(temp);
-        // }
       }
     }
 

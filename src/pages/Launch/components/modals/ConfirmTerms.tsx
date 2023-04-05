@@ -992,7 +992,7 @@ const ConfirmTermsModal = () => {
               </Link>
             ): 
             (
-              <Link to={{pathname: isCheck ? `/launch/createprojectsimple` : '#'}}>
+              <Link to={{pathname: isCheck ? `/launch/simplified/createprojectsimple` : '#'}}>
                 <CustomButton
                   text={'Confirm'}
                   func={() => {

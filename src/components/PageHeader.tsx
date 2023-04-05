@@ -34,6 +34,7 @@ export const PageHeader: FC<HeadProps> = ({
   return (
     <Container pt="70px" maxW={'100%'}>
       <Flex flexDir="column" alignItems="center" justifyContent="center">
+
         <Heading
           fontSize={'38px'}
           fontWeight={'bold'}

@@ -11,11 +11,13 @@ const DetailComponent = () => {
     const {vaults} = values;
     const publicVault = vaults[0] as VaultPublic;
   const details = [
-    {name: 'Funding Target', detail: `$ ${values.fundingTarget? (values.fundingTarget).toLocaleString():'0'}` },
-    {name: 'Current Market Cap', detail: `$ ${values.marketCap? (values.marketCap).toLocaleString():'0'}`},
-    {name: 'Total Supply', detail: `${values.totalSupply? (values.totalSupply).toLocaleString():'0'} ${values.tokenSymbol}`},
-    {name: 'Token Funding Price', detail: `${values.projectTokenPrice? (1/values.projectTokenPrice).toLocaleString():'0'} TON`},
-    {name: 'Token Listing Price (DEX)', detail: `${values.tosPrice !== 0? ( 1/values.tosPrice).toLocaleString():0} TOS`},
+    {name: 'Funding Target', detail: `$ ${values.fundingTarget? (values.fundingTarget).toLocaleString():'-'}` },
+    {name: 'Current Market Cap', detail: `$ ${values.marketCap? (values.marketCap).toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    }):'-0'}`},
+    {name: 'Total Supply', detail: `${values.totalSupply? (values.totalSupply).toLocaleString():'-'} ${values.tokenSymbol}`},
+    {name: 'Token Funding Price', detail: `${values.projectTokenPrice? (1/values.projectTokenPrice).toLocaleString():'-'} TON`},
+    {name: 'Token Listing Price (DEX)', detail: `${values.tosPrice !== 0? ( 1/values.tosPrice).toLocaleString():'-'} TOS`},
   ];
   return (
   <Flex mt="30px" flexDir={'column'}>
@@ -23,7 +25,7 @@ const DetailComponent = () => {
     return (
         <Flex key={index} w='100%' justifyContent={'space-between'} fontSize='12px' mb='9px'>
             <Text lineHeight={'16px'} fontWeight={500} color={colorMode==='dark'?'#9d9ea5':'#7e7e8f'}>{detail.name}</Text>
-            <Text lineHeight={'16px'} fontWeight={500} color={colorMode==='dark'?'white.200':'gray.375'}>{detail.detail}</Text>
+            <Text lineHeight={'16px'} fontWeight={'bold'} color={colorMode==='dark'?'white.200':'gray.375'}>{detail.detail}</Text>
         </Flex>
     )
 })}

@@ -31,6 +31,7 @@ const StepThree = (props: {currentStep: Number}) => {
   const [tonInDollars, setTonInDollars] = useState(0);
   const [tonPriceInTos, setTonPriceInTos] = useState(0);
   const {account, library} = useActiveWeb3React();
+  const [focus,setFocus] = useState(false)
 
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
@@ -97,85 +98,6 @@ const StepThree = (props: {currentStep: Number}) => {
     handleInput(option);
   };
 
-  // useEffect(() => {
-  //   const marketCap = values.marketCap;
-  //   const growth = values.growth;
-  //   const stablePrice = values.stablePrice
-  //   if (marketCap && growth && stablePrice) {
-  //     const totalSupply = parseInt(((marketCap * growth) / stablePrice).toString());
-  //     const tokenPriceinDollars = marketCap / totalSupply;
-  //     setFieldValue('totalSupply', totalSupply);
-  //     const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
-  //     const tonPriceInToken = 1 / tokenPriceInTon;
-  //     setFieldValue('salePrice', tonPriceInToken);
-  //     setFieldValue('projectTokenPrice', tonPriceInToken);
-  //     const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
-  //     const tosPriceInTokens = 1 / tokenPriceInTos;
-  //     setFieldValue('tosPrice', tosPriceInTokens);
-  //     const hardCap =
-  //     values.fundingTarget && values.fundingTarget / tonInDollars;
-
-  //     console.log('ddddd');
-
-  //   setFieldValue(`vaults[0].hardCap`, hardCap);
-
-  //   const publicAllocation = totalSupply * 0.3;
-
-  //   const rounds = values.vaults.map((vault, index) => {
-  //     const roundInfo = schedules(
-  //       vault.vaultName,
-  //       totalSupply,
-  //       publicVault.publicRound2End ? publicVault.publicRound2End : 0,
-  //     );
-
-  //     const tot = roundInfo.reduce(
-  //       (acc, round) => acc + round.claimTokenAllocation,
-  //       0,
-  //     );
-  //     //  const totalTokenAllocation =
-  //     setFieldValue(`vaults[${index}].claim`, roundInfo);
-  //     setFieldValue(`vaults[${index}].adminAddress`, account);
-  //     setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot-100);
-  //   });
-  //   setFieldValue('vaults[2].vaultTokenAllocation', 0);
-  //   setFieldValue('vaults[0].addressForReceiving', account);
-  //   setFieldValue('vaults[0].adminAddress', account);
-
-  //   setFieldValue('vaults[0].publicRound1Allocation', publicAllocation * 0.5);
-  //   setFieldValue('vaults[0].publicRound2Allocation', publicAllocation * 0.5);
-  //   setFieldValue(
-  //     'vaults[0].stosTier.fourTier.allocatedToken',
-  //     publicAllocation * 0.5 * 0.6,
-  //   );
-  //   setFieldValue(
-  //     'vaults[0].stosTier.oneTier.allocatedToken',
-  //     publicAllocation * 0.5 * 0.06,
-  //   );
-  //   setFieldValue(
-  //     'vaults[0].stosTier.threeTier.allocatedToken',
-  //     publicAllocation * 0.5 * 0.22,
-  //   );
-  //   setFieldValue(
-  //     'vaults[0].stosTier.twoTier.allocatedToken',
-  //     publicAllocation * 0.5 * 0.12,
-  //   );
-  //   setFieldValue(
-  //     'vaults[1].startTime',
-  //     publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
-  //   );
-  //   setFieldValue(
-  //     'vaults[0].claimStart',
-  //     publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
-  //   );
-
-  //   const sumTotalToken = vaults.reduce((acc, cur) => {
-  //     const {vaultTokenAllocation} = cur;
-  //     return vaultTokenAllocation + acc;
-  //   }, 0);
-  //   setFieldValue('totalTokenAllocation', sumTotalToken);
-
-  //   }
-  // },[])
 
   const handleInput = (option: number) => {
     setFieldValue('stablePrice', option);
@@ -269,7 +191,7 @@ const StepThree = (props: {currentStep: Number}) => {
     <Flex flexDir={'column'} alignItems={'flex-start'} h="142px">
       <Text
         fontSize={'14px'}
-        fontWeight={500}
+        fontWeight={'bold'}
         color={colorMode === 'dark' ? 'white.100' : 'gray.150'}
         mb="18px">
         What do you think is{' '}
@@ -285,11 +207,12 @@ const StepThree = (props: {currentStep: Number}) => {
             pl="15px"
             textAlign={'left'}
             fontSize={'13px'}
-            border={themeDesign.border[colorMode]}
+            border={colorMode === 'dark'? '1px solid #424242':'1px solid #dfe4ee'}
+            borderRadius={'4px'}
             {...MENU_STYLE.buttonStyle({colorMode})}
             w="115px"
             h="30px"
-            bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}>
+            bg={colorMode === 'dark' ? 'transparent' : '#ffffff'}>
             <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
               {option !== 'Other' && values.stablePrice
                 ? ` $ ${values.stablePrice.toLocaleString()}`
@@ -306,15 +229,18 @@ const StepThree = (props: {currentStep: Number}) => {
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             fontSize="13px"
             minWidth="115px">
-            <MenuItem onClick={() => setOption('')}>Select One...</MenuItem>
+            <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
+                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}  onClick={() => setOption('')}>Select One...</MenuItem>
             {prices.map((price: number, index: number) => {
               return (
-                <MenuItem key={index} onClick={() => handleSelect(price)}>
+                <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
+                color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}  key={index} onClick={() => handleSelect(price)}>
                   $ {price.toLocaleString()}
                 </MenuItem>
               );
             })}
-            <MenuItem color={'blue.300'} onClick={() => setOption('Other')}>
+            <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
+                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}  onClick={() => setOption('Other')}>
               Other
             </MenuItem>
           </MenuList>
@@ -325,10 +251,12 @@ const StepThree = (props: {currentStep: Number}) => {
             w="130px"
             alignItems={'center'}
             borderRadius="4px"
-            bg={colorMode === 'dark' ? 'transparent' : '#f9fafb'}
+            bg={ 'transparent'}
             border={
-              colorMode === 'dark' ? '1px solid #323232' : '1px solid #dfe4ee'
-            }
+              focus? '1px solid #2a72e5':  colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
+           }
+           onFocus={()=> setFocus(true)}
+           onBlur={()=> setFocus(false)}
             focusBorderColor={'#dfe4ee'}
             pl="15px"
             fontSize={'13px'}>

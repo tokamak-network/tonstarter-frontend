@@ -12,6 +12,7 @@ async function saveProject(data: any, account: string, modal?: boolean) {
   // const hasToken = localStorage.getItem('web3Token')
 
   // const token = await getWeb3Token();
+console.log('save project');
 
   const result = await axios
     .post(
@@ -45,6 +46,7 @@ async function editProject(
   uid: string,
   modal?: boolean,
 ) {
+  console.log('edit project',uid );
   const result = await axios
     .put(
       `${API_SERVER_LAUNCH}/projects?chainId=${DEFAULT_NETWORK}`,

@@ -111,6 +111,7 @@ const ProjectScreen = () => {
           color={colorMode === 'dark' ? '#fff' : '#3d495d'}
           fontFamily={theme.fonts.titil}
           fontSize={'38px'}
+          fontWeight={600}
           mb={'10px'}>
           Project
         </Text>

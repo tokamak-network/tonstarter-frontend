@@ -29,6 +29,7 @@ const Distribute = () => {
     useFormikContext<Projects['CreateSimplifiedProject']>();
   const vaults = values.vaults;
   const [notDeployedAll, setNotDeployedAll] = useState(false);
+  const [hasToken, setHasToken] = useState(false)
   // const []
   const ERC20_CONTRACT = useContract(values?.tokenAddress, TON.abi);
   const {account, library} = useActiveWeb3React();
@@ -44,36 +45,19 @@ const Distribute = () => {
     setNotDeployedAll(nonDeployedExists);
 
     async function fetchContractBalance() {
-      const res = await Promise.all(
-        vaults.map(async (vault: VaultCommon) => {
-          if (
-            ERC20_CONTRACT &&
-            vault?.vaultAddress &&
-            vault?.isDeployed === true && vault.vaultType !== 'Vesting'
-          ) {
-            const tokenBalance = await ERC20_CONTRACT.balanceOf(
-              vault.vaultAddress,
-            );                     
-
-            console.log(vault.vaultType, vault.vaultTokenAllocation,  Number(convertNumber({amount: tokenBalance.toString()})));
+      if (ERC20_CONTRACT && values.vaults[0].vaultAddress) {
+        const balance = await ERC20_CONTRACT.balanceOf(
+          values.vaults[0].vaultAddress,
+        );
+        if (Number(balance) > 0) {
+          setHasToken(true)
+        }
+        else {
+          setHasToken(false)
+        }
             
-            if (tokenBalance && vault.vaultTokenAllocation) {
-              const hasToken =
-               
-                Number(convertNumber({amount: tokenBalance.toString()})) >0;
-                
-              return hasToken;
-            }
-          } else {
-            return false;
-          }
-        }),
-      );
-      const hasTokenAll = res.indexOf(true) !== -1 
-      console.log('hasTokenAll',hasTokenAll,res);
-      
-      setNotDeployedAll(hasTokenAll)           
     }
+  }
     fetchContractBalance();
   }, [ERC20_CONTRACT, values, vaults]);
 
@@ -174,7 +158,7 @@ console.log('stringArray',stringArray);
           _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
 
           _hover={{}}
-          isDisabled={notDeployedAll}
+          isDisabled={notDeployedAll || hasToken}
           borderRadius={4}
           onClick={() => sendTokens()}>
           Distribute

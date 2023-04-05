@@ -232,7 +232,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path={`/starter/:id`} component={StarterDetail} />
           <Route exact path={`/launch`} component={OpenCampagin} />
           <Route exact path={`/launch/createproject`} component={MainScreen} />
-          <Route exact path={`/launch/createprojectsimple`} component={SimplifiedMainScreen} />
+          <Route exact path={`/launch/simplified/createprojectsimple`} component={SimplifiedMainScreen} />
           <Route
             exact
             path={`/launch/project/:name`}
