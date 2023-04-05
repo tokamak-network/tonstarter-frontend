@@ -477,13 +477,14 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Link>
               </GridItem>
               <GridItem
+             
                 border={themeDesign.border[colorMode]}
                 borderRight={'none'}
                 borderBottomLeftRadius={'4px'}
                 className={'chart-cell'}
                 pt={'15px'}
                 pb="15px"
-                h={now >= vault.publicRound2 ? '245px' : ''}>
+                h={now >= vault.publicRound2 ? '245px' : '245px'}>
                 <Flex flexDir={'column'} w="100%">
                   <Text mb={'12px'} fontSize={'13px'} fontWeight={600}>
                     Fund Initialization
@@ -832,7 +833,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 mr={'-1px'}
-                h={now >= vault.publicRound2 ? '245px' : ''}>
+                h={now >= vault.publicRound2 ? '245px' : '245px'}>
                 <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
@@ -950,11 +951,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                     }
                     borderTop="none"
                     h={
-                      now >= vault.publicRound2
-                        ? i === 6 - sTosTier.length - 1
+                       i === 6 - sTosTier.length - 1
                           ? '244px'
                           : ''
-                        : ''
+                        
                     }
                     borderLeft={'none'}
                     className={'chart-cell'}>

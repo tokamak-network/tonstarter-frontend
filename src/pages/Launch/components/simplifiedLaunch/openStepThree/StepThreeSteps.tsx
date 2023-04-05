@@ -293,7 +293,6 @@ const StepThreeSteps = (props: {
     );
   };
 
-  console.log('flowIndex',flowIndex);
   
   return (
     <Flex w="350px" alignItems={'center'} mt="41px">

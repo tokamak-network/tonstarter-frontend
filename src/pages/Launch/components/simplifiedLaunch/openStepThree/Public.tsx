@@ -117,7 +117,7 @@ const Public = (props: {step: string}) => {
         .format('YYYY.MM.DD HH:mm:ss')}`,
     },
     {
-      name: 'Public Round 1',
+      name: 'Public Round 2',
       value: `${moment
         .unix(Number(publicVault.publicRound2))
         .format('YYYY.MM.DD HH:mm:ss')}`,

@@ -682,10 +682,13 @@ async function deploy(
             library,
           );
 
-          const projectTokenPrice = values.tosPrice * 100;
+          const projectTokenPrice = truncNumber((values.tosPrice * 100),0);
           const vaultTokenAllocationWei = convertToWei(
             String(selectedVaultDetail?.vaultTokenAllocation),
           );
+
+          console.log('projectTokenPrice',projectTokenPrice);
+          
 
           const computePoolAddress =
             await InitialLiquidityVault_Contract.connect(
