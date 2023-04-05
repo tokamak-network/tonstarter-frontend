@@ -39,9 +39,16 @@ const StepComponent = (props: {
   const {step, setDisableForStep2, setDisableForStep1} = props;
   switch (step) {
     case 1:
-      return <OpenStepOneSimplified step={step} setDisableForStep1={setDisableForStep1}></OpenStepOneSimplified>;
+      return (
+        <OpenStepOneSimplified
+          step={step}
+          setDisableForStep1={setDisableForStep1}></OpenStepOneSimplified>
+      );
     case 2:
-      return <OpenStepTwoSimplified setDisableForStep2={setDisableForStep2}></OpenStepTwoSimplified>;
+      return (
+        <OpenStepTwoSimplified
+          setDisableForStep2={setDisableForStep2}></OpenStepTwoSimplified>
+      );
     case 3:
       return <OpenStepThreeSimplified></OpenStepThreeSimplified>;
     default:
@@ -80,7 +87,6 @@ const SimplifiedMainScreen = () => {
     history.push('/launch');
   }, [history]);
 
-
   useEffect(() => {
     //@ts-ignore
     const unBlock = history.block((loc, action) => {
@@ -99,7 +105,6 @@ const SimplifiedMainScreen = () => {
     );
   }, []);
 
-
   const handleStep = useCallback(
     (isNext: boolean) => {
       const prevStepNum =
@@ -115,14 +120,15 @@ const SimplifiedMainScreen = () => {
     if (isDisable) {
       return 'gray.25';
     }
-    return step === 1 && isExist !== 'createprojectsimple' && hashKey ? 'yellow.200' : '#00c3c4';
+    return step === 1 && isExist !== 'createprojectsimple' && hashKey
+      ? 'yellow.200'
+      : '#00c3c4';
   };
 
-  const handleSaveProject = (values: any, account: string, mode: boolean
-) => {  
+  const handleSaveProject = (values: any, account: string, mode: boolean) => {
     account && isExist === 'createprojectsimple' && hashKey === undefined
-    ? saveProject(values, account, mode)
-    : editProject(values, account as string, hashKey || isExist, mode);
+      ? saveProject(values, account, mode)
+      : editProject(values, account as string, hashKey || isExist, mode);
   };
 
   const handleSaveAndContinue = (values: any, account: string) => {
@@ -132,10 +138,10 @@ const SimplifiedMainScreen = () => {
     handleStep(true);
   };
 
-  const handleComplete = (values: any, account: string, mode: boolean)=> {
+  const handleComplete = (values: any, account: string, mode: boolean) => {
     editProject(values, account as string, hashKey || isExist);
     history.push('/launch');
-  }
+  };
 
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
@@ -164,7 +170,12 @@ const SimplifiedMainScreen = () => {
         initialValues={
           id && projects
             ? {...initialSimplifiedValues, ...projects[id]}
-            : {...initialSimplifiedValues, ownerAddress: account, owner: account,tokenOwnerAccount: account}
+            : {
+                ...initialSimplifiedValues,
+                ownerAddress: account,
+                owner: account,
+                tokenOwnerAccount: account,
+              }
         }
         validationSchema={ProjectSchema}
         validate={(values) => {
@@ -191,12 +202,13 @@ const SimplifiedMainScreen = () => {
           setSubmitting(false);
         }}>
         {({values, handleBlur, handleSubmit, isSubmitting, errors}) => {
-          
           if (Object.keys(errors).length !== 0) {
             setDisable(true);
           } else {
             setDisable(false);
           }
+          const isDeployed =
+            hashKey !== undefined && isExist !== 'createprojectsimple';
           return (
             <Form onSubmit={handleSubmit}>
               <Flex
@@ -208,43 +220,157 @@ const SimplifiedMainScreen = () => {
                   setDisableForStep1={setDisableForStep1}
                   setDisableForStep2={setDisableForStep2}
                 />
-                <Flex mt={'50px'} fontSize={14} justifyContent="center">
-                  {/* Step 1 && Project is Deployed */}
-                  {step === 1 && hashKey !== undefined && isExist !== 'createprojectsimple' ? (
-                    <ButtonGroup>
+                <Flex
+                  mt={'50px'}
+                  fontSize={14}
+                  justifyContent="center"
+                  mx={'25px'}>
+                  {!isDeployed && step === 1 && (
+                    <>
                       <ActionButton
-                        bgColor="#00c3c4"
-                        btnText="List"
-                        isDisabled={isSubmitting}
-                        color="white"
-                        onClick={() => navigateToLaunchPage()}
-                      />
-                      <ActionButton
-                        bgColor="yellow.200"
+                        bgColor={isDisable ? '#e9edf1' : '#00c3c4'}
                         btnText="Save"
+                        disabled={isDisable}
                         isDisabled={isSubmitting}
-                        marginRight={step === 1 ? '190px' : '558px'}
+                        marginRight={'404px'}
                         color={isDisable ? '#86929d' : 'white.100'}
                         onClick={() => handleSaveProject(values, account, true)}
                       />
-                    </ButtonGroup>
-                  ) : (
-                    /** Step 1 && Project is not yet deployed */ 
-                    <ActionButton
-                      bgColor={getSaveButtonColor()}
-                      btnText="Save"
-                      isDisabled={isSubmitting}
-                      disabled={
-                        (step === 1 && isDisable) ||
-                        saveBtnDisable
-                      }
-                      marginRight={step === 1 ? '390px' : '558px'}
-                      color={isDisable ? '#86929d' : 'white.100'}
-                      onClick={() => handleSaveProject(values, account, true)}
-                    />
+                      <ActionButton
+                        bgColor={isDisable ? '#e9edf1' : 'blue.500'}
+                        btnText="Save & Continue"
+                        disabled={isDisable || isDisableForStep1}
+                        color={isDisable ? '#86929d' : 'white.100'}
+                        onClick={() => handleSaveAndContinue(values, account)}
+                      />
+                    </>
                   )}
-                  <Flex>
-                    {step !== 1 && (
+                  {!isDeployed && step === 2 && (
+                    <>
+                      <ActionButton
+                        bgColor={isDisable ? '#e9edf1' : '#00c3c4'}
+                        btnText="Save"
+                        disabled={isDisable}
+                        isDisabled={isSubmitting}
+                        marginRight={'232px'}
+                        color={isDisable ? '#86929d' : '#fff'}
+                        onClick={() => handleSaveProject(values, account, true)}
+                      />
+                      <ButtonGroup>
+                        <ActionButton
+                          bgColor={'blue.500'}
+                          btnText="Prev"
+                          marginRight="12px"
+                          disabled={isSubmitting}
+                          color={'white.100'}
+                          onClick={() => handleStep(false)}
+                        />
+                        <ActionButton
+                          bgColor={isDisableForStep2 ? 'gray.25' : 'blue.500'}
+                          btnText="Save & Continue"
+                          disabled={isDisableForStep2}
+                          color={isDisableForStep2 ? '#86929d' : 'white.100'}
+                          onClick={() => handleSaveAndContinue(values, account)}
+                        />
+                      </ButtonGroup>
+                    </>
+                  )}
+                  {!isDeployed && step === 3 && (
+                    <>
+                      <ActionButton
+                        bgColor={isDisable ? '#e9edf1' : '#00c3c4'}
+                        btnText="Save"
+                        disabled={isDisable}
+                        isDisabled={isSubmitting}
+                        marginRight={'232px'}
+                        color={isDisable ? '#86929d' : '#fff'}
+                        onClick={() => handleSaveProject(values, account, true)}
+                      />
+                      <ButtonGroup>
+                        <ActionButton
+                          bgColor={'blue.500'}
+                          btnText="Prev"
+                          marginRight="12px"
+                          disabled={isSubmitting}
+                          color={'white.100'}
+                          onClick={() => handleStep(false)}
+                        />
+                        <ActionButton
+                          bgColor={isDisableForStep3 ? 'gray.25' : 'blue.500'}
+                          btnText="Complete & Go"
+                          disabled={isDisableForStep3}
+                          color={isDisableForStep2 ? '#86929d' : 'white.100'}
+                          onClick={() => handleSaveAndContinue(values, account)}
+                        />
+                      </ButtonGroup>
+                    </>
+                  )}
+                  {isDeployed && step === 1 && (
+                    <>
+                      <ButtonGroup>
+                        <ActionButton
+                          bgColor="#00c3c4"
+                          btnText="List"
+                          isDisabled={isSubmitting}
+                          color="white"
+                          onClick={() => navigateToLaunchPage()}
+                        />
+                        <ActionButton
+                          bgColor={isDisable ? '#e9edf1' : '#fecf05'}
+                          btnText="Save"
+                          isDisabled={isSubmitting}
+                          marginRight={'224px'}
+                          color={isDisable ? '#86929d' : '#000'}
+                          onClick={() =>
+                            handleSaveProject(values, account, true)
+                          }
+                        />
+                      </ButtonGroup>
+                      <ActionButton
+                        bgColor={'blue.500'}
+                        btnText="Next"
+                        color={'white.100'}
+                        onClick={() => handleSaveAndContinue(values, account)}
+                      />
+                    </>
+                  )}
+                  {isDeployed && step === 2 && (
+                    <>
+                      {/* onClick to go to list */}
+                      <ActionButton
+                        bgColor={'#00c3c4'}
+                        btnText="List"
+                        marginRight={'232px'}
+                        color={'#fff'}
+                        onClick={() => navigateToLaunchPage()}
+                      />
+                      <ButtonGroup>
+                        <ActionButton
+                          bgColor={'blue.500'}
+                          btnText="Prev"
+                          marginRight="12px"
+                          disabled={isSubmitting}
+                          color={'white.100'}
+                          onClick={() => handleStep(false)}
+                        />
+                        <ActionButton
+                          bgColor={'blue.500'}
+                          btnText="Next"
+                          color={'white.100'}
+                          onClick={() => handleSaveAndContinue(values, account)}
+                        />
+                      </ButtonGroup>
+                    </>
+                  )}
+                  {isDeployed && step === 3 && (
+                    <>
+                      <ActionButton
+                        bgColor={'#00c3c4'}
+                        btnText="List"
+                        marginRight={'404px'}
+                        color={'#fff'}
+                        onClick={() => navigateToLaunchPage()}
+                      />
                       <ActionButton
                         bgColor={'blue.500'}
                         btnText="Prev"
@@ -253,35 +379,8 @@ const SimplifiedMainScreen = () => {
                         color={'white.100'}
                         onClick={() => handleStep(false)}
                       />
-                    )}
-                    {step === 1 && (
-                      <ActionButton
-                        bgColor={isDisable ? 'gray.25' : 'blue.500'}
-                        btnText="Save & Continue"
-                        disabled={isDisable || isDisableForStep1}
-                        color={isDisable ? '#86929d' : 'white.100'}
-                        onClick={() => handleSaveAndContinue(values, account)}
-                      />
-                    )}
-                    {step === 2 && (
-                      <ActionButton
-                        bgColor={isDisableForStep2 ? 'gray.25' : 'blue.500'}
-                        btnText="Save & Continue"
-                        disabled={isDisableForStep2}
-                        color={isDisableForStep2 ? '#86929d' : 'white.100'}
-                        onClick={() => handleSaveAndContinue(values, account)}
-                      />
-                    )}
-                    {step === 3 && (
-                       <ActionButton
-                       bgColor={'blue.500'}
-                       btnText="Complete & Go"
-                       disabled={isDisableForStep3}
-                       color={'white.100'}
-                       onClick={() =>  handleComplete(values, account,true)}
-                     />
-                    )}
-                  </Flex>
+                    </>
+                  )}
                 </Flex>
               </Flex>
             </Form>
