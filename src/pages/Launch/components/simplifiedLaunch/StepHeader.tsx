@@ -3,12 +3,9 @@ import {
   useColorMode,
   Text,
   useTheme,
-  Image,
-  Link,
   Grid,
   GridItem,
 } from '@chakra-ui/react';
-import iconUserGuide from 'assets/images/iconUserGuide.png';
 import CountDown from './openStepThree/CountDown';
 import {useFormikContext} from 'formik';
 import {Projects, VaultAny} from '@Launch/types';
@@ -75,6 +72,7 @@ const StepHeader = (props: {
       alignItems={'center'}
       borderBottom={'1px'}
       px="35px"
+      fontWeight={600}
       borderColor={colorMode === 'dark' ? '#373737' : '#f4f6f8'}>
       <GridItem justifyContent={'center'}>
         <Flex alignItems={'center'}>
@@ -84,20 +82,6 @@ const StepHeader = (props: {
             color={colorMode === 'dark' ? 'white.100' : 'black.300'}>
             {title}
           </Text>
-          <Image ml="21px" src={iconUserGuide} w="18px" h="18px"></Image>
-          <Link
-            isExternal
-            ml="6px"
-            fontSize={'13px'}
-            fontFamily={'Titillium Web, sans-serif'}
-            color={colorMode === 'dark' ? 'gray.475' : 'gray.400'}
-            href={
-              'https://tokamaknetwork.gitbook.io/home/02-service-guide/tosv2'
-            }
-            cursor="pointer">
-            {' '}
-            User Guide
-          </Link>
         </Flex>
       </GridItem>
       {deploySteps && (

@@ -57,7 +57,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = (props) => {
             {/* Dot */}
             <Box
               borderRadius={18}
-              bg={isStep ? '#2ea1f8' : 'transparent'}
+              bg={isStep ? '#0070ed' : 'transparent'}
               w={'8px'}
               h={'8px'}
               alignItems="center"
@@ -67,20 +67,20 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = (props) => {
                   ? ''
                   : colorMode === 'light'
                   ? 'solid 1px #e6eaee'
-                  : 'solid 1px #373737'
+                  : 'solid 1px #353d48'
               }></Box>
             {/* Line */}
             {index < 6 && {step} && (
               <Box
                 w={getLineWidth()}
                 h={'2px'}
-                bg={isStep ? '#2ea1f8' : 'transparent'}
+                bg={isStep && pastStep ? '#0070ed' : colorMode === 'light' ? '#e7edf3' : '#353d48'}
                 border={
                   isStep
                     ? ''
                     : colorMode === 'light'
-                    ? 'solid 1px #e6eaee'
-                    : 'solid 1px #373737'
+                    ? 'solid 1px #e7edf3'
+                    : 'solid 1px #353d48'
                 }></Box>
             )}
           </Flex>

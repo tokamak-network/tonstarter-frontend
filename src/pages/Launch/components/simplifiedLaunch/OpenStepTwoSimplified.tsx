@@ -7,7 +7,6 @@ import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import { useFormikContext } from 'formik';
 import {Projects} from '@Launch/types';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAction<boolean>>;}) => {
   const {colorMode} = useColorMode();
@@ -20,7 +19,7 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
     setDisableForStep2(!validation);
     
   }, [values, setDisableForStep2]);
-  
+
   return (
     <Flex
       w="774px"

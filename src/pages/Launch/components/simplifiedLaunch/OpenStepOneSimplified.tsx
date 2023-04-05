@@ -1,14 +1,15 @@
 import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useFormikContext} from 'formik';
-import {Projects} from '@Launch/types';
+import {Projects, VaultPublic} from '@Launch/types';
 import {testValue} from '@Launch/utils/testValue';
 import {LaunchSchedule} from '../common/simplifiedUI/LaunchSchedule';
 import {TokenImageInput} from '../common/simplifiedUI/TokenImageInput';
 import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
+import RescheduleModal from '../common/simplifiedUI/Reschedule';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -22,6 +23,7 @@ const OpenStepOneSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const {values, setValues} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
+  let timeLeftToDeploy = 0;
     
 
   useEffect(() => {
@@ -35,6 +37,21 @@ const OpenStepOneSimplified = (props: any) => {
     setDisableForStep1(!validation);
   }, [values, setDisableForStep1]);
 
+  useEffect(() => {
+   
+    const publicVault = values.vaults[0] as VaultPublic;
+    const snapshot = publicVault.snapshot;
+    console.log('snapshot', snapshot);
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    console.log('current time', currentTime);
+
+    if(snapshot) {
+      timeLeftToDeploy = Math.floor((snapshot - currentTime)/60)
+      console.log('timeLeftToDeploy', timeLeftToDeploy)
+    }
+  }, [values])
+
   return (
     <Flex
       w={'774px'}
@@ -43,6 +60,7 @@ const OpenStepOneSimplified = (props: any) => {
       border={colorMode === 'light' ? '' : '1px solid #373737'}
       flexDir="column">
       <StepHeader deploySteps={false} title={'Project & Token'}/>
+      <RescheduleModal time={timeLeftToDeploy}/>
       <Grid px={'35px'} pb={'35px'}>
           <Flex fontSize={12} mt={'14px'} ml={'615px'}>
             <Text mr={'5px'} color={'#FF3B3B'}>
