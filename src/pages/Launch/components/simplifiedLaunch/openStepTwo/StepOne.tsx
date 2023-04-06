@@ -103,80 +103,81 @@ const [focus,setFocus] = useState(false)
     const marketCap = option / 0.3;
     setFieldValue('fundingTarget', option);
     setFieldValue('marketCap', option / 0.3);
-    if (values.totalSupply && values.growth && values.stablePrice) {
-      // const totalSupply = values.totalSupply;
-      const growth = values.growth;
-      const stablePrice = values.stablePrice;
-      const totalSupply = parseInt(
-        ((marketCap * growth) / stablePrice).toString(),
-      );   
+    
+    // if (values.totalSupply && values.growth && values.stablePrice) {
+    //   // const totalSupply = values.totalSupply;
+    //   const growth = values.growth;
+    //   const stablePrice = values.stablePrice;
+    //   const totalSupply = parseInt(
+    //     ((marketCap * growth) / stablePrice).toString(),
+    //   );   
                
-      setFieldValue('totalSupply', totalSupply);
-      const tokenPriceinDollars = marketCap / totalSupply;      
-      const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
-      const tonPriceInToken = 1 / tokenPriceInTon;
-      setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
-      setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
-      const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
-      const tosPriceInTokens = 1 / tokenPriceInTos;
-      setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
-      const hardCap =
-      values.fundingTarget && values.fundingTarget / tonInDollars;
-    setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
+    //   setFieldValue('totalSupply', totalSupply);
+    //   const tokenPriceinDollars = marketCap / totalSupply;      
+    //   const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
+    //   const tonPriceInToken = 1 / tokenPriceInTon;
+    //   setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
+    //   setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
+    //   const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
+    //   const tosPriceInTokens = 1 / tokenPriceInTos;
+    //   setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
+    //   const hardCap =
+    //   values.fundingTarget && values.fundingTarget / tonInDollars;
+    // setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
 
-    const publicAllocation = parseInt((totalSupply * 0.3).toString());
+    // const publicAllocation = parseInt((totalSupply * 0.3).toString());
 
-    const rounds = values.vaults.map((vault, index) => {
-      const roundInfo = schedules(
-        vault.vaultName,
-        totalSupply,
-        publicVault.publicRound2End ? publicVault.publicRound2End : 0,
-      );
+    // const rounds = values.vaults.map((vault, index) => {
+    //   const roundInfo = schedules(
+    //     vault.vaultName,
+    //     totalSupply,
+    //     publicVault.publicRound2End ? publicVault.publicRound2End : 0,
+    //   );
 
-      // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
+    //   // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
 
-      const tot = roundInfo.reduce(
-        (acc, round) => acc + round.claimTokenAllocation,
-        0,
-      );
-      //  const totalTokenAllocation =
-      setFieldValue(`vaults[${index}].claim`, roundInfo);
-      setFieldValue(`vaults[${index}].adminAddress`, account);
-      setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
-      return tot;
-    });
-    setFieldValue('vaults[2].vaultTokenAllocation', 0);
-      setFieldValue('vaults[0].addressForReceiving', account);
-      setFieldValue('vaults[0].adminAddress', account);
-      const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
-      const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);
-      const tier3 = truncNumber(publicAllocation * 0.5 * 0.22, 0);
-      const tier4 = truncNumber(publicAllocation * 0.5 * 0.6, 0);
+    //   const tot = roundInfo.reduce(
+    //     (acc, round) => acc + round.claimTokenAllocation,
+    //     0,
+    //   );
+    //   //  const totalTokenAllocation =
+    //   setFieldValue(`vaults[${index}].claim`, roundInfo);
+    //   setFieldValue(`vaults[${index}].adminAddress`, account);
+    //   setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
+    //   return tot;
+    // });
+    // setFieldValue('vaults[2].vaultTokenAllocation', 0);
+    //   setFieldValue('vaults[0].addressForReceiving', account);
+    //   setFieldValue('vaults[0].adminAddress', account);
+    //   const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
+    //   const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);
+    //   const tier3 = truncNumber(publicAllocation * 0.5 * 0.22, 0);
+    //   const tier4 = truncNumber(publicAllocation * 0.5 * 0.6, 0);
 
-      const public1All = tier1 + tier2 + tier3 + tier4;
+    //   const public1All = tier1 + tier2 + tier3 + tier4;
 
-      setFieldValue('vaults[0].stosTier.fourTier.allocatedToken', tier4);
-      setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', tier1);
-      setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
-      setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
-      setFieldValue('vaults[0].publicRound1Allocation', public1All);
-      setFieldValue('vaults[0].publicRound2Allocation',publicAllocation - public1All );
+    //   setFieldValue('vaults[0].stosTier.fourTier.allocatedToken', tier4);
+    //   setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', tier1);
+    //   setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
+    //   setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
+    //   setFieldValue('vaults[0].publicRound1Allocation', public1All);
+    //   setFieldValue('vaults[0].publicRound2Allocation',publicAllocation - public1All );
       
-      setFieldValue(
-        'vaults[1].startTime',
-        publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
-      );
-      setFieldValue(
-        'vaults[0].claimStart',
-        publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
-      );
+    //   setFieldValue(
+    //     'vaults[1].startTime',
+    //     publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+    //   );
+    //   setFieldValue(
+    //     'vaults[0].claimStart',
+    //     publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+    //   );
 
-      const mainVaults = rounds.splice(2, 1);
+    //   const mainVaults = rounds.splice(2, 1);
 
-      const sumTotalToken = rounds.reduce((partialSum, a) => partialSum + a, 0);
+    //   const sumTotalToken = rounds.reduce((partialSum, a) => partialSum + a, 0);
 
-      setFieldValue('totalTokenAllocation', sumTotalToken);
-    }
+    //   setFieldValue('totalTokenAllocation', sumTotalToken);
+    // }
   };
 
   return (
