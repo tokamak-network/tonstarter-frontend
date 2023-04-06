@@ -10,10 +10,10 @@ import {
   NumberInput,
   NumberInputField,
 } from '@chakra-ui/react';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useMemo} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
-import {Projects,VaultPublic} from '@Launch/types';
+import {Projects, VaultPublic} from '@Launch/types';
 import {fetchUsdPriceURL, fetchTonPriceURL} from 'constants/index';
 import {fetchPoolPayload} from '@Launch/utils/fetchPoolPayload';
 import {useActiveWeb3React} from 'hooks/useWeb3';
@@ -24,29 +24,39 @@ const StepTwo = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {MENU_STYLE} = theme;
-  const [option, setOption] = useState('');
+  const [option, setOption] = useState({
+    totalSupply: '',
+    fundingPrice: '',
+  });
   const [tonInDollars, setTonInDollars] = useState(0);
   const [tonPriceInTos, setTonPriceInTos] = useState(0);
   const {account, library} = useActiveWeb3React();
-  const [focus,setFocus] = useState(false)
-
+  const [focus, setFocus] = useState(false);
+  const [fundPrice, setFundPrice] = useState(0);
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-    const {vaults} = values;
-    const publicVault = vaults[0] as VaultPublic;
+  const {vaults} = values;
+  const publicVault = vaults[0] as VaultPublic;
 
+  const getPrices = useMemo(() => {
+    const fundingTarget = values.fundingTarget;
+    const totalSupply = [
+      10000000, 100000000, 1000000000, 10000000000, 100000000000,
+    ];
+    const opts: any = totalSupply.map((amount: number, index: number) => {
+      
+      return {
+        totalSupply: amount,
+        fundingPrice: fundingTarget
+          ? truncNumber(fundingTarget / (amount * 0.3), 6)
+          : 0,
+      };
+    });
 
+    return opts;
+  }, [values.fundingTarget]);
 
-  const buttonStatus = (option: string) => {
-    switch (option) {
-      case '':
-        return 'Select One..';
-      case 'Other':
-        return 'Other';
-      default:
-        return ` $ ${Number(option).toLocaleString()}`;
-    }
-  };
+  const prices = [10, 50, 100];
 
   useEffect(() => {
     async function getTonPrice() {
@@ -73,54 +83,90 @@ const StepTwo = () => {
     getTonPrice();
   }, [library, values.vaults[0], option]);
 
-  const handleSelect = (option: number) => {
-    setOption(option.toString());
-    handleInput(option);
-   
+  const buttonStatus = (option: any) => {
+    switch (option.totalSupply) {
+      case '':
+        return 'Select One..';
+      case 'Other':
+        return 'Other';
+      default:
+        return `  ${Number(option.totalSupply).toLocaleString()} ${
+          values.tokenSymbol
+        } $ ${option.fundingPrice}/ ${values.tokenSymbol}`;
+    }
   };
-  const handleInput = (option: number) => {
-    setFieldValue('growth', option);
-    if (values.marketCap && values.totalSupply && values.stablePrice) {
-      const growth = option;
-      const stablePrice = values.stablePrice;
-      const marketCap = values.marketCap
-      const totalSupply = parseInt(
-        ((marketCap * growth) / stablePrice).toString(),
-      );   
-      setFieldValue('totalSupply', totalSupply);
-      const tokenPriceinDollars = marketCap / totalSupply;      
+
+  const handleSelect = (option: any) => {
+    setOption({
+      totalSupply: option.totalSupply.toString(),
+      fundingPrice: option.fundingPrice.toString(),
+    });
+
+    setFundPrice(option.fundingPrice);
+    handleInput(option);
+  };
+
+  const handleInput = (opt: any) => {
+    const totalSupply = opt.totalSupply;
+    const fundingPrice = opt.fundingPrice;
+    setFundPrice(opt.fundingPrice);
+    setFieldValue('totalSupply', parseInt(opt.totalSupply));
+    setFieldValue('stablePrice', fundingPrice )
+    const marketCap = values.marketCap;
+
+    if (marketCap) {
+      const tokenPriceinDollars = fundingPrice;
+
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
+      console.log('tokenPriceInTon',tokenPriceInTon);
+      
       const tonPriceInToken = 1 / tokenPriceInTon;
+      console.log('tonPriceInToken',tonPriceInToken);
+      
       setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
       setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
       const tosPriceInTokens = 1 / tokenPriceInTos;
       setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
       const hardCap =
-      values.fundingTarget && values.fundingTarget / tonInDollars;
-    setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
+        values.fundingTarget && values.fundingTarget / tonInDollars;
+      setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
+      const publicAllocation = parseInt((totalSupply * 0.3).toString());
 
-    const publicAllocation = parseInt((totalSupply * 0.3).toString());
+      const rounds = values.vaults.map((vault, index) => {
+        const roundInfo = schedules(
+          vault.vaultName,
+          totalSupply,
+          publicVault.publicRound2End ? publicVault.publicRound2End : 0,
+        );
 
-    const rounds = values.vaults.map((vault, index) => {
-      const roundInfo = schedules(
-        vault.vaultName,
-        totalSupply,
-        publicVault.publicRound2End ? publicVault.publicRound2End : 0,
-      );
+        // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
 
-      const tot = roundInfo.reduce(
-        (acc, round) => acc + round.claimTokenAllocation,
-        0,
-      );
-      setFieldValue(`vaults[${index}].claim`, roundInfo);
-      setFieldValue(`vaults[${index}].adminAddress`, account);
-      setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
-      return tot;
-    });
-    setFieldValue('vaults[2].vaultTokenAllocation', 0);
+        const tot = roundInfo.reduce(
+          (acc, round) => acc + round.claimTokenAllocation,
+          0,
+        );
+        //  const totalTokenAllocation =
+        setFieldValue(`vaults[${index}].claim`, roundInfo);
+        setFieldValue(`vaults[${index}].adminAddress`, account);
+        setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
+        return tot;
+      });
+
+      setFieldValue('vaults[2].vaultTokenAllocation', 0);
       setFieldValue('vaults[0].addressForReceiving', account);
       setFieldValue('vaults[0].adminAddress', account);
+
+      // setFieldValue(
+      //   'vaults[0].publicRound1Allocation',
+      //   Number(parseInt((publicAllocation * 0.5).toString())),
+      // );
+      // setFieldValue(
+      //   'vaults[0].publicRound2Allocation',
+      //   publicAllocation -
+      //     Number(parseInt((publicAllocation * 0.5).toString())),
+      // );
+
       const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
       const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);
       const tier3 = truncNumber(publicAllocation * 0.5 * 0.22, 0);
@@ -133,8 +179,11 @@ const StepTwo = () => {
       setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
       setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
       setFieldValue('vaults[0].publicRound1Allocation', public1All);
-      setFieldValue('vaults[0].publicRound2Allocation',publicAllocation - public1All );
-      
+      setFieldValue(
+        'vaults[0].publicRound2Allocation',
+        publicAllocation - public1All,
+      );
+
       setFieldValue(
         'vaults[1].startTime',
         publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
@@ -150,7 +199,7 @@ const StepTwo = () => {
 
       setFieldValue('totalTokenAllocation', sumTotalToken);
     }
-  }
+  };
 
   const themeDesign = {
     border: {
@@ -171,33 +220,39 @@ const StepTwo = () => {
     },
   };
 
-  const prices = [10, 50, 100];
   return (
-    <Flex flexDir={'column'} alignItems={'flex-start'} h="142px">
+    <Flex flexDir={'column'} alignItems={'flex-start'} h="150px">
       <Text
         fontSize={'14px'}
         fontWeight={'bold'}
         color={colorMode === 'dark' ? 'white.100' : 'gray.150'}
         mb="18px">
-        Once your project has passed its growth phase and is stabilizing,{' '}
-        <span style={{color: '#2a72e5'}}>how many times </span>its current value
-        do you aim to grow to?
+        Select your ,{' '}
+        <span style={{color: '#2a72e5'}}>
+          Total Supply &amp; Token Funding Price
+        </span>
       </Text>
-      <Flex>
+      <Flex flexDir={'column'}>
         <Menu>
           <MenuButton
             pl="15px"
             textAlign={'left'}
             fontSize={'13px'}
-            border={colorMode === 'dark'? '1px solid #424242':'1px solid #dfe4ee'}
+            border={
+              colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
+            }
             borderRadius={'4px'}
             {...MENU_STYLE.buttonStyle({colorMode})}
-            w="115px"
+            w="264px"
             h="30px"
             bg={colorMode === 'dark' ? 'transparent' : '#ffffff'}>
             <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-              {option !== 'Other' && values.growth
-                ? ` ${values.growth.toLocaleString()} times`
+              {option.totalSupply !== 'Other' && values.totalSupply && values.stablePrice
+                ? ` ${values.totalSupply.toLocaleString()} ${
+                    values.tokenSymbol
+                  } $ ${(values.stablePrice).toLocaleString(undefined, {
+                    minimumFractionDigits: 5,
+                  })}/ ${values.tokenSymbol}`
                 : buttonStatus(option)}
               <span>
                 {' '}
@@ -209,60 +264,92 @@ const StepTwo = () => {
             zIndex={10000}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             fontSize="13px"
-            minWidth="115px">
-            <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
-                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}  onClick={() => setOption('')}>Select One...</MenuItem>
-            {prices.map((price: number, index: number) => {
+            minWidth="264px">
+            <MenuItem
+              _hover={{color: '#2a72e5', bg: 'transparent'}}
+              color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+              onClick={() => setOption({totalSupply: '', fundingPrice: ''})}>
+              Select One...
+            </MenuItem>
+            {getPrices.map((price: any, index: number) => {
+              
               return (
-                <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
-                color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}  key={index} onClick={() => handleSelect(price)}>
-                  {price.toLocaleString()} times
+                <MenuItem
+                  _hover={{color: '#2a72e5', bg: 'transparent'}}
+                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+                  key={index}
+                  onClick={() => handleSelect(price)}>
+                  {`${price.totalSupply.toLocaleString()} ${
+                    values.tokenSymbol
+                  } $ ${price.fundingPrice}/ ${values.tokenSymbol}`}
                 </MenuItem>
               );
             })}
-            <MenuItem _hover={{color: '#2a72e5', bg: 'transparent'}}
-                  color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}   onClick={() => setOption('Other')}>
+            <MenuItem
+              _hover={{color: '#2a72e5', bg: 'transparent'}}
+              color={colorMode === 'light' ? '#3e495c' : '#f3f4f1'}
+              onClick={() =>
+                setOption({totalSupply: 'Other', fundingPrice: ''})
+              }>
               Other
             </MenuItem>
           </MenuList>
         </Menu>
-        {option === 'Other' ? (
-          <Flex
-            h="30px"
-            w="130px"
-            alignItems={'center'}
-            borderRadius="4px"
-            bg={ 'transparent'}
-            border={
-              focus? '1px solid #2a72e5':  colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
-           }
-           onFocus={()=> setFocus(true)}
-           onBlur={()=> setFocus(false)}
-            focusBorderColor={'#dfe4ee'}
-            pr="15px"
-            fontSize={'13px'}>
-            <NumberInput>
-              <NumberInputField
-                onKeyDown={(e) => {
-                  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                    e.preventDefault();
-                  }
-                }}
-                h="30px"
-                placeholder={'0'}
-                fontSize={'13px'}
-                border="none"
-                onBlur={() => {}}
-                pr="5px"
-                step={0}
-                value={values.growth}
-                onChange={(e) => {
-                   handleInput(parseInt(e.target.value))
-                }}
-                textAlign={'right'}
-                _focus={{}}></NumberInputField>
-            </NumberInput>
-            <Text>times</Text>
+        {option.totalSupply === 'Other' ? (
+          <Flex mt="9px" h="30px" alignItems={'center'}>
+            <Flex
+              h="30px"
+              w="151px"
+              alignItems={'center'}
+              borderRadius="4px"
+              bg={'transparent'}
+              border={
+                focus
+                  ? '1px solid #2a72e5'
+                  : colorMode === 'dark'
+                  ? '1px solid #424242'
+                  : '1px solid #dfe4ee'
+              }
+              onFocus={() => setFocus(true)}
+              onBlur={() => setFocus(false)}
+              focusBorderColor={'#dfe4ee'}
+              pr="15px"
+              fontSize={'13px'}>
+              <NumberInput>
+                <NumberInputField
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                      e.preventDefault();
+                    }
+                  }}
+                  h="30px"
+                  placeholder={'0'}
+                  fontSize={'13px'}
+                  border="none"
+                  onBlur={() => {}}
+                  pr="5px"
+                  step={0}
+                  value={values.totalSupply?.toLocaleString()}
+                  onChange={(e) => {
+                    handleInput({
+                      totalSupply: parseInt(e.target.value),
+                      fundingPrice: values.fundingTarget
+                        ? values.fundingTarget /
+                          (parseInt(e.target.value) * 0.3)
+                        : 0,
+                    });
+                  }}
+                  textAlign={'right'}
+                  _focus={{}}></NumberInputField>
+              </NumberInput>
+              <Text>{values.tokenSymbol}</Text>
+            </Flex>
+            <Text
+              ml="9px"
+              color={colorMode === 'dark' ? '#9d9ea5' : '#7e7e8f'}
+              fontSize="13px">
+              ${truncNumber(fundPrice, 5)}/{values.tokenSymbol}
+            </Text>
           </Flex>
         ) : (
           <></>

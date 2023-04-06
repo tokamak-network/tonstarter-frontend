@@ -255,6 +255,7 @@ export const StarterDetail = () => {
 .ql-bubble .ql-editor a {
   color: #2a72e5 !important
 }`;
+
   return (
     <Flex mt={'122px'} w={'100%'} justifyContent="center" mb={'100px'}>
       <Flex w="1194px" flexDir="column" mb={'10px'}>

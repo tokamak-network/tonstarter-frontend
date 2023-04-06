@@ -221,7 +221,7 @@ type ChainNumber = 1 | 4;
 
 type StepNumber = 1 | 2 | 3;
 
-type TEconomyStepNumber = 0 | 1 | 2 | 3;
+type TEconomyStepNumber = 0 | 1 | 2 ;
 
 type PublicTokenColData = {
   firstColData: [

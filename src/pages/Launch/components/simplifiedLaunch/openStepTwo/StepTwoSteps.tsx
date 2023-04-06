@@ -34,7 +34,7 @@ const StepTwoSteps: React.FC<StepTwoStepsProps> = (props) => {
                   ? '1px solid #353d48'
                   : '1px solid #e6eaee'
               }></Flex>
-            {index !== 3 ? (
+            {index !== 2 ? (
               <Flex
                 w="12px"
                 h="2px"

@@ -17,13 +17,12 @@ const StepFour = () => {
     useFormikContext<Projects['CreateSimplifiedProject']>();
     const [focus,setFocus] = useState(false)
 
-  const handleInput = (e: number) => {
-    
-    setFieldValue('tosPrice',truncNumber(1/e,2))
+  const handleInput = (e: number) => {    
+    setFieldValue('tosPrice',truncNumber(1/e,3))
   };
   
   return (
-    <Flex flexDir={'column'} mb={'15px'} alignItems={'flex-start'}>
+    <Flex flexDir={'column'}  alignItems={'flex-start'} h='150px'>
       {' '}
       <Text
         fontSize={'14px'}
@@ -61,7 +60,7 @@ const StepFour = () => {
             pr="5px"
             textAlign={'right'}
             _focus={{}}
-            value={values.tosPrice? (1/values.tosPrice).toLocaleString(): '0'}
+            value={values.tosPrice? (1/values.tosPrice): '0'}
             onChange={(e) => {
               handleInput(parseInt(e.target.value));
             }}></NumberInputField>
