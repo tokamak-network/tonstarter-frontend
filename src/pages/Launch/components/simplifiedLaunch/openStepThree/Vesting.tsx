@@ -6,7 +6,7 @@ import {
   Button,
   Link,
 } from '@chakra-ui/react';
-import {useEffect, useState, useCallback} from 'react';
+import {useEffect, useState, useCallback, useMemo} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects, VaultCommon, VaultPublic} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
@@ -132,6 +132,30 @@ const Vesting = (props: {step: string}) => {
     },
   ];
 
+  const buttonStatus = useMemo(() => {
+    const status =
+      step === 'Deploy'
+        ? values.isTokenDeployed === false ||
+          vestingVault.vaultAddress !== undefined ||
+          values.vaults[1].isDeployed === false
+          ? true
+          : false
+        : vestingVault.isSet === true ||
+          !hasToken ||
+          values.vaults[1].isSet === false
+        ? true
+        : false;
+
+    return status;
+  }, [
+    step,
+    values.isTokenDeployed,
+    values.vaults,
+    vestingVault.vaultAddress,
+    vestingVault.isSet,
+    hasToken,
+  ]);
+
   return (
     <Flex
       mt="30px"
@@ -166,7 +190,7 @@ const Vesting = (props: {step: string}) => {
           height: '440px',
           display: 'flex',
           position: 'relative',
-         
+
           justifyContent: 'center',
         }}
         thumbSize={70}
@@ -219,7 +243,10 @@ const Vesting = (props: {step: string}) => {
                         ? `https://etherscan.io/address/${detail.value}`
                         : ''
                     }
-                    _hover={{color: '#2a72e5', textDecoration:detail.value ? 'underline':''}}>
+                    _hover={{
+                      color: '#2a72e5',
+                      textDecoration: detail.value ? 'underline' : '',
+                    }}>
                     {detail.value ? shortenAddress(detail.value) : 'NA'}
                   </Link>
                 ) : (
@@ -310,22 +337,14 @@ const Vesting = (props: {step: string}) => {
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
-          _hover={{}}
-          isDisabled={
-            step === 'Deploy'
-            ? values.isTokenDeployed ===  false || vestingVault.vaultAddress !== undefined
-            ? true
-            : false
-              : vestingVault.isSet === true ||
-                vestingVault.vaultAddress === undefined
-              ? true
-              : false
-          }
+          _active={buttonStatus ? {} : {bg: '#2a72e5'}}
+          _hover={buttonStatus ? {} : {bg: '#2a72e5'}}
           _disabled={{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',
           }}
+          isDisabled={buttonStatus}
           onClick={() => {
             vaultDeploy();
           }}

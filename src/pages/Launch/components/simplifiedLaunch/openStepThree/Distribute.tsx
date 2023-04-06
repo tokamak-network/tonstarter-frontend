@@ -29,7 +29,7 @@ const Distribute = () => {
     useFormikContext<Projects['CreateSimplifiedProject']>();
   const vaults = values.vaults;
   const [notDeployedAll, setNotDeployedAll] = useState(false);
-  const [hasToken, setHasToken] = useState(false)
+  const [hasToken, setHasToken] = useState(false);
   // const []
   const ERC20_CONTRACT = useContract(values?.tokenAddress, TON.abi);
   const {account, library} = useActiveWeb3React();
@@ -42,7 +42,7 @@ const Distribute = () => {
     });
 
     const nonDeployedExists = isDeployed.indexOf(false) !== -1;
-    setFieldValue('isAllDeployed', !nonDeployedExists)
+    setFieldValue('isAllDeployed', !nonDeployedExists);
     setNotDeployedAll(nonDeployedExists);
 
     async function fetchContractBalance() {
@@ -51,14 +51,12 @@ const Distribute = () => {
           values.vaults[0].vaultAddress,
         );
         if (Number(balance) > 0) {
-          setHasToken(true)
+          setHasToken(true);
+        } else {
+          setHasToken(false);
         }
-        else {
-          setHasToken(false)
-        }
-            
+      }
     }
-  }
     fetchContractBalance();
   }, [ERC20_CONTRACT, values, vaults]);
 
@@ -86,8 +84,7 @@ const Distribute = () => {
         );
       });
 
-      console.log('params',params);
-      
+      console.log('params', params);
 
       const totalAmount = deployedVaults.reduce(
         (accumulator, vault) => accumulator + vault.vaultTokenAllocation,
@@ -99,9 +96,9 @@ const Distribute = () => {
       const stringArray = Array(deployedVaults.length)
         .fill(['address', 'uint256'])
         .flat();
-console.log('stringArray',stringArray);
+      console.log('stringArray', stringArray);
 
-      const paramsData = ethers.utils.solidityPack(stringArray, params);      
+      const paramsData = ethers.utils.solidityPack(stringArray, params);
 
       const data = ethers.utils.solidityPack(['bytes'], [paramsData]);
 
@@ -110,8 +107,6 @@ console.log('stringArray',stringArray);
         amountInTON,
         data,
       );
-
-
     }
   }, [TokenDistribute, account, library, vaults, blockNumber]);
 
@@ -156,9 +151,14 @@ console.log('stringArray',stringArray);
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
-          _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
-
-          _hover={{}}
+          _active={notDeployedAll || hasToken? {}:{bg: '#2a72e5'}}
+          _hover={notDeployedAll || hasToken? {}:{bg: '#2a72e5'}}
+          _disabled={{
+            background: colorMode === 'dark' ? '#353535' : '#e9edf1',
+            color: colorMode === 'dark' ? '#838383' : '#86929d',
+            cursor: 'not-allowed',
+          }}
+         
           isDisabled={notDeployedAll || hasToken}
           borderRadius={4}
           onClick={() => sendTokens()}>

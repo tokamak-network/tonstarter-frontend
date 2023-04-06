@@ -1,5 +1,12 @@
-import {Flex, useColorMode, useTheme, Text, Button, Link} from '@chakra-ui/react';
-import {useEffect, useState, useCallback} from 'react';
+import {
+  Flex,
+  useColorMode,
+  useTheme,
+  Text,
+  Button,
+  Link,
+} from '@chakra-ui/react';
+import {useEffect, useState, useCallback, useMemo} from 'react';
 import {Projects, VaultEco} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
 import {useFormikContext} from 'formik';
@@ -19,7 +26,7 @@ import {
 import {BASE_PROVIDER} from 'constants/index';
 import Scrollbars from 'react-custom-scrollbars-2';
 
-const Ecosystem = (props:{step:string} ) => {
+const Ecosystem = (props: {step: string}) => {
   const {step} = props;
 
   const {colorMode} = useColorMode();
@@ -39,9 +46,8 @@ const Ecosystem = (props:{step:string} ) => {
   const {blockNumber} = useBlockNumber();
   const network = BASE_PROVIDER._network.name;
 
-   //check vault state from contract
-   useEffect(() => {
-   
+  //check vault state from contract
+  useEffect(() => {
     checkIsIniailized(
       ecoVault.vaultType,
       library,
@@ -63,8 +69,6 @@ const Ecosystem = (props:{step:string} ) => {
       setVaultState,
     );
   }, [hasToken, ecoVault, values, blockNumber]);
-  
-  
 
   const {
     data: {hashKey},
@@ -111,15 +115,11 @@ const Ecosystem = (props:{step:string} ) => {
     {name: 'Vault Name', value: `${ecoVault.vaultName}`},
     {
       name: 'Admin',
-      value: `${
-        values.ownerAddress ? (values.ownerAddress) : ''
-      }`,
+      value: `${values.ownerAddress ? values.ownerAddress : ''}`,
     },
     {
       name: 'Contract',
-      value: `${
-        ecoVault.vaultAddress ? (ecoVault.vaultAddress) : 'NA'
-      }`,
+      value: `${ecoVault.vaultAddress ? ecoVault.vaultAddress : 'NA'}`,
     },
     {
       name: 'Token Allocation',
@@ -129,6 +129,29 @@ const Ecosystem = (props:{step:string} ) => {
     },
   ];
 
+  const buttonStatus = useMemo(() => {
+    const status =
+      step === 'Deploy'
+        ? values.isTokenDeployed === false ||
+          ecoVault.vaultAddress !== undefined ||
+          values.vaults[6].isDeployed === false
+          ? true
+          : false
+        : ecoVault.isSet === true ||
+          !hasToken ||
+          values.vaults[6].isSet === false
+        ? true
+        : false;
+
+    return status;
+  }, [
+    step,
+    values.isTokenDeployed,
+    values.vaults,
+    ecoVault.vaultAddress,
+    ecoVault.isSet,
+    hasToken,
+  ]);
 
   return (
     <Flex
@@ -164,7 +187,7 @@ const Ecosystem = (props:{step:string} ) => {
           height: '440px',
           display: 'flex',
           position: 'relative',
-         
+
           justifyContent: 'center',
         }}
         thumbSize={70}
@@ -179,116 +202,122 @@ const Ecosystem = (props:{step:string} ) => {
             }}></div>
         )}
         renderThumbHorizontal={() => <div style={{background: 'black'}}></div>}>
-       
-      <Flex
-        mt="30px"
-        flexDir={'column'}
-        px="20px"
-        w="100%"
-        alignItems={'center'}>
-        <Text h="18px" mb="10px" fontSize={'13px'}>
-          Vault
-        </Text>
-        {detailsVault.map((detail: any) => {
-          return (
-            <Flex
-              w="100%"
-              justifyContent={'space-between'}
-              h="45px"
-              alignItems={'center'}>
-              <Text
-                fontSize={'13px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                {detail.name}
-              </Text>
-              {(detail.name === 'Admin' || detail.name === 'Contract') && detail.value !== 'NA'? (
-                <Link
-                  fontSize={'13px'}
-                  fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
-                  color={'blue.300'}
-                  isExternal
-                  href={
-                    detail.value && network === 'goerli'
-                      ? `https://goerli.etherscan.io/address/${detail.value}`
-                      : detail.value && network !== 'goerli'
-                      ? `https://etherscan.io/address/${detail.value}`
-                      : ''
-                  }
-                  _hover={{color: '#2a72e5', textDecoration:detail.value ? 'underline':''}}>
-                  {detail.value ? shortenAddress(detail.value) : 'NA'}
-                </Link>
-              ) : (
+        <Flex
+          mt="30px"
+          flexDir={'column'}
+          px="20px"
+          w="100%"
+          alignItems={'center'}>
+          <Text h="18px" mb="10px" fontSize={'13px'}>
+            Vault
+          </Text>
+          {detailsVault.map((detail: any) => {
+            return (
+              <Flex
+                w="100%"
+                justifyContent={'space-between'}
+                h="45px"
+                alignItems={'center'}>
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
                   fontWeight={500}
-                  color={
-                    detail.name === 'Admin' || detail.name === 'Contract'
-                      ? 'blue.300'
-                      : colorMode === 'dark'
-                      ? 'white.100'
-                      : 'gray.250'
-                  }>
-                  {detail.value}
+                  color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
+                  {detail.name}
                 </Text>
-              )}
-            </Flex>
-          );
-        })}
-      </Flex>
-      <Flex
-        mt="30px"
-        flexDir={'column'}
-        px="20px"
-        w="100%"
-        alignItems={'center'}>
-        <Text mb="10px" fontSize={'13px'} h="18px">
-          Claim
-        </Text>
-        <Flex w="100%" h="45px" alignItems={'center'}>
-          <Text fontSize={'13px'} textAlign={'left'}>
-            Claim Rounds ({ecoVault.claim.length})
-          </Text>
+                {(detail.name === 'Admin' || detail.name === 'Contract') &&
+                detail.value !== 'NA' ? (
+                  <Link
+                    fontSize={'13px'}
+                    fontFamily={theme.fonts.roboto}
+                    fontWeight={500}
+                    color={'blue.300'}
+                    isExternal
+                    href={
+                      detail.value && network === 'goerli'
+                        ? `https://goerli.etherscan.io/address/${detail.value}`
+                        : detail.value && network !== 'goerli'
+                        ? `https://etherscan.io/address/${detail.value}`
+                        : ''
+                    }
+                    _hover={{
+                      color: '#2a72e5',
+                      textDecoration: detail.value ? 'underline' : '',
+                    }}>
+                    {detail.value ? shortenAddress(detail.value) : 'NA'}
+                  </Link>
+                ) : (
+                  <Text
+                    fontSize={'13px'}
+                    fontFamily={theme.fonts.roboto}
+                    fontWeight={500}
+                    color={
+                      detail.name === 'Admin' || detail.name === 'Contract'
+                        ? 'blue.300'
+                        : colorMode === 'dark'
+                        ? 'white.100'
+                        : 'gray.250'
+                    }>
+                    {detail.value}
+                  </Text>
+                )}
+              </Flex>
+            );
+          })}
         </Flex>
+        <Flex
+          mt="30px"
+          flexDir={'column'}
+          px="20px"
+          w="100%"
+          alignItems={'center'}>
+          <Text mb="10px" fontSize={'13px'} h="18px">
+            Claim
+          </Text>
+          <Flex w="100%" h="45px" alignItems={'center'}>
+            <Text fontSize={'13px'} textAlign={'left'}>
+              Claim Rounds ({ecoVault.claim.length})
+            </Text>
+          </Flex>
 
-        {ecoVault.claim.map((claim: any, index: Number) => {
-          return (
-            <Flex
-              w="100%"
-              justifyContent={'space-between'}
-              h="30px"
-              alignItems={'center'}>
-              <Text
-                fontSize={'12px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}
-                color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                <span style={{color: '#3d495d', marginRight: '3px'}}>
-                  {' '}
-                  {index < 10 ? '0' : ''}
-                  {index}
-                </span>
-                {moment
-                  .unix(Number(claim.claimTime))
-                  .format('YYYY.MM.DD HH:mm:ss')}
-              </Text>
-              <Text
-                fontSize={'12px'}
-                fontFamily={theme.fonts.roboto}
-                fontWeight={500}>
-                {claim.claimTokenAllocation.toLocaleString()} (
-                {values.totalSupply
-                  ? ((claim.claimTokenAllocation / values.totalSupply) * 100).toLocaleString()
-                  : 0}
-                %)
-              </Text>
-            </Flex>
-          );
-        })}
-      </Flex>
+          {ecoVault.claim.map((claim: any, index: Number) => {
+            return (
+              <Flex
+                w="100%"
+                justifyContent={'space-between'}
+                h="30px"
+                alignItems={'center'}>
+                <Text
+                  fontSize={'12px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}
+                  color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
+                  <span style={{color: '#3d495d', marginRight: '3px'}}>
+                    {' '}
+                    {index < 10 ? '0' : ''}
+                    {index}
+                  </span>
+                  {moment
+                    .unix(Number(claim.claimTime))
+                    .format('YYYY.MM.DD HH:mm:ss')}
+                </Text>
+                <Text
+                  fontSize={'12px'}
+                  fontFamily={theme.fonts.roboto}
+                  fontWeight={500}>
+                  {claim.claimTokenAllocation.toLocaleString()} (
+                  {values.totalSupply
+                    ? (
+                        (claim.claimTokenAllocation / values.totalSupply) *
+                        100
+                      ).toLocaleString()
+                    : 0}
+                  %)
+                </Text>
+              </Flex>
+            );
+          })}
+        </Flex>
       </Scrollbars>
       <Flex
         mt="24px"
@@ -307,24 +336,19 @@ const Ecosystem = (props:{step:string} ) => {
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
-          _hover={{}}
-          isDisabled={
-            step === 'Deploy'
-            ? values.isTokenDeployed ===  false || ecoVault.vaultAddress !== undefined
-            ? true
-            : false
-              :( ecoVault.isSet === true || !hasToken)
-              ? true
-              : false
-          }
-        
-          _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
-
+          _active={buttonStatus ? {} : {bg: '#2a72e5'}}
+          _hover={buttonStatus ? {} : {bg: '#2a72e5'}}
+          _disabled={{
+            background: colorMode === 'dark' ? '#353535' : '#e9edf1',
+            color: colorMode === 'dark' ? '#838383' : '#86929d',
+            cursor: 'not-allowed',
+          }}
+          isDisabled={buttonStatus}
           onClick={() => {
             vaultDeploy();
           }}
           borderRadius={4}>
-         {step}
+          {step}
         </Button>
       </Flex>
     </Flex>

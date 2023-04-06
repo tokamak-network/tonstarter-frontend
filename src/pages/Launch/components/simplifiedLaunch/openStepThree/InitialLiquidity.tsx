@@ -6,7 +6,7 @@ import {
   Button,
   Link,
 } from '@chakra-ui/react';
-import {useEffect, useState, useCallback} from 'react';
+import {useEffect, useState, useCallback, useMemo} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects, VaultLiquidityIncentive} from '@Launch/types';
 import {shortenAddress} from 'utils/address';
@@ -26,7 +26,7 @@ import {
   deploy,
 } from '@Launch/utils/deployValues';
 
-const InitialLiquidity = (props:{step:string}) => {
+const InitialLiquidity = (props: {step: string}) => {
   const {step} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -43,7 +43,7 @@ const InitialLiquidity = (props:{step:string}) => {
   // @ts-ignore
   const network = BASE_PROVIDER._network.name;
   const {blockNumber} = useBlockNumber();
-  
+
   const initialVault = values.vaults[1] as VaultLiquidityIncentive;
 
   const details = [
@@ -143,8 +143,27 @@ const InitialLiquidity = (props:{step:string}) => {
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, initialVault]);
 
-  console.log(values);
-  
+
+  const buttonStatus = useMemo(() => {
+    const status =
+      step === 'Deploy'
+        ? values.isTokenDeployed === false ||
+          initialVault.vaultAddress !== undefined
+          ? true
+          : false
+        : initialVault.isSet === true || !hasToken
+        ? true
+        : false;
+
+        return status
+  }, [
+    hasToken,
+    initialVault.isSet,
+    initialVault.vaultAddress,
+    step,
+    values.isTokenDeployed,
+  ]);
+
   return (
     <Flex
       mt="30px"
@@ -197,8 +216,9 @@ const InitialLiquidity = (props:{step:string}) => {
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
-             
-              {(detail.name === 'Admin' || detail.name === 'Contract') && detail.value !== 'NA'? (
+
+              {(detail.name === 'Admin' || detail.name === 'Contract') &&
+              detail.value !== 'NA' ? (
                 <Link
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
@@ -212,7 +232,10 @@ const InitialLiquidity = (props:{step:string}) => {
                       ? `https://etherscan.io/address/${detail.value}`
                       : ''
                   }
-                  _hover={{color: '#2a72e5', textDecoration:detail.value ? 'underline':''}}>
+                  _hover={{
+                    color: '#2a72e5',
+                    textDecoration: detail.value ? 'underline' : '',
+                  }}>
                   {detail.value ? shortenAddress(detail.value) : 'NA'}
                 </Link>
               ) : (
@@ -269,26 +292,20 @@ const InitialLiquidity = (props:{step:string}) => {
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
+          _active={buttonStatus?{}:{bg: '#2a72e5'}}
+          _hover={buttonStatus?{}:{bg: '#2a72e5'}}
           _disabled={{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',
           }}
-          isDisabled={
-            step === 'Deploy'
-              ? values.isTokenDeployed ===  false || initialVault.vaultAddress !== undefined
-                ? true
-                : false
-              : (initialVault.isSet === true || !hasToken  )
-              ? true
-              : false
-          }
+          isDisabled={buttonStatus}
           onClick={() => {
             vaultDeploy();
           }}
-          _hover={{}}
+     
           borderRadius={4}>
-           {step}
+          {step}
         </Button>
       </Flex>
     </Flex>
