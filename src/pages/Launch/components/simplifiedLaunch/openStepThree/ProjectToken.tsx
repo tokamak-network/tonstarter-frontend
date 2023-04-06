@@ -34,8 +34,7 @@ const ProjectToken = () => {
     ERC20_FACTORY_A_ABI.abi,
   );
 
-  
-  const dispatch:any = useAppDispatch();
+  const dispatch: any = useAppDispatch();
 
   const details = [
     {
@@ -113,9 +112,13 @@ const ProjectToken = () => {
         </Text>
       </Flex>
       <Flex mt="30px" flexDir={'column'} px="20px" w="100%">
-        {details.map((detail: any, index:number) => {
+        {details.map((detail: any, index: number) => {
           return (
-            <Flex key={index} w="100%" justifyContent={'space-between'} h="45px">
+            <Flex
+              key={index}
+              w="100%"
+              justifyContent={'space-between'}
+              h="45px">
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
@@ -167,23 +170,29 @@ const ProjectToken = () => {
           h={'38px'}
           bg={'blue.500'}
           fontSize={14}
-          color={'white.100'}
+          color={'white.100'}  
           mr={'12px'}
-          _hover={{}}
-          _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
+          _hover={isTokenDeployed? {}:{bg:'#2a72e5'}}
+          _focus={isTokenDeployed? {}:{bg:'#2a72e5'}}
+          _active={isTokenDeployed? {}:{bg:'#2a72e5'}}
+          _disabled={{
+            background: colorMode === 'dark' ? '#353535' : '#e9edf1',
+            color: colorMode === 'dark' ? '#838383' : '#86929d',
+            cursor: 'not-allowed',
+          }}
           isDisabled={isTokenDeployed}
           borderRadius={4}
           onClick={() => {
-            deployToken()
-            dispatch(
-              openModal({
-                type: 'Launch_ConfirmTokenSimplified',
-                data: {
-                  tokenInfo: {tokenName, totalSupply, tokenSymbol},
-                  func: () => deployToken(),
-                },
-              }),
-            );
+            deployToken();
+            // dispatch(
+            //   openModal({
+            //     type: 'Launch_ConfirmTokenSimplified',
+            //     data: {
+            //       tokenInfo: {tokenName, totalSupply, tokenSymbol},
+            //       func: () => deployToken(),
+            //     },
+            //   }),
+            // );
           }}>
           {isTokenDeployed ? 'Done' : 'Deploy'}
         </Button>

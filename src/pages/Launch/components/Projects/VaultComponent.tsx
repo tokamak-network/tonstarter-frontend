@@ -174,7 +174,7 @@ export const VaultComponent: FC<VaultComponent> = ({project}) => {
                         }
                   }
                   onClick={() => setVaultInfo(vault, index)}>
-                  {vault.vaultName}
+                  {vault.vaultName !== 'TOKEN-TOS LP Reward'? vault.vaultName:`${project.tokenSymbol}-TOS LP Reward`}
                 </Box>
               );
             })}

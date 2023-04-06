@@ -1,6 +1,7 @@
 import {
   Flex,
   Grid,
+  GridItem,
   Tooltip,
   Box,
   useColorMode,
@@ -72,15 +73,16 @@ const GraphComponent = () => {
         <Text
           fontSize={'16px'}
           mb="21px"
+          fontWeight={600}
           color={colorMode === 'dark' ? 'white.100' : 'gray.375'}>
           Token Distribution
         </Text>
-        <Flex w={'331px'} h={'257px'} >
+        <Flex w={'331px'} h={'204px'}>
           <ResponsivePie
             data={formattedData}
             padAngle={0.7}
             cornerRadius={0}
-            margin={{bottom: 84}}
+            margin={{bottom: 4}}
             activeOuterRadiusOffset={3}
             borderWidth={1}
             borderColor={{
@@ -121,62 +123,114 @@ const GraphComponent = () => {
                 },
               },
             }}
-            legends={[
-              {
-                anchor: 'left',
-                direction: 'column',
-                justify: false,
-                translateX: 50,
-                translateY: 148,
-                itemsSpacing: 0,
-                itemWidth: 123,
-                itemHeight: 16,
-                itemTextColor: colorMode === 'dark' ? 'white' : 'black',
-                itemDirection: 'left-to-right',
-                itemOpacity: 1,
-                symbolSize: 8,
-                symbolShape: 'circle',
-                data: formattedData
-                  .slice(0, Math.floor(formattedData.length / 2))
-                  .map((cur: any, index: number) => ({
-                    id: cur.id,
-                    label: `${cur.label} (${cur.value * 100}%)`,
-                    color: cur.color,
-                  })),
-              },
-              {
-                anchor: 'left',
-                direction: 'column',
-                justify: false,
-                translateX: 200,
-                translateY: 148,
-                itemsSpacing: 0,
-                itemWidth: 123,
-                itemHeight: 16,
-                itemTextColor: colorMode === 'dark' ? 'white' : 'black',
-                itemDirection: 'left-to-right',
-                itemOpacity: 1,
-                symbolSize: 8,
-                symbolShape: 'circle',
-                data: formattedData
-                  .slice(Math.floor(formattedData.length / 2))
-                  .map((cur: any, index: number) => ({
-                    id: cur.id,
-                    label: `${cur.label} (${cur.value * 100}%)`,
-                    color: cur.color,
-                  })),
-              },
-            ]}
+            // legends={[
+            //   {
+            //     anchor: 'left',
+            //     direction: 'column',
+            //     justify: false,
+            //     translateX: 50,
+            //     translateY: 148,
+            //     itemsSpacing: 0,
+            //     itemWidth: 123,
+            //     itemHeight: 16,
+            //     itemTextColor: colorMode === 'dark' ? 'white' : 'black',
+            //     itemDirection: 'left-to-right',
+            //     itemOpacity: 1,
+            //     symbolSize: 8,
+            //     symbolShape: 'circle',
+            //     data: formattedData
+            //       .slice(0, Math.floor(formattedData.length / 2))
+            //       .map((cur: any, index: number) => ({
+            //         id: cur.id,
+            //         label: `${cur.label} (${cur.value * 100}%)`,
+            //         color: cur.color,
+            //       })),
+            //   },
+            //   {
+            //     anchor: 'left',
+            //     direction: 'column',
+            //     justify: false,
+            //     translateX: 200,
+            //     translateY: 148,
+            //     itemsSpacing: 0,
+            //     itemWidth: 123,
+            //     itemHeight: 16,
+            //     itemTextColor: colorMode === 'dark' ? 'white' : 'black',
+            //     itemDirection: 'left-to-right',
+            //     itemOpacity: 1,
+            //     symbolSize: 8,
+            //     symbolShape: 'circle',
+            //     data: formattedData
+            //       .slice(Math.floor(formattedData.length / 2))
+            //       .map((cur: any, index: number) => ({
+            //         id: cur.id,
+            //         label: `${cur.label} (${cur.value * 100}%)`,
+            //         color: cur.color,
+            //       })),
+            //   },
+            // ]}
           />
         </Flex>
+        <Grid
+          templateRows="repeat(3, 1fr)"
+          templateColumns="repeat(2, 1fr)"
+          w="266px"
+          mt="21px">
+          <GridItem w="123px" h="18px">
+            <Flex alignItems={'center'}>
+              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#2b66aa'} mr='8px'></Flex>
+              <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
+                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Public</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">30%</Text>
+              </Flex>
+            </Flex>
+          </GridItem>
+          <GridItem w="123px" h="18px">
+          <Flex alignItems={'center'}>
+              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f23c35'} mr='8px'></Flex>
+              <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
+                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Ecosystem</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">35%</Text>
+              </Flex>
+            </Flex>
+          </GridItem>
+          <GridItem w="123px" h="18px">
+          <Flex alignItems={'center'}>
+              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f7b729'} mr='8px'></Flex>
+              <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
+                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Team</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">15%</Text>
+              </Flex>
+            </Flex>
+          </GridItem>
+          <GridItem w="123px" h="18px">
+          <Flex alignItems={'center'}>
+              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#5da344'} mr='8px'></Flex>
+              <Flex w='100%' justifyContent={'space-between'} fontSize='11px' >
+                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Liquidity</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">15%</Text>
+              </Flex>
+            </Flex>
+          </GridItem>
+          <GridItem w="123px" h="18px">
+          <Flex alignItems={'center'}>
+              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f17235'} mr='8px'></Flex>
+              <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  >
+                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'} fontFamily="TitilliumWeb, sans-serif">TONStarter</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'} fontFamily="TitilliumWeb, sans-serif">5%</Text>
+              </Flex>
+            </Flex>
+          </GridItem>
+        </Grid>
         <Box
           mt="14px"
           mx="auto"
-          maxW="700px"
+          w="100%"
           pl="20"
           fontFamily="TitilliumWeb, sans-serif"
           fontSize="11px"
           display="flex"
+          fontWeight={600}
           alignItems="center">
           <Text mr="6px" color="#7e8993">
             * TONStarter section consists of three parts
@@ -189,7 +243,7 @@ const GraphComponent = () => {
                 <div>3. TOS Staker (1.25%)</div>
               </>
             }
-            color={colorMode === 'dark'? '#ffffff':'#ffffff'}
+            color={colorMode === 'dark' ? '#ffffff' : '#ffffff'}
             fontSize="12px"
             hasArrow
             placement="bottom"

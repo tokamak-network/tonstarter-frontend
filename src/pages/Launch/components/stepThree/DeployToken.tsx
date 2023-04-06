@@ -26,6 +26,10 @@ import commafy from 'utils/commafy';
 import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {createToken} from 'pages/Reward/components/api';
+import store from 'store';
+import {setTxPending} from 'store/tx.reducer';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 const DeployToken = () => {
   const theme = useTheme();
@@ -73,7 +77,8 @@ const DeployToken = () => {
           data: tx.hash,
         }),
       );
-
+      store.dispatch(setTxPending({tx: true}));
+      toastWithReceipt(tx, setTxPending, 'Launch');
       const receipt = await tx.wait();
       const {logs} = receipt;
 
