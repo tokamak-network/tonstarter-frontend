@@ -114,10 +114,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
     // Second after snapshot
     setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
-    // whitelist start to end - 2 days duration (in development)
+    // whitelist start to end - 2 min (Dev)
     if (isProduction() === false) {
-      setFieldValue('vaults[0].whitelistEnd', snapshotDate && snapshotDate + 2);
+      setFieldValue('vaults[0].whitelistEnd', snapshotDate && snapshotDate + 2 * 60);
     } else {
+      // whitelist start to end - 2 days (Prod)
       setFieldValue(
         'vaults[0].whitelistEnd',
         snapshotDate && snapshotDate + 1 + 86400 * 2,
@@ -230,7 +231,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                       // testnet: 1 second after whitelist start time, which is snapshot start time + 1s.
                       Number(
                         isProduction() === false
-                          ? snapshotDate + 2
+                          ? snapshotDate + 2 * 60
                           : snapshotDate + 1 + 86400 * 2,
                       ),
                       'MM.DD HH:mm:ss',
