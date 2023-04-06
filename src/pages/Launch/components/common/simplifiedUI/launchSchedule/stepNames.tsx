@@ -43,7 +43,7 @@ export const StepNames = () => {
           ...
         </GridItem>
         <GridItem w={'54px'}>
-          Unlock 49
+          Unlock 7
         </GridItem>
       </Grid>
     </Flex>

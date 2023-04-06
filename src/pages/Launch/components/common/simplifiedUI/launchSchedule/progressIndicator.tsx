@@ -44,7 +44,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = (props) => {
               return '98px';
             }
 
-            case 'Unlock 49': {
+            case 'Unlock 7': {
               return '0px';
             }
             default:

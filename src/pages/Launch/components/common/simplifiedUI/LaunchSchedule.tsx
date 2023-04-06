@@ -20,7 +20,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
     'Public Sale 2',
     'Unlock 1',
     'Unlock ..',
-    'Unlock 49',
+    'Unlock 7',
   ];
   
 
