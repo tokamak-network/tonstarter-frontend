@@ -217,7 +217,7 @@ const Ecosystem = (props:{step:string} ) => {
                       ? `https://etherscan.io/address/${detail.value}`
                       : ''
                   }
-                  _hover={{color: '#2a72e5'}}>
+                  _hover={{color: '#2a72e5', textDecoration:detail.value ? 'underline':''}}>
                   {detail.value ? shortenAddress(detail.value) : 'NA'}
                 </Link>
               ) : (

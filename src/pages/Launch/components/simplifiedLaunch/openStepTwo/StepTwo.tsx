@@ -251,7 +251,7 @@ const StepTwo = () => {
                 ? ` ${values.totalSupply.toLocaleString()} ${
                     values.tokenSymbol
                   } $ ${(values.stablePrice).toLocaleString(undefined, {
-                    minimumFractionDigits: 5,
+                    minimumFractionDigits: 6,
                   })}/ ${values.tokenSymbol}`
                 : buttonStatus(option)}
               <span>

@@ -28,7 +28,7 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
     disabled,
   } = props;
   const {colorMode} = useColorMode();
-
+  
   return (
     <Button
       type="submit"
@@ -40,8 +40,9 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
       mb={marginBottom}
       color={color}
       // _focus={{bg: '#2a72e5'}}
-      _active={{bg: bgColor === '#00c3c4'? '#00c3c4':bgColor === '#fecf05'?'#fecf05': '#2a72e5'}}
-      isDisabled={isDisabled}
+      _active={!disabled? {bg: bgColor === '#00c3c4'? '#00c3c4':bgColor === '#fecf05'?'#fecf05': '#2a72e5'}:{}}
+      isDisabled={disabled}
+      // disabled={isDisabled}
       _disabled={{bg: colorMode === 'dark'?'#353535':'#e9edf1', color: colorMode === 'dark'? '#838383':'#86929d', cursor:'not-allowed'}}
       bg={bgColor}
       borderRadius={4}
