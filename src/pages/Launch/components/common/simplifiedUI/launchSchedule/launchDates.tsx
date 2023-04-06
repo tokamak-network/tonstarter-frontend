@@ -116,7 +116,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
     // whitelist start to end - 2 min (Dev)
     if (isProduction() === false) {
-      setFieldValue('vaults[0].whitelistEnd', snapshotDate && snapshotDate + 2 * 60);
+      setFieldValue(
+        'vaults[0].whitelistEnd',
+        snapshotDate && snapshotDate + 2 * 60,
+      );
     } else {
       // whitelist start to end - 2 days (Prod)
       setFieldValue(
@@ -334,8 +337,17 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                             <>
                               Each vault unlocks a set amount each month over a
                               period of up to 48 months.&nbsp;
-                              <Link href={pdfPath} target="_blank" download>
-                                Learn more...
+                              {/* Download claim schedule */}
+                              {/* <Link href={pdfPath} target="_blank" download>
+                                <Text as='u'>Learn more...</Text>
+                              </Link> */}
+                              {/* Open claim schedule as pdf on a new tab */}
+                              <Link
+                                href={pdfPath}
+                                target="_blank"
+                                without
+                                rel="noopener noreferrer">
+                                <Text as="u">Learn more...</Text>
                               </Link>
                             </>
                           </PopoverBody>

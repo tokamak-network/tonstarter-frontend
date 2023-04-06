@@ -11,6 +11,7 @@ import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
 import RescheduleModal from '../common/simplifiedUI/Reschedule';
 import {useModal} from 'hooks/useModal';
+import TextInput from '../common/simplifiedUI/TextInput';
 
 const filedNameList = [
   {title: 'projectName', requirement: true},
@@ -87,11 +88,11 @@ const OpenStepOneSimplified = (props: any) => {
               if (fieldName.title === 'tokenName') {
                 return (
                   <Grid w={'212px'}>
-                    <InputComponent
+                    <TextInput
                       name={fieldName.title}
                       placeHolder={`input ${fieldName.title}`}
                       key={fieldName.title}
-                      requirement={fieldName.requirement}></InputComponent>
+                      requirement={fieldName.requirement}></TextInput>
                   </Grid>
                 );
               }
@@ -99,11 +100,10 @@ const OpenStepOneSimplified = (props: any) => {
                 return (
                   <Grid templateColumns="repeat(2, 1fr)">
                     <Box w={'212px'}>
-                      <InputComponent
+                      <TextInput
                         name={fieldName.title}
                         placeHolder={`input ${fieldName.title}`}
-                        key={fieldName.title}
-                        requirement={fieldName.requirement}></InputComponent>
+                        key={fieldName.title}></TextInput>
                     </Box>
                     <Box ml={'35px'} mt={'-36px'}>
                       <TokenImageInput imageLink={values.tokenSymbolImage} />
@@ -113,11 +113,11 @@ const OpenStepOneSimplified = (props: any) => {
               }
               return (
                 <GridItem w={'327px'}>
-                  <InputComponent
+                  <TextInput
                     name={fieldName.title}
                     placeHolder={`input ${fieldName.title}`}
                     key={fieldName.title}
-                    requirement={fieldName.requirement}></InputComponent>
+                    requirement={fieldName.requirement}></TextInput>
                 </GridItem>
               );
             },
