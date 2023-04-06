@@ -80,6 +80,7 @@ const WarningModal = () => {
               h={'38px'}
               color={'#fff'}
               border-radius={'4px'}
+              _hover={{bg: 'blue.100'}}
               onClick={() => openAnyModal('Launch_ConfirmTerms', {
                 from: 'simplified-launch',
               })}
