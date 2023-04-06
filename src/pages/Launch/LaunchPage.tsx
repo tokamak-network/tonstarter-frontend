@@ -17,6 +17,7 @@ import {useModal} from 'hooks/useModal';
 import ConfirmTermsModal from './components/modals/ConfirmTerms';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
+import WarningModal from './components/common/simplifiedUI/WarningModal';
 
 type LaunchProps = {
   numPairs: Number;
@@ -152,7 +153,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                 if (!active) {
                   return activate(injected);
                 }
-                openAnyModal('Launch_ConfirmTerms', {
+                openAnyModal('Launch_Warning', {
                   from: 'simplified-launch',
                 });
               }}>Simplified Launch</Button>
@@ -291,6 +292,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
       </Box>
       {showAllProjects ? <AllProjects /> : <MyProjects />}
       <ConfirmTermsModal></ConfirmTermsModal>
+      <WarningModal />
     </Flex>
   );
 };

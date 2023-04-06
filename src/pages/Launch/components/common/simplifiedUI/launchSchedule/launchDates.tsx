@@ -21,7 +21,8 @@ import {snapshotGap} from '@Launch/const';
 import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
-import { isProduction } from '@Launch/utils/checkConstants';
+import {isProduction} from '@Launch/utils/checkConstants';
+const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
 type LaunchDateProps = {
   launchSteps: string[];
@@ -114,12 +115,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     // Second after snapshot
     setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
     // whitelist start to end - 2 days duration (in development)
-    if(isProduction() === false) {
-      setFieldValue(
-        'vaults[0].whitelistEnd',
-        snapshotDate && snapshotDate + 2,
-      );
-    }else {
+    if (isProduction() === false) {
+      setFieldValue('vaults[0].whitelistEnd', snapshotDate && snapshotDate + 2);
+    } else {
       setFieldValue(
         'vaults[0].whitelistEnd',
         snapshotDate && snapshotDate + 1 + 86400 * 2,
@@ -230,7 +228,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {convertTimeStamp(
                       // mainnet: 2 days after snapshot time
                       // testnet: 1 second after whitelist start time, which is snapshot start time + 1s.
-                      Number(isProduction() === false ? snapshotDate + 2 : snapshotDate + 1 + 86400 * 2),
+                      Number(
+                        isProduction() === false
+                          ? snapshotDate + 2
+                          : snapshotDate + 1 + 86400 * 2,
+                      ),
                       'MM.DD HH:mm:ss',
                     )}
                   </Text>
@@ -315,7 +317,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     <Grid justifyItems={'center'} mt={'6px'}>
                       <Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
                         <PopoverTrigger>
-                          <Image src={tooltipIcon} onMouseEnter={handleMouseEnter}/>
+                          <Image
+                            src={tooltipIcon}
+                            onMouseEnter={handleMouseEnter}
+                          />
                         </PopoverTrigger>
                         <PopoverContent
                           w={'200px'}
@@ -328,9 +333,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                             <>
                               Each vault unlocks a set amount each month over a
                               period of up to 48 months.&nbsp;
-                              <Link
-                                href="https://docs.google.com/spreadsheets/d/1GzeAls343c4STphxg_KqB407fdHalDh88aceCuZx6C0/edit?usp=sharing"
-                                target="_blank">
+                              <Link href={pdfPath} target="_blank" download>
                                 Learn more...
                               </Link>
                             </>
