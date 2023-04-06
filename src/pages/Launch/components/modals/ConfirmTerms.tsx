@@ -974,6 +974,7 @@ const ConfirmTermsModal = () => {
                   func={() => {
                     if (isCheck) return closeModal();
                   }}
+                
                   style={{
                     backgroundColor: isCheck
                       ? 'blue.500'
@@ -998,6 +999,7 @@ const ConfirmTermsModal = () => {
                   func={() => {
                     if (isCheck) return closeModal();
                   }}
+                  isDisabled={!isCheck}
                   style={{
                     backgroundColor: isCheck
                       ? 'blue.500'
