@@ -313,7 +313,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 {unlockDate1 ? (
                   <>
                     <Text>
-                      49 times unlock <br /> 4 times vesting <br />
+                      7 times unlock <br /> 4 times vesting <br />
                     </Text>
                     <Grid justifyItems={'center'} mt={'6px'}>
                       <Popover isOpen={isOpen} onClose={() => setIsOpen(false)}>
@@ -348,7 +348,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 )}
               </GridItem>
             )}
-            {step === 'Unlock 49' && (
+            {step === 'Unlock 7' && (
               <GridItem w={'56px'} p={0}>
                 <Text>
                   {lastUnlockDate

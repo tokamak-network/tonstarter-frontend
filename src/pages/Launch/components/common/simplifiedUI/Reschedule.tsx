@@ -78,6 +78,7 @@ const RescheduleModal = () => {
               h={'38px'}
               color={'#fff'}
               border-radius={'4px'}
+              _hover={{bg: 'blue.100'}}
               onClick={() => closeModal()}
               bg={'#257eee'}>
               Go
