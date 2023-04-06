@@ -17,10 +17,8 @@ const StepFour = () => {
     useFormikContext<Projects['CreateSimplifiedProject']>();
     const [focus,setFocus] = useState(false)
 
-  const handleInput = (e: number) => {
-    console.log(1/e);
-    
-    setFieldValue('tosPrice',truncNumber(1/e,2))
+  const handleInput = (e: number) => {    
+    setFieldValue('tosPrice',truncNumber(1/e,3))
   };
   
   return (
@@ -56,13 +54,13 @@ const StepFour = () => {
         <NumberInput>
           <NumberInputField
             h="30px"
-            // placeholder={values.tosPrice? (1/values.tosPrice).toLocaleString().toString() : '0'}
+            placeholder={values.tosPrice? (1/values.tosPrice).toLocaleString().toString() : '0'}
             fontSize={'13px'}
             border="none"
             pr="5px"
             textAlign={'right'}
             _focus={{}}
-            value={values.tosPrice? (1/values.tosPrice).toLocaleString(): '0'}
+            value={values.tosPrice? (1/values.tosPrice): '0'}
             onChange={(e) => {
               handleInput(parseInt(e.target.value));
             }}></NumberInputField>

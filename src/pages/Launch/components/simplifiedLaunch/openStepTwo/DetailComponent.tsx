@@ -10,6 +10,7 @@ const DetailComponent = () => {
     
     const {vaults} = values;
     const publicVault = vaults[0] as VaultPublic;
+    
   const details = [
     {name: 'Funding Target', detail: `$ ${values.fundingTarget? (values.fundingTarget).toLocaleString():'-'}` },
     {name: 'Current Market Cap', detail: `$ ${values.marketCap? (values.marketCap).toLocaleString(undefined, {
