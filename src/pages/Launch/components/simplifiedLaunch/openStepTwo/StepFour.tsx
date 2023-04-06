@@ -18,12 +18,13 @@ const StepFour = () => {
     const [focus,setFocus] = useState(false)
 
   const handleInput = (e: number) => {
+    console.log(1/e);
     
     setFieldValue('tosPrice',truncNumber(1/e,2))
   };
   
   return (
-    <Flex flexDir={'column'} mb={'15px'} alignItems={'flex-start'}>
+    <Flex flexDir={'column'}  alignItems={'flex-start'} h='150px'>
       {' '}
       <Text
         fontSize={'14px'}
@@ -55,7 +56,7 @@ const StepFour = () => {
         <NumberInput>
           <NumberInputField
             h="30px"
-            placeholder={values.tosPrice? (1/values.tosPrice).toLocaleString().toString() : '0'}
+            // placeholder={values.tosPrice? (1/values.tosPrice).toLocaleString().toString() : '0'}
             fontSize={'13px'}
             border="none"
             pr="5px"

@@ -18,9 +18,8 @@ const StepComp = (props: {step: TEconomyStepNumber}) => {
       return <StepOne />;
     case 1:
       return <StepTwo />;
+   
     case 2:
-      return <StepThree currentStep={step} />;
-    case 3:
       return <StepFour />;
   }
 };
@@ -32,7 +31,7 @@ const StepComponent = () => {
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
 
-  console.log(values);
+  console.log('values',values);
 
   const disableButton = (step: number) => {
     switch (step) {
@@ -45,11 +44,9 @@ const StepComponent = () => {
           : false;
       }
       case 1: {
-        return values.growth === undefined ? true : false;
-      }
-      case 2: {
         return values.totalSupply === undefined ? true : false;
       }
+     
     }
   };
 
@@ -84,7 +81,7 @@ const StepComponent = () => {
         justifyContent={'space-between'}
         mt="15px"
         alignItems={'center'}>
-        <StepTwoSteps stepNames={['0', '1', '2', '3']} currentStep={step} />
+        <StepTwoSteps stepNames={['0', '1', '2']} currentStep={step} />
         <Flex>
           {step !== 0 && (
             <Button
@@ -106,7 +103,7 @@ const StepComponent = () => {
               Prev
             </Button>
           )}
-          {step !== 3 && (
+          {step !== 2 && (
             <Button
               fontSize={'12px'}
               bg="transparent"

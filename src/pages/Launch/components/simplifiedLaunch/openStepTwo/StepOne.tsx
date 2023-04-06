@@ -28,7 +28,7 @@ const StepOne = () => {
   const [tonInDollars, setTonInDollars] = useState(0);
   const [tonPriceInTos, setTonPriceInTos] = useState(0);
   const {account, library} = useActiveWeb3React();
-const [focus,setFocus] = useState(false)
+  const [focus, setFocus] = useState(false);
   const {MENU_STYLE} = theme;
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
@@ -99,89 +99,26 @@ const [focus,setFocus] = useState(false)
 
   const handleInput = (option: number) => {
     // setOption(option.toString());
-
+    const fundingTarget = option;
     const marketCap = option / 0.3;
     setFieldValue('fundingTarget', option);
     setFieldValue('marketCap', option / 0.3);
-    
-    // if (values.totalSupply && values.growth && values.stablePrice) {
-    //   // const totalSupply = values.totalSupply;
-    //   const growth = values.growth;
-    //   const stablePrice = values.stablePrice;
-    //   const totalSupply = parseInt(
-    //     ((marketCap * growth) / stablePrice).toString(),
-    //   );   
-               
-    //   setFieldValue('totalSupply', totalSupply);
-    //   const tokenPriceinDollars = marketCap / totalSupply;      
-    //   const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
-    //   const tonPriceInToken = 1 / tokenPriceInTon;
-    //   setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
-    //   setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
-    //   const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
-    //   const tosPriceInTokens = 1 / tokenPriceInTos;
-    //   setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
-    //   const hardCap =
-    //   values.fundingTarget && values.fundingTarget / tonInDollars;
-    // setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
 
-    // const publicAllocation = parseInt((totalSupply * 0.3).toString());
+    if (values.totalSupply && values.stablePrice) {
+      const totalSupply = values.totalSupply;
+      const tokenPriceinDollars = values.stablePrice;
+      console.log('tokenPriceinDollars', tokenPriceinDollars);
 
-    // const rounds = values.vaults.map((vault, index) => {
-    //   const roundInfo = schedules(
-    //     vault.vaultName,
-    //     totalSupply,
-    //     publicVault.publicRound2End ? publicVault.publicRound2End : 0,
-    //   );
+      const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
+      const tonPriceInToken = 1 / tokenPriceInTon;
 
-    //   // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
-
-    //   const tot = roundInfo.reduce(
-    //     (acc, round) => acc + round.claimTokenAllocation,
-    //     0,
-    //   );
-    //   //  const totalTokenAllocation =
-    //   setFieldValue(`vaults[${index}].claim`, roundInfo);
-    //   setFieldValue(`vaults[${index}].adminAddress`, account);
-    //   setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
-    //   return tot;
-    // });
-    // setFieldValue('vaults[2].vaultTokenAllocation', 0);
-    //   setFieldValue('vaults[0].addressForReceiving', account);
-    //   setFieldValue('vaults[0].adminAddress', account);
-    //   const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
-    //   const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);
-    //   const tier3 = truncNumber(publicAllocation * 0.5 * 0.22, 0);
-    //   const tier4 = truncNumber(publicAllocation * 0.5 * 0.6, 0);
-
-    //   const public1All = tier1 + tier2 + tier3 + tier4;
-
-    //   setFieldValue('vaults[0].stosTier.fourTier.allocatedToken', tier4);
-    //   setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', tier1);
-    //   setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
-    //   setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
-    //   setFieldValue('vaults[0].publicRound1Allocation', public1All);
-    //   setFieldValue('vaults[0].publicRound2Allocation',publicAllocation - public1All );
-      
-    //   setFieldValue(
-    //     'vaults[1].startTime',
-    //     publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
-    //   );
-    //   setFieldValue(
-    //     'vaults[0].claimStart',
-    //     publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
-    //   );
-
-    //   const mainVaults = rounds.splice(2, 1);
-
-    //   const sumTotalToken = rounds.reduce((partialSum, a) => partialSum + a, 0);
-
-    //   setFieldValue('totalTokenAllocation', sumTotalToken);
-    // }
+      const hardCap = fundingTarget / tonInDollars;
+      setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
+    }
   };
 
   return (
-    <Flex flexDir={'column'} h="142px" alignItems={'flex-start'}>
+    <Flex flexDir={'column'} h="150px" alignItems={'flex-start'}>
       <Text
         fontFamily={theme.fonts.roboto}
         fontSize={'14px'}
@@ -253,15 +190,18 @@ const [focus,setFocus] = useState(false)
             borderRadius="4px"
             bg={'transparent'}
             border={
-               focus? '1px solid #2a72e5':  colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
+              focus
+                ? '1px solid #2a72e5'
+                : colorMode === 'dark'
+                ? '1px solid #424242'
+                : '1px solid #dfe4ee'
             }
-            onFocus={()=> setFocus(true)}
-            onBlur={()=> setFocus(false)}
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
             // _active={{
             //   border: '1px solid #2a72e5'
             // }}
-          
-    
+
             _focus={{border: '1px solid #2a72e5'}}
             // focusBorderColor={'#2a72e5'}
             // focus={{outline: '1px solid #2a72e5'}}
@@ -284,7 +224,7 @@ const [focus,setFocus] = useState(false)
                 step={0}
                 value={values.fundingTarget}
                 onChange={(e) => {
-                  handleInput(parseInt(e.target.value))
+                  handleInput(parseInt(e.target.value));
                 }}
                 textAlign={'left'}
                 _focus={{}}></NumberInputField>
