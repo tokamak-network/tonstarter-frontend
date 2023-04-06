@@ -312,7 +312,7 @@ const SimplifiedMainScreen = () => {
                           btnText="Complete & Go"
                           disabled={isDisableForStep3}
                           color={isDisableForStep2 ? '#86929d' : 'white.100'}
-                          onClick={() => handleSaveAndContinue(values, account)}
+                          onClick={() => handleComplete(values, account, true)}
                         />
                       </ButtonGroup>
                     </>
@@ -342,7 +342,7 @@ const SimplifiedMainScreen = () => {
                           btnText="Complete & Go"
                           disabled={isDisableForStep3}
                           color={isDisableForStep2 ? '#86929d' : 'white.100'}
-                          onClick={() => handleSaveAndContinue(values, account)}
+                          onClick={() => handleComplete(values, account, true)}
                         />
                       </ButtonGroup>
                     </>
