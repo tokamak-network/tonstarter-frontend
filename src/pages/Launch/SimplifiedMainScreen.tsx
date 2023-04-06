@@ -308,7 +308,7 @@ const SimplifiedMainScreen = () => {
                           onClick={() => handleStep(false)}
                         />
                         <ActionButton
-                          bgColor={isDisableForStep3 ? 'gray.25' : 'blue.500'}
+                          bgColor={isDisableForStep3 ? '#e9edf1' : 'blue.500'}
                           btnText="Complete & Go"
                           disabled={isDisableForStep3}
                           color={isDisableForStep2 ? '#86929d' : 'white.100'}
@@ -338,7 +338,7 @@ const SimplifiedMainScreen = () => {
                           onClick={() => handleStep(false)}
                         />
                         <ActionButton
-                          bgColor={isDisableForStep3 ? 'gray.25' : 'blue.500'}
+                          bgColor={isDisableForStep3 ? '#e9edf1' : 'blue.500'}
                           btnText="Complete & Go"
                           disabled={isDisableForStep3}
                           color={isDisableForStep2 ? '#86929d' : 'white.100'}
@@ -373,6 +373,7 @@ const SimplifiedMainScreen = () => {
                         bgColor={'blue.500'}
                         btnText="Next"
                         isDisabled={isDisable || isDisableForStep1}
+                        disabled={isDisableForStep3}
                         color={'white.100'}
                         onClick={() => handleSaveAndContinue(values, account)}
                       />
