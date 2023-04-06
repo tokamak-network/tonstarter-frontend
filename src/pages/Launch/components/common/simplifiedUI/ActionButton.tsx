@@ -12,6 +12,7 @@ type ButtonProps = {
   marginTop?: string;
   marginBottom?: string;
   disabled?: boolean;
+  hoverColor?: string;
 };
 
 export const ActionButton: React.FC<ButtonProps> = (props: any) => {
@@ -26,6 +27,7 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
     marginTop,
     marginBottom,
     disabled,
+    hoverColor,
   } = props;
   const {colorMode} = useColorMode();
 
@@ -45,7 +47,7 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
       _disabled={{bg: colorMode === 'dark'?'#353535':'#e9edf1', color: colorMode === 'dark'? '#838383':'#86929d', cursor:'not-allowed'}}
       bg={bgColor}
       borderRadius={4}
-      _hover={{}}
+      _hover={{bg: hoverColor}}
       fontSize={14}
       onClick={onClick}>
       {btnText}
