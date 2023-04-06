@@ -113,9 +113,9 @@ const ProjectToken = () => {
         </Text>
       </Flex>
       <Flex mt="30px" flexDir={'column'} px="20px" w="100%">
-        {details.map((detail: any) => {
+        {details.map((detail: any, index:number) => {
           return (
-            <Flex w="100%" justifyContent={'space-between'} h="45px">
+            <Flex key={index} w="100%" justifyContent={'space-between'} h="45px">
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}

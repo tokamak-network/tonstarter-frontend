@@ -272,6 +272,7 @@ const StepTwo = () => {
               Select One...
             </MenuItem>
             {getPrices.map((price: any, index: number) => {
+              console.log('price.fundingPrice',price.fundingPrice);
               
               return (
                 <MenuItem

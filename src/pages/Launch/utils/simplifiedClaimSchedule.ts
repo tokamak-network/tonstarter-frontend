@@ -25,18 +25,18 @@ export const schedules = (
         claimTokenAllocation: parseInt((tokenAllocation * 0.075).toString()),
       });
       acc += parseInt((tokenAllocation * 0.075).toString());
-
-      for (let i = 1; i < 18; i++) {
+      
+      for (let i = 1; i < 6; i++) {
         rounds.push({
           claimRound: i + 1,
-          claimTime: monthGapTimeStamp(public2End + 1, i),
-          claimTokenAllocation: parseInt((tokenAllocation * 0.0125).toString()),
+          claimTime: monthGapTimeStamp(public2End + 1, i*3),
+          claimTokenAllocation: parseInt((tokenAllocation * 0.0375).toString()),
         });
-        acc += parseInt((tokenAllocation * 0.0125).toString());
+        acc += parseInt((tokenAllocation * 0.0375).toString());        
       }
 
       rounds.push({
-        claimRound: 19,
+        claimRound: 6,
         claimTime: monthGapTimeStamp(public2End + 1, 18),
         claimTokenAllocation: parseInt(
           (tokenAllocation * 0.3 - acc).toString(),
@@ -56,18 +56,18 @@ export const schedules = (
       return rounds;
 
     case 'TOKEN-TOS LP Reward':
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < 6; i++) {
         rounds.push({
           claimRound: i + 1,
-          claimTime: monthGapTimeStamp(public2End + 1, i),
+          claimTime: monthGapTimeStamp(public2End + 1, i*3),
           claimTokenAllocation: parseInt(
-            (tokenAllocation * 0.00631578).toString(),
+            (tokenAllocation * 0.0171429).toString(),
           ),
         });
-        acc += parseInt((tokenAllocation * 0.00631578).toString());
+        acc += parseInt((tokenAllocation * 0.0171429).toString());
       }
       rounds.push({
-        claimRound: 19,
+        claimRound: 6,
         claimTime: monthGapTimeStamp(public2End + 1, 18),
         claimTokenAllocation: parseInt(
           (tokenAllocation * 0.12 - acc).toString(),
@@ -77,52 +77,40 @@ export const schedules = (
       return rounds;
 
     case 'Ecosystem':
-      for (let i = 0; i <= 36; i++) {
-        if (i === 0 || i === 12 || i === 24) {
-          rounds.push({
-            claimRound: i + 1,
-            claimTime: monthGapTimeStamp(public2End + 1, i),
-            claimTokenAllocation: parseInt(
-              (tokenAllocation * 0.042).toString(),
-            ),
-          });
-
-          acc += parseInt((tokenAllocation * 0.042).toString());
-        } else if (i < 36) {
-          rounds.push({
-            claimRound: i + 1,
-            claimTime: monthGapTimeStamp(public2End + 1, i),
-            claimTokenAllocation: parseInt(
-              (tokenAllocation * 0.0065882).toString(),
-            ),
-          });
-          acc += parseInt((tokenAllocation * 0.0065882).toString());
-        } else {
-          rounds.push({
-            claimRound: i + 1,
-            claimTime: monthGapTimeStamp(public2End + 1, i),
-            claimTokenAllocation: parseInt(
-              (tokenAllocation * 0.35 - acc).toString(),
-            ),
-          });
-          acc += parseInt((tokenAllocation * 0.35 - acc).toString());
-        }
+      for (let i = 0; i < 6; i++) {
+        rounds.push({
+          claimRound: i + 1,
+          claimTime: monthGapTimeStamp(public2End + 1, i*6),
+          claimTokenAllocation: parseInt(
+            (tokenAllocation * 0.05).toString(),
+          ),
+        });
+        acc += parseInt((tokenAllocation * 0.05).toString());
       }
+      rounds.push({
+        claimRound: 6,
+        claimTime: monthGapTimeStamp(public2End + 1, 36),
+        claimTokenAllocation: parseInt(
+          (tokenAllocation * 0.35 - acc).toString(),
+        ),
+      });
+      acc += parseInt((tokenAllocation * 0.35 - acc).toString());
+      
       return rounds;
 
     case 'Team':
-      for (let i = 13; i < 48; i++) {
+      for (let i = 0; i < 6; i++) {
         rounds.push({
-          claimRound: i - 12,
-          claimTime: monthGapTimeStamp(public2End + 1, i),
+          claimRound: i +1,
+          claimTime: monthGapTimeStamp(public2End + 1, (i*6)+13),
           claimTokenAllocation: parseInt(
-            (tokenAllocation * 0.0041667).toString(),
+            (tokenAllocation * 0.0214286).toString(),
           ),
         });
-        acc += parseInt((tokenAllocation * 0.0041667).toString());
+        acc += parseInt((tokenAllocation * 0.0214286).toString());
       }
       rounds.push({
-        claimRound: 36,
+        claimRound: 6,
         claimTime: monthGapTimeStamp(public2End + 1, 48),
         claimTokenAllocation: parseInt(
           (tokenAllocation * 0.15 - acc).toString(),
@@ -132,19 +120,21 @@ export const schedules = (
       return rounds;
 
     case 'TON Staker':
-      for (let i = 0; i < 36; i++) {
+      for (let i = 0; i < 6; i++) {
+        console.log('i',i);
+        
         rounds.push({
           claimRound: i + 1,
-          claimTime: monthGapTimeStamp(public2End + 1, i),
+          claimTime: monthGapTimeStamp(public2End + 1, i*6),
           claimTokenAllocation: parseInt(
-            (tokenAllocation * 0.0003378).toString(),
+            (tokenAllocation * 0.0017857).toString(),
           ),
         });
-        acc += parseInt((tokenAllocation * 0.0003378).toString());
+        acc += parseInt((tokenAllocation * 0.0017857).toString());
       }
 
       rounds.push({
-        claimRound: 37,
+        claimRound: 7,
         claimTime: monthGapTimeStamp(public2End + 1, 36),
         claimTokenAllocation: parseInt(
           (tokenAllocation * 0.0125 - acc).toString(),
@@ -154,18 +144,18 @@ export const schedules = (
       return rounds;
 
     case 'TOS Staker':
-      for (let i = 0; i < 36; i++) {
+      for (let i = 0; i < 6; i++) {
         rounds.push({
           claimRound: i + 1,
-          claimTime: monthGapTimeStamp(public2End + 1, i),
+          claimTime: monthGapTimeStamp(public2End + 1, i*6),
           claimTokenAllocation: parseInt(
-            (tokenAllocation * 0.0003378).toString(),
+            (tokenAllocation * 0.0017857).toString(),
           ),
         });
-        acc += parseInt((tokenAllocation * 0.0003378).toString());
+        acc += parseInt((tokenAllocation * 0.0017857).toString());
       }
       rounds.push({
-        claimRound: 37,
+        claimRound: 7,
         claimTime: monthGapTimeStamp(public2End + 1, 36),
         claimTokenAllocation: parseInt(
           (tokenAllocation * 0.0125 - acc).toString(),
@@ -175,18 +165,18 @@ export const schedules = (
       return rounds;
 
     case 'WTON-TOS LP Reward':
-      for (let i = 0; i < 36; i++) {
+      for (let i = 0; i < 6; i++) {
         rounds.push({
           claimRound: i + 1,
           claimTime: monthGapTimeStamp(public2End + 1, i),
           claimTokenAllocation: parseInt(
-            (tokenAllocation * 0.0006757).toString(),
+            (tokenAllocation * 0.0035714).toString(),
           ),
         });
-        acc += parseInt((tokenAllocation * 0.0006757).toString());
+        acc += parseInt((tokenAllocation * 0.0035714).toString());
       }
       rounds.push({
-        claimRound: 37,
+        claimRound: 6,
         claimTime: monthGapTimeStamp(public2End + 1, 36),
         claimTokenAllocation: parseInt(
           (tokenAllocation * 0.025 - acc).toString(),

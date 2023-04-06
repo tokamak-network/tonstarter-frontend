@@ -143,6 +143,8 @@ const InitialLiquidity = (props:{step:string}) => {
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, initialVault]);
 
+  console.log(values);
+  
   return (
     <Flex
       mt="30px"
@@ -180,12 +182,13 @@ const InitialLiquidity = (props:{step:string}) => {
         <Text mb="11px" fontSize={'13px'}>
           Vault
         </Text>
-        {details.map((detail: any) => {
+        {details.map((detail: any, index: number) => {
           return (
             <Flex
               w="100%"
               justifyContent={'space-between'}
               h="45px"
+              key={index}
               alignItems={'center'}>
               <Text
                 fontSize={'13px'}
