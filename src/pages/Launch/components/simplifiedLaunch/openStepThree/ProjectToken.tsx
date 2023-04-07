@@ -19,6 +19,10 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {ethers} from 'ethers';
 import {createToken} from 'pages/Reward/components/api';
 import {openModal} from 'store/modal.reducer';
+import store from 'store';
+import {setTxPending} from 'store/tx.reducer';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 const ProjectToken = () => {
   const {colorMode} = useColorMode();
@@ -69,7 +73,8 @@ const ProjectToken = () => {
           data: tx.hash,
         }),
       );
-
+      store.dispatch(setTxPending({tx: true}));
+      toastWithReceipt(tx, setTxPending, 'Launch');
       const receipt = await tx.wait();
       const {logs} = receipt;
       const iface = new ethers.utils.Interface(ERC20_FACTORY_A_ABI.abi);

@@ -20,6 +20,10 @@ import {saveProject, editProject} from '@Launch/utils/saveProject';
 import {convertNumber, convertToWei} from 'utils/number';
 import {ethers} from 'ethers';
 import * as TON from 'services/abis/TON.json';
+import store from 'store';
+import {setTxPending} from 'store/tx.reducer';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 const Distribute = () => {
   const {colorMode} = useColorMode();
@@ -84,7 +88,6 @@ const Distribute = () => {
         );
       });
 
-      console.log('params', params);
 
       const totalAmount = deployedVaults.reduce(
         (accumulator, vault) => accumulator + vault.vaultTokenAllocation,
@@ -96,7 +99,6 @@ const Distribute = () => {
       const stringArray = Array(deployedVaults.length)
         .fill(['address', 'uint256'])
         .flat();
-      console.log('stringArray', stringArray);
 
       const paramsData = ethers.utils.solidityPack(stringArray, params);
 
@@ -107,6 +109,10 @@ const Distribute = () => {
         amountInTON,
         data,
       );
+     
+      store.dispatch(setTxPending({tx: true}));
+      toastWithReceipt(tx, setTxPending, 'Launch');
+      const receipt = await tx.wait();
     }
   }, [TokenDistribute, account, library, vaults, blockNumber]);
 
