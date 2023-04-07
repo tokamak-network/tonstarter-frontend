@@ -110,7 +110,19 @@ const TextInput: React.FC<TextInputProps> = (props) => {
           );
         }}
       </Field>
-      <Box
+      {name === 'tokenSymbolImage' ? (<Box
+        pos={'absolute'}
+        right={0}
+        w={'40%'}
+        bg={colorMode === 'light' ? 'white.100' : '#222222'}
+        textAlign={'right'}>
+        <ErrorMessage
+          name={name}
+          render={(msg) => (
+            <Text color={'red.100'}>{'Invalid URL'}</Text>
+          )}></ErrorMessage>
+      </Box>):
+       (<Box
         pos={'absolute'}
         right={0}
         w={'55%'}
@@ -119,9 +131,9 @@ const TextInput: React.FC<TextInputProps> = (props) => {
         <ErrorMessage
           name={name}
           render={(msg) => (
-            <Text color={'red.100'}>{name !== 'tokenSymbolImage' ? `Invalid ${titleTrimed}` : ''}</Text>
+            <Text color={'red.100'}>{`Invalid ${titleTrimed}`}</Text>
           )}></ErrorMessage>
-      </Box>
+      </Box>)}
     </Flex>
   );
 };
