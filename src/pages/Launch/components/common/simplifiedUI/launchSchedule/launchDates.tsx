@@ -231,10 +231,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     <br />~
                     {convertTimeStamp(
                       // mainnet: 2 days after snapshot time
-                      // testnet: 1 second after whitelist start time, which is snapshot start time + 1s.
+                      // testnet: whitelist end: 1 second after snapshot, 1 second before public sale 1 */}
                       Number(
                         isProduction() === false
-                          ? snapshotDate + 2 * 60
+                          ? publicSale1 ? publicSale1 - 1 :  snapshotDate + 2 * 60
                           : snapshotDate + 1 + 86400 * 2,
                       ),
                       'MM.DD HH:mm:ss',
@@ -243,6 +243,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 ) : (
                   <Text ml={'7px'}>-</Text>
                 )}
+                
               </GridItem>
             )}
             {/* Public sale 1 date & time */}
