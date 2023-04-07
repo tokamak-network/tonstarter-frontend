@@ -240,8 +240,7 @@ const SimplifiedMainScreen = () => {
                       <ActionButton
                         bgColor={'#00c3c4'}
                         btnText="Save"
-                        disabled={isDisableForStep1}
-                        isDisabled={isSubmitting}
+                        disabled={isSubmitting}
                         marginRight={'404px'}
                         color={'white.100'}
                         hoverColor={'#00b3b4'}
@@ -264,7 +263,6 @@ const SimplifiedMainScreen = () => {
                         bgColor={isDisable ? '#e9edf1' : '#00c3c4'}
                         btnText="Save"
                         disabled={isDisable}
-                        isDisabled={isSubmitting}
                         marginRight={'232px'}
                         color={isDisable ? '#86929d' : '#fff'}
                         onClick={() => handleSaveProject(values, account, true)}
@@ -282,7 +280,6 @@ const SimplifiedMainScreen = () => {
                         <ActionButton
                           bgColor={isDisableForStep2 ? '#e9edf1' : 'blue.500'}
                           btnText="Save & Continue"
-                          isDisabled={isDisableForStep2}
                           disabled={isDisableForStep2}
                           hoverColor={isDisableForStep2 ? '#e9edf1' : '#2a72e5'}
                           color={isDisableForStep2 ? '#86929d' : 'white.100'}
@@ -329,7 +326,6 @@ const SimplifiedMainScreen = () => {
                         bgColor={isDisable ? '#e9edf1' : '#00c3c4'}
                         btnText="Save"
                         disabled={isDisable}
-                        isDisabled={isSubmitting}
                         marginRight={'232px'}
                         color={isDisable ? '#86929d' : '#fff'}
                         onClick={() => handleSaveProject(values, account, true)}

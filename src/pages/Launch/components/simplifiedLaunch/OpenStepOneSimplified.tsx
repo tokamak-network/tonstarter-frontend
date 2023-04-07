@@ -35,7 +35,6 @@ const OpenStepOneSimplified = (props: any) => {
 
   useEffect(() => {
     const {resultsStep1} = validateSimplifiedFormikValues(values);
-    console.log('resultsStep1',resultsStep1);
     
     const validation = resultsStep1.length > 0 ? false : true
     setDisableForStep1(!validation);
@@ -58,7 +57,7 @@ const OpenStepOneSimplified = (props: any) => {
         from: 'launch/createprojectsimple',
       })}
 
-  }, [values.vaults, openAnyModal]);
+  }, [values.vaults]);
 
   return (
     <Flex

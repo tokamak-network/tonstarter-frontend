@@ -86,24 +86,24 @@ const OpenStepThreeSimplified = (props: any) => {
         from: 'launch/createprojectsimple',
       })}
     )
-    useEffect(() => {
-      if (!values.vaults || values.vaults.length === 0) {
-        return;
-      }
-      const publicVault = values.vaults[0] as VaultPublic;
-      if (!publicVault.snapshot) {
-        return;
-      }
-      const currentTime = Math.floor(Date.now() / 1000);
-      const timeLeftToDeploy = Math.floor(
-        (publicVault.snapshot - currentTime) / 60,
-      );
-      if (timeLeftToDeploy < 60 ) {
-        openAnyModal('Reschedule', {
-          from: 'launch/createprojectsimple',
-        })}
+    // useEffect(() => {
+    //   if (!values.vaults || values.vaults.length === 0) {
+    //     return;
+    //   }
+    //   const publicVault = values.vaults[0] as VaultPublic;
+    //   if (!publicVault.snapshot) {
+    //     return;
+    //   }
+    //   const currentTime = Math.floor(Date.now() / 1000);
+    //   const timeLeftToDeploy = Math.floor(
+    //     (publicVault.snapshot - currentTime) / 60,
+    //   );
+    //   if (timeLeftToDeploy < 60 ) {
+    //     openAnyModal('Reschedule', {
+    //       from: 'launch/createprojectsimple',
+    //     })}
   
-    }, [values.vaults, openAnyModal]);
+    // }, [values.vaults]);
     
   return (
     <Flex

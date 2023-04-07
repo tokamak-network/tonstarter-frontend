@@ -37,7 +37,7 @@ const DetailComponent = () => {
           ? values.marketCap.toLocaleString(undefined, {
               maximumFractionDigits: 2,
             })
-          : '-0'
+          : '-'
       }`,
     },
     {
