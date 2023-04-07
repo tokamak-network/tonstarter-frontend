@@ -120,9 +120,7 @@ export const schedules = (
       return rounds;
 
     case 'TON Staker':
-      for (let i = 0; i < 6; i++) {
-        console.log('i',i);
-        
+      for (let i = 0; i < 6; i++) {        
         rounds.push({
           claimRound: i + 1,
           claimTime: monthGapTimeStamp(public2End + 1, i*6),

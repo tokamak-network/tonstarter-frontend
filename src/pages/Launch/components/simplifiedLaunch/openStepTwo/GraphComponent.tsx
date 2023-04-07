@@ -227,12 +227,12 @@ const GraphComponent = () => {
           mx="auto"
           w="100%"
           pl="20"
-          fontFamily="TitilliumWeb, sans-serif"
+          
           fontSize="11px"
           display="flex"
           fontWeight={600}
           alignItems="center">
-          <Text mr="6px" color="#7e8993">
+          <Text mr="6px" color="#7e8993" fontFamily="TitilliumWeb, sans-serif">
             * TONStarter section consists of three parts
           </Text>
           <Tooltip

@@ -43,7 +43,7 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
         from: 'launch/createprojectsimple',
       })}
 
-  }, [values.vaults, openAnyModal]);
+  }, [values.vaults]);
 
   return (
     <Flex

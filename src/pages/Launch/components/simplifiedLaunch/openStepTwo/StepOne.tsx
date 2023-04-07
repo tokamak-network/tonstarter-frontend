@@ -107,8 +107,6 @@ const StepOne = () => {
     if (values.totalSupply && values.stablePrice) {
       const totalSupply = values.totalSupply;
       const tokenPriceinDollars = values.stablePrice;
-      console.log('tokenPriceinDollars', tokenPriceinDollars);
-
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
       const tonPriceInToken = 1 / tokenPriceInTon;
 
