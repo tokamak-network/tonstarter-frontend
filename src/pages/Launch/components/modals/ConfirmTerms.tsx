@@ -34,7 +34,7 @@ const ConfirmTermsModal = () => {
     setIsCheck(false);
     handleCloseModal();
   };
-
+  
   return (
     <Modal
       isOpen={data.modal === 'Launch_ConfirmTerms' ? true : false}
@@ -967,12 +967,34 @@ const ConfirmTermsModal = () => {
                     : '1px solid #535353',
                 color: colorMode === 'light' ? '#3e495c' : '',
               }}></CustomButton>
-            {data.data.from === 'launch' && (
+            {data.data.from === 'advance-launch' && (
               <Link
                 to={{
                   pathname: isCheck ? `/launch/createproject` : '#',
                   state: data.data.mode,
-                }}></Link>
+                }}>
+                   <CustomButton
+                  text={'Confirm'}
+                  func={() => {
+                    if (isCheck) return closeModal();
+                  }}
+                  isDisabled={!isCheck}
+                  style={{
+                    backgroundColor: isCheck
+                      ? 'blue.500'
+                      : colorMode === 'light'
+                      ? '#e9edf1'
+                      : '#353535',
+                    color:
+                      colorMode === 'light'
+                        ? isCheck
+                          ? '#ffffff'
+                          : '#86929d'
+                        : isCheck
+                        ? '#ffffff'
+                        : '#838383',
+                  }}></CustomButton>
+                </Link>
             )}
             {data.data.from === 'simplified-launch' && (
               <Link
@@ -1013,6 +1035,7 @@ const ConfirmTermsModal = () => {
                     closeModal();
                   }
                 }}
+                isDisabled={!isCheck}
                 style={{
                   backgroundColor: isCheck
                     ? 'blue.500'
