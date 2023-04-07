@@ -19,6 +19,10 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {ethers} from 'ethers';
 import {createToken} from 'pages/Reward/components/api';
 import {openModal} from 'store/modal.reducer';
+import store from 'store';
+import {setTxPending} from 'store/tx.reducer';
+import {toastWithReceipt} from 'utils';
+import {openToast} from 'store/app/toast.reducer';
 
 const ProjectToken = () => {
   const {colorMode} = useColorMode();
@@ -34,8 +38,7 @@ const ProjectToken = () => {
     ERC20_FACTORY_A_ABI.abi,
   );
 
-  
-  const dispatch:any = useAppDispatch();
+  const dispatch: any = useAppDispatch();
 
   const details = [
     {
@@ -70,7 +73,8 @@ const ProjectToken = () => {
           data: tx.hash,
         }),
       );
-
+      store.dispatch(setTxPending({tx: true}));
+      toastWithReceipt(tx, setTxPending, 'Launch');
       const receipt = await tx.wait();
       const {logs} = receipt;
       const iface = new ethers.utils.Interface(ERC20_FACTORY_A_ABI.abi);
@@ -113,9 +117,13 @@ const ProjectToken = () => {
         </Text>
       </Flex>
       <Flex mt="30px" flexDir={'column'} px="20px" w="100%">
-        {details.map((detail: any) => {
+        {details.map((detail: any, index: number) => {
           return (
-            <Flex w="100%" justifyContent={'space-between'} h="45px">
+            <Flex
+              key={index}
+              w="100%"
+              justifyContent={'space-between'}
+              h="45px">
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
@@ -167,23 +175,29 @@ const ProjectToken = () => {
           h={'38px'}
           bg={'blue.500'}
           fontSize={14}
-          color={'white.100'}
+          color={'white.100'}  
           mr={'12px'}
-          _hover={{}}
-          _disabled={{background: colorMode === 'dark'?'#353535':'#e9edf1',color: colorMode === 'dark'?'#838383':'#86929d', cursor:'not-allowed'}}
+          _hover={isTokenDeployed? {}:{bg:'#2a72e5'}}
+          _focus={isTokenDeployed? {}:{bg:'#2a72e5'}}
+          _active={isTokenDeployed? {}:{bg:'#2a72e5'}}
+          _disabled={{
+            background: colorMode === 'dark' ? '#353535' : '#e9edf1',
+            color: colorMode === 'dark' ? '#838383' : '#86929d',
+            cursor: 'not-allowed',
+          }}
           isDisabled={isTokenDeployed}
           borderRadius={4}
           onClick={() => {
-            deployToken()
-            dispatch(
-              openModal({
-                type: 'Launch_ConfirmTokenSimplified',
-                data: {
-                  tokenInfo: {tokenName, totalSupply, tokenSymbol},
-                  func: () => deployToken(),
-                },
-              }),
-            );
+            deployToken();
+            // dispatch(
+            //   openModal({
+            //     type: 'Launch_ConfirmTokenSimplified',
+            //     data: {
+            //       tokenInfo: {tokenName, totalSupply, tokenSymbol},
+            //       func: () => deployToken(),
+            //     },
+            //   }),
+            // );
           }}>
           {isTokenDeployed ? 'Done' : 'Deploy'}
         </Button>

@@ -43,7 +43,7 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
         from: 'launch/createprojectsimple',
       })}
 
-  }, [values.vaults, openAnyModal]);
+  }, [values.vaults]);
 
   return (
     <Flex
@@ -56,7 +56,7 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
       boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}
       borderRadius="10px">
         <StepHeader deploySteps={false} title={'Token Economy'}/>
-        <Flex px='35px' mb="40px">
+        <Flex pl='35px' mb="40px">
         <StepComponent/>
          <GraphComponent/>
         </Flex>

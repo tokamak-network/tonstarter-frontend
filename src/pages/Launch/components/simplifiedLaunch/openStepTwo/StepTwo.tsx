@@ -56,8 +56,6 @@ const StepTwo = () => {
     return opts;
   }, [values.fundingTarget]);
 
-  const prices = [10, 50, 100];
-
   useEffect(() => {
     async function getTonPrice() {
       const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
@@ -81,6 +79,7 @@ const StepTwo = () => {
       // const tonPriceInTos =
     }
     getTonPrice();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [library, values.vaults[0], option]);
 
   const buttonStatus = (option: any) => {
@@ -117,12 +116,8 @@ const StepTwo = () => {
     if (marketCap) {
       const tokenPriceinDollars = fundingPrice;
 
-      const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
-      console.log('tokenPriceInTon',tokenPriceInTon);
-      
-      const tonPriceInToken = 1 / tokenPriceInTon;
-      console.log('tonPriceInToken',tonPriceInToken);
-      
+      const tokenPriceInTon = tokenPriceinDollars / tonInDollars;      
+      const tonPriceInToken = 1 / tokenPriceInTon;      
       setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
       setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
@@ -251,7 +246,7 @@ const StepTwo = () => {
                 ? ` ${values.totalSupply.toLocaleString()} ${
                     values.tokenSymbol
                   } $ ${(values.stablePrice).toLocaleString(undefined, {
-                    minimumFractionDigits: 5,
+                    minimumFractionDigits: 6,
                   })}/ ${values.tokenSymbol}`
                 : buttonStatus(option)}
               <span>
@@ -271,8 +266,7 @@ const StepTwo = () => {
               onClick={() => setOption({totalSupply: '', fundingPrice: ''})}>
               Select One...
             </MenuItem>
-            {getPrices.map((price: any, index: number) => {
-              
+            {getPrices.map((price: any, index: number) => {              
               return (
                 <MenuItem
                   _hover={{color: '#2a72e5', bg: 'transparent'}}

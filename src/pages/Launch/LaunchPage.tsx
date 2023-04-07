@@ -37,7 +37,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
 
   const showLaunchModes = () => {
     setShowLaunchMode(true);
-  }
+  };
 
   const themeDesign = {
     border: {
@@ -114,108 +114,120 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
-            {!showLaunchMode && <Button
-              _hover={{}}
-              bg={'blue.100'}
-              mt={'10px'}
-              color="white.100"
-              fontFamily={theme.fonts.roboto}
-              letterSpacing={'.35px'}
-              fontSize={'14px'}
-              borderRadius={'4px'}
-              width={'150px'}
-              height={'38px'}
-              padding={'12px 28px 10px'}
-              onClick={() => {
-                showLaunchModes();
-              }}
-              >
-              Create Project
-            </Button>
-            }
+            {!showLaunchMode && (
+              <Button
+                _hover={{bg: '#2a72e5'}}
+                bg={'#257eee'}
+                _active={{bg: '#2a72e5'}}
+                _focus={{bg: '#2a72e5'}}
+                mt={'10px'}
+                color="white.100"
+                fontFamily={theme.fonts.roboto}
+                letterSpacing={'.35px'}
+                fontSize={'14px'}
+                borderRadius={'4px'}
+                width={'150px'}
+                height={'38px'}
+                padding={'12px 28px 10px'}
+                onClick={() => {
+                  showLaunchModes();
+                }}>
+                Create Project
+              </Button>
+            )}
             {/* </Link> */}
-            {showLaunchMode && <ButtonGroup spacing='6'>
-            <Button _hover={{}}
-              bg={'blue.100'}
-              mt={'10px'}
-              color="white.100"
-              fontFamily={theme.fonts.roboto}
-              letterSpacing={'.35px'}
-              fontSize={'14px'}
-              borderRadius={'4px'}
-              width={'150px'}
-              height={'38px'}
-              padding={'12px 28px 10px'}
-              onClick={() => {
-                if (!window.web3) {
-                  return window.open('https://metamask.io/download/');
-                }
-                if (!active) {
-                  return activate(injected);
-                }
-                openAnyModal('Launch_Warning', {
-                  from: 'simplified-launch',
-                });
-              }}>Simplified Launch</Button>
-            <Button _hover={{}}
-              bg={'blue.100'}
-              mt={'10px'}
-              color="white.100"
-              fontFamily={theme.fonts.roboto}
-              letterSpacing={'.35px'}
-              fontSize={'14px'}
-              borderRadius={'4px'}
-              width={'150px'}
-              height={'38px'}
-              padding={'12px 28px 10px'} 
-              onClick={() => {
-                if (!window.web3) {
-                  return window.open('https://metamask.io/download/');
-                }
-                if (!active) {
-                  return activate(injected);
-                }
-                openAnyModal('Launch_ConfirmTerms', {
-                  from: 'advance-launch',
-                });
-              }}>Advance Launch</Button>
-            </ButtonGroup>}
+            {showLaunchMode && (
+              <ButtonGroup spacing="6">
+                <Button
+                  bg={'#257eee'}
+                  mt={'10px'}
+                  _focus={{bg: '#2a72e5'}}
+                  color="white.100"
+                  fontFamily={theme.fonts.roboto}
+                  letterSpacing={'.35px'}
+                  fontSize={'14px'}
+                  borderRadius={'4px'}
+                  width={'150px'}
+                  _hover={{bg: '#2a72e5'}}
+                  _active={{bg: '#2a72e5'}}
+                  height={'38px'}
+                  padding={'12px 28px 10px'}
+                  onClick={() => {
+                    if (!window.web3) {
+                      return window.open('https://metamask.io/download/');
+                    }
+                    if (!active) {
+                      return activate(injected);
+                    }
+                    openAnyModal('Launch_Warning', {
+                      from: 'simplified-launch',
+                    });
+                  }}>
+                  Simplified Launch
+                </Button>
+                <Button
+                  _hover={{bg: '#2a72e5'}}
+                  bg={'#257eee'}
+                  _active={{bg: '#2a72e5'}}
+                  mt={'10px'}
+                  _focus={{bg: '#2a72e5'}}
+                  color="white.100"
+                  fontFamily={theme.fonts.roboto}
+                  letterSpacing={'.35px'}
+                  fontSize={'14px'}
+                  borderRadius={'4px'}
+                  width={'150px'}
+                  height={'38px'}
+                  padding={'12px 28px 10px'}
+                  onClick={() => {
+                    if (!window.web3) {
+                      return window.open('https://metamask.io/download/');
+                    }
+                    if (!active) {
+                      return activate(injected);
+                    }
+                    openAnyModal('Launch_ConfirmTerms', {
+                      from: 'advance-launch',
+                    });
+                  }}>
+                  Advance Launch
+                </Button>
+              </ButtonGroup>
+            )}
           </Flex>
           <Flex
-          justifyContent={'space-between'}
-          // mb={'100px'}
-          position={'absolute'}
-          top='140%'
-          // bottom={'-21%'}
-          background={'rgba(7, 7, 10, .7)'}
-          paddingX={'400px'}
-          paddingY={'10px'}
-          left={'50%'}
-          transform={'translateX(-50%)'}>
-          <Flex
-            alignItems={'center'}
-            flexDir="column"
-            width={'400px'}
-            fontFamily={theme.fonts.fld}>
-            <Text color={'yellow'}>Raised Capital</Text>
-            <Text color={'#fff'} fontSize={'24px'}>
-              $2,646,790.91
-            </Text>
-          </Flex>
-          <Flex
-            alignItems={'center'}
-            flexDir="column"
-            width={'400px'}
-            fontFamily={theme.fonts.fld}>
-            <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
-            <Text color={'#fff'} fontSize={'24px'}>
-              {numPairs}
-            </Text>
+            justifyContent={'space-between'}
+            // mb={'100px'}
+            position={'absolute'}
+            top="140%"
+            // bottom={'-21%'}
+            background={'rgba(7, 7, 10, .7)'}
+            paddingX={'400px'}
+            paddingY={'10px'}
+            left={'50%'}
+            transform={'translateX(-50%)'}>
+            <Flex
+              alignItems={'center'}
+              flexDir="column"
+              width={'400px'}
+              fontFamily={theme.fonts.fld}>
+              <Text color={'yellow'}>Raised Capital</Text>
+              <Text color={'#fff'} fontSize={'24px'}>
+                $2,646,790.91
+              </Text>
+            </Flex>
+            <Flex
+              alignItems={'center'}
+              flexDir="column"
+              width={'400px'}
+              fontFamily={theme.fonts.fld}>
+              <Text color={'yellow'}>TOS pairs (in Uniswap)</Text>
+              <Text color={'#fff'} fontSize={'24px'}>
+                {numPairs}
+              </Text>
+            </Flex>
           </Flex>
         </Flex>
-        </Flex>
-
-       
       </Flex>
 
       <Box
@@ -288,7 +300,6 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
             My
           </Button>
         </Flex>
-
       </Box>
       {showAllProjects ? <AllProjects /> : <MyProjects />}
       <ConfirmTermsModal></ConfirmTermsModal>

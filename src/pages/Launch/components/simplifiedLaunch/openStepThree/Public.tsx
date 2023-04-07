@@ -6,7 +6,7 @@ import {
   Button,
   Link,
 } from '@chakra-ui/react';
-import {useEffect, useState, useCallback} from 'react';
+import {useEffect, useState, useCallback, useMemo} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects, VaultPublic} from '@Launch/types';
 import moment from 'moment';
@@ -45,7 +45,7 @@ const Public = (props: {step: string}) => {
 
   const {blockNumber} = useBlockNumber();
   const publicVault = values.vaults[0] as VaultPublic;
-// console.log('publicVault',publicVault);
+  // console.log('publicVault',publicVault);
 
   const detailsVault = [
     {name: 'Vault Name', value: `${publicVault.vaultName}`},
@@ -75,16 +75,20 @@ const Public = (props: {step: string}) => {
     },
     {
       name: 'Public Round 1',
-      value1: `${publicVault.publicRound1Allocation? (publicVault.publicRound1Allocation ).toLocaleString():0} ${
-        values.tokenSymbol
-      }`,
+      value1: `${
+        publicVault.publicRound1Allocation
+          ? publicVault.publicRound1Allocation.toLocaleString()
+          : 0
+      } ${values.tokenSymbol}`,
       value2: '50%',
     },
     {
       name: 'Public Round 2',
-      value1: `${publicVault.publicRound2Allocation?(publicVault.publicRound2Allocation).toLocaleString():0} ${
-        values.tokenSymbol
-      }`,
+      value1: `${
+        publicVault.publicRound2Allocation
+          ? publicVault.publicRound2Allocation.toLocaleString()
+          : 0
+      } ${values.tokenSymbol}`,
       value2: '50%',
     },
     {
@@ -252,7 +256,10 @@ const Public = (props: {step: string}) => {
                         ? `https://etherscan.io/address/${detail.value}`
                         : ''
                     }
-                    _hover={{color: '#2a72e5'}}>
+                    _hover={{
+                      color: '#2a72e5',
+                      textDecoration: detail.value ? 'underline' : '',
+                    }}>
                     {detail.value ? shortenAddress(detail.value) : 'NA'}
                   </Link>
                 ) : (
@@ -477,6 +484,30 @@ const Public = (props: {step: string}) => {
       </Flex>
     );
   };
+  const buttonStatus = useMemo(() => {
+    const status =
+      step === 'Deploy'
+        ? values.isTokenDeployed === false ||
+          publicVault.vaultAddress !== undefined ||
+          values.vaults[2].isDeployed === false
+          ? true
+          : false
+        : publicVault.isSet === true ||
+          !hasToken ||
+          values.vaults[2].isSet === false
+        ? true
+        : false;
+
+    return status;
+  }, [
+    step,
+    values.isTokenDeployed,
+    values.vaults,
+    publicVault.vaultAddress,
+    publicVault.isSet,
+    hasToken,
+  ]);
+
   return (
     <Flex
       mt="30px"
@@ -511,7 +542,7 @@ const Public = (props: {step: string}) => {
           height: '440px',
           display: 'flex',
           position: 'relative',
-         
+
           justifyContent: 'center',
         }}
         thumbSize={70}
@@ -607,21 +638,14 @@ const Public = (props: {step: string}) => {
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
-          _hover={{}}
-          isDisabled={
-            step === 'Deploy'
-              ? values.isTokenDeployed ===  false || publicVault.vaultAddress !== undefined
-                ? true
-                : false
-              : publicVault.isSet === true || !hasToken
-              ? true
-              : false
-          }
+          _active={buttonStatus ? {} : {bg: '#2a72e5'}}
+          _hover={buttonStatus ? {} : {bg: '#2a72e5'}}
           _disabled={{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',
           }}
+          isDisabled={buttonStatus}
           onClick={() => {
             vaultDeploy();
           }}

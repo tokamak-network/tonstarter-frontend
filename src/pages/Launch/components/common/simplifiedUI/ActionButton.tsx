@@ -6,7 +6,7 @@ type ButtonProps = {
   btnText: string;
   color: string;
   onClick?: any;
-  onHover?:any;
+  onHover?: any;
   marginRight?: string;
   marginLeft?: string;
   marginTop?: string;
@@ -20,7 +20,6 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
     onClick,
     bgColor,
     btnText,
-    isDisabled,
     color,
     marginRight,
     marginLeft,
@@ -42,12 +41,28 @@ export const ActionButton: React.FC<ButtonProps> = (props: any) => {
       mb={marginBottom}
       color={color}
       // _focus={{bg: '#2a72e5'}}
-      _active={{bg: bgColor === '#00c3c4'? '#00c3c4':bgColor === '#fecf05'?'#fecf05': '#2a72e5'}}
-      isDisabled={isDisabled}
-      _disabled={{bg: colorMode === 'dark'?'#353535':'#e9edf1', color: colorMode === 'dark'? '#838383':'#86929d', cursor:'not-allowed'}}
+      _active={
+        !disabled
+          ? {
+              bg:
+                bgColor === '#00c3c4'
+                  ? '#00c3c4'
+                  : bgColor === '#fecf05'
+                  ? '#fecf05'
+                  : '#2a72e5',
+            }
+          : {}
+      }
+      isDisabled={disabled}
+      // disabled={isDisabled}
+      _disabled={{
+        bg: colorMode === 'dark' ? '#353535' : '#e9edf1',
+        color: colorMode === 'dark' ? '#838383' : '#86929d',
+        cursor: 'not-allowed',
+      }}
       bg={bgColor}
       borderRadius={4}
-      _hover={{bg: hoverColor}}
+      _hover={ !disabled?{bg: hoverColor}:{}}
       fontSize={14}
       onClick={onClick}>
       {btnText}

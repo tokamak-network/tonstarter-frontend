@@ -142,6 +142,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         return;
       }
       const hardCapCalc = await PUBLICSALE_CONTRACT.hardcapCalcul();
+      
       const adminWithdraw = await PUBLICSALE_CONTRACT.adminWithdraw();
       setFundWithdrew(adminWithdraw);
 
@@ -264,6 +265,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       dark: '#fff',
     },
   };
+
+
 
   return (
     <Flex flexDirection={'column'}>
@@ -484,7 +487,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 className={'chart-cell'}
                 pt={'15px'}
                 pb="15px"
-                h={now >= vault.publicRound2 ? '245px' : '245px'}>
+                h={isNaN((transferredTon / hardcap) * 100)? '200px' : '245px'}>
                 <Flex flexDir={'column'} w="100%">
                   <Text mb={'12px'} fontSize={'13px'} fontWeight={600}>
                     Fund Initialization
@@ -511,7 +514,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             1. Fund Initial Liquidity Vault{' '}
                           </Text>
                           <Tooltip
-                            label="Snapshot date must be set 1 week after Deployment completion"
+                            label="The hardcap amount will be updated when the sale period is over"
                             hasArrow
                             placement="top"
                             color={
@@ -542,7 +545,9 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             : 'NA'}
                         </Link>
                       </Flex>
-                      <Flex w="100%" flexDir={'column'}>
+                      {isNaN((transferredTon / hardcap) * 100)?  <Text  textAlign={'right'}
+                          w="100%">N/A</Text>:  <Flex flexDirection='column'>
+                             <Flex w="100%" flexDir={'column'} flexDirection='column'>
                         <Text
                           textAlign={'right'}
                           w="100%"
@@ -550,6 +555,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                           fontSize="12px"
                           fontWeight="normal">
                           {transferredTon.toLocaleString()} /{' '}
+                          
                           {hardcap.toLocaleString()} TON
                         </Text>
 
@@ -557,7 +563,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                           borderRadius={10}
                           h={'6px'}
                           bg={colorMode === 'light' ? '#e7edf3' : '#353d48'}
-                          value={(transferredTon / hardcap) * 100}></Progress>
+                          value={isNaN((transferredTon / hardcap) * 100)? 0: (transferredTon / hardcap) * 100}></Progress>
                       </Flex>
                       <Button
                         fontSize={'11px'}
@@ -591,7 +597,10 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
 
                         _hover={{cursor: 'pointer'}}>
                         Swap & Send
-                      </Button>
+                      </Button></Flex>}
+                     
+                      {/* */}
+                      {/*  */}
                     </Flex>
                   </Flex>
                   <Flex>
@@ -836,7 +845,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 mr={'-1px'}
-                h={now >= vault.publicRound2 ? '245px' : '245px'}>
+                h={isNaN((transferredTon / hardcap) * 100)? '200px'  : '245px'}>
                 <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
@@ -954,9 +963,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                     }
                     borderTop="none"
                     h={
-                       i === 6 - sTosTier.length - 1
-                          ? '244px'
-                          : ''
+                       i === 6 - sTosTier.length - 1? isNaN((transferredTon / hardcap) * 100)? '199px' : '244px':''
+                         
                         
                     }
                     borderLeft={'none'}

@@ -31,7 +31,6 @@ const StepComponent = () => {
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
 
-  console.log('values',values);
 
   const disableButton = (step: number) => {
     switch (step) {

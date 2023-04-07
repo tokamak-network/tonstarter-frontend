@@ -21,6 +21,19 @@ const StepFour = () => {
     setFieldValue('tosPrice',truncNumber(1/e,3))
   };
   
+
+  const getZeros = (num: number) => {
+    const match = num.toString().match(/\.0*(.*)/);
+    if (match && match[1] && num > 0) {
+      const numZeros = num.toString().length - 1 - match[1].length;
+      return numZeros;
+      // return zeros; // Output:
+    } else {
+      return 0;
+    }
+  }
+
+
   return (
     <Flex flexDir={'column'}  alignItems={'flex-start'} h='150px'>
       {' '}
@@ -54,7 +67,9 @@ const StepFour = () => {
         <NumberInput>
           <NumberInputField
             h="30px"
-            placeholder={values.tosPrice? (1/values.tosPrice).toLocaleString().toString() : '0'}
+            placeholder={values.tosPrice? (1/values.tosPrice).toLocaleString(undefined, {
+              minimumFractionDigits: getZeros(1 / values.tosPrice),
+            }).toString() : '0'}
             fontSize={'13px'}
             border="none"
             pr="5px"

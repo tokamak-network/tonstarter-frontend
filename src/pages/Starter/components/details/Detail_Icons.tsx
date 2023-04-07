@@ -15,6 +15,7 @@ type DetailIconProp = {
 export const DetailIcons = (prop: DetailIconProp) => {
   const {linkInfo} = prop;
   const {colorMode} = useColorMode();
+  console.log('linkInfo', linkInfo);
 
   const [mouseOver, setMouseOver] = useState<string | boolean>(false);
   const handleMouseOut = () => {
@@ -29,7 +30,7 @@ export const DetailIcons = (prop: DetailIconProp) => {
   return (
     <Flex>
       {linkInfo.map((link) => {
-        if (link.url === '') {
+        if (link.url === '' || link.url === 'undefined') {
           return null;
         }
         return (
