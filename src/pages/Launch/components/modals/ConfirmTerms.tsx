@@ -897,8 +897,8 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <Text>
                     <b>18.1</b>TONStarter - Tokamak is fully owned and operated
-                    by Tokamak Network Pte. Ltd. (UEN 201807447M), a company incorporated
-                    in Singapore.
+                    by Tokamak Network Pte. Ltd. (UEN 201807447M), a company
+                    incorporated in Singapore.
                   </Text>
                   <br />
                   <Text fontSize={15} fontWeight="bold">
@@ -967,12 +967,20 @@ const ConfirmTermsModal = () => {
                     : '1px solid #535353',
                 color: colorMode === 'light' ? '#3e495c' : '',
               }}></CustomButton>
-              {data.data.from === 'launch' && (
-              <Link to={{pathname: isCheck ? `/launch/createproject` : '#', state: data.data.mode}}></Link>
-              )}
-        {data.data.from === 'simplified-launch' &&
-            (
-              <Link to={{pathname: isCheck ? `/launch/simplified/createprojectsimple` : '#'}}>
+            {data.data.from === 'launch' && (
+              <Link
+                to={{
+                  pathname: isCheck ? `/launch/createproject` : '#',
+                  state: data.data.mode,
+                }}></Link>
+            )}
+            {data.data.from === 'simplified-launch' && (
+              <Link
+                to={{
+                  pathname: isCheck
+                    ? `/launch/simplified/createprojectsimple`
+                    : '#',
+                }}>
                 <CustomButton
                   text={'Confirm'}
                   func={() => {
