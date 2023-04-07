@@ -118,13 +118,15 @@ const EstimateGasModal = () => {
             <Image src={gasIcon} px={'120px'} py={'45px'} />
 
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
-              <Text fontSize={13} mr='5px'>Recommended</Text>
+              <Text fontSize={13} mr="5px">
+                Recommended
+              </Text>
               <CustomTooltip
-                  toolTipW={200}
-                  toolTipH={'50px'}
-                  msg={[
-                    `Recommended ETH amount includes a safety margin of 1ETH`,
-                  ]}></CustomTooltip>
+                toolTipW={200}
+                toolTipH={'50px'}
+                msg={[
+                  `Recommended ETH amount includes a safety margin of 1ETH`,
+                ]}></CustomTooltip>
               <Spacer />
               <Text fontSize={15}>{`${recommended.toLocaleString()} ETH`}</Text>
             </Flex>
@@ -163,7 +165,10 @@ const EstimateGasModal = () => {
                 color={'#fff'}
                 border-radius={'4px'}
                 onClick={() => closeModal()}
-                bg={'#257eee'}>
+                _hover={{bg: '#2a72e5'}}
+                bg={'#257eee'}
+                _active={{bg: '#2a72e5'}}
+                _focus={{bg: '#2a72e5'}}>
                 Done
               </Button>
             </Flex>
