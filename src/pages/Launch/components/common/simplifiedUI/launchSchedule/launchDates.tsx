@@ -333,10 +333,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                           color={'#fff'}
                           border={0}>
                           <PopoverArrow bg={'#353c48'} />
-                          <PopoverBody>
+                          <PopoverBody textAlign={'left'}>
                             <>
                               Each vault unlocks a set amount each month over a
-                              period of up to 48 months.&nbsp;
+                              period of up to 48 months.&nbsp;  
                               {/* Download claim schedule */}
                               {/* <Link href={pdfPath} target="_blank" download>
                                 <Text as='u'>Learn more...</Text>
@@ -346,8 +346,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                                 href={pdfPath}
                                 target="_blank"
                                 without
-                                rel="noopener noreferrer">
-                                <Text as="u">Learn more...</Text>
+                                rel="noopener noreferrer"
+                                style={{ textDecoration: 'none' }}>
+                                 Learn <span style={{ color: '#2a72e5' }}>more...</span>
                               </Link>
                             </>
                           </PopoverBody>
