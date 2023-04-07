@@ -187,7 +187,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                       return activate(injected);
                     }
                     openAnyModal('Launch_ConfirmTerms', {
-                      from: 'advance-mode',
+                      from: 'advance-launch',
                     });
                   }}>
                   Advance Launch
