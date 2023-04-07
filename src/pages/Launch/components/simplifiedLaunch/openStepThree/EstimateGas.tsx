@@ -163,6 +163,7 @@ const EstimateGasModal = () => {
                 color={'#fff'}
                 border-radius={'4px'}
                 onClick={() => closeModal()}
+                _hover={{bg: 'blue.100'}}
                 bg={'#257eee'}>
                 Done
               </Button>
