@@ -11,29 +11,45 @@ import {
   useTheme,
   useColorMode,
 } from '@chakra-ui/react';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
 import {useModal} from 'hooks/useModal';
 import {CloseButton} from 'components/Modal';
 import Line from '@Launch/components/common/Line';
 
-const RescheduleModal = () => {
-  // const {step} = props;
+const RescheduleModal = (props: any) => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
-  const [isCheck, setIsCheck] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
 
+  // If the modal is already seen, then do not show the modal again
+  useEffect(() => {
+    const modalClosed = localStorage.getItem('modalClosed');
+    if (modalClosed) {
+      setIsModalOpen(false);
+    }
+  }, []);
+
+  // If modal is once seen & closed, it's 'closed' state will save to local storage.
   const closeModal = () => {
-    setIsCheck(false);
+    setIsModalOpen(false);
+    localStorage.setItem('modalClosed', 'true');
     handleCloseModal();
+  };
+
+  const handleGo = () => {
+    if (props.onClick) {
+      props.onClick();
+    }
+    closeModal();
   };
 
   return (
     <Modal
-      isOpen={data.modal === 'Reschedule' ? true : false}
+      isOpen={data.modal === 'Reschedule' && isModalOpen ? true : false}
       isCentered
       onClose={() => closeModal()}>
       <ModalOverlay />
@@ -71,7 +87,6 @@ const RescheduleModal = () => {
           <Flex alignSelf={'center'} w={'320px'}>
             <Line />
           </Flex>
-          {/* FIXME: When clicking 'Go' button, navigate to step 1*/}
           <Flex alignItems={'center'} w={'320px'} mx={'100px'} mt={'25px'}>
             <Button
               w={'150px'}
@@ -79,8 +94,8 @@ const RescheduleModal = () => {
               color={'#fff'}
               border-radius={'4px'}
               _hover={{bg: 'blue.100'}}
-              onClick={() => closeModal()}
-              bg={'#257eee'}>
+              bg={'#257eee'}
+              onClick={() => handleGo()}>
               Go
             </Button>
           </Flex>

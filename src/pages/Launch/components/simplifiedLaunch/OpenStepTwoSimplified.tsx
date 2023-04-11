@@ -1,21 +1,18 @@
 // Simplified Launch Token Economy component
-import {Flex, useColorMode, useTheme, Image, Text} from '@chakra-ui/react';
+import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import StepHeader from './StepHeader';
 import StepComponent from './openStepTwo/StepComponent';
 import GraphComponent from './openStepTwo/GraphComponent';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import { useFormikContext } from 'formik';
-import {Projects, VaultPublic} from '@Launch/types';
-import {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import RescheduleModal from '../common/simplifiedUI/Reschedule';
-import {useModal} from 'hooks/useModal';
+import {Projects} from '@Launch/types';
+import {Dispatch, SetStateAction, useEffect} from 'react';
 
 const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAction<boolean>>;}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
   const {setDisableForStep2} = props;
-  const {openAnyModal} = useModal();
 
  useEffect(() => {
     const {resultsStep2} = validateSimplifiedFormikValues(values)
@@ -26,29 +23,9 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
     
   }, [values, setDisableForStep2]);
 
-  useEffect(() => {
-    if (!values.vaults || values.vaults.length === 0) {
-      return;
-    }
-    const publicVault = values.vaults[0] as VaultPublic;
-    if (!publicVault.snapshot) {
-      return;
-    }
-    const currentTime = Math.floor(Date.now() / 1000);
-    const timeLeftToDeploy = Math.floor(
-      (publicVault.snapshot - currentTime) / 60,
-    );
-    if (timeLeftToDeploy < 60 ) {
-      openAnyModal('Reschedule', {
-        from: 'launch/createprojectsimple',
-      })}
-
-  }, [values.vaults]);
-
   return (
     <Flex
       w="774px"
-      // h="512px"
       border={'1px solid'}
       flexDir='column'
       borderColor={colorMode === 'dark' ? '#373737' : 'transparent'}
@@ -60,7 +37,6 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
         <StepComponent/>
          <GraphComponent/>
         </Flex>
-        {/* <RescheduleModal /> */}
       </Flex>
   );
 };

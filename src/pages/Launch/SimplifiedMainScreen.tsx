@@ -31,6 +31,8 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
 import {ActionButton} from './components/common/simplifiedUI/ActionButton';
 import {useFormikContext} from 'formik';
+import {useModal} from 'hooks/useModal';
+import RescheduleModal from './components/common/simplifiedUI/Reschedule';
 
 const StepComponent = (props: {
   step: StepNumber;
@@ -74,6 +76,7 @@ const SimplifiedMainScreen = () => {
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[3];
+  const {openAnyModal} = useModal();
 
   const dispatch = useAppDispatch();
   const {
@@ -126,6 +129,12 @@ const SimplifiedMainScreen = () => {
       : '#00c3c4';
   };
 
+  // Navigate to Step1 from Reschedule modal once the user hit 'Go'
+  const navigateToStep1 = () => {
+    setStep(1);
+    return step;
+  };
+
   const handleSaveProject = (values: any, account: string, mode: boolean) => {
     account && isExist === 'createprojectsimple' && hashKey === undefined
       ? saveProject(values, account, mode)
@@ -146,7 +155,7 @@ const SimplifiedMainScreen = () => {
 
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
-  }  
+  }
 
   return (
     <Flex
@@ -219,6 +228,20 @@ const SimplifiedMainScreen = () => {
 
           const isDeployed = !nonSetExists;
 
+          // Calculate time left until snapshot time and show reschedule modal.
+          const snapshotTime =
+            projects[id]?.vaults[0]?.snapshot || values.vaults[0].snapshot;
+          const currentTime = Math.floor(Date.now() / 1000);
+          const timeUntilSnapshot = Math.floor(
+            (snapshotTime - currentTime) / 60,
+          );
+
+          if (timeUntilSnapshot < 60 && (step === 2 || step === 3)) {
+            openAnyModal('Reschedule', {
+              from: '/launch/simplified/createprojectsimple',
+            });
+          }
+
           return (
             <Form onSubmit={handleSubmit}>
               <Flex
@@ -252,7 +275,7 @@ const SimplifiedMainScreen = () => {
                         btnText="Save & Continue"
                         disabled={isDisable || isDisableForStep1}
                         color={isDisable ? '#86929d' : 'white.100'}
-                        hoverColor={isDisable? '#e9edf1' : '#2a72e5'}
+                        hoverColor={isDisable ? '#e9edf1' : '#2a72e5'}
                         onClick={() => handleSaveAndContinue(values, account)}
                       />
                     </>
@@ -364,7 +387,13 @@ const SimplifiedMainScreen = () => {
                         />
 
                         <ActionButton
-                          bgColor={isDisable ? colorMode === 'light' ? '#e9edf1' : '#353535' : '#fecf05'}
+                          bgColor={
+                            isDisable
+                              ? colorMode === 'light'
+                                ? '#e9edf1'
+                                : '#353535'
+                              : '#fecf05'
+                          }
                           btnText="Save"
                           disabled={isSubmitting}
                           marginRight={'224px'}
@@ -379,7 +408,9 @@ const SimplifiedMainScreen = () => {
                         btnText="Next"
                         disabled={isDisable || isDisableForStep1}
                         color={'white.100'}
-                        hoverColor={isDisable || isDisableForStep1 ? '#e9edf1' : '#2a72e5'}
+                        hoverColor={
+                          isDisable || isDisableForStep1 ? '#e9edf1' : '#2a72e5'
+                        }
                         onClick={() => handleSaveAndContinue(values, account)}
                       />
                     </>
@@ -410,7 +441,11 @@ const SimplifiedMainScreen = () => {
                           btnText="Next"
                           color={'white.100'}
                           disabled={isDisableForStep2}
-                          hoverColor={isDisable || isDisableForStep2 ? '#e9edf1' : '#2a72e5'}
+                          hoverColor={
+                            isDisable || isDisableForStep2
+                              ? '#e9edf1'
+                              : '#2a72e5'
+                          }
                           onClick={() => handleSaveAndContinue(values, account)}
                         />
                       </ButtonGroup>
@@ -443,6 +478,7 @@ const SimplifiedMainScreen = () => {
           );
         }}
       </Formik>
+      <RescheduleModal onClick={navigateToStep1} />
     </Flex>
   );
 };

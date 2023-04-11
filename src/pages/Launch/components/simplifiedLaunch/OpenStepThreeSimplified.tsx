@@ -2,14 +2,14 @@
 import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import StepHeader from './StepHeader';
 import StepThreeSteps from './openStepThree/StepThreeSteps';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import InitialLiquidity from './openStepThree/InitialLiquidity';
 import Distribute from './openStepThree/Distribute';
 import ProjectToken from './openStepThree/ProjectToken';
 import Vesting from './openStepThree/Vesting';
 import Public from './openStepThree/Public';
 import {useFormikContext} from 'formik';
-import {Projects, VaultPublic} from '@Launch/types';
+import {Projects} from '@Launch/types';
 import Team from './openStepThree/Team';
 import Ecosystem from './openStepThree/Ecosystem';
 import TokenLP from './openStepThree/TokenLp';
@@ -19,7 +19,6 @@ import WtonLP from './openStepThree/WtonLP';
 import ConfirmTokenSimplifiedModal from '../modals/ConfirmTokenSimplified';
 import {useModal} from 'hooks/useModal';
 import EstimateGasModal from './openStepThree/EstimateGas';
-import RescheduleModal from '../common/simplifiedUI/Reschedule';
 
 
 const VaultComp = (props: {vaultNum: Number}) => {
@@ -86,24 +85,6 @@ const OpenStepThreeSimplified = (props: any) => {
         from: 'launch/createprojectsimple',
       })}
     )
-    // useEffect(() => {
-    //   if (!values.vaults || values.vaults.length === 0) {
-    //     return;
-    //   }
-    //   const publicVault = values.vaults[0] as VaultPublic;
-    //   if (!publicVault.snapshot) {
-    //     return;
-    //   }
-    //   const currentTime = Math.floor(Date.now() / 1000);
-    //   const timeLeftToDeploy = Math.floor(
-    //     (publicVault.snapshot - currentTime) / 60,
-    //   );
-    //   if (timeLeftToDeploy < 60 ) {
-    //     openAnyModal('Reschedule', {
-    //       from: 'launch/createprojectsimple',
-    //     })}
-  
-    // }, [values.vaults]);
     
   return (
     <Flex
@@ -125,7 +106,6 @@ const OpenStepThreeSimplified = (props: any) => {
     <VaultComp vaultNum={currentStep}/>
     <ConfirmTokenSimplifiedModal/>
     <EstimateGasModal />
-    {/* <RescheduleModal /> */}
     </Flex>
   );
 };
