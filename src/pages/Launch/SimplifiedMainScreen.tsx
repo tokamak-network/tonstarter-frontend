@@ -6,6 +6,7 @@ import {
   Link,
   useTheme,
   useColorMode,
+  Tooltip,
 } from '@chakra-ui/react';
 import {
   Dispatch,
@@ -25,7 +26,12 @@ import Steps from '@Launch/components/Steps';
 import OpenStepTwoSimplified from '@Launch/components/simplifiedLaunch/OpenStepTwoSimplified';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectLaunch, setHashKey, fetchProjects} from '@Launch/launch.reducer';
+import {
+  selectLaunch,
+  setHashKey,
+  fetchProjects,
+  setCurrentDeployStep,
+} from '@Launch/launch.reducer';
 import OpenStepThreeSimplified from '@Launch/components/simplifiedLaunch/OpenStepThreeSimplified';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
@@ -104,7 +110,12 @@ const SimplifiedMainScreen = () => {
         data: isExist === 'createprojectsimple' ? undefined : isExist,
       }),
     );
-  }, []);
+    dispatch(
+      setCurrentDeployStep({
+        data: 0,
+      }),
+    );
+  }, [dispatch, isExist]);
 
   const handleStep = useCallback(
     (isNext: boolean) => {
@@ -146,7 +157,7 @@ const SimplifiedMainScreen = () => {
 
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
-  }  
+  }
 
   return (
     <Flex
@@ -252,7 +263,7 @@ const SimplifiedMainScreen = () => {
                         btnText="Save & Continue"
                         disabled={isDisable || isDisableForStep1}
                         color={isDisable ? '#86929d' : 'white.100'}
-                        hoverColor={isDisable? '#e9edf1' : '#2a72e5'}
+                        hoverColor={isDisable ? '#e9edf1' : '#2a72e5'}
                         onClick={() => handleSaveAndContinue(values, account)}
                       />
                     </>
@@ -309,6 +320,7 @@ const SimplifiedMainScreen = () => {
                           hoverColor={'#2a72e5'}
                           onClick={() => handleStep(false)}
                         />
+                        {/* <Tooltip label='Go to ‘my project’ and click  ‘Listing on TONStarter’'> */}
                         <ActionButton
                           bgColor={isDisableForStep3 ? '#e9edf1' : 'blue.500'}
                           btnText="Complete & Go"
@@ -317,6 +329,7 @@ const SimplifiedMainScreen = () => {
                           onClick={() => handleComplete(values, account, true)}
                           hoverColor={isDisableForStep3 ? '#e9edf1' : '#2a72e5'}
                         />
+                        {/* </Tooltip> */}
                       </ButtonGroup>
                     </>
                   )}
@@ -364,7 +377,13 @@ const SimplifiedMainScreen = () => {
                         />
 
                         <ActionButton
-                          bgColor={isDisable ? colorMode === 'light' ? '#e9edf1' : '#353535' : '#fecf05'}
+                          bgColor={
+                            isDisable
+                              ? colorMode === 'light'
+                                ? '#e9edf1'
+                                : '#353535'
+                              : '#fecf05'
+                          }
                           btnText="Save"
                           disabled={isSubmitting}
                           marginRight={'224px'}
@@ -379,7 +398,9 @@ const SimplifiedMainScreen = () => {
                         btnText="Next"
                         disabled={isDisable || isDisableForStep1}
                         color={'white.100'}
-                        hoverColor={isDisable || isDisableForStep1 ? '#e9edf1' : '#2a72e5'}
+                        hoverColor={
+                          isDisable || isDisableForStep1 ? '#e9edf1' : '#2a72e5'
+                        }
                         onClick={() => handleSaveAndContinue(values, account)}
                       />
                     </>
@@ -410,7 +431,11 @@ const SimplifiedMainScreen = () => {
                           btnText="Next"
                           color={'white.100'}
                           disabled={isDisableForStep2}
-                          hoverColor={isDisable || isDisableForStep2 ? '#e9edf1' : '#2a72e5'}
+                          hoverColor={
+                            isDisable || isDisableForStep2
+                              ? '#e9edf1'
+                              : '#2a72e5'
+                          }
                           onClick={() => handleSaveAndContinue(values, account)}
                         />
                       </ButtonGroup>

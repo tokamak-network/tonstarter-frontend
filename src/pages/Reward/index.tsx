@@ -12,13 +12,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  Button,
-  MenuOptionGroup,
-  MenuIcon,
-  MenuCommand,
-  MenuDivider,
   Switch,
   Stack,
   Radio,
@@ -242,6 +235,9 @@ export const Reward = () => {
       pollingInterval: 2000,
     },
   );
+
+  console.log('position',position);
+  
   const getStatus = (token: any) => {
     if (token) {
       const liquidity = Number(
