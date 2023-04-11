@@ -256,7 +256,7 @@ const StepThreeSteps = (props: {
           mt="-52px"
           w="100%"
           fontSize={12}>
-          {hover === true  || currentStep === index? vault : ''}
+          {hover === true || currentStep === index ? vault : ''}
         </Text>
 
         <Flex
@@ -311,7 +311,7 @@ const StepThreeSteps = (props: {
     // initialSlide: currentSlide,
     // arrows: true,
     swipeToSlide: true,
-    // arrows:false,
+    // arrows: false,
     beforeChange: (next: any) => setCurrentSlide(next),
     afterChange: (current: any) => setCurrentSlide(current),
     focusOnSelect: true,
@@ -320,6 +320,8 @@ const StepThreeSteps = (props: {
     slidesToScroll: 1,
     nextArrow: (
       <Image
+      h='20px'
+      w='20px'
         className="slick-arrow"
         onMouseEnter={() => setIsHoverRight(true)}
         onMouseLeave={() => setIsHoverRight(false)}
@@ -357,6 +359,10 @@ const StepThreeSteps = (props: {
   };
 
   const slickerStyles = `
+  .slider-wrapper .slick-prev,
+.slider-wrapper .slick-next {
+  // display: none !important;
+}
   .slick-slider{
     width: 325px;
     display: flex !important;
@@ -368,9 +374,10 @@ const StepThreeSteps = (props: {
 //  .slick-slide .slick-cloned{
 //     margin-left:-50px !important
 //   }
-//   ."slick-slide slick-active slick-center slick-current{
+//   .slick-slide slick-active slick-center slick-current{
 //     margin'right:40px !important
 //   }
+
 
  
   `;
@@ -378,9 +385,13 @@ const StepThreeSteps = (props: {
   // console.log(transX, flowIndex);
 
   return (
-    <Flex w="350px" alignItems={'center'} mt="41px">
-      <Flex w={'100%'} alignItems="center" mx={'15px'}>
-        <style>{slickerStyles}</style>
+    <Flex w="350px" alignItems={'center'} mt="41px"  className="slider-wrapper">
+      <style>{slickerStyles}</style>
+      <Flex
+        w={'100%'}
+        alignItems="center"
+        mx={'15px'}
+       >
         <Slider {...settings}>
           {vaults.map((vault: string, index: number) => {
             return (
