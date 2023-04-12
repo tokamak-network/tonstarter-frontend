@@ -6,6 +6,7 @@ import {
   Link,
   useTheme,
   useColorMode,
+  Tooltip,
 } from '@chakra-ui/react';
 import {
   Dispatch,
@@ -25,7 +26,12 @@ import Steps from '@Launch/components/Steps';
 import OpenStepTwoSimplified from '@Launch/components/simplifiedLaunch/OpenStepTwoSimplified';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectLaunch, setHashKey, fetchProjects} from '@Launch/launch.reducer';
+import {
+  selectLaunch,
+  setHashKey,
+  fetchProjects,
+  setCurrentDeployStep,
+} from '@Launch/launch.reducer';
 import OpenStepThreeSimplified from '@Launch/components/simplifiedLaunch/OpenStepThreeSimplified';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
@@ -107,7 +113,12 @@ const SimplifiedMainScreen = () => {
         data: isExist === 'createprojectsimple' ? undefined : isExist,
       }),
     );
-  }, []);
+    dispatch(
+      setCurrentDeployStep({
+        data: 0,
+      }),
+    );
+  }, [dispatch, isExist]);
 
   const handleStep = useCallback(
     (isNext: boolean) => {
@@ -332,6 +343,7 @@ const SimplifiedMainScreen = () => {
                           hoverColor={'#2a72e5'}
                           onClick={() => handleStep(false)}
                         />
+                        {/* <Tooltip label='Go to ‘my project’ and click  ‘Listing on TONStarter’'> */}
                         <ActionButton
                           bgColor={isDisableForStep3 ? '#e9edf1' : 'blue.500'}
                           btnText="Complete & Go"
@@ -340,6 +352,7 @@ const SimplifiedMainScreen = () => {
                           onClick={() => handleComplete(values, account, true)}
                           hoverColor={isDisableForStep3 ? '#e9edf1' : '#2a72e5'}
                         />
+                        {/* </Tooltip> */}
                       </ButtonGroup>
                     </>
                   )}

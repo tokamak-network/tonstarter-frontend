@@ -11,6 +11,8 @@ interface LaunchState {
     tempVaultData: any;
     hashKey: string | undefined;
     alreadySelected: number[] | undefined;
+    currentDeployStep:number
+
     err: {
       tokenDetail: {
         name: boolean;
@@ -29,6 +31,7 @@ interface LaunchState {
         }
       | undefined;
     tempHash: string | undefined;
+    
   };
   loading: 'idle' | 'pending';
   error: any;
@@ -44,6 +47,7 @@ const initialState = {
     projects: [],
     tempVaultData: {},
     hashKey: undefined,
+    currentDeployStep:0,
     err: {
       tokenDetail: {},
     },
@@ -122,6 +126,9 @@ export const launchReducer = createSlice({
     setTempHash: (state, {payload}: PayloadAction<ProjectPayload>) => {
       state.data.tempHash = payload.data;
     },
+    setCurrentDeployStep: (state, {payload}:PayloadAction<ProjectPayload>) => {
+      state.data.currentDeployStep = payload.data
+    }
   },
   extraReducers: {
     [selectVault.pending.type]: (state, action) => {
@@ -160,4 +167,5 @@ export const {
   setClaimRoundTable,
   setUncompletedVaultIndex,
   setTempHash,
+  setCurrentDeployStep,
 } = launchReducer.actions;

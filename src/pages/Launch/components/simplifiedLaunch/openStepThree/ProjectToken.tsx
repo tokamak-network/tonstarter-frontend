@@ -14,7 +14,11 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useContract} from 'hooks/useContract';
 import * as ERC20_FACTORY_A_ABI from 'services/abis/ERC20AFactory.json';
 import {convertToWei} from 'utils/number';
-import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
+import {
+  selectLaunch,
+  setTempHash,
+  setCurrentDeployStep,
+} from '@Launch/launch.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {ethers} from 'ethers';
 import {createToken} from 'pages/Reward/components/api';
@@ -37,6 +41,9 @@ const ProjectToken = () => {
     ERC20AFACTORY_ADDRESS,
     ERC20_FACTORY_A_ABI.abi,
   );
+  const {
+    data: {currentDeployStep},
+  } = useAppSelector(selectLaunch);
 
   const dispatch: any = useAppDispatch();
 
@@ -72,6 +79,7 @@ const ProjectToken = () => {
         setTempHash({
           data: tx.hash,
         }),
+      
       );
       store.dispatch(setTxPending({tx: true}));
       toastWithReceipt(tx, setTxPending, 'Launch');
@@ -88,6 +96,7 @@ const ProjectToken = () => {
       setFieldValue('isTokenDeployedErr', true);
     }
   }
+
 
   return (
     <Flex
@@ -175,11 +184,11 @@ const ProjectToken = () => {
           h={'38px'}
           bg={'blue.500'}
           fontSize={14}
-          color={'white.100'}  
+          color={'white.100'}
           mr={'12px'}
-          _hover={isTokenDeployed? {}:{bg:'#2a72e5'}}
-          _focus={isTokenDeployed? {}:{bg:'#2a72e5'}}
-          _active={isTokenDeployed? {}:{bg:'#2a72e5'}}
+          _hover={isTokenDeployed ? {} : {bg: '#2a72e5'}}
+          _focus={isTokenDeployed ? {} : {bg: '#2a72e5'}}
+          _active={isTokenDeployed ? {} : {bg: '#2a72e5'}}
           _disabled={{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',

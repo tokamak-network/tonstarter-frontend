@@ -9,13 +9,26 @@ import arrowHoverLeft from 'assets/launch/arrow-left-hover-icon.svg';
 import arrowRight from 'assets/svgs/arrow_right_normal_icon.svg';
 import arrowRightDark from 'assets/launch/arrow-right-normal-icon.svg';
 import arrowHoverRight from 'assets/launch/arrow-right-hover-icon.svg';
+import arrowDisableLeftDark from 'assets/launch/light-arrow_left_disabled_dark.svg';
+import arrowDisableRightDark from 'assets/launch/light-arrow_right_disabled_dark.svg';
+import arrowDisableLeft from 'assets/launch/light-arrow_left_disabled.svg';
+import arrowDisableRight from 'assets/launch/light-arrow_right_disabled.svg';
 import HoverImage from 'components/HoverImage';
 import {motion} from 'framer-motion';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {selectLaunch} from '@Launch/launch.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+// import ArrowImage from './ArrowImage';
 type step = {
   vault: string;
   index: number;
+};
+type ArrowImageProp = {
+  img: string;
 };
 const StepThreeSteps = (props: {
   currentStep: Number;
@@ -24,6 +37,8 @@ const StepThreeSteps = (props: {
   const {currentStep, setCurrentStep} = props;
   const [maxStep, setStepMax] = useState(0);
   const {colorMode} = useColorMode();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const vaults = [
     'Project Token',
@@ -49,21 +64,15 @@ const StepThreeSteps = (props: {
   ];
 
   const theme = useTheme();
-  const [transX, setTransX] = useState<number>(0);
-  const [flowIndex, setFlowIndex] = useState<number>(0);
-  const [startIndex, setStartIndex] = useState<number>(vaults.length);
+
   const [hasToken, setHasToken] = useState(false);
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
+  const [isHoverLeft, setIsHoverLeft] = useState(false);
+  const [isHoverRight, setIsHoverRight] = useState(false);
 
-  useEffect(() => {
-    if (vaults.length < startIndex) {
-      setTransX(transX + 60);
-      setStartIndex(vaults.length);
-      setFlowIndex(flowIndex - 1);
-    } else {
-      setStartIndex(vaults.length);
-    }
-  }, [vaults.length]);
+  const {
+    data: {currentDeployStep},
+  } = useAppSelector(selectLaunch);
 
   useEffect(() => {
     async function checkBalance() {
@@ -247,7 +256,7 @@ const StepThreeSteps = (props: {
           mt="-52px"
           w="100%"
           fontSize={12}>
-          {hover === true ? vault : ''}
+          {hover === true || currentStep === index ? vault : ''}
         </Text>
 
         <Flex
@@ -263,14 +272,14 @@ const StepThreeSteps = (props: {
           bg={
             getStatus(index) === true
               ? 'transparent'
-              : Number(currentStep) === index
+              : Number(currentDeployStep) === index
               ? 'blue.100'
               : 'transparent'
           }
           color={
             getStatus(index) === true
               ? '#0070ed'
-              : Number(currentStep) === index
+              : Number(currentDeployStep) === index
               ? 'white.100'
               : '#86929d'
           }
@@ -279,7 +288,7 @@ const StepThreeSteps = (props: {
               ? colorMode === 'dark'
                 ? '1px solid #353d48'
                 : '1px solid #e6eaee'
-              : Number(currentStep) === index
+              : Number(currentDeployStep) === index
               ? 'none'
               : colorMode === 'dark'
               ? '1px solid #353d48'
@@ -293,33 +302,110 @@ const StepThreeSteps = (props: {
     );
   };
 
-  
-  return (
-    <Flex w="350px" alignItems={'center'} mt="41px">
-      <HoverImage
-        additionalStyles={{height: '26px', cursor: flowIndex !== 0?'default':"not-allowed"}}
-        img={colorMode === 'light' ? arrowLeft : arrowLeftDark}
-        hoverImg={flowIndex !== 0?arrowHoverLeft:colorMode === 'light' ? arrowLeft : arrowLeftDark }
-        action={() => {
-          if (flowIndex !== 0) {
-            setTransX(transX + 60);
-            setFlowIndex(flowIndex - 1);
-          }
-        }}></HoverImage>
+  const settings = {
+    accessibility: true,
+    centerMode: true,
+    centerPadding: '10px',
+    speed: 500,
+    variableWidth: true,
+    // initialSlide: currentSlide,
+    // arrows: true,
+    swipeToSlide: true,
+    // arrows: false,
+    beforeChange: (next: any) => setCurrentSlide(next),
+    afterChange: (current: any) => setCurrentSlide(current),
+    focusOnSelect: true,
+    infinite: false,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    nextArrow: (
+      <Image
+      h='20px'
+      w='20px'
+        className="slick-arrow"
+        onMouseEnter={() => setIsHoverRight(true)}
+        onMouseLeave={() => setIsHoverRight(false)}
+        src={
+          currentSlide >= 17
+            ? colorMode === 'dark'
+              ? arrowDisableRightDark
+              : arrowDisableRight
+            : isHoverRight
+            ? arrowHoverRight
+            : colorMode === 'dark'
+            ? arrowRightDark
+            : arrowRight
+        }
+      />
+    ),
+    prevArrow: (
+      <Image
+        className="slickArrowPrev"
+        onMouseEnter={() => setIsHoverLeft(true)}
+        onMouseLeave={() => setIsHoverLeft(false)}
+        src={
+          currentSlide === 0
+            ? colorMode === 'dark'
+              ? arrowDisableLeftDark
+              : arrowDisableLeft
+            : isHoverLeft
+            ? arrowHoverLeft
+            : colorMode === 'dark'
+            ? arrowLeftDark
+            : arrowLeft
+        }
+      />
+    ),
+  };
 
-      <Flex w={'100%'} alignItems="center" mx={'15px'} overflow={'hidden'}>
-        <motion.div
-          animate={{x: transX}}
-          style={{display: 'flex', width: '100%'}}>
+  const slickerStyles = `
+  .slider-wrapper .slick-prev,
+.slider-wrapper .slick-next {
+  // display: none !important;
+}
+  .slick-slider{
+    width: 325px;
+    display: flex !important;
+    align-items: center
+  }
+  .slick-slider .slick-track{
+    // transform: translate3d(0px, 0px, 0px) !important;
+  }
+//  .slick-slide .slick-cloned{
+//     margin-left:-50px !important
+//   }
+//   .slick-slide slick-active slick-center slick-current{
+//     margin'right:40px !important
+//   }
+
+
+ 
+  `;
+
+  // console.log(transX, flowIndex);
+
+  return (
+    <Flex w="350px" alignItems={'center'} mt="41px"  className="slider-wrapper">
+      <style>{slickerStyles}</style>
+      <Flex
+        w={'100%'}
+        alignItems="center"
+        mx={'15px'}
+       >
+        <Slider {...settings}>
           {vaults.map((vault: string, index: number) => {
             return (
-              <Flex alignItems={'center'} key={index}>
+              <Flex
+                display={'flex !important'}
+                alignItems={'center'}
+                key={index}
+                flexDir="row">
                 {index !== 0 ? (
                   <Flex
                     w="18px"
                     h="2px"
                     bg={
-                      Number(currentStep) === index
+                      index <= Number(currentDeployStep)
                         ? 'blue.100'
                         : colorMode === 'dark'
                         ? '#353d48'
@@ -335,7 +421,7 @@ const StepThreeSteps = (props: {
                     w="18px"
                     h="2px"
                     bg={
-                      Number(currentStep) === index
+                      Number(currentDeployStep) >= index
                         ? 'blue.100'
                         : colorMode === 'dark'
                         ? '#353d48'
@@ -347,18 +433,8 @@ const StepThreeSteps = (props: {
               </Flex>
             );
           })}
-        </motion.div>
+        </Slider>
       </Flex>
-      <HoverImage
-        img={colorMode === 'light' ? arrowRight : arrowRightDark}
-        hoverImg={ flowIndex < vaults.length - 5? arrowHoverRight:colorMode === 'light' ? arrowRight : arrowRightDark }
-        additionalStyles={{height: '26px', cursor: flowIndex < vaults.length - 5?'default':"not-allowed"}}
-        action={() => {
-          if (flowIndex < vaults.length - 5) {
-            setTransX(transX - 60);
-            setFlowIndex(flowIndex + 1);
-          }
-        }}></HoverImage>
     </Flex>
   );
 };

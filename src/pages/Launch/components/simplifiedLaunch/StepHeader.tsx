@@ -15,6 +15,14 @@ import {useBlockNumber} from 'hooks/useBlock';
 import type {LaunchMode, StepNumber, VaultCommon} from '@Launch/types';
 import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {
+  selectLaunch,
+  setTempHash,
+  setCurrentDeployStep,
+} from '@Launch/launch.reducer';
+
+
 const StepHeader = (props: {
   deploySteps: boolean;
   deployStep?: number;
@@ -27,25 +35,39 @@ const StepHeader = (props: {
   const theme = useTheme();
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const {blockNumber} = useBlockNumber();
-
+  const dispatch: any = useAppDispatch();
   const [steps, setSteps] = useState(0);
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
+  const {
+    data: {currentDeployStep},
+  } = useAppSelector(selectLaunch);
 
-  useEffect(() => {
+
+  useEffect(() => {    
     let temp = 0;
     if (values.isTokenDeployed) {
+      temp += 1
+     dispatch( setCurrentDeployStep({
+      data: temp,
+    }))
       // setSteps(steps => steps + 1);
-      temp += 1;
+     ;
     }
     values.vaults.map((vault: VaultCommon) => {
       if (vault.isDeployed === true) {
         temp += 1;
+        dispatch( setCurrentDeployStep({
+          data: temp,
+        }))
         // setSteps(steps => steps + 1);
       }
 
       if (vault.isSet === true) {
         // setSteps(steps => steps + 1);
         temp += 1;
+        dispatch( setCurrentDeployStep({
+          data: temp,
+        }))
       }
     });
     setSteps(temp);
@@ -56,6 +78,9 @@ const StepHeader = (props: {
         );
         if (Number(balance) > 0) {
           temp += 1;
+          dispatch( setCurrentDeployStep({
+            data: temp,
+          }))
           setSteps(temp);
         }
       }

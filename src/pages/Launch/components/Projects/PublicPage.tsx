@@ -616,7 +616,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             {' '}
                             2. Initialize Vesting Vault
                           </Text>
-                          <Tooltip
+                          {/* <Tooltip
                             label="Snapshot date must be set 1 week after Deployment completion"
                             hasArrow
                             placement="top"
@@ -627,7 +627,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             textAlign={'center'}
                             size={'xs'}>
                             <Image src={tooltipIcon} />
-                          </Tooltip>
+                          </Tooltip> */}
                         </Flex>
                         <Link
                           isExternal
