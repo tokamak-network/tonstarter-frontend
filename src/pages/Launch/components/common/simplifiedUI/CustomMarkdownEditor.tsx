@@ -61,7 +61,6 @@ const CustomMarkdownEditor = () => {
   background-size: cover;
   background-position: center;
 }
-
   `
       : `
       .ql-toolbar.ql-snow {
@@ -136,8 +135,7 @@ const CustomMarkdownEditor = () => {
       background-size: cover;
       background-position: center;
     }
-
-    `;
+  `;
   useEffect(() => {
     setFieldValue('description', test);
   }, [test]);
@@ -145,7 +143,8 @@ const CustomMarkdownEditor = () => {
   return (
     <Flex flexDir={'column'} fontSize={13}>
     <Text h={18} mb={2.5}>
-      <Flex fontSize={'13px'}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>Description</Flex>
+      <Flex fontSize={'13px'}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>
+      <Text fontSize={'14px'} fontFamily={theme.fonts.roboto}>Description</Text></Flex>
       </Text>
       <style>{markdownStyles}</style>
       <ReactQuill
