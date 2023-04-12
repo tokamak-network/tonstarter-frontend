@@ -139,7 +139,13 @@ const CustomMarkdownEditor = () => {
     .ql-container {
         resize: vertical;
         overflow-y: scroll;
-    }`;
+    }
+  .ql-editor-resize-handle {
+    background-image: url(${Resizer})
+    background-size: cover;
+    background-position: center;
+  }
+    `;
   useEffect(() => {
     setFieldValue('description', test);
   }, [test]);
@@ -155,7 +161,6 @@ const CustomMarkdownEditor = () => {
         placeholder="Input the project description"
         onChange={setTest}
         style={{borderColor: '#dfe4ee'}}
-        // theme="snow"
         value={test}></ReactQuill>
     </Flex>
   );
