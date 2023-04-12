@@ -45,12 +45,15 @@ const CustomMarkdownEditor = () => {
   .ql-editor {
     font-family: ${theme.fonts.roboto}
   }
-  .ql-editor {
+  .ql-container {
     resize: vertical;
-    overflow-y: scroll;
+    overflow-y: hidden;
+    min-height: 148px;
+    max-height: 100%;
 }
-.ql-container {
-    resize: vertical;
+  .ql-editor {
+    min-height: 148px;
+    max-height: 100%;  
     overflow-y: scroll;
 }
 .ql-editor-resize-handle {
@@ -58,6 +61,7 @@ const CustomMarkdownEditor = () => {
   background-size: cover;
   background-position: center;
 }
+
   `
       : `
       .ql-toolbar.ql-snow {
@@ -71,22 +75,6 @@ const CustomMarkdownEditor = () => {
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
       }
-      // .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
-      //   stroke: #f3f4f1;
-      //   stroke-width:1;
-      // }
-      // .ql-snow .ql-even{
-      //   stroke: #f3f4f1;
-      //   stroke-width:1;
-      // }
-      // .ql-snow .ql-stroke {
-      //   stroke: #f3f4f1;
-      //   stroke-width:1;
-      // }
-      // .ql-snow .ql-fill{
-      //   stroke: #f3f4f1;
-      //   stroke-width:1;
-      // }
       .ql-picker-label {
         color: white
       }
@@ -132,14 +120,24 @@ const CustomMarkdownEditor = () => {
       stroke: #06c;
       stroke-width: 1;
       }
-      .ql-editor {
+      .ql-container {
         resize: vertical;
+        overflow-y: hidden;
+        min-height: 148px;
+        max-height: 100%;
+    }
+      .ql-editor {
+        min-height: 148px;
+        max-height: 100%;  
         overflow-y: scroll;
     }
-    .ql-container {
-        resize: vertical;
-        overflow-y: scroll;
-    }`;
+    .ql-editor-resize-handle {
+      background-image: url(${Resizer})
+      background-size: cover;
+      background-position: center;
+    }
+
+    `;
   useEffect(() => {
     setFieldValue('description', test);
   }, [test]);
@@ -147,7 +145,7 @@ const CustomMarkdownEditor = () => {
   return (
     <Flex flexDir={'column'} fontSize={13}>
     <Text h={18} mb={2.5}>
-      <Flex fontSize={13}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>Description</Flex>
+      <Flex fontSize={'13px'}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>Description</Flex>
       </Text>
       <style>{markdownStyles}</style>
       <ReactQuill

@@ -67,6 +67,7 @@
     "polished": "^4.1.3",
     "prop-types": "^15.7.2",
     "query-string": "^7.1.0",
+    "quill-resize-module": "^1.2.4",
     "react": "^17.0.2",
     "react-animated-dots": "^1.1.0",
     "react-axios": "^2.0.5",
