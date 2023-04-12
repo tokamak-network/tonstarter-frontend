@@ -1,16 +1,13 @@
 import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
-import InputComponent from '@Launch/components/common/InputComponent';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {useFormikContext} from 'formik';
-import {Projects, VaultPublic} from '@Launch/types';
+import {Projects} from '@Launch/types';
 import {testValue} from '@Launch/utils/testValue';
 import {LaunchSchedule} from '../common/simplifiedUI/LaunchSchedule';
 import {TokenImageInput} from '../common/simplifiedUI/TokenImageInput';
 import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
-import RescheduleModal from '../common/simplifiedUI/Reschedule';
-import {useModal} from 'hooks/useModal';
 import TextInput from '../common/simplifiedUI/TextInput';
 
 const filedNameList = [
@@ -25,7 +22,6 @@ const OpenStepOneSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const {values, setValues} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-  const {openAnyModal} = useModal();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -40,25 +36,6 @@ const OpenStepOneSimplified = (props: any) => {
     setDisableForStep1(!validation);
   }, [values, setDisableForStep1]);
 
-  useEffect(() => {
-    if (!values.vaults || values.vaults.length === 0) {
-      return;
-    }
-    const publicVault = values.vaults[0] as VaultPublic;
-    if (!publicVault.snapshot) {
-      return;
-    }
-    const currentTime = Math.floor(Date.now() / 1000);
-    const timeLeftToDeploy = Math.floor(
-      (publicVault.snapshot - currentTime) / 60,
-    );
-    if (timeLeftToDeploy < 60 ) {
-      openAnyModal('Reschedule', {
-        from: 'launch/createprojectsimple',
-      })}
-
-  }, [values.vaults]);
-
   return (
     <Flex
       w={'774px'}
@@ -67,7 +44,6 @@ const OpenStepOneSimplified = (props: any) => {
       border={colorMode === 'light' ? '' : '1px solid #373737'}
       flexDir="column">
       <StepHeader deploySteps={false} title={'Project & Token'} />
-      {/* <RescheduleModal /> */}
       <Grid px={'35px'} pb={'35px'}>
         <Flex fontSize={12} mt={'14px'} ml={'615px'}>
           <Text mr={'5px'} color={'#FF3B3B'}>
@@ -122,7 +98,7 @@ const OpenStepOneSimplified = (props: any) => {
             },
           )}
         </Grid>
-        <Grid>
+        <Grid id="reschedule">
           <LaunchSchedule currentStep={step}></LaunchSchedule>
         </Grid>
         <Box>
