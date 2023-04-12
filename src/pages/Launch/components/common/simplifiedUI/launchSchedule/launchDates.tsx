@@ -2,7 +2,6 @@ import {
   Grid,
   Text,
   GridItem,
-  Tooltip,
   Image,
   useTheme,
   Link,
@@ -16,12 +15,12 @@ import React, {useState, useEffect} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import SingleCalendarPop from '../../SingleCalendarPop';
-import DoubleCalendarPop from '../../../common/DoubleCalendarPop';
 import {snapshotGap} from '@Launch/const';
 import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
+import DateRangePicker from '../publicSaleDates/DateRangePicker'
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
 type LaunchDateProps = {
@@ -265,9 +264,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
                     <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
-                      <DoubleCalendarPop
+                      <DateRangePicker
                         setDate={setPublicSale1DateRange}
                         startTimeCap={publicSale1STC}
+                        duration={2}
                       />
                     </Grid>
                   </Grid>
@@ -292,10 +292,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 <Grid justifyContent={'center'}>
                   <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
                     {!isPublicVaultDeployed && (
-                      <DoubleCalendarPop
+                      <DateRangePicker
                         // public sale end + 1
                         setDate={setPublicSale2DateRange}
                         startTimeCap={publicSale2STC}
+                        duration={5}
                       />
                     )}
                   </Grid>
@@ -338,10 +339,6 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                             <>
                               Each vault unlocks a set amount each month over a
                               period of up to 48 months.&nbsp;  
-                              {/* Download claim schedule */}
-                              {/* <Link href={pdfPath} target="_blank" download>
-                                <Text as='u'>Learn more...</Text>
-                              </Link> */}
                               {/* Open claim schedule as pdf on a new tab */}
                               <Link
                                 href={pdfPath}
