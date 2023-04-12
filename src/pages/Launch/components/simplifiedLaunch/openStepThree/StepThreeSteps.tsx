@@ -1,5 +1,12 @@
 import {Flex, useColorMode, useTheme, Text, Image} from '@chakra-ui/react';
-import {useEffect, useState, useRef, Dispatch, SetStateAction} from 'react';
+import {
+  useEffect,
+  useState,
+  useRef,
+  Dispatch,
+  SetStateAction,
+  useMemo,
+} from 'react';
 
 import {useFormikContext} from 'formik';
 import {Projects, VaultAny} from '@Launch/types';
@@ -26,6 +33,9 @@ import 'slick-carousel/slick/slick-theme.css';
 type step = {
   vault: string;
   index: number;
+  currentDeployTitle: string;
+  hoverVault: string;
+  setHoverVault: Dispatch<SetStateAction<any>>;
 };
 type ArrowImageProp = {
   img: string;
@@ -69,6 +79,7 @@ const StepThreeSteps = (props: {
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
   const [isHoverLeft, setIsHoverLeft] = useState(false);
   const [isHoverRight, setIsHoverRight] = useState(false);
+  const [hoverVault, setHoverVault] = useState('');
 
   const {
     data: {currentDeployStep},
@@ -91,7 +102,7 @@ const StepThreeSteps = (props: {
   }, [ERC20_CONTRACT, values]);
 
   const StepButton: React.FC<step> = (props) => {
-    const {vault, index} = props;
+    const {vault, index, currentDeployTitle} = props;
     const [hover, setHover] = useState(false);
 
     const getStatus = (step: number) => {
@@ -239,15 +250,34 @@ const StepThreeSteps = (props: {
       }
     };
 
+    const handleMouseEnter = () => {
+     
+      setHoverVault(vault);
+    };
+
+    const handleMouseLeave = () => {
+      setHoverVault('');
+     
+    };
+
+    const getHoverTitle = useMemo(() => {
+      if (hoverVault === vault) {
+        return vault;
+      } else if (hoverVault !== '' && currentDeployTitle === vault) {
+        return vault;
+      } else  {
+        return '';
+      }
+    }, [currentDeployTitle, vault]);
+
     return (
       <Flex
         flexDir={'column'}
         h="62px"
         // border="1px solid red"
-        onMouseEnter={() => setHover(true)}
+        onMouseEnter={handleMouseEnter}
         justifyContent="center"
-        // alignItems={'center'}
-        onMouseLeave={() => setHover(false)}>
+        onMouseLeave={handleMouseLeave}>
         <Text
           ml={vault.length < 8 ? '-3px' : '-20px'}
           zIndex={10000}
@@ -256,7 +286,7 @@ const StepThreeSteps = (props: {
           mt="-52px"
           w="100%"
           fontSize={12}>
-          {hover === true || currentStep === index ? vault : ''}
+          {getHoverTitle}
         </Text>
 
         <Flex
@@ -320,8 +350,8 @@ const StepThreeSteps = (props: {
     slidesToScroll: 1,
     nextArrow: (
       <Image
-      h='20px'
-      w='20px'
+        h="20px"
+        w="20px"
         className="slick-arrow"
         onMouseEnter={() => setIsHoverRight(true)}
         onMouseLeave={() => setIsHoverRight(false)}
@@ -377,21 +407,18 @@ const StepThreeSteps = (props: {
 //   .slick-slide slick-active slick-center slick-current{
 //     margin'right:40px !important
 //   }
-
-
- 
   `;
 
   // console.log(transX, flowIndex);
+  const currentDeployTitles = vaults.filter(
+    (vault: string, index: number) => index === currentDeployStep,
+  );
+  const currentDeployTitle = currentDeployTitles[0];
 
   return (
-    <Flex w="350px" alignItems={'center'} mt="41px"  className="slider-wrapper">
+    <Flex w="350px" alignItems={'center'} mt="41px" className="slider-wrapper">
       <style>{slickerStyles}</style>
-      <Flex
-        w={'100%'}
-        alignItems="center"
-        mx={'15px'}
-       >
+      <Flex w={'100%'} alignItems="center" mx={'15px'}>
         <Slider {...settings}>
           {vaults.map((vault: string, index: number) => {
             return (
@@ -414,7 +441,13 @@ const StepThreeSteps = (props: {
                 ) : (
                   <></>
                 )}
-                <StepButton vault={vault} index={index} />
+                <StepButton
+                  vault={vault}
+                  index={index}
+                  hoverVault={hoverVault}
+                  setHoverVault={setHoverVault}
+                  currentDeployTitle={currentDeployTitle}
+                />
 
                 {index !== vaults.length - 1 ? (
                   <Flex
