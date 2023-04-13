@@ -1,7 +1,7 @@
 import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import {Dispatch, SetStateAction, useState} from 'react';
 import Calendar from 'react-calendar';
-import '../../../css/CalendarLaunch.css';
+import './css/CalendarLaunch.css';
 import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
 import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
@@ -167,7 +167,8 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         minDetail={'decade'}
         locale={'en-EN'}
         tileDisabled={tilesDisabled}
-        maxDate={maxDate}
+        selectRange={true}
+        value={[new Date(2023, 4, 13), new Date(2023, 4, 15)]}
       />
     </Flex>
   );

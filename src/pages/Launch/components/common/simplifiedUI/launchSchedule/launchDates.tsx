@@ -20,7 +20,8 @@ import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
-import DateRangePicker from '../publicSaleDates/DateRangePicker'
+import DateRangePicker from '../publicSaleDates/PublicSaleDatePicker'
+import PublicSaleDatePicker from '../publicSaleDates/PublicSaleDatePicker';
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
 type LaunchDateProps = {
@@ -109,6 +110,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     (number | undefined)[]
   >(getTimeStamp() as (number | undefined)[]);
 
+  // new public sale start dates
+  const [publicSale1StartAt, setPublicSale1StartAt] = useState<number>(0);
+  const [publicSale2StartAt, setPublicSale2StartAt] = useState<number>(0);
+
   useEffect(() => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
     // Second after snapshot
@@ -178,6 +183,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     }
   }, [unlockDate1, lastUnlockDate]);
 
+  // TODO: update to reflect new implementation
   useEffect(() => {
     if (publicSale2DateRange) {
       setPublicSale2(publicSale2DateRange[0]);
@@ -264,11 +270,17 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
                     <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
-                      <DateRangePicker
+                      {/* <DateRangePicker
                         setDate={setPublicSale1DateRange}
                         startTimeCap={publicSale1STC}
                         duration={2}
-                      />
+                      /> */}
+                      {/* TODO: change duration for testing env */}
+                      <PublicSaleDatePicker
+                      setDate={setPublicSale1StartAt}
+                      startTimeCap={snapshotGap}
+                      duration={2}
+                    />
                     </Grid>
                   </Grid>
                 )}
@@ -292,9 +304,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 <Grid justifyContent={'center'}>
                   <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
                     {!isPublicVaultDeployed && (
-                      <DateRangePicker
+                      <PublicSaleDatePicker
                         // public sale end + 1
-                        setDate={setPublicSale2DateRange}
+                        setDate={setPublicSale2StartAt}
                         startTimeCap={publicSale2STC}
                         duration={5}
                       />
