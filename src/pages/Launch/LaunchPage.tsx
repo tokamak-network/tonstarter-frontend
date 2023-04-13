@@ -7,7 +7,7 @@ import {
   ButtonGroup,
   useColorMode,
 } from '@chakra-ui/react';
-import {useState} from 'react';
+import {useState, Dispatch, useEffect} from 'react';
 import {PageHeader} from 'components/PageHeader';
 import {useRouteMatch} from 'react-router-dom';
 import AllProjects from '@Launch/components/AllProjects';
@@ -18,6 +18,8 @@ import ConfirmTermsModal from './components/modals/ConfirmTerms';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
 import WarningModal from './components/common/simplifiedUI/WarningModal';
+import {setMode} from '@Launch/launch.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
 type LaunchProps = {
   numPairs: Number;
@@ -28,6 +30,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   const theme = useTheme();
   const {colorMode} = useColorMode();
   const match = useRouteMatch();
+  const dispatch = useAppDispatch();
   const {
     //@ts-ignore
     params: {id},
@@ -65,6 +68,14 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
       dark: '#777777',
     },
   };
+
+  useEffect(() => {
+    dispatch(
+      setMode({
+        data: 'simplified',
+      }),
+    );
+  }, [dispatch]);
 
   const {openAnyModal} = useModal();
 
@@ -114,34 +125,34 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
-              <Button
-                _hover={{bg: '#2a72e5'}}
-                bg={'#257eee'}
-                _active={{bg: '#2a72e5'}}
-                _focus={{bg: '#2a72e5'}}
-                mt={'10px'}
-                color="white.100"
-                fontFamily={theme.fonts.roboto}
-                letterSpacing={'.35px'}
-                fontSize={'14px'}
-                borderRadius={'4px'}
-                width={'150px'}
-                height={'38px'}
-                padding={'12px 28px 10px'}
-                onClick={() => {
-                  if (!window.web3) {
-                    return window.open('https://metamask.io/download/');
-                  }
-                  if (!active) {
-                    return activate(injected);
-                  }
-                  openAnyModal('Launch_Warning', {
-                    from: 'simplified-launch',
-                  });
-                }}>
-                Create Project
-              </Button>
-            </Flex>
+            <Button
+              _hover={{bg: '#2a72e5'}}
+              bg={'#257eee'}
+              _active={{bg: '#2a72e5'}}
+              _focus={{bg: '#2a72e5'}}
+              mt={'10px'}
+              color="white.100"
+              fontFamily={theme.fonts.roboto}
+              letterSpacing={'.35px'}
+              fontSize={'14px'}
+              borderRadius={'4px'}
+              width={'150px'}
+              height={'38px'}
+              padding={'12px 28px 10px'}
+              onClick={() => {
+                if (!window.web3) {
+                  return window.open('https://metamask.io/download/');
+                }
+                if (!active) {
+                  return activate(injected);
+                }
+                openAnyModal('Launch_Warning', {
+                  from: 'advance-launch',
+                });
+              }}>
+              Create Project
+            </Button>
+          </Flex>
           <Flex
             justifyContent={'space-between'}
             // mb={'100px'}

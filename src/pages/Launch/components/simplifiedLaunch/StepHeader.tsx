@@ -6,7 +6,8 @@ import {
   Grid,
   GridItem,
   Switch,
-
+  Tooltip,
+  Image,
 } from '@chakra-ui/react';
 import CountDown from './openStepThree/CountDown';
 import {useFormikContext} from 'formik';
@@ -20,11 +21,13 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useModal} from 'hooks/useModal';
 import {Link, useRouteMatch} from 'react-router-dom';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 import {
   selectLaunch,
   setTempHash,
   setCurrentDeployStep,
+  setMode
 } from '@Launch/launch.reducer';
 
 const StepHeader = (props: {
@@ -48,8 +51,7 @@ const StepHeader = (props: {
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[3];
-  
-console.log(values);
+
 
   useEffect(() => {
     let temp = 0;
@@ -103,9 +105,35 @@ console.log(values);
 
     checkBalance();
   }, [ERC20_CONTRACT, values]);
+
+  const switchStyle =
+    colorMode === 'light'
+      ? `
+  .chakra-switch__track{
+    background: #e9edf1;
+    padding: 1px;
+    height: 15px;
+    width: 36px;
+    margin-right: 6px
+  }
+ 
+  `
+      : `
+  .chakra-switch__track{
+    background: transparent;
+    border: 1px solid #535353;
+    padding: 1px;
+    height: 15px;
+    width: 36px;
+    margin-right: 6px
+  }
+  .chakra-switch__track:active {
+ 
+  `;
+
   return (
     <Grid
-      templateColumns={deploySteps ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)'}
+      templateColumns={deploySteps ? 'repeat(3, 1fr)' : 'repeat(1, 1fr)'}
       gap={0}
       h="73px"
       w="100%"
@@ -119,9 +147,33 @@ console.log(values);
           <Text
             lineHeight={'20px'}
             fontSize={'20px'}
+            mr="15px"
             color={colorMode === 'dark' ? 'white.100' : 'black.300'}>
             {title}
           </Text>
+          <Tooltip
+            color={theme.colors.white[100]}
+            bg={theme.colors.gray[375]}
+            p={2}
+            borderRadius={3}
+            fontSize={'12px'}
+            label="advanced launch">
+            <Flex>
+              <style>{switchStyle}</style>
+
+              <Switch style={{height: '16px'}} onChange={() => {
+                dispatch(setMode({
+                  data: 'advanced'
+                }))
+              }}></Switch>
+              <Text
+                fontSize={'13px'}
+                color={colorMode === 'dark' ? '#949494' : '#848c98'}>
+                Advance mode
+              </Text>
+              <Image src={tooltipIcon} ml="6px" />
+            </Flex>
+          </Tooltip>
         </Flex>
       </GridItem>
       {deploySteps && (
@@ -132,20 +184,22 @@ console.log(values);
       {deploySteps && (
         <GridItem>
           <Flex color="blue.200" fontSize={'13px'} justifyContent="flex-end">
-            <Text color={'white.100'} mr="2px">
+            <Text
+              color={colorMode === 'dark' ? 'white.100' : '#304156'}
+              mr="2px">
               Progress
             </Text>
             <Text>{steps}/20</Text>
           </Flex>
         </GridItem>
       )}
-      <GridItem>
+      {/* <GridItem>
         {' '}
         <Link
           to={`/launch/${isExist}`}>
           <Switch />
         </Link>
-      </GridItem>
+      </GridItem> */}
     </Grid>
   );
 };
