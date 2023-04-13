@@ -30,7 +30,8 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
     dispatch(setProjectStep({data: 2}));
   }, [dispatch]);
 
-
+  console.log('formik values', values);
+  
   return (
     <Flex
       w="774px"
@@ -43,7 +44,7 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
         <StepHeader deploySteps={false} title={'Token Economy'}/>
         <Flex pl='35px' mb="40px">
         <StepComponent/>
-         <GraphComponent/>
+         <GraphComponent vaults={values.vaults} totalTokenAlloc={values.totalTokenAllocation} totalSupply={values.totalSupply}/>
         </Flex>
       </Flex>
   );
