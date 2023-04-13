@@ -12,10 +12,8 @@ import {
 import {useEffect, useState} from 'react';
 import {ResponsivePie} from '@nivo/pie';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import {simplifiedVaultsAny} from '@Launch/types'
 
-const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: number | undefined, totalSupply: number | undefined}) => {
-  const {vaults, totalTokenAlloc, totalSupply} = props;
+const GraphComponent = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const colors = [
@@ -68,40 +66,6 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
       color: colors[index],
     };
   });
-
-  
- // Allocation % for each vault.
- // initially allocated %
-  const [vaultAllocations, setVaultAllocations] = useState({
-    public: 13,
-    team: 15,
-    eco: 35,
-    liquidity: 15,
-    tonStarter: 5
-  });
-  
-  const calculateAllocated = (totalAllocation: number, vaultAllocation: number) => {
-    const allocatedAmount = (vaultAllocation / totalAllocation) * 100;
-    return Math.ceil(allocatedAmount);
-  };
-  
-  useEffect(() => {
-    if (totalTokenAlloc) {
-      const publicAlloc = calculateAllocated(totalTokenAlloc, vaults[0].vaultTokenAllocation);
-      const teamAlloc = calculateAllocated(totalTokenAlloc, vaults[8].vaultTokenAllocation);
-      const ecoAlloc = calculateAllocated(totalTokenAlloc, vaults[7].vaultTokenAllocation);
-      const liquidityAlloc = calculateAllocated(totalTokenAlloc, vaults[1].vaultTokenAllocation + vaults[6].vaultTokenAllocation);
-      const tonStarterAlloc = calculateAllocated(totalTokenAlloc, vaults[3].vaultTokenAllocation + vaults[4].vaultTokenAllocation + vaults[5].vaultTokenAllocation);
-  
-      setVaultAllocations({
-        public: publicAlloc,
-        team: teamAlloc,
-        eco: ecoAlloc,
-        liquidity: liquidityAlloc,
-        tonStarter: tonStarterAlloc
-      });
-    }
-  }, [totalTokenAlloc, vaults]);
 
   return (
     <>
@@ -217,7 +181,7 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
               <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#2b66aa'} mr='8px'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Public</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.public}%</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">30%</Text>
               </Flex>
             </Flex>
           </GridItem>
@@ -226,7 +190,7 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
               <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f23c35'} mr='8px'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Ecosystem</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.eco}%</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">35%</Text>
               </Flex>
             </Flex>
           </GridItem>
@@ -235,7 +199,7 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
               <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f7b729'} mr='8px'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Team</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.team}%</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">15%</Text>
               </Flex>
             </Flex>
           </GridItem>
@@ -244,7 +208,7 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
               <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#5da344'} mr='8px'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px' >
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Liquidity</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.liquidity}%</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">15%</Text>
               </Flex>
             </Flex>
           </GridItem>
@@ -253,7 +217,7 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
               <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f17235'} mr='8px'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  >
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'} fontFamily="TitilliumWeb, sans-serif">TONStarter</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'} fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.tonStarter}%</Text>
+                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'} fontFamily="TitilliumWeb, sans-serif">5%</Text>
               </Flex>
             </Flex>
           </GridItem>
