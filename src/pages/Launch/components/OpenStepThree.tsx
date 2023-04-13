@@ -7,9 +7,13 @@ import ConfirmVaultModal from './modals/ConfirmVault';
 import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {setProjectStep} from '@Launch/launch.reducer';
+import {useFormikContext} from 'formik';
+import {Projects} from '@Launch/types';
+
 const OpenStepThree = () => {
   const {colorMode} = useColorMode();
   const dispatch: any = useAppDispatch();
+  const {values,setFieldValue} = useFormikContext<Projects['CreateProject']>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -17,6 +21,7 @@ const OpenStepThree = () => {
 
   useEffect(() => {
     dispatch(setProjectStep({data:3}))
+    setFieldValue('isSimplified',undefined )
   },[dispatch])
 
   return (

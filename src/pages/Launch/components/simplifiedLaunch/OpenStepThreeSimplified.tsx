@@ -21,7 +21,7 @@ import {useModal} from 'hooks/useModal';
 import EstimateGasModal from './openStepThree/EstimateGas';
 
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {setProjectStep} from '@Launch/launch.reducer';
+import {setProjectStep,saveTempProjectData} from '@Launch/launch.reducer';
 
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
@@ -95,6 +95,10 @@ const OpenStepThreeSimplified = (props: any) => {
     }, [dispatch]);
   
     
+  useEffect(() => {
+    dispatch(saveTempProjectData({data: values}));
+  },[values])
+  
   return (
     <Flex
       w="774px"

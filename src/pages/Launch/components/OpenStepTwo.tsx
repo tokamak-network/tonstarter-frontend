@@ -24,7 +24,7 @@ const OpenStepTwo = (props: {
   const {setDisableForStep2} = props;
   const {colorMode} = useColorMode();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const {values} = useFormikContext<Projects['CreateProject']>();
+  const {values,setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const dispatch = useAppDispatch();
   const {selectedVaultIndex} = useSelectVault();
 
@@ -34,6 +34,7 @@ const OpenStepTwo = (props: {
 
   useEffect(() => {
     dispatch(setProjectStep({data:2}))
+    setFieldValue('isSimplified',undefined )
   },[dispatch])
 
   useEffect(() => {

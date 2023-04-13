@@ -114,7 +114,9 @@ const StepHeader = (props: {
     padding: 1px;
     height: 15px;
     width: 36px;
-    margin-right: 6px
+    margin-right: 6px;
+    padding-bottom: 2px;
+    padding-right: 2px
   }
  
   `
@@ -125,10 +127,11 @@ const StepHeader = (props: {
     padding: 1px;
     height: 15px;
     width: 36px;
-    margin-right: 6px
+    margin-right: 6px;
+    padding-bottom: 2px;
+    padding-right: 2px
   }
-  .chakra-switch__track:active {
- 
+
   `;
 
   return (
@@ -151,13 +154,7 @@ const StepHeader = (props: {
             color={colorMode === 'dark' ? 'white.100' : 'black.300'}>
             {title}
           </Text>
-          <Tooltip
-            color={theme.colors.white[100]}
-            bg={theme.colors.gray[375]}
-            p={2}
-            borderRadius={3}
-            fontSize={'12px'}
-            label="advanced launch">
+         
             <Flex>
               <style>{switchStyle}</style>
 
@@ -171,9 +168,21 @@ const StepHeader = (props: {
                 color={colorMode === 'dark' ? '#949494' : '#848c98'}>
                 Advance mode
               </Text>
+              <Tooltip
+            color={theme.colors.white[100]}
+            bg={'#353c48'}
+            p={2}
+            w='254px'
+            textAlign='center'
+            hasArrow
+            borderRadius={3}
+            placement='top'
+            fontSize={'12px'}
+            label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
               <Image src={tooltipIcon} ml="6px" />
+              </Tooltip>
             </Flex>
-          </Tooltip>
+        
         </Flex>
       </GridItem>
       {deploySteps && (

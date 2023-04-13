@@ -69,7 +69,7 @@ export const PageHeader: FC<HeadProps> = ({
           fontFamily="Titillium Web, sans-serif">
           {secondSubTitle}
         </Text>
-        {isSimplified && (
+     
           <Flex mt={'9px'}>
             <Image src={iconUserGuide} w="18px" h="18px" />
             <Link
@@ -83,7 +83,7 @@ export const PageHeader: FC<HeadProps> = ({
               User Guide
             </Link>
           </Flex>
-        )}
+        
       </Flex>
     </Container>
   );

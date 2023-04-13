@@ -1266,7 +1266,7 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
               //   (PublicVaultData.publicRound2Allocation as number)
               const param4: number[] = PublicVaultData.claim.map(
                 (claimRound: VaultSchedule) =>
-                  ((claimRound.claimTokenAllocation as number) * 100) /
+                  ((claimRound.claimTokenAllocation as number) * 10000) /
                   allTokenAllocation,
               ) as number[];
 

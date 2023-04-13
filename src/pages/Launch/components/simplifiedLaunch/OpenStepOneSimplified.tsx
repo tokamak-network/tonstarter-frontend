@@ -10,7 +10,7 @@ import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
 import TextInput from '../common/simplifiedUI/TextInput';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {setProjectStep} from '@Launch/launch.reducer';
+import {setProjectStep, saveTempProjectData} from '@Launch/launch.reducer';
 const filedNameList = [
   {title: 'projectName', requirement: true},
   {title: 'tokenName', requirement: true},
@@ -42,6 +42,12 @@ const OpenStepOneSimplified = (props: any) => {
   useEffect(() => {
     dispatch(setProjectStep({data: 1}));
   }, [dispatch]);
+
+
+  useEffect(() => {
+    dispatch(saveTempProjectData({data: values}));
+  },[values])
+  
 
   return (
     <Flex

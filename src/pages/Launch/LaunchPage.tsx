@@ -18,7 +18,7 @@ import ConfirmTermsModal from './components/modals/ConfirmTerms';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
 import WarningModal from './components/common/simplifiedUI/WarningModal';
-import {setMode} from '@Launch/launch.reducer';
+import {setMode,setProjectStep} from '@Launch/launch.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
 type LaunchProps = {
@@ -75,6 +75,8 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
         data: 'simplified',
       }),
     );
+
+    dispatch(setProjectStep({data:1}))
   }, [dispatch]);
 
   const {openAnyModal} = useModal();

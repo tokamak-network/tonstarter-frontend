@@ -31,6 +31,7 @@ import {
   setHashKey,
   fetchProjects,
   setCurrentDeployStep,
+  saveTempProjectData
 } from '@Launch/launch.reducer';
 import OpenStepThreeSimplified from '@Launch/components/simplifiedLaunch/OpenStepThreeSimplified';
 import {useActiveWeb3React} from 'hooks/useWeb3';
@@ -81,9 +82,9 @@ const SimplifiedMainScreen = () => {
   const formikRef = useRef(null);
   const match = useRouteMatch();
   const {url} = match;
-  const isExist = url.split('/')[3];
+  const isExist = url.split('/')[2];
   const {openAnyModal} = useModal();
-
+  
   const dispatch = useAppDispatch();
   const {
     //@ts-ignore
@@ -110,7 +111,7 @@ const SimplifiedMainScreen = () => {
   useEffect(() => {
     dispatch(
       setHashKey({
-        data: isExist === 'createprojectsimple' ? undefined : isExist,
+        data: isExist === 'createproject' ? undefined : isExist,
       }),
     );
     dispatch(
@@ -122,8 +123,6 @@ const SimplifiedMainScreen = () => {
 
   useEffect(() => {
     setStep(projectStep)
-    console.log('projectStep',projectStep);
-
   },[])
 
   const handleStep = useCallback(
@@ -137,14 +136,13 @@ const SimplifiedMainScreen = () => {
     [step],
   );
 
-console.log('step', step);
 
 
   const getSaveButtonColor = () => {
     if (isDisable) {
       return '#e9edf1';
     }
-    return step === 1 && isExist !== 'createprojectsimple' && hashKey
+    return step === 1 && isExist !== 'createproject' && hashKey
       ? 'yellow.200'
       : '#00c3c4';
   };
@@ -156,13 +154,13 @@ console.log('step', step);
   };
 
   const handleSaveProject = (values: any, account: string, mode: boolean) => {
-    account && isExist === 'createprojectsimple' && hashKey === undefined
+    account && isExist === 'createproject' && hashKey === undefined
       ? saveProject(values, account, mode)
       : editProject(values, account as string, hashKey || isExist, mode);
   };
 
   const handleSaveAndContinue = (values: any, account: string) => {
-    account && isExist === 'createprojectsimple' && hashKey === undefined
+    account && isExist === 'createproject' && hashKey === undefined
       ? saveProject(values, account)
       : editProject(values, account as string, hashKey || isExist);
     handleStep(true);
@@ -239,7 +237,7 @@ console.log('step', step);
           }
 
           const isSaved =
-            hashKey !== undefined && isExist !== 'createprojectsimple';
+            hashKey !== undefined && isExist !== 'createproject';
 
           const isSet = values.vaults.map((vault: VaultCommon) => {
             return vault.isSet;
@@ -258,7 +256,7 @@ console.log('step', step);
 
           if (timeUntilSnapshot < 60 && (step === 2 || step === 3)) {
             openAnyModal('Reschedule', {
-              from: '/launch/simplified/createprojectsimple',
+              from: '/launch/createproject',
             });
           }
 
