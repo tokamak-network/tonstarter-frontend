@@ -90,7 +90,7 @@ const SimplifiedMainScreen = () => {
     params: {id},
   } = match;
   const {
-    data: {projects, hashKey},
+    data: {projects, hashKey,projectStep},
   } = useAppSelector(selectLaunch);
 
   const navigateToLaunchPage = useCallback(() => {
@@ -120,6 +120,12 @@ const SimplifiedMainScreen = () => {
     );
   }, [dispatch, isExist]);
 
+  useEffect(() => {
+    setStep(projectStep)
+    console.log('projectStep',projectStep);
+
+  },[])
+
   const handleStep = useCallback(
     (isNext: boolean) => {
       const prevStepNum =
@@ -130,6 +136,9 @@ const SimplifiedMainScreen = () => {
     },
     [step],
   );
+
+console.log('step', step);
+
 
   const getSaveButtonColor = () => {
     if (isDisable) {

@@ -9,7 +9,8 @@ import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
 import TextInput from '../common/simplifiedUI/TextInput';
-
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {setProjectStep} from '@Launch/launch.reducer';
 const filedNameList = [
   {title: 'projectName', requirement: true},
   {title: 'tokenName', requirement: true},
@@ -20,6 +21,8 @@ const filedNameList = [
 const OpenStepOneSimplified = (props: any) => {
   const {step, setDisableForStep1} = props;
   const {colorMode} = useColorMode();
+  const dispatch: any = useAppDispatch();
+
   const {values, setValues} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
 
@@ -31,10 +34,14 @@ const OpenStepOneSimplified = (props: any) => {
 
   useEffect(() => {
     const {resultsStep1} = validateSimplifiedFormikValues(values);
-    
-    const validation = resultsStep1.length > 0 ? false : true
+
+    const validation = resultsStep1.length > 0 ? false : true;
     setDisableForStep1(!validation);
   }, [values, setDisableForStep1]);
+
+  useEffect(() => {
+    dispatch(setProjectStep({data: 1}));
+  }, [dispatch]);
 
   return (
     <Flex

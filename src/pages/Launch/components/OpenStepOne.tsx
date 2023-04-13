@@ -1,4 +1,11 @@
-import {Flex, Box, Grid, GridItem, useColorMode} from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Grid,
+  GridItem,
+  useColorMode,
+  Switch,
+} from '@chakra-ui/react';
 import InputComponent from '@Launch/components/common/InputComponent';
 import StepTitle from '@Launch/components/common/StepTitle';
 import Line from '@Launch/components/common/Line';
@@ -10,7 +17,15 @@ import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {testValue} from '@Launch/utils/testValue';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
+import {
+  selectLaunch,
+  setTempHash,
+  setCurrentDeployStep,
+  setMode,
+  setProjectStep
+} from '@Launch/launch.reducer';
 const filedNameList = [
   {title: 'projectName', requirement: true},
   {title: 'tokenName', requirement: true},
@@ -32,6 +47,7 @@ const filedNameList = [
 const OpenStepOne = () => {
   const {colorMode} = useColorMode();
   const {values, setValues} = useFormikContext<Projects['CreateProject']>();
+  const dispatch: any = useAppDispatch();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -39,6 +55,10 @@ const OpenStepOne = () => {
 
   const testvalues = testValue();
 
+  useEffect(() => {
+    dispatch(setProjectStep({data:1}))
+  },[dispatch])
+  
   return (
     <Flex
       p={'35px'}
@@ -55,15 +75,27 @@ const OpenStepOne = () => {
           w={'100%'}
           h={'100%'}
           left={'300px'}>
+              <Switch
+          style={{height: '16px'}}
+          onChange={() => {
+            dispatch(
+              setMode({
+                data: 'simplified',
+              }),
+            );
+          }}
+          ></Switch>
           <CustomButton
             text="set a test value"
             //@ts-ignore
             func={() => setValues(testvalues)}></CustomButton>
         </Flex>
       )}
-      <Box mb={'23px'}>
+     
+      <Flex mb={'23px'}>
         <StepTitle title={'Project & Token'} isSaveButton={false}></StepTitle>
-      </Box>
+       
+      </Flex>
       <Box mb={'40px'} pos="relative">
         <Box w={'774px'} pos="absolute" left={'-35px'}>
           <Line></Line>

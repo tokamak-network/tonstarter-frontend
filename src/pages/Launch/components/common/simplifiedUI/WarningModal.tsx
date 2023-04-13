@@ -85,7 +85,7 @@ const WarningModal = () => {
               _active={{bg: 'blue.100'}}
               _hover={{bg: 'blue.100'}}
               onClick={() => openAnyModal('Launch_ConfirmTerms', {
-                from: 'simplified-launch',
+                from: 'advance-launch',
               })}
               bg={'#257eee'}>
               Confirm

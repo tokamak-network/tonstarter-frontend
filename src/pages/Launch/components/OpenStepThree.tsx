@@ -5,13 +5,19 @@ import DeployContainer from '@Launch/components/stepThree/DeployContainer';
 import ConfirmTokenModal from './modals/ConfirmToken';
 import ConfirmVaultModal from './modals/ConfirmVault';
 import {useEffect} from 'react';
-
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {setProjectStep} from '@Launch/launch.reducer';
 const OpenStepThree = () => {
   const {colorMode} = useColorMode();
+  const dispatch: any = useAppDispatch();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    dispatch(setProjectStep({data:3}))
+  },[dispatch])
 
   return (
     <Flex

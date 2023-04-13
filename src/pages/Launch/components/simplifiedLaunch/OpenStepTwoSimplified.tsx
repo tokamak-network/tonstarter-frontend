@@ -7,12 +7,15 @@ import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import { useFormikContext } from 'formik';
 import {Projects} from '@Launch/types';
 import {Dispatch, SetStateAction, useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {setProjectStep} from '@Launch/launch.reducer';
 
 const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAction<boolean>>;}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
   const {setDisableForStep2} = props;
+  const dispatch: any = useAppDispatch();
 
  useEffect(() => {
     const {resultsStep2} = validateSimplifiedFormikValues(values)
@@ -22,6 +25,11 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
     setDisableForStep2(!validation);
     
   }, [values, setDisableForStep2]);
+
+  useEffect(() => {
+    dispatch(setProjectStep({data: 2}));
+  }, [dispatch]);
+
 
   return (
     <Flex

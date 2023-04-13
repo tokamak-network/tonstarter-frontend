@@ -17,7 +17,7 @@ import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
+import {selectLaunch, setHashKey,setProjectStep} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
@@ -67,7 +67,7 @@ const MainScreen = () => {
     params: {id},
   } = match;
   const {
-    data: {projects, hashKey},
+    data: {projects, hashKey,projectStep},
   } = useAppSelector(selectLaunch);
 
   
@@ -93,6 +93,12 @@ const MainScreen = () => {
     );
   }, []);
 
+    useEffect(() => {
+    setStep(projectStep)
+    console.log('projectStep',projectStep);
+    
+  },[])
+  
   const handleStep = useCallback(
     (isNext: boolean) => {
       const prevStepNum =
@@ -143,7 +149,7 @@ const MainScreen = () => {
       flexDir={'column'}
       justifyContent={'center'}
       w={'100%'}
-      mt={100}
+    
       mb={'100px'}
       pos="relative">
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>

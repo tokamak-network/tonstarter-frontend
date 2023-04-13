@@ -13,7 +13,7 @@ import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {useFormikContext} from 'formik';
 import validateFormikValues from '@Launch/utils/validate';
 import {Projects} from '@Launch/types';
-import {setUncompletedVaultIndex} from '@Launch/launch.reducer';
+import {setUncompletedVaultIndex,setProjectStep} from '@Launch/launch.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
 import VestingRound from './stepTwo/VestingRound';
 import useSelectVault from 'hooks/launch/useSelectVault';
@@ -33,8 +33,10 @@ const OpenStepTwo = (props: {
   }, []);
 
   useEffect(() => {
-   
-    
+    dispatch(setProjectStep({data:2}))
+  },[dispatch])
+
+  useEffect(() => {
     const validation = validateFormikValues(values);
     setDisableForStep2(validation.result);
     dispatch(setUncompletedVaultIndex({data: validation}));

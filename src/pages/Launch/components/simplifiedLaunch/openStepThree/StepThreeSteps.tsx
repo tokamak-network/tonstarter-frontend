@@ -33,15 +33,16 @@ import 'slick-carousel/slick/slick-theme.css';
 type step = {
   vault: string;
   index: number;
-  currentDeployTitle: string;
-  hoverVault: string;
+  currentDeployStep: number;
+  hoverVault: number;
   setHoverVault: Dispatch<SetStateAction<any>>;
+  currentStep: number;
 };
 type ArrowImageProp = {
   img: string;
 };
 const StepThreeSteps = (props: {
-  currentStep: Number;
+  currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<any>>;
 }) => {
   const {currentStep, setCurrentStep} = props;
@@ -79,7 +80,7 @@ const StepThreeSteps = (props: {
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
   const [isHoverLeft, setIsHoverLeft] = useState(false);
   const [isHoverRight, setIsHoverRight] = useState(false);
-  const [hoverVault, setHoverVault] = useState('');
+  const [hoverVault, setHoverVault] = useState(-1);
 
   const {
     data: {currentDeployStep},
@@ -102,9 +103,8 @@ const StepThreeSteps = (props: {
   }, [ERC20_CONTRACT, values]);
 
   const StepButton: React.FC<step> = (props) => {
-    const {vault, index, currentDeployTitle} = props;
-    const [hover, setHover] = useState(false);
-
+    const {vault, index, currentDeployStep,currentStep} = props;
+      
     const getStatus = (step: number) => {
       switch (step) {
         case 0: {
@@ -251,21 +251,19 @@ const StepThreeSteps = (props: {
     };
 
     const handleMouseEnter = () => {
-     
-      setHoverVault(vault);
+      setHoverVault(index);
     };
 
     const handleMouseLeave = () => {
-      setHoverVault('');
-     
+      setHoverVault(-1);
     };
 
     const getHoverTitle = useMemo(() => {
-      if (hoverVault === vault) {
+      if (hoverVault === index) {
         return vault;
-      } else if (hoverVault !== '' && currentDeployTitle === vault) {
+      } else if (hoverVault === -1 && currentDeployStep === index) {
         return vault;
-      } else  {
+      } else {
         return '';
       }
     }, [currentDeployTitle, vault]);
@@ -338,7 +336,7 @@ const StepThreeSteps = (props: {
     centerPadding: '10px',
     speed: 500,
     variableWidth: true,
-    // initialSlide: currentSlide,
+    initialSlide: Number(currentDeployStep),
     // arrows: true,
     swipeToSlide: true,
     // arrows: false,
@@ -446,7 +444,8 @@ const StepThreeSteps = (props: {
                   index={index}
                   hoverVault={hoverVault}
                   setHoverVault={setHoverVault}
-                  currentDeployTitle={currentDeployTitle}
+                  currentDeployStep={currentDeployStep}
+                  currentStep={currentStep}
                 />
 
                 {index !== vaults.length - 1 ? (

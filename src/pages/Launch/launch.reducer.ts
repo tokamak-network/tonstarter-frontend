@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {VaultName, VaultSchedule, VaultType} from '@Launch/types';
-
+import { StepNumber } from '@Launch/types';
 interface LaunchState {
   data: {
     selectedVault: VaultName;
@@ -11,8 +11,9 @@ interface LaunchState {
     tempVaultData: any;
     hashKey: string | undefined;
     alreadySelected: number[] | undefined;
-    currentDeployStep:number
-
+    currentDeployStep:number;
+    mode: string;
+    projectStep: StepNumber;
     err: {
       tokenDetail: {
         name: boolean;
@@ -48,6 +49,8 @@ const initialState = {
     tempVaultData: {},
     hashKey: undefined,
     currentDeployStep:0,
+    mode: 'simplified',
+    projectStep: 1,
     err: {
       tokenDetail: {},
     },
@@ -128,7 +131,13 @@ export const launchReducer = createSlice({
     },
     setCurrentDeployStep: (state, {payload}:PayloadAction<ProjectPayload>) => {
       state.data.currentDeployStep = payload.data
-    }
+    },
+    setMode: (state, {payload}:PayloadAction<ProjectPayload>) => {
+      state.data.mode = payload.data
+    },
+    setProjectStep: (state, {payload}:PayloadAction<ProjectPayload>) => {
+      state.data.projectStep = payload.data
+    },
   },
   extraReducers: {
     [selectVault.pending.type]: (state, action) => {
@@ -168,4 +177,6 @@ export const {
   setUncompletedVaultIndex,
   setTempHash,
   setCurrentDeployStep,
+  setMode,
+  setProjectStep
 } = launchReducer.actions;

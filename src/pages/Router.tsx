@@ -30,6 +30,7 @@ import MobileProjectScreen from './Mobile/Pages/Launch/MobileProjectScreen';
 import MobileAirDrop from './Mobile/Pages/AirDrop/index';
 import {MobileFLD} from './Mobile/Pages/MobileFLD.';
 import {MobileFooter} from './Mobile/Components/MobileFooter';
+import CreateMain from '@Launch/CreateMain';
 import {
   CreateProject,
   ListingProjects,
@@ -231,8 +232,8 @@ export const Router: FC<RouterProps> = () => {
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />
           <Route exact path={`/launch`} component={OpenCampagin} />
-          <Route exact path={`/launch/createproject`} component={MainScreen} />
-          <Route exact path={`/launch/simplified/createprojectsimple`} component={SimplifiedMainScreen} />
+          <Route exact path={`/launch/createproject`} component={CreateMain} />
+          {/* <Route exact path={`/launch/simplified/createprojectsimple`} component={SimplifiedMainScreen} /> */}
           <Route
             exact
             path={`/launch/project/:name`}

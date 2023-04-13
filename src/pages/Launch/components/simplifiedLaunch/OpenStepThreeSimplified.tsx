@@ -2,7 +2,7 @@
 import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import StepHeader from './StepHeader';
 import StepThreeSteps from './openStepThree/StepThreeSteps';
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import InitialLiquidity from './openStepThree/InitialLiquidity';
 import Distribute from './openStepThree/Distribute';
 import ProjectToken from './openStepThree/ProjectToken';
@@ -20,6 +20,8 @@ import ConfirmTokenSimplifiedModal from '../modals/ConfirmTokenSimplified';
 import {useModal} from 'hooks/useModal';
 import EstimateGasModal from './openStepThree/EstimateGas';
 
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {setProjectStep} from '@Launch/launch.reducer';
 
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
@@ -76,6 +78,8 @@ const OpenStepThreeSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
+  const dispatch: any = useAppDispatch();
+
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
 
@@ -85,6 +89,11 @@ const OpenStepThreeSimplified = (props: any) => {
         from: 'launch/createprojectsimple',
       })}
     )
+
+    useEffect(() => {
+      dispatch(setProjectStep({data: 3}));
+    }, [dispatch]);
+  
     
   return (
     <Flex
