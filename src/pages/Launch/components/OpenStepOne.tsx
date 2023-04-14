@@ -79,7 +79,7 @@ const OpenStepOne = () => {
           w={'100%'}
           h={'100%'}
           left={'300px'}>
-              <Switch
+              {/* <Switch
           style={{height: '16px'}}
           onChange={() => {
             dispatch(
@@ -88,7 +88,7 @@ const OpenStepOne = () => {
               }),
             );
           }}
-          ></Switch>
+          ></Switch> */}
           <CustomButton
             text="set a test value"
             //@ts-ignore
