@@ -34,7 +34,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   oldValues,
   valueKey,
   startTimeCap,
-  duration
+  duration,
 }) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
@@ -42,10 +42,13 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   );
   const [startTime, setStartTime] = useState<number>(0);
   const [startTimeArray, setStartTimeArray] = useState([]);
+  const [endTime, setEndTime] = useState<number>(0)
+  const [endTimeArray, setEndTimeArray] = useState([0]);
 
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const createTime = (onClose: any) => {
     create();
+    console.log('values', values);
 
     if (fieldValueKey) {
       const timeStamp = startTime;
@@ -53,6 +56,10 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
       return onClose();
     } else {
       if (setDate) {
+        console.log(startTime);
+        // Set end date 2 days after public sale starts
+        setEndTime(startTime + duration * 86400)
+        console.log('endDate', endTime);
         setDate(startTime);
       }
     }
@@ -66,12 +73,24 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
       minute: startTimeArray[1],
       second: startTimeArray[2],
     });
+
     setStartTime(startDates.unix());
+
+    const ends = moment.unix(endTime);
+    const endDates = moment(ends).set({
+      hour: endTimeArray[0],
+      minute: endTimeArray[1],
+      second: endTimeArray[2],
+    });
+
+    setEndTime(endDates.unix());
   };
 
   useEffect(() => {
     create();
-  }, [startTimeArray, startTime]);
+  }, [startTimeArray, startTime, endTimeArray, endTime]);
+
+
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -130,8 +149,8 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                 label={'Start time'} />
               <CustomizedClock
                 setTime={setStartTimeArray}
-                calendarType={'start'}
-                startTime={startTime}
+                calendarType={'end'}
+                startTime={endTime}
                 startTimeCap={startTimeCap}
                 label={'End time'} />
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>
