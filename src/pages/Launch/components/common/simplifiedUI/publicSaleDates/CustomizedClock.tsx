@@ -41,7 +41,7 @@ const themeDesign = {
 };
 
 type ClockProps = {
-  setTime: Dispatch<SetStateAction<any | []>>;
+  setTime: Dispatch<SetStateAction<any>>;
   startTime: number;
   endTime?: number;
   calendarType: string;

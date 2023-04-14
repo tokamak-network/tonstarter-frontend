@@ -110,6 +110,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     (number | undefined)[]
   >(getTimeStamp() as (number | undefined)[]);
 
+  // new public sale start dates
+  const [publicSale1StartAt, setPublicSale1StartAt] = useState<number>(0);
+  const [publicSale2StartAt, setPublicSale2StartAt] = useState<number>(0);
+
   useEffect(() => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
     // Second after snapshot
@@ -138,7 +142,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     publicSale1End,
     publicSale2,
     publicSale2End,
+    publicSale2DateRange,
     whitelistDateRange,
+    publicSale1DateRange,
   ]);
 
   // Update the start time caps for calendar inputs according to any date range changes
@@ -177,16 +183,17 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     }
   }, [unlockDate1, lastUnlockDate]);
 
-  // production
-  // set public sale end dates
+  // TODO: update to reflect new implementation
   useEffect(() => {
-    if (publicSale1) {
-      setPublicSale1End(publicSale1 + 2 * 86400);
+    if (publicSale2DateRange) {
+      setPublicSale2(publicSale2DateRange[0]);
+      setPublicSale2End(publicSale2DateRange[1]);
     }
-    if (publicSale2) {
-      setPublicSale2End(publicSale2 + 2 * 86400);
+    if (publicSale1DateRange) {
+      setPublicSale1(publicSale1DateRange[0]);
+      setPublicSale1End(publicSale1DateRange[1]);
     }
-  }, [publicSale1, publicSale2]);
+  }, [publicSale2DateRange, publicSale2, publicSale1DateRange, publicSale1]);
 
   return (
     <Grid
@@ -250,11 +257,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 {publicSale1 && publicSale1End ? (
                   <Text>
                     {convertTimeStamp(
-                      (publicSale1),
+                      Number(publicSale1),
                       'YYYY.MM.DD HH:mm:ss',
                     )}
                     <br />~
-                    {convertTimeStamp((publicSale1End), 'MM.DD HH:mm:ss')}
+                    {convertTimeStamp(Number(publicSale1End), 'MM.DD HH:mm:ss')}
                   </Text>
                 ) : (
                   <Text color="#ff3b3b">Choose</Text>
@@ -263,10 +270,15 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
                     <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
+                      {/* <DateRangePicker
+                        setDate={setPublicSale1DateRange}
+                        startTimeCap={publicSale1STC}
+                        duration={2}
+                      /> */}
                       {/* TODO: change duration for testing env */}
                       <PublicSaleDatePicker
-                      setDate={setPublicSale1}
-                      startTimeCap={publicSale1STC}
+                      setDate={setPublicSale1StartAt}
+                      startTimeCap={snapshotGap}
                       duration={2}
                     />
                     </Grid>
@@ -294,7 +306,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {!isPublicVaultDeployed && (
                       <PublicSaleDatePicker
                         // public sale end + 1
-                        setDate={setPublicSale2}
+                        setDate={setPublicSale2StartAt}
                         startTimeCap={publicSale2STC}
                         duration={5}
                       />

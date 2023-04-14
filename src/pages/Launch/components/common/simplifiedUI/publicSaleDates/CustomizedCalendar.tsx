@@ -168,6 +168,7 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         locale={'en-EN'}
         tileDisabled={tilesDisabled}
         selectRange={true}
+        value={[new Date(2023, 4, 13), new Date(2023, 4, 15)]}
       />
     </Flex>
   );
