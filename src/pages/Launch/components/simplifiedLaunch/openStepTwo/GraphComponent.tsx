@@ -19,11 +19,11 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const colors = [
-    '#f17235',
     '#2b66aa',
     '#f23c35',
     '#f7b729',
     '#5da344',
+    '#f17235',
     '#fdb462',
     '#ffffb3',
     '#fccde5',
@@ -39,7 +39,7 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
  // Allocation % for each vault.
  // initially allocated %
   const [vaultAllocations, setVaultAllocations] = useState({
-    public: 13,
+    public: 30,
     team: 15,
     eco: 35,
     liquidity: 15,
@@ -105,6 +105,8 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
       color: colors[index],
     };
   });
+
+  
 
   return (
     <>
