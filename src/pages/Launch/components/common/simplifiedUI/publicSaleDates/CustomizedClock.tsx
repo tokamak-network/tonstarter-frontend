@@ -37,7 +37,7 @@ const themeDesign = {
 
 type ClockProps = {
   setTime?: Dispatch<SetStateAction<any>>;
-  startTime?: number;
+  startTime: number;
   endTime?: number;
   calendarType?: string;
   startTimeCap?: number;
@@ -75,6 +75,34 @@ const CustomizedClock = (props: ClockProps) => {
     setMeridiem(hr >= 12 ? 'PM' : 'AM');
   }, [startTimeCap]);
 
+  const getMonthAndDay = (startTime: number) => {
+    if (!startTime) {
+      return null;
+    }
+
+    const date = new Date(startTime * 1000);
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+
+    return {month, day};
+  };
+
+  const monthAndDay = getMonthAndDay(startTime);
+
   const setUp = () => {
     let hour;
     if (meridiem === 'AM' && hours === 12) {
@@ -106,13 +134,19 @@ const CustomizedClock = (props: ClockProps) => {
       }
       bg={colorMode === 'light' ? '#FFFFFF' : '#222222'}
       zIndex={1}>
-      {/* TODO:  */}
       <Box pt={2} textAlign={'left'}>
         <Flex>
           <Text fontSize={'13px'} fontWeight={600}>
             {label}
           </Text>
-          <Text fontSize={'13px'}> &nbsp;(April 17)</Text>
+          &nbsp;
+          {startTime ? (
+            <Text fontSize={'13px'}>
+              {monthAndDay?.month}&nbsp;{monthAndDay?.day}
+            </Text>
+          ) : (
+            <Text fontSize={'13px'}>&nbsp;-&nbsp;-&nbsp;</Text>
+          )}
         </Flex>
       </Box>
       <Flex
