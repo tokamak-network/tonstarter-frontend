@@ -1,9 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useState,
-  useEffect,
-} from 'react';
+import {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import React from 'react';
 import {
   Flex,
@@ -47,10 +42,19 @@ type ClockProps = {
   calendarType: string;
   startTimeCap?: number;
   label?: string;
+  disabled?: boolean;
 };
 
 const CustomizedClock = (props: ClockProps) => {
-  const {setTime, startDate, endTime, calendarType, startTimeCap, label} = props;
+  const {
+    setTime,
+    startDate,
+    endTime,
+    calendarType,
+    startTimeCap,
+    label,
+    disabled,
+  } = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const hr = startTimeCap !== undefined ? moment.unix(startTimeCap).hours() : 1;
@@ -102,14 +106,22 @@ const CustomizedClock = (props: ClockProps) => {
       }
       bg={colorMode === 'light' ? '#FFFFFF' : '#222222'}
       zIndex={1}>
-        {/* TODO:  */}
-      <Box pt={2} textAlign={'left'}><Flex><Text fontSize={'13px'} fontWeight={600}>{label}</Text><Text fontSize={'13px'}> &nbsp;(April 22)</Text></Flex></Box>
+      {/* TODO:  */}
+      <Box pt={2} textAlign={'left'}>
+        <Flex>
+          <Text fontSize={'13px'} fontWeight={600}>
+            {label}
+          </Text>
+          <Text fontSize={'13px'}> &nbsp;(April 17)</Text>
+        </Flex>
+      </Box>
       <Flex
         p={'10px 0px'}
         flexDirection="row"
         alignItems="center"
         justifyContent={'center'}>
         <NumberInput
+          isDisabled={disabled}
           maxH={'37px'}
           fontFamily={theme.fonts.roboto}
           maxW={'48px'}
@@ -156,6 +168,7 @@ const CustomizedClock = (props: ClockProps) => {
           </NumberInputStepper>
         </NumberInput>
         <NumberInput
+          isDisabled={disabled}
           maxH={'37px'}
           maxW={'48px'}
           defaultValue={0}
@@ -199,6 +212,7 @@ const CustomizedClock = (props: ClockProps) => {
           </NumberInputStepper>
         </NumberInput>
         <NumberInput
+          isDisabled={disabled}
           maxH={'37px'}
           maxW={'48px'}
           fontFamily={theme.fonts.roboto}
@@ -243,6 +257,7 @@ const CustomizedClock = (props: ClockProps) => {
         </NumberInput>
 
         <Select
+          isDisabled={disabled}
           h={'30px'}
           w={'72px'}
           fontSize={'13px'}

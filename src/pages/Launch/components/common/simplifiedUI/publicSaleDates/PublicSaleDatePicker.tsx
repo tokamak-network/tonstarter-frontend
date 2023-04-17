@@ -138,7 +138,8 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                 calendarType={'start'}
                 startDate={startTime + (2 * 86400)}
                 startTimeCap={startTimeCap &&  startTimeCap + (2 * 86400)}
-                label={'End time'} />
+                label={'End time'}
+                disabled={true} />
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>
                 <Button
                   type="submit"
