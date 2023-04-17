@@ -73,6 +73,30 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
     setStartTime(startDates.unix());
   };
 
+  const getMonthAndDay = (startTime: number) => {
+    const date = new Date(startTime * 1000);
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+
+    return {month, day};
+  };
+
+  const monthAndDay = getMonthAndDay(startTime);
+
   useEffect(() => {
     create();
   }, [startTimeArray, startTime]);
@@ -127,29 +151,39 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                 startTime={startTime}
                 startTimeCap={startTimeCap}
               />
-              <CustomizedClock
-                setTime={setStartTimeArray}
-                calendarType={'start'}
-                startTime={startTime}
-                startTimeCap={startTimeCap}
-                label={'Start time'}
-              />
-              {isProduction() === false ? (
-                <CustomizedClock
-                  setTime={setEndTime}
-                  startTime={startTime}
-                  startTimeCap={startTime + 2 * 60}
-                  label={'End time'}
-                  disabled={true}
-                />
-              ) : (
-                <CustomizedClock
-                  setTime={setEndTime}
-                  startTime={startTime}
-                  startTimeCap={startTime + duration * 86400}
-                  label={'End time'}
-                  disabled={true}
-                />
+              {monthAndDay && (
+                <>
+                  <CustomizedClock
+                    setTime={setStartTimeArray}
+                    calendarType={'start'}
+                    startTime={startTime}
+                    startTimeCap={startTimeCap}
+                    label={'Start time'}
+                    month={monthAndDay?.month}
+                    day={monthAndDay?.day}
+                  />
+                  {isProduction() === false ? (
+                    <CustomizedClock
+                      setTime={setEndTime}
+                      startTime={startTime}
+                      startTimeCap={startTime + 2 * 60}
+                      label={'End time'}
+                      disabled={true}
+                      month={monthAndDay?.month}
+                      day={monthAndDay?.day}
+                    />
+                  ) : (
+                    <CustomizedClock
+                      setTime={setEndTime}
+                      startTime={startTime}
+                      startTimeCap={startTime + duration * 86400}
+                      label={'End time'}
+                      disabled={true}
+                      month={monthAndDay?.month}
+                      day={monthAndDay?.day + 2}
+                    />
+                  )}
+                </>
               )}
 
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>

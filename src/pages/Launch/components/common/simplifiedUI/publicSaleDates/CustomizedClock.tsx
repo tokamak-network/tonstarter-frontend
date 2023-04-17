@@ -42,6 +42,8 @@ type ClockProps = {
   calendarType?: string;
   startTimeCap?: number;
   label?: string;
+  month: string,
+  day: number,
   disabled?: boolean;
 };
 
@@ -53,6 +55,8 @@ const CustomizedClock = (props: ClockProps) => {
     calendarType,
     startTimeCap,
     label,
+    month,
+    day,
     disabled,
   } = props;
   const {colorMode} = useColorMode();
@@ -74,34 +78,6 @@ const CustomizedClock = (props: ClockProps) => {
     setSeconds(sec);
     setMeridiem(hr >= 12 ? 'PM' : 'AM');
   }, [startTimeCap]);
-
-  const getMonthAndDay = (startTime: number) => {
-    if (!startTime) {
-      return null;
-    }
-
-    const date = new Date(startTime * 1000);
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    const month = monthNames[date.getMonth()];
-    const day = date.getDate();
-
-    return {month, day};
-  };
-
-  const monthAndDay = getMonthAndDay(startTime);
 
   const setUp = () => {
     let hour;
@@ -142,7 +118,7 @@ const CustomizedClock = (props: ClockProps) => {
           &nbsp;
           {startTime ? (
             <Text fontSize={'13px'}>
-              {monthAndDay?.month}&nbsp;{monthAndDay?.day}
+              {month}&nbsp;{day}
             </Text>
           ) : (
             <Text fontSize={'13px'}>&nbsp;-&nbsp;-&nbsp;</Text>
