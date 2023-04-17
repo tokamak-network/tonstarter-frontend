@@ -36,10 +36,10 @@ const themeDesign = {
 };
 
 type ClockProps = {
-  setTime: Dispatch<SetStateAction<any | number>>;
-  startDate?: number;
+  setTime?: Dispatch<SetStateAction<any>>;
+  startTime?: number;
   endTime?: number;
-  calendarType: string;
+  calendarType?: string;
   startTimeCap?: number;
   label?: string;
   disabled?: boolean;
@@ -48,7 +48,7 @@ type ClockProps = {
 const CustomizedClock = (props: ClockProps) => {
   const {
     setTime,
-    startDate,
+    startTime,
     endTime,
     calendarType,
     startTimeCap,
@@ -78,14 +78,14 @@ const CustomizedClock = (props: ClockProps) => {
   const setUp = () => {
     let hour;
     if (meridiem === 'AM' && hours === 12) {
-      setTime([0, minutes, seconds]);
+      setTime && setTime([0, minutes, seconds]);
     } else if (meridiem === 'PM' && hours === 12) {
-      setTime([hours, minutes, seconds]);
+      setTime && setTime([hours, minutes, seconds]);
     } else if (meridiem === 'PM' && hours !== 12) {
       hour = hours + 12;
-      setTime([hour, minutes, seconds]);
+      setTime && setTime([hour, minutes, seconds]);
     } else {
-      setTime([hours, minutes, seconds]);
+      setTime && setTime([hours, minutes, seconds]);
     }
   };
 
