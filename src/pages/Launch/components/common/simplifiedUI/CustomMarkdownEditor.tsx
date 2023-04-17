@@ -8,7 +8,8 @@ import 'react-quill/dist/quill.snow.css';
 
 const CustomMarkdownEditor = () => {
   const {colorMode} = useColorMode();
-  const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
   const mkData = values.description;
   const [test, setTest] = useState<string>(mkData || '');
   const theme = useTheme();
@@ -142,9 +143,27 @@ const CustomMarkdownEditor = () => {
 
   return (
     <Flex flexDir={'column'} fontSize={13}>
-    <Text h={18} mb={2.5}>
-      <Flex fontSize={'13px'}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>
-      <Text fontSize={'13px'} color={'#2d3136'} fontFamily={theme.fonts.roboto}>Description</Text></Flex>
+      <Text h={18} mb={2.5}>
+        <Flex fontSize={'13px'}>
+          <Text mr={'5px'} color={'#FF3B3B'}>
+            *
+          </Text>
+          {colorMode === 'light' ? (
+            <Text
+              fontSize={'13px'}
+              color={'#2d3136'}
+              fontFamily={theme.fonts.roboto}>
+              Description
+            </Text>
+          ) : (
+            <Text
+              fontSize={'13px'}
+              color={'#f3f4f1'}
+              fontFamily={theme.fonts.roboto}>
+              Description
+            </Text>
+          )}
+        </Flex>
       </Text>
       <style>{markdownStyles}</style>
       <ReactQuill
