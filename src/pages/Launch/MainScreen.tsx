@@ -106,7 +106,7 @@ const MainScreen = () => {
     },
     [step],
   );
-
+  
 
   // const {web3Token} = useWeb3Token();
 
@@ -119,9 +119,11 @@ const MainScreen = () => {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
 
-  if (projects[id] && projects[id]?.ownerAddress !== account) {
+  if (id !== undefined && projects[id] && projects[id]?.ownerAddress !== account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
+
+
 
   return (
     <Flex
