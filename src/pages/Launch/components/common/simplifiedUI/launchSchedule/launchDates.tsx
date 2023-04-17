@@ -211,10 +211,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {convertTimeStamp(snapshotDate, 'YYYY.MM.DD HH:mm:ss')}
                   </Text>
                 ) : (
-                  <Text color="#ff3b3b">Choose</Text>
+                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
                 )}
                 {!isPublicVaultDeployed && (
-                  <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
+                  <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
                     <SingleCalendarPop
                       setDate={setSnapshotDate}
                       startTimeCap={snapshotGap}
@@ -247,7 +247,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     )}
                   </Text>
                 ) : (
-                  <Text ml={'7px'}>-</Text>
+                  <Text ml={'8px'}>-</Text>
                 )}
               </GridItem>
             )}
@@ -264,12 +264,12 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {convertTimeStamp(Number(publicSale1End), 'MM.DD HH:mm:ss')}
                   </Text>
                 ) : (
-                  <Text color="#ff3b3b">Choose</Text>
+                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
                 )}
                 {!isPublicVaultDeployed && (
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
-                    <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
+                    <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
                       <PublicSaleDatePicker
                         setDate={setPublicSale1}
                         startTimeCap={publicSale1STC}
@@ -293,10 +293,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {convertTimeStamp(Number(publicSale2End), 'MM.DD HH:mm:ss')}
                   </Text>
                 ) : (
-                  <Text color="#ff3b3b">Choose</Text>
+                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
                 )}
                 <Grid justifyContent={'center'}>
-                  <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
+                  <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
                     {!isPublicVaultDeployed && (
                       <PublicSaleDatePicker
                         // public sale end + 1
@@ -339,7 +339,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                           h={'60px'}
                           bg={'#353c48'}
                           color={'#fff'}
-                          border={0}>
+                          >
                           <PopoverArrow bg={'#353c48'} />
                           <PopoverBody textAlign={'left'}>
                             <>

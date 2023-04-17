@@ -31,7 +31,7 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
   }, [currentStep, maxStep]);
 
   return (
-    <Grid my={'40px'}>
+    <Grid mb={'40px'} mt={'20px'}>
       <Box my={'20px'}>
         <Text fontSize={'15px'} fontWeight={600}>Schedule</Text>
       </Box>
