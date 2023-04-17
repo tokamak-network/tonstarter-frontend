@@ -263,7 +263,7 @@ useEffect(() => {
                 )}
               </Flex>
               <Text w={'314px'} borderRight={middleStyle.border}>
-                Accumulated
+                Accumulated ({values.tokenSymbol})
               </Text>
             </Flex>
             {
