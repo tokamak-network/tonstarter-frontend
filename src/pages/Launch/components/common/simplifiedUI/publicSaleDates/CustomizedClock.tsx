@@ -41,8 +41,8 @@ const themeDesign = {
 };
 
 type ClockProps = {
-  setTime: Dispatch<SetStateAction<any>>;
-  startTime: number;
+  setTime: Dispatch<SetStateAction<any | number>>;
+  startDate?: number;
   endTime?: number;
   calendarType: string;
   startTimeCap?: number;
@@ -50,7 +50,7 @@ type ClockProps = {
 };
 
 const CustomizedClock = (props: ClockProps) => {
-  const {setTime, startTime, endTime, calendarType, startTimeCap, label} = props;
+  const {setTime, startDate, endTime, calendarType, startTimeCap, label} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const hr = startTimeCap !== undefined ? moment.unix(startTimeCap).hours() : 1;
@@ -103,7 +103,7 @@ const CustomizedClock = (props: ClockProps) => {
       bg={colorMode === 'light' ? '#FFFFFF' : '#222222'}
       zIndex={1}>
         {/* TODO:  */}
-      <Box pt={2} textAlign={'left'}><Text fontSize={'13px'} fontWeight={600}>{label}</Text></Box>
+      <Box pt={2} textAlign={'left'}><Flex><Text fontSize={'13px'} fontWeight={600}>{label}</Text><Text fontSize={'13px'}> &nbsp;(April 22)</Text></Flex></Box>
       <Flex
         p={'10px 0px'}
         flexDirection="row"

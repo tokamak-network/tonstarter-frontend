@@ -42,6 +42,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   );
   const [startTime, setStartTime] = useState<number>(0);
   const [startTimeArray, setStartTimeArray] = useState([]);
+  const [endTime, setEndTime] = useState(0);
 
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const createTime = (onClose: any) => {
@@ -54,6 +55,10 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
     } else {
       if (setDate) {
         setDate(startTime);
+        setEndTime(startTime + duration * 86400)
+        console.log(startTime);
+        // Set end date 2 days after public sale starts
+        console.log('endDate', endTime);
       }
     }
     onClose();
@@ -71,7 +76,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
 
   useEffect(() => {
     create();
-  }, [startTimeArray, startTime]);
+  }, [startTimeArray, startTime, setEndTime]);
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -121,18 +126,18 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
               <CustomizedCalendar
                 setValue={setStartTime}
                 startTime={startTime}
-                startTimeCap={startTimeCap}></CustomizedCalendar>
+                startTimeCap={startTimeCap} />
               <CustomizedClock
                 setTime={setStartTimeArray}
                 calendarType={'start'}
-                startTime={startTime}
+                startDate={startTime}
                 startTimeCap={startTimeCap}
                 label={'Start time'} />
               <CustomizedClock
                 setTime={setStartTimeArray}
                 calendarType={'start'}
-                startTime={startTime}
-                startTimeCap={startTimeCap}
+                startDate={startTime + (2 * 86400)}
+                startTimeCap={startTimeCap &&  startTimeCap + (2 * 86400)}
                 label={'End time'} />
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>
                 <Button
