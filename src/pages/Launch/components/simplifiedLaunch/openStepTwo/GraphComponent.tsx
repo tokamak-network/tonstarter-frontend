@@ -32,9 +32,6 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
     '#ccebc5',
     '#ffed6f',
   ];
-
-
-
   
  // Allocation % for each vault.
  // initially allocated %
@@ -46,18 +43,18 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
     tonStarter: 5
   });
   
-  const calculateAllocated = (totalAllocation: number, vaultAllocation: number) => {
+  const calculateAllocated = (totalAllocation: number, vaultAllocation: number) => {    
     const allocatedAmount = (vaultAllocation / totalAllocation) * 100;
     return Math.ceil(allocatedAmount);
   };
   
   useEffect(() => {
     if (totalTokenAlloc) {
-      const publicAlloc = calculateAllocated(totalTokenAlloc, vaults[0].vaultTokenAllocation);
-      const teamAlloc = calculateAllocated(totalTokenAlloc, vaults[8].vaultTokenAllocation);
-      const ecoAlloc = calculateAllocated(totalTokenAlloc, vaults[7].vaultTokenAllocation);
-      const liquidityAlloc = calculateAllocated(totalTokenAlloc, vaults[1].vaultTokenAllocation + vaults[6].vaultTokenAllocation);
-      const tonStarterAlloc = calculateAllocated(totalTokenAlloc, vaults[3].vaultTokenAllocation + vaults[4].vaultTokenAllocation + vaults[5].vaultTokenAllocation);
+      const publicAlloc = calculateAllocated(totalTokenAlloc, vaults[0]?.vaultTokenAllocation? vaults[0].vaultTokenAllocation: 0);
+      const teamAlloc = calculateAllocated(totalTokenAlloc, vaults[8]?.vaultTokenAllocation? vaults[8].vaultTokenAllocation: 0 );
+      const ecoAlloc = calculateAllocated(totalTokenAlloc, vaults[7]?.vaultTokenAllocation? vaults[7].vaultTokenAllocation: 0);
+      const liquidityAlloc = calculateAllocated(totalTokenAlloc, vaults[1]?.vaultTokenAllocation && vaults[6]?.vaultTokenAllocation ? vaults[1].vaultTokenAllocation + vaults[6].vaultTokenAllocation: 0);
+      const tonStarterAlloc = calculateAllocated(totalTokenAlloc,vaults[3]?.vaultTokenAllocation && vaults[4]?.vaultTokenAllocation && vaults[5]?.vaultTokenAllocation?  vaults[3].vaultTokenAllocation + vaults[4].vaultTokenAllocation + vaults[5].vaultTokenAllocation: 0);
   
       setVaultAllocations({
         public: publicAlloc,
