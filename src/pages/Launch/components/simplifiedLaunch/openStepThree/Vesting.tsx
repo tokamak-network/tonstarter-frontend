@@ -141,7 +141,7 @@ const Vesting = (props: {step: string}) => {
           ? true
           : false
         : vestingVault.isSet === true ||
-          !hasToken ||
+    
           values.vaults[1].isSet === false
         ? true
         : false;
@@ -153,8 +153,7 @@ const Vesting = (props: {step: string}) => {
     values.vaults,
     vestingVault.vaultAddress,
     vestingVault.isSet,
-    hasToken,
-  ]);
+   ]);
 
   return (
     <Flex
