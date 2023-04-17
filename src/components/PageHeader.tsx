@@ -69,7 +69,7 @@ export const PageHeader: FC<HeadProps> = ({
           fontFamily="Titillium Web, sans-serif">
           {secondSubTitle}
         </Text>
-        {isSimplified && (
+     
           <Flex mt={'9px'}>
             <Image src={iconUserGuide} w="18px" h="18px" />
             <Link
@@ -78,12 +78,12 @@ export const PageHeader: FC<HeadProps> = ({
               fontSize="13px"
               fontFamily="Titillium Web, sans-serif"
               color={colorMode === 'dark' ? 'gray.475' : 'gray.400'}
-              href="https://tokamaknetwork.gitbook.io/home/02-service-guide/tosv2"
+              href="https://tokamaknetwork.gitbook.io/home/v/kor/02-service-guide/tonstarter-launch"
               cursor="pointer">
               User Guide
             </Link>
           </Flex>
-        )}
+        
       </Flex>
     </Container>
   );

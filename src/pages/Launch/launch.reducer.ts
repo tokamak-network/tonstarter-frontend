@@ -14,6 +14,7 @@ interface LaunchState {
     currentDeployStep:number;
     mode: string;
     projectStep: StepNumber;
+    tempProjectData: any;
     err: {
       tokenDetail: {
         name: boolean;
@@ -51,6 +52,7 @@ const initialState = {
     currentDeployStep:0,
     mode: 'simplified',
     projectStep: 1,
+    tempProjectData: {},
     err: {
       tokenDetail: {},
     },
@@ -138,6 +140,9 @@ export const launchReducer = createSlice({
     setProjectStep: (state, {payload}:PayloadAction<ProjectPayload>) => {
       state.data.projectStep = payload.data
     },
+      saveTempProjectData:  (state, {payload}: PayloadAction<ProjectPayload>) => {
+      state.data.tempProjectData = payload.data;
+    },
   },
   extraReducers: {
     [selectVault.pending.type]: (state, action) => {
@@ -178,5 +183,6 @@ export const {
   setTempHash,
   setCurrentDeployStep,
   setMode,
-  setProjectStep
+  setProjectStep,
+  saveTempProjectData
 } = launchReducer.actions;

@@ -52,7 +52,10 @@ const DeployToken = () => {
   );
   // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
-  
+  const {
+    data: { tempProjectData},
+  } = useAppSelector(selectLaunch);
+
   const {
     data: {hashKey},
   } = useAppSelector(selectLaunch);
@@ -62,6 +65,8 @@ const DeployToken = () => {
     values;
   const {account} = useActiveWeb3React();
 
+  console.log('values',values,tempProjectData);
+  
   async function deployToken() {
     try {
       const {tokenName, tokenSymbol, totalSupply, owner} = values;

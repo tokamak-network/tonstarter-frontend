@@ -19,11 +19,11 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const colors = [
-    '#f17235',
     '#2b66aa',
     '#f23c35',
     '#f7b729',
     '#5da344',
+    '#f17235',
     '#fdb462',
     '#ffffb3',
     '#fccde5',
@@ -32,32 +32,66 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
     '#ccebc5',
     '#ffed6f',
   ];
+  
+ // Allocation % for each vault.
+ // initially allocated %
+  const [vaultAllocations, setVaultAllocations] = useState({
+    public: 30,
+    team: 15,
+    eco: 35,
+    liquidity: 15,
+    tonStarter: 5
+  });
+  
+  const calculateAllocated = (totalAllocation: number, vaultAllocation: number) => {    
+    const allocatedAmount = (vaultAllocation / totalAllocation) * 100;
+    return Math.ceil(allocatedAmount);
+  };
+  
+  useEffect(() => {
+    if (totalTokenAlloc) {
+      const publicAlloc = calculateAllocated(totalTokenAlloc, vaults[0]?.vaultTokenAllocation? vaults[0].vaultTokenAllocation: 0);
+      const teamAlloc = calculateAllocated(totalTokenAlloc, vaults[8]?.vaultTokenAllocation? vaults[8].vaultTokenAllocation: 0 );
+      const ecoAlloc = calculateAllocated(totalTokenAlloc, vaults[7]?.vaultTokenAllocation? vaults[7].vaultTokenAllocation: 0);
+      const liquidityAlloc = calculateAllocated(totalTokenAlloc, vaults[1]?.vaultTokenAllocation && vaults[6]?.vaultTokenAllocation ? vaults[1].vaultTokenAllocation + vaults[6].vaultTokenAllocation: 0);
+      const tonStarterAlloc = calculateAllocated(totalTokenAlloc,vaults[3]?.vaultTokenAllocation && vaults[4]?.vaultTokenAllocation && vaults[5]?.vaultTokenAllocation?  vaults[3].vaultTokenAllocation + vaults[4].vaultTokenAllocation + vaults[5].vaultTokenAllocation: 0);
+  
+      setVaultAllocations({
+        public: publicAlloc,
+        team: teamAlloc,
+        eco: ecoAlloc,
+        liquidity: liquidityAlloc,
+        tonStarter: tonStarterAlloc
+      });
+    }
+  }, [totalTokenAlloc, vaults]);
 
+  
   const data = [
     {
       id: 'public',
       label: 'Public',
-      value: 0.3,
+      value: vaultAllocations.public/100,
     },
     {
       id: 'ecosystem',
       label: 'Ecosystem',
-      value: 0.35,
+      value: vaultAllocations.eco/100,
     },
     {
       id: 'team',
       label: 'Team',
-      value: 0.15,
+      value: vaultAllocations.team/100,
     },
     {
       id: 'liquidity',
       label: 'Liquidity',
-      value: 0.15,
+      value: vaultAllocations.liquidity/100,
     },
     {
       id: 'tonstarter',
       label: 'TONStarter',
-      value: 0.05,
+      value: vaultAllocations.tonStarter/100,
     },
   ];
   const formattedData = data.map((data: any, index: number) => {
@@ -70,38 +104,6 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
   });
 
   
- // Allocation % for each vault.
- // initially allocated %
-  const [vaultAllocations, setVaultAllocations] = useState({
-    public: 13,
-    team: 15,
-    eco: 35,
-    liquidity: 15,
-    tonStarter: 5
-  });
-  
-  const calculateAllocated = (totalAllocation: number, vaultAllocation: number) => {
-    const allocatedAmount = (vaultAllocation / totalAllocation) * 100;
-    return Math.ceil(allocatedAmount);
-  };
-  
-  useEffect(() => {
-    if (totalTokenAlloc) {
-      const publicAlloc = calculateAllocated(totalTokenAlloc, vaults[0].vaultTokenAllocation);
-      const teamAlloc = calculateAllocated(totalTokenAlloc, vaults[8].vaultTokenAllocation);
-      const ecoAlloc = calculateAllocated(totalTokenAlloc, vaults[7].vaultTokenAllocation);
-      const liquidityAlloc = calculateAllocated(totalTokenAlloc, vaults[1].vaultTokenAllocation + vaults[6].vaultTokenAllocation);
-      const tonStarterAlloc = calculateAllocated(totalTokenAlloc, vaults[3].vaultTokenAllocation + vaults[4].vaultTokenAllocation + vaults[5].vaultTokenAllocation);
-  
-      setVaultAllocations({
-        public: publicAlloc,
-        team: teamAlloc,
-        eco: ecoAlloc,
-        liquidity: liquidityAlloc,
-        tonStarter: tonStarterAlloc
-      });
-    }
-  }, [totalTokenAlloc, vaults]);
 
   return (
     <>

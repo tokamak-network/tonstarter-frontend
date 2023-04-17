@@ -342,7 +342,7 @@ const ClaimRoundTable = (props: {isVesting?: boolean}) => {
               Token Allocation ({values.tokenSymbol})
             </Text>
             <Text w={'314px'} borderRight={middleStyle.border}>
-              Accumulated
+              Accumulated ({values.tokenSymbol})
             </Text>
           </Flex>
         </Box>

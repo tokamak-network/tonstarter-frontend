@@ -17,7 +17,7 @@ import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectLaunch, setHashKey,setProjectStep} from '@Launch/launch.reducer';
+import {selectLaunch, setHashKey, setProjectStep} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
@@ -32,7 +32,7 @@ const StepComponent = (props: {
   const {step, setDisableForStep2} = props;
   switch (step) {
     case 1:
-        return <OpenStepOne></OpenStepOne>;
+      return <OpenStepOne></OpenStepOne>;
     case 2:
       return (
         <OpenStepTwo setDisableForStep2={setDisableForStep2}></OpenStepTwo>
@@ -67,10 +67,9 @@ const MainScreen = () => {
     params: {id},
   } = match;
   const {
-    data: {projects, hashKey,projectStep},
+    data: {projects, hashKey, projectStep, tempProjectData},
   } = useAppSelector(selectLaunch);
 
-  
   let historyObj = useHistory();
 
   const handleOnCofirm = useCallback(() => {
@@ -80,25 +79,23 @@ const MainScreen = () => {
   useEffect(() => {
     //@ts-ignore
     const unBlock = historyObj.block((loc, action) => {
-      if (action === 'POP') {
+      if (action === 'POP' || action === 'PUSH') {
         return window.confirm('Are you sure you want to go back?');
       }
     });
     return () => unBlock();
   }, [historyObj]);
 
-  useEffect(() => {
+  useEffect(() => {    
     dispatch(
-      setHashKey({data: isExist === 'createproject' ? undefined : isExist}),
+      setHashKey({data: hashKey !== undefined? hashKey: isExist === 'createproject' ? undefined : isExist}),
     );
   }, []);
 
-    useEffect(() => {
-    setStep(projectStep)
-    console.log('projectStep',projectStep);
-    
-  },[])
-  
+  useEffect(() => {
+    setStep(projectStep);
+  }, []);
+
   const handleStep = useCallback(
     (isNext: boolean) => {
       const prevStepNum =
@@ -109,6 +106,7 @@ const MainScreen = () => {
     },
     [step],
   );
+  
 
   // const {web3Token} = useWeb3Token();
 
@@ -121,35 +119,17 @@ const MainScreen = () => {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
 
-  if (projects[id] && projects[id]?.ownerAddress !== account) {
+  if (id !== undefined && projects[id] && projects[id]?.ownerAddress !== account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
-
-    // return (
-    //   <Flex
-    //     flexDir={'column'}
-    //     justifyContent={'center'}
-    //     w={'100%'}
-    //     mt={100}
-    //     mb={'100px'}>
-    //     <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
-    //       <PageHeader
-    //         title={'Create Project'}
-    //         subtitle={'You can create and manage projects.'}
-    //       />
-    //       <Flex alignItems={'center'} justifyContent="center" mt={'100px'}>
-    //         This account is not owner address of this project.
-    //       </Flex>
-    //     </Flex>
-    //   </Flex>
-    // );
   }
+
+
 
   return (
     <Flex
       flexDir={'column'}
       justifyContent={'center'}
       w={'100%'}
-    
       mb={'100px'}
       pos="relative">
       <Flex alignItems={'center'} flexDir="column" mb={'20px'}>
@@ -160,15 +140,17 @@ const MainScreen = () => {
         <Flex mt={'50px'} mb={'20px'}>
           <Steps
             stepName={['Project & Token', 'Token Economy', 'Deploy']}
-            currentStep={step}>
-          </Steps>
+            currentStep={step}></Steps>
         </Flex>
       </Flex>
       <Formik
         innerRef={formikRef}
         initialValues={
+          Object.keys(tempProjectData).length !== 0
+            ? {...initialValues, ...tempProjectData}:
           id && projects
             ? {...initialValues, ...projects[id]}
+            
             : {...initialValues, ownerAddress: account}
         }
         validationSchema={ProjectSchema}
@@ -291,7 +273,7 @@ const MainScreen = () => {
                         fontSize={14}
                         color={isDisableForStep2 ? '#86929d' : 'white.100'}
                         bg={isDisableForStep2 ? 'gray.25' : 'blue.500'}
-                        // disabled={isDisableForStep2}
+                        disabled={isDisableForStep2}
                         _hover={{}}
                         borderRadius={4}
                         onClick={() => {
@@ -316,7 +298,7 @@ const MainScreen = () => {
                         h={'45px'}
                         fontSize={14}
                         color={isDisableForStep3 ? '#86929d' : 'white.100'}
-                        bg={isDisableForStep3 ? '#gray.25' : 'blue.500'}
+                        bg={isDisableForStep3 ? 'gray.25' : 'blue.500'}
                         disabled={isDisableForStep3}
                         _hover={{}}
                         borderRadius={4}

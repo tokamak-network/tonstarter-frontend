@@ -202,7 +202,12 @@ const TokenLP = (props: {step: string}) => {
           px="20px"
           w="100%"
           alignItems={'center'}>
-          <Text h="18px" mb="10px" fontSize={'13px'}>
+          <Text
+            h="18px"
+            mb="10px"
+            fontSize={'13px'}
+            fontWeight={'bold'}
+            color={colorMode === 'light' ? '#304156' : '#ffffff'}>
             Vault
           </Text>
           {detailsVault.map((detail: any) => {
@@ -215,7 +220,7 @@ const TokenLP = (props: {step: string}) => {
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
+                  fontWeight={'bold'}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
@@ -224,7 +229,7 @@ const TokenLP = (props: {step: string}) => {
                   <Link
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight={500}
+                    fontWeight={'bold'}
                     color={'blue.300'}
                     isExternal
                     href={
@@ -244,7 +249,7 @@ const TokenLP = (props: {step: string}) => {
                   <Text
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight={500}
+                    fontWeight={'bold'}
                     color={
                       detail.name === 'Admin' || detail.name === 'Contract'
                         ? 'blue.300'
@@ -265,16 +270,25 @@ const TokenLP = (props: {step: string}) => {
           px="20px"
           w="100%"
           alignItems={'center'}>
-          <Text mb="10px" fontSize={'13px'} h="18px">
+          <Text
+            mb="10px"
+            fontSize={'13px'}
+            h="18px"
+            fontWeight={'bold'}
+            color={colorMode === 'light' ? '#304156' : '#ffffff'}>
             Claim
           </Text>
           <Flex w="100%" h="45px" alignItems={'center'}>
-            <Text fontSize={'13px'} textAlign={'left'}>
+            <Text
+              fontSize={'13px'}
+              textAlign={'left'}
+              color={colorMode === 'light' ? '#808992' : '#949494'}
+              fontWeight={'bold'}>
               Claim Rounds ({tokenLPVault.claim.length})
             </Text>
           </Flex>
 
-          {tokenLPVault.claim.map((claim: any, index: Number) => {
+          {tokenLPVault.claim.map((claim: any, index: number) => {
             return (
               <Flex
                 w="100%"
@@ -286,10 +300,15 @@ const TokenLP = (props: {step: string}) => {
                   fontFamily={theme.fonts.roboto}
                   fontWeight={500}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                  <span style={{color: '#3d495d', marginRight: '3px'}}>
+                  <span
+                    style={{
+                      color: colorMode === 'light' ? '#3d495d' : '#ffffff',
+                      fontWeight: 'bold',
+                      marginRight: '3px',
+                    }}>
                     {' '}
                     {index < 10 ? '0' : ''}
-                    {index}
+                    {index + 1}
                   </span>
 
                   {moment
@@ -299,8 +318,13 @@ const TokenLP = (props: {step: string}) => {
                 <Text
                   fontSize={'12px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}>
-                  {claim.claimTokenAllocation.toLocaleString()} (
+                  fontWeight={'bold'}>
+                  {claim.claimTokenAllocation.toLocaleString()} 
+                  <span
+                    style={{
+                      color: colorMode === 'light' ? '#7e8993' : '#9d9ea5',
+                    }}>
+                    {' '}(
                   {values.totalSupply
                     ? (
                         (claim.claimTokenAllocation / values.totalSupply) *
@@ -308,6 +332,7 @@ const TokenLP = (props: {step: string}) => {
                       ).toLocaleString()
                     : 0}
                   %)
+                  </span>
                 </Text>
               </Flex>
             );

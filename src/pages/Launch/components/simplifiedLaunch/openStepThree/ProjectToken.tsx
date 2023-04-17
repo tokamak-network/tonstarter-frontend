@@ -136,14 +136,14 @@ const ProjectToken = () => {
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
-                fontWeight={500}
+                fontWeight={'bold'}
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
-                fontWeight={500}
+                fontWeight={'bold'}
                 color={colorMode === 'dark' ? 'white.100' : 'gray.250'}>
                 {detail.value}
               </Text>
@@ -153,7 +153,7 @@ const ProjectToken = () => {
         <Text
           mt="35px"
           textAlign={'center'}
-          fontWeight={500}
+          fontWeight={'bold'}
           fontSize="13px"
           color={'#ff3b3b'}>
           Warning

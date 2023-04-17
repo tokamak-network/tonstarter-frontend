@@ -63,7 +63,7 @@ const LaunchGuide = () => {
         <Grid templateColumns="repeat(3, 1fr)" gap={30}>
           {launchGuideData.map((guide, index) => {
             return (
-              <Flex flexDirection={'column'}>
+              <Flex flexDirection={'column'} key={index}>
                 <Link
                   href={guide.link}
                   target="blank"

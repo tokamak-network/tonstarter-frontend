@@ -8,7 +8,7 @@ import { useFormikContext } from 'formik';
 import {Projects} from '@Launch/types';
 import {Dispatch, SetStateAction, useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {setProjectStep} from '@Launch/launch.reducer';
+import {setProjectStep,saveTempProjectData} from '@Launch/launch.reducer';
 
 const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAction<boolean>>;}) => {
   const {colorMode} = useColorMode();
@@ -30,8 +30,11 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
     dispatch(setProjectStep({data: 2}));
   }, [dispatch]);
 
-  console.log('formik values', values);
-  
+
+  useEffect(() => {
+    dispatch(saveTempProjectData({data: values}));
+  },[values])
+
   return (
     <Flex
       w="774px"

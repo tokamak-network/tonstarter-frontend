@@ -212,7 +212,7 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isMandatory: true,
       claim: defaultParams,
       vaultAddress: undefined,
-      tokenAllocationForLiquidity: 5,
+      tokenAllocationForLiquidity: 10,
       hardCap: undefined,
       addressForReceiving: '',
       isDeployed: false,

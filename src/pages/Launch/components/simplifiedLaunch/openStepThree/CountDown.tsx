@@ -46,7 +46,7 @@ const CountDown = () => {
       <Text fontSize={'15px'} color={'#0070ed'}>
         {duration.days().toString().length < 2 ? '0' : ''}
         {duration.days()}:{duration.hours().toString().length < 2 ? '0' : ''}
-        {duration.hours()}:{duration.minutes()}:
+        {duration.hours()}:{duration.minutes().toString().length < 2? '0':''}{duration.minutes()}:
         {duration.seconds().toString().length < 2 ? '0' : ''}
         {duration.seconds()}
       </Text>

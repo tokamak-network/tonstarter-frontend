@@ -46,7 +46,7 @@ const filedNameList = [
 // Or: * passing a prop
 const OpenStepOne = () => {
   const {colorMode} = useColorMode();
-  const {values, setValues} = useFormikContext<Projects['CreateProject']>();
+  const {values, setValues,setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const dispatch: any = useAppDispatch();
 
   useEffect(() => {
@@ -57,7 +57,11 @@ const OpenStepOne = () => {
 
   useEffect(() => {
     dispatch(setProjectStep({data:1}))
+    setFieldValue('isSimplified',undefined )
   },[dispatch])
+
+  console.log('values',values);
+  
   
   return (
     <Flex
@@ -75,7 +79,7 @@ const OpenStepOne = () => {
           w={'100%'}
           h={'100%'}
           left={'300px'}>
-              <Switch
+              {/* <Switch
           style={{height: '16px'}}
           onChange={() => {
             dispatch(
@@ -84,7 +88,7 @@ const OpenStepOne = () => {
               }),
             );
           }}
-          ></Switch>
+          ></Switch> */}
           <CustomButton
             text="set a test value"
             //@ts-ignore

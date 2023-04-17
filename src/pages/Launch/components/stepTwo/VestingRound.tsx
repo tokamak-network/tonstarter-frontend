@@ -244,7 +244,7 @@ const VestingRound = () => {
                 borderRight={middleStyle.border}
                 flexDir="column">
                 <Box h={'21px'} lineHeight={'21px'} pt={'8px'}>
-                  Token Allocation (TON)
+                  Token Allocation (%)
                 </Box>
               </Flex>
               <Text w={'314px'} borderRight={middleStyle.border}>

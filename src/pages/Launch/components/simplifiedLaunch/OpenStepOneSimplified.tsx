@@ -10,7 +10,7 @@ import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
 import TextInput from '../common/simplifiedUI/TextInput';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {setProjectStep} from '@Launch/launch.reducer';
+import {setProjectStep, saveTempProjectData} from '@Launch/launch.reducer';
 const filedNameList = [
   {title: 'projectName', requirement: true},
   {title: 'tokenName', requirement: true},
@@ -43,6 +43,14 @@ const OpenStepOneSimplified = (props: any) => {
     dispatch(setProjectStep({data: 1}));
   }, [dispatch]);
 
+
+  useEffect(() => {
+    dispatch(saveTempProjectData({data: values}));
+  },[values])
+  
+  console.log(values);
+  
+
   return (
     <Flex
       w={'774px'}
@@ -70,8 +78,9 @@ const OpenStepOneSimplified = (props: any) => {
             ) => {
               if (fieldName.title === 'tokenName') {
                 return (
-                  <Grid w={'212px'}>
+                  <Grid w={'212px'}   key={index}>
                     <TextInput
+                  
                       name={fieldName.title}
                       placeHolder={`input ${fieldName.title}`}
                       key={fieldName.title}
@@ -81,7 +90,7 @@ const OpenStepOneSimplified = (props: any) => {
               }
               if (fieldName.title === 'tokenSymbolImage') {
                 return (
-                  <Grid templateColumns="repeat(2, 1fr)">
+                  <Grid templateColumns="repeat(2, 1fr)"   key={index}>
                     <Box w={'212px'}>
                       <TextInput
                         name={fieldName.title}
@@ -95,7 +104,7 @@ const OpenStepOneSimplified = (props: any) => {
                 );
               }
               return (
-                <GridItem w={'327px'}>
+                <GridItem w={'327px'}   key={index}>
                   <TextInput
                     name={fieldName.title}
                     placeHolder={`input ${fieldName.title}`}

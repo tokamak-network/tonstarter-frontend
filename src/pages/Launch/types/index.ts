@@ -417,5 +417,5 @@ export type {
   VaultEco,
   VaultTeam,
   VaultTONStarter,
-  simplifiedVaultsAny,
+  simplifiedVaultsAny
 };

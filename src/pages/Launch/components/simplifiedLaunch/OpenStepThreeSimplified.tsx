@@ -21,7 +21,7 @@ import {useModal} from 'hooks/useModal';
 import EstimateGasModal from './openStepThree/EstimateGas';
 
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {setProjectStep} from '@Launch/launch.reducer';
+import {selectLaunch,setProjectStep,saveTempProjectData} from '@Launch/launch.reducer';
 
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
@@ -79,6 +79,7 @@ const OpenStepThreeSimplified = (props: any) => {
   const theme = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
   const dispatch: any = useAppDispatch();
+ 
 
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
@@ -95,6 +96,14 @@ const OpenStepThreeSimplified = (props: any) => {
     }, [dispatch]);
   
     
+  useEffect(() => {
+    console.log('data changes');
+    
+    dispatch(saveTempProjectData({data: values}));
+  },[values])
+  
+
+
   return (
     <Flex
       w="774px"

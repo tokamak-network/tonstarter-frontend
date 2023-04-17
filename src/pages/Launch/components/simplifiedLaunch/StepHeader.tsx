@@ -114,7 +114,9 @@ const StepHeader = (props: {
     padding: 1px;
     height: 15px;
     width: 36px;
-    margin-right: 6px
+    margin-right: 6px;
+    padding-bottom: 2px;
+    padding-right: 2px
   }
  
   `
@@ -125,10 +127,11 @@ const StepHeader = (props: {
     padding: 1px;
     height: 15px;
     width: 36px;
-    margin-right: 6px
+    margin-right: 6px;
+    padding-bottom: 2px;
+    padding-right: 2px
   }
-  .chakra-switch__track:active {
- 
+
   `;
 
   return (
@@ -153,11 +156,16 @@ const StepHeader = (props: {
           </Text>
           <Tooltip
             color={theme.colors.white[100]}
-            bg={theme.colors.gray[375]}
+            bg={'#353c48'}
             p={2}
+            w='254px'
+            textAlign='center'
+            hasArrow
             borderRadius={3}
+            placement='top'
             fontSize={'12px'}
-            label="advanced launch">
+            ml='140px'
+            label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
             <Flex>
               <style>{switchStyle}</style>
 
@@ -171,9 +179,11 @@ const StepHeader = (props: {
                 color={colorMode === 'dark' ? '#949494' : '#848c98'}>
                 Advance mode
               </Text>
+           
               <Image src={tooltipIcon} ml="6px" />
+            
             </Flex>
-          </Tooltip>
+            </Tooltip>
         </Flex>
       </GridItem>
       {deploySteps && (
@@ -185,11 +195,12 @@ const StepHeader = (props: {
         <GridItem>
           <Flex color="blue.200" fontSize={'13px'} justifyContent="flex-end">
             <Text
+            fontWeight='bold' 
               color={colorMode === 'dark' ? 'white.100' : '#304156'}
               mr="2px">
               Progress
             </Text>
-            <Text>{steps}/20</Text>
+            <Text fontWeight='bold' >{steps}/20</Text>
           </Flex>
         </GridItem>
       )}

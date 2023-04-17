@@ -53,7 +53,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = (props) => {
         };
 
         return (
-          <Flex alignItems="center" textAlign={'center'}>
+          <Flex alignItems="center" textAlign={'center'} key={index}>
             {/* Dot */}
             <Box
               borderRadius={18}

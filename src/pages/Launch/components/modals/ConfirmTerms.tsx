@@ -19,6 +19,8 @@ import {CloseButton} from 'components/Modal';
 import Line from '@Launch/components/common/Line';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {Link, useRouteMatch} from 'react-router-dom';
+import {DEFAULT_NETWORK} from 'constants/index';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 
 const ConfirmTermsModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -26,6 +28,7 @@ const ConfirmTermsModal = () => {
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [isCheck, setIsCheck] = useState<boolean>(false);
+  const { chainId} = useActiveWeb3React();
 
   const match = useRouteMatch();
   const {url} = match;
@@ -967,7 +970,7 @@ const ConfirmTermsModal = () => {
                     : '1px solid #535353',
                 color: colorMode === 'light' ? '#3e495c' : '',
               }}></CustomButton>
-            {data.data.from === 'advance-launch' && (
+            {data.data.from === 'advance-launch' &&  (chainId === Number(DEFAULT_NETWORK) && chainId !== undefined) &&(
               <Link
                 to={{
                   pathname: isCheck ? `/launch/createproject` : '#',

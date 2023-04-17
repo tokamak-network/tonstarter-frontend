@@ -298,7 +298,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                     } = cell.row.original;
                     const type = cell.column.id;
                     // {/* TODO: Change this check value to isSimplified later */}
-                    const simplified = project?.isSimplified;
+                    const simplified = project?.isSimplified;                    
                     // const marketCap = project?.marketCap;
                     return (
                       <chakra.td
@@ -372,7 +372,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                             gap={'10px'}>
                               {/* TODO: Change this check value to isSimplified later */}
                             { simplified ?
-                            (<Link to={`${url}/simplified/${key}/`}>
+                            (<Link to={`${url}/${key}/`}>
                               <Button
                                 fontWeight={'normal'}
                                 w={'90px'}

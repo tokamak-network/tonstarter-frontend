@@ -198,7 +198,7 @@ const InitialLiquidity = (props: {step: string}) => {
         px="20px"
         w="100%"
         alignItems={'center'}>
-        <Text mb="11px" fontSize={'13px'}>
+        <Text mb="11px" fontSize={'13px'} fontWeight='bold' color={colorMode === 'light'? '#304156':'#ffffff'}>
           Vault
         </Text>
         {details.map((detail: any, index: number) => {
@@ -212,7 +212,7 @@ const InitialLiquidity = (props: {step: string}) => {
               <Text
                 fontSize={'13px'}
                 fontFamily={theme.fonts.roboto}
-                fontWeight={500}
+                fontWeight={'bold'}
                 color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                 {detail.name}
               </Text>
@@ -222,7 +222,7 @@ const InitialLiquidity = (props: {step: string}) => {
                 <Link
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
+                  fontWeight={'bold'}
                   color={'blue.300'}
                   isExternal
                   href={
@@ -242,7 +242,7 @@ const InitialLiquidity = (props: {step: string}) => {
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
+                  fontWeight={'bold'}
                   color={
                     detail.name === 'Admin' || detail.name === 'Contract'
                       ? 'blue.300'
@@ -259,7 +259,7 @@ const InitialLiquidity = (props: {step: string}) => {
         <Text
           mt="37px"
           textAlign={'center'}
-          fontWeight={500}
+          fontWeight={'bold'}
           fontSize="13px"
           color={'#ff3b3b'}>
           Warning
