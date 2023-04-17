@@ -58,7 +58,7 @@ import commafy from 'utils/commafy';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
 import bn from 'bignumber.js';
-
+import truncNumber from 'utils/truncNumber';
 //Project
 
 type DeployVaultProp = {
@@ -1188,32 +1188,42 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 String(PublicVaultData.stosTier.fourTier.requiredStos),
               );
 
-              const param0: any[] = [
-                tier1RequiredStosWei,
-                tier2RequiredStosWei,
-                tier3RequiredStosWei,
-                tier4RequiredStosWei,
-                (Number(
-                  PublicVaultData.stosTier.oneTier.allocatedToken as number,
-                ) *
-                  10000) /
-                  publicRound1TokenAllocation,
-                (Number(
-                  PublicVaultData.stosTier.twoTier.allocatedToken as number,
-                ) *
-                  10000) /
-                  publicRound1TokenAllocation,
-                (Number(
-                  PublicVaultData.stosTier.threeTier.allocatedToken as number,
-                ) *
-                  10000) /
-                  publicRound1TokenAllocation,
-                (Number(
-                  PublicVaultData.stosTier.fourTier.allocatedToken as number,
-                ) *
-                  10000) /
-                  publicRound1TokenAllocation,
-              ];
+             
+          const t1 = truncNumber(
+            (Number(PublicVaultData.stosTier.oneTier.allocatedToken as number) *
+              10000) /
+              publicRound1TokenAllocation,
+            0,
+          );
+          const t2 = truncNumber(
+            (Number(PublicVaultData.stosTier.twoTier.allocatedToken as number) *
+              10000) /
+              publicRound1TokenAllocation,
+            0,
+          );
+          const t3 = truncNumber(
+            (Number(
+              PublicVaultData.stosTier.threeTier.allocatedToken as number,
+            ) *
+              10000) /
+              publicRound1TokenAllocation,
+            0,
+          );
+          const t4 =
+            (publicRound1TokenAllocation * 10000) /
+              publicRound1TokenAllocation -
+            (t1 + t2 + t3);
+
+          const param0: any[] = [
+            tier1RequiredStosWei,
+            tier2RequiredStosWei,
+            tier3RequiredStosWei,
+            tier4RequiredStosWei,
+            t1,
+            t2,
+            t3,
+            t4,
+          ];
               // _amount[0] : Round1에서의 토큰 판매수량
               // _amount[1] : Round2에서의 토큰 판매수량
               // _amount[2] : 판매토큰 가격
@@ -1264,12 +1274,19 @@ const DeployVault: React.FC<DeployVaultProp> = ({vault}) => {
                 Number(publicRound1Allocation as number) +
                 Number(publicRound2Allocation as number);
               //   (PublicVaultData.publicRound2Allocation as number)
+    
               const param4: number[] = PublicVaultData.claim.map(
-                (claimRound: VaultSchedule) =>
-                  ((claimRound.claimTokenAllocation as number) * 10000) /
-                  allTokenAllocation,
+                (claimRound: VaultSchedule, index: number) =>
+                  truncNumber(
+                    ((claimRound.claimTokenAllocation as number) * 10000) /
+                      allTokenAllocation,
+                    0,
+                  ),
               ) as number[];
-
+    
+              const xx = param4.reduce((partialSum, a) => partialSum + a, 0);
+              const lastEl = param4[param4.length - 1] + (10000 - xx);
+              param4[param4.length - 1] = lastEl;
               console.log('--params--');
               console.log(param0, param1, param2, param3, param4);
 
