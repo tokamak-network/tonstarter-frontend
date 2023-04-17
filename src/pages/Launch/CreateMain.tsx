@@ -36,14 +36,23 @@ const CreateMain = () => {
   }, [historyObj]);
 
   useEffect(() => {
-    window.addEventListener("beforeunload", function (event) {
+    // Add the event listener to the window object
+    function handleBeforeUnload(event:any) {
       // Cancel the event
       event.preventDefault();
       // Prompt the user with a confirmation dialog
       event.returnValue = '';
       return '';
-    });
-  },[])
+    }
+
+    // Add the event listener to the window object
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Remove the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
   return (
     <Flex>
       { mode === 'simplified' ? <SimplifiedMainScreen /> : <MainScreen />}

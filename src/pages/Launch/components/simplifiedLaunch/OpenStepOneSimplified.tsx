@@ -47,9 +47,7 @@ const OpenStepOneSimplified = (props: any) => {
   useEffect(() => {
     dispatch(saveTempProjectData({data: values}));
   },[values])
-  
-  console.log(values);
-  
+    
 
   return (
     <Flex

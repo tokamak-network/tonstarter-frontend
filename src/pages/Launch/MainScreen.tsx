@@ -80,7 +80,7 @@ const MainScreen = () => {
     //@ts-ignore
     const unBlock = historyObj.block((loc, action) => {
       if (action === 'POP' || action === 'PUSH') {
-        return window.confirm('Are you sure you want to go back?');
+        return window.confirm('Are you sure you want to go back?\nClick the Save button to save your progress before you leave.');
       }
     });
     return () => unBlock();

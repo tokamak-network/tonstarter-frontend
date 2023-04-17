@@ -212,47 +212,48 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
         <Grid
           templateRows="repeat(3, 1fr)"
           templateColumns="repeat(2, 1fr)"
+          columnGap='20px'
           w="266px"
           mt="21px">
-          <GridItem w="123px" h="18px">
+          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
             <Flex alignItems={'center'}>
-              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#2b66aa'} mr='8px'></Flex>
+              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#2b66aa'} mr='8px' ></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Public</Text>
                 <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.public}%</Text>
               </Flex>
             </Flex>
           </GridItem>
-          <GridItem w="123px" h="18px">
+          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
           <Flex alignItems={'center'}>
-              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f23c35'} mr='8px'></Flex>
+              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#f23c35'} mr='8px' justifyContent='flex-end'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Ecosystem</Text>
                 <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.eco}%</Text>
               </Flex>
             </Flex>
           </GridItem>
-          <GridItem w="123px" h="18px">
+          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
           <Flex alignItems={'center'}>
-              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f7b729'} mr='8px'></Flex>
+              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#f7b729'} mr='8px'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Team</Text>
                 <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.team}%</Text>
               </Flex>
             </Flex>
           </GridItem>
-          <GridItem w="123px" h="18px">
+          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
           <Flex alignItems={'center'}>
-              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#5da344'} mr='8px'></Flex>
+              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#5da344'} mr='8px'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px' >
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Liquidity</Text>
                 <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.liquidity}%</Text>
               </Flex>
             </Flex>
           </GridItem>
-          <GridItem w="123px" h="18px">
+          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
           <Flex alignItems={'center'}>
-              <Flex h='8px' w='8px' borderRadius={'50%'} bg={'#f17235'} mr='8px'></Flex>
+              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#f17235'} mr='8px'></Flex>
               <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  >
                 <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'} fontFamily="TitilliumWeb, sans-serif">TONStarter</Text>
                 <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'} fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.tonStarter}%</Text>
