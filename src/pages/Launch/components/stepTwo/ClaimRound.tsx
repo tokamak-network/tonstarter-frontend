@@ -53,6 +53,8 @@ const ClaimRound = () => {
     border: colorMode === 'light' ? 'solid 1px #eff1f6' : 'solid 1px #373737',
   };
 
+
+
   useEffect(() => {
     vaultsList.filter((vaultData: VaultAny) => {
       if (vaultData.vaultName === selectedVault) {
@@ -79,6 +81,15 @@ const ClaimRound = () => {
   const {totalClaimAmount} = useClaimRound();
   const [claimRoundEdit, setClaimRoundEdit] = useState(false);
   const [tokenAllocationErr, setTokenAllocationErr] = useState<boolean>(false);
+
+useEffect(() => {
+  dispatch(
+    setClaimRoundTable({
+      //@ts-ignore
+      data: selectedVaultDetail.claim,
+    }),
+  );
+},[ selectedVaultDetail])
 
   useEffect(() => {
     if (

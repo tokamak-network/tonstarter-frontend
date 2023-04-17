@@ -358,7 +358,7 @@ const VestingClaimRoundTable = (props: {isVesting?: boolean}) => {
               Date time
             </Text>
             <Text w={'314px'} borderRight={middleStyle.border}>
-              Token Allocation (TON)
+              Token Allocation (%)
             </Text>
             <Text w={'314px'} borderRight={middleStyle.border}>
               Accumulated

@@ -560,7 +560,7 @@ const Public = (props: {step: string}) => {
           mt="19px"
           mb="21px"
           color={colorMode === 'dark' ? 'white.100' : 'gray.250'}>
-          Public
+          Public Sale
         </Text>
       </Flex>
       <Scrollbars

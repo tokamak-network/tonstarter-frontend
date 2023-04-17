@@ -101,12 +101,22 @@ const SimplifiedMainScreen = () => {
   useEffect(() => {
     //@ts-ignore
     const unBlock = history.block((loc, action) => {
-      if (action === 'POP' || action === 'PUSH') {
+      if (action === 'POP' || action === 'PUSH' || action === 'REPLACE') {
         return window.confirm('Are you sure you want to go back?');
       }
     });
     return () => unBlock();
   }, [history]);
+
+useEffect(() => {
+  window.addEventListener("beforeunload", function (event) {
+    // Cancel the event
+    event.preventDefault();
+    // Prompt the user with a confirmation dialog
+    event.returnValue = '';
+    return '';
+  });
+},[])
 
   useEffect(() => {
     dispatch(

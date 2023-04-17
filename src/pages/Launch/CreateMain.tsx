@@ -35,6 +35,15 @@ const CreateMain = () => {
     return () => unBlock();
   }, [historyObj]);
 
+  useEffect(() => {
+    window.addEventListener("beforeunload", function (event) {
+      // Cancel the event
+      event.preventDefault();
+      // Prompt the user with a confirmation dialog
+      event.returnValue = '';
+      return '';
+    });
+  },[])
   return (
     <Flex>
       { mode === 'simplified' ? <SimplifiedMainScreen /> : <MainScreen />}
