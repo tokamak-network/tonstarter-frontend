@@ -197,7 +197,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
       p={0}>
       {launchSteps.map((step: string, index: number) => {
         return (
-          <Grid textAlign="center" mt={2} line-height={'1.36'} p={0}>
+          <Grid textAlign="center" mt={2} line-height={'1.36'} p={0} key={index}>
             {/* snapshot date & time */}
             {step === 'Snapshot' && (
               <GridItem w="56px" mr="14px" p={0}>

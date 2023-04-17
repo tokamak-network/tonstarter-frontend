@@ -122,7 +122,7 @@ const AllProjects = () => {
         <Flex justifyContent={'center'}>
           {projectsData.length !==0?  <Grid templateColumns="repeat(3, 1fr)" gap={30}>
             {getPaginatedData().map((project: any, index: number) => {
-              return <ProjectCard project={project} index={index} />;
+              return <ProjectCard project={project} index={index} key={index}/>;
             })}
           </Grid> : <Text  fontFamily={theme.fonts.roboto} fontSize={'16px'}>There are no projects currently</Text>}
          

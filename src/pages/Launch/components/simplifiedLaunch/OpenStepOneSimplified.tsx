@@ -48,6 +48,8 @@ const OpenStepOneSimplified = (props: any) => {
     dispatch(saveTempProjectData({data: values}));
   },[values])
   
+  console.log(values);
+  
 
   return (
     <Flex
@@ -76,8 +78,9 @@ const OpenStepOneSimplified = (props: any) => {
             ) => {
               if (fieldName.title === 'tokenName') {
                 return (
-                  <Grid w={'212px'}>
+                  <Grid w={'212px'}   key={index}>
                     <TextInput
+                  
                       name={fieldName.title}
                       placeHolder={`input ${fieldName.title}`}
                       key={fieldName.title}
@@ -87,7 +90,7 @@ const OpenStepOneSimplified = (props: any) => {
               }
               if (fieldName.title === 'tokenSymbolImage') {
                 return (
-                  <Grid templateColumns="repeat(2, 1fr)">
+                  <Grid templateColumns="repeat(2, 1fr)"   key={index}>
                     <Box w={'212px'}>
                       <TextInput
                         name={fieldName.title}
@@ -101,7 +104,7 @@ const OpenStepOneSimplified = (props: any) => {
                 );
               }
               return (
-                <GridItem w={'327px'}>
+                <GridItem w={'327px'}   key={index}>
                   <TextInput
                     name={fieldName.title}
                     placeHolder={`input ${fieldName.title}`}

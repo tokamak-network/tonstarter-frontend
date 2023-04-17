@@ -195,11 +195,12 @@ const StepHeader = (props: {
         <GridItem>
           <Flex color="blue.200" fontSize={'13px'} justifyContent="flex-end">
             <Text
+            fontWeight='bold' 
               color={colorMode === 'dark' ? 'white.100' : '#304156'}
               mr="2px">
               Progress
             </Text>
-            <Text>{steps}/20</Text>
+            <Text fontWeight='bold' >{steps}/20</Text>
           </Flex>
         </GridItem>
       )}

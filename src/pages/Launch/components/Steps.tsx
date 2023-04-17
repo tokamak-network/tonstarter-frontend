@@ -23,7 +23,7 @@ const Steps: React.FC<StepComponent> = (props) => {
         const pastStep = currentStep > indexNum || maxStep > indexNum;
 
         return (
-          <Box d="flex" mr={'20px'} alignItems="center" fontSize={14}>
+          <Box d="flex" mr={'20px'} alignItems="center" fontSize={14} key={index}>
             <Flex
               borderRadius={18}
               bg={isStep ? '#2ea1f8' : 'transparent'}

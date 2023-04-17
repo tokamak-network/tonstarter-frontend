@@ -18,8 +18,9 @@ type CustomTooltipProp = {
 const tooltipMsg = (msg: CustomTooltipProp['msg']) => {
   return (
     <Flex flexDir="column" fontSize="12px" pt="6px" pl="5px" pr="5px" py="6px">
-      {msg.map((text: string) => (
+      {msg.map((text: string, index: number) => (
         <Text
+        key={index}
           textAlign="center"
           fontSize="12px"
           color={text.charAt(0) !== '!' ? '#FFFFFF' : '#ff3b3b'}>

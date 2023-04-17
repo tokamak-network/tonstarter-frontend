@@ -414,7 +414,7 @@ const StepThreeSteps = (props: {
   const currentDeployTitle = currentDeployTitles[0];
 
   return (
-    <Flex w="350px" alignItems={'center'} mt="41px" className="slider-wrapper">
+    <Flex w="350px" alignItems={'center'} mt="22px" className="slider-wrapper">
       <style>{slickerStyles}</style>
       <Flex w={'100%'} alignItems="center" mx={'15px'}>
         <Slider {...settings}>

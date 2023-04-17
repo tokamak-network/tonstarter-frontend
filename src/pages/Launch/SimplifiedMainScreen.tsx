@@ -101,7 +101,7 @@ const SimplifiedMainScreen = () => {
   useEffect(() => {
     //@ts-ignore
     const unBlock = history.block((loc, action) => {
-      if (action === 'POP') {
+      if (action === 'POP' || action === 'PUSH') {
         return window.confirm('Are you sure you want to go back?');
       }
     });

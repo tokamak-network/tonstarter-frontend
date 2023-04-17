@@ -79,7 +79,7 @@ const MainScreen = () => {
   useEffect(() => {
     //@ts-ignore
     const unBlock = historyObj.block((loc, action) => {
-      if (action === 'POP') {
+      if (action === 'POP' || action === 'PUSH') {
         return window.confirm('Are you sure you want to go back?');
       }
     });
@@ -144,10 +144,11 @@ const MainScreen = () => {
       <Formik
         innerRef={formikRef}
         initialValues={
+          Object.keys(tempProjectData).length !== 0
+            ? {...initialValues, ...tempProjectData}:
           id && projects
             ? {...initialValues, ...projects[id]}
-            : Object.keys(tempProjectData).length !== 0
-            ? {...initialValues, ...tempProjectData}
+            
             : {...initialValues, ownerAddress: account}
         }
         validationSchema={ProjectSchema}

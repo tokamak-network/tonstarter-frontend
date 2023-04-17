@@ -223,7 +223,12 @@ const Public = (props: {step: string}) => {
     return (
       <Flex flexDir={'column'} w="100%" px="20px">
         <Flex flexDir={'column'} w="100%" alignItems={'center'}>
-          <Text h="18px" mb="10px" fontSize={'13px'}>
+          <Text
+            h="18px"
+            mb="10px"
+            fontSize={'13px'}
+            fontWeight={'bold'}
+            color={colorMode === 'light' ? '#304156' : '#ffffff'}>
             Vault
           </Text>
           {detailsVault.map((detail: any, index: number) => {
@@ -237,7 +242,7 @@ const Public = (props: {step: string}) => {
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
+                  fontWeight={'bold'}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
@@ -246,7 +251,7 @@ const Public = (props: {step: string}) => {
                   <Link
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight={500}
+                    fontWeight={'bold'}
                     color={'blue.300'}
                     isExternal
                     href={
@@ -266,7 +271,7 @@ const Public = (props: {step: string}) => {
                   <Text
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight={500}
+                    fontWeight={'bold'}
                     color={
                       detail.name === 'Admin' || detail.name === 'Contract'
                         ? 'blue.300'
@@ -282,16 +287,20 @@ const Public = (props: {step: string}) => {
           })}
         </Flex>
         <Flex mt="30px" flexDir={'column'} alignItems={'center'}>
-          <Text mb="10px" fontSize={'13px'} h="18px">
+          <Text mb="10px" fontSize={'13px'} h="18px" fontWeight={'bold'}>
             Claim
           </Text>
           <Flex w="100%" h="45px" alignItems={'center'}>
-            <Text fontSize={'13px'} textAlign={'left'}>
+            <Text
+              fontSize={'13px'}
+              textAlign={'left'}
+              color={colorMode === 'light' ? '#808992' : '#949494'}
+              fontWeight={'bold'}>
               Claim Rounds ({publicVault.claim.length})
             </Text>
           </Flex>
 
-          {publicVault.claim.map((claim: any, index: Number) => {
+          {publicVault.claim.map((claim: any, index: number) => {
             return (
               <Flex
                 w="100%"
@@ -301,11 +310,15 @@ const Public = (props: {step: string}) => {
                 <Text
                   fontSize={'12px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                  <span style={{color: '#3d495d', marginRight: '3px'}}>
+                  <span
+                    style={{
+                      color: colorMode === 'light' ? '#3d495d' : '#ffffff',
+                      fontWeight: 'bold',
+                      marginRight: '3px',
+                    }}>
                     {index < 10 ? '0' : ''}
-                    {index}
+                    {index + 1}
                   </span>
                   {moment
                     .unix(Number(claim.claimTime))
@@ -314,15 +327,22 @@ const Public = (props: {step: string}) => {
                 <Text
                   fontSize={'12px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}>
-                  {claim.claimTokenAllocation.toLocaleString()} (
-                  {values.totalSupply
-                    ? (
-                        (claim.claimTokenAllocation / values.totalSupply) *
-                        100
-                      ).toLocaleString()
-                    : 0}
-                  %)
+                  fontWeight={'bold'}>
+                  {claim.claimTokenAllocation.toLocaleString()}
+                  <span
+                    style={{
+                      color: colorMode === 'light' ? '#7e8993' : '#9d9ea5',
+                    }}>
+                    {' '}
+                    (
+                    {values.totalSupply
+                      ? (
+                          (claim.claimTokenAllocation / values.totalSupply) *
+                          100
+                        ).toLocaleString()
+                      : 0}
+                    %)
+                  </span>
                 </Text>
               </Flex>
             );
@@ -336,7 +356,12 @@ const Public = (props: {step: string}) => {
     return (
       <Flex flexDir={'column'} w="100%">
         <Flex flexDir={'column'} w="100%" alignItems={'center'}>
-          <Text h="18px" mb="10px" fontSize={'13px'}>
+          <Text
+            h="18px"
+            mb="10px"
+            fontSize={'13px'}
+            fontWeight={'bold'}
+            color={colorMode === 'light' ? '#304156' : '#ffffff'}>
             Token
           </Text>
           {tokenDetails.map((detail: any, index: number) => {
@@ -351,7 +376,7 @@ const Public = (props: {step: string}) => {
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
+                  fontWeight={'bold'}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
@@ -359,7 +384,7 @@ const Public = (props: {step: string}) => {
                   <Text
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight={500}
+                    fontWeight={'bold'}
                     color={
                       detail.name === 'Admin' || detail.name === 'Contract'
                         ? 'blue.300'
@@ -373,6 +398,7 @@ const Public = (props: {step: string}) => {
                     <Text
                       ml="3px"
                       color={colorMode === 'dark' ? '#9d9ea5' : '#7e8993'}
+                      fontWeight='bold'
                       fontSize={'11px'}>
                       ({detail.value2})
                     </Text>
@@ -381,7 +407,8 @@ const Public = (props: {step: string}) => {
               </Flex>
             );
           })}
-          <Text h="18px" mt="43px" mb="10px" fontSize={'13px'}>
+          <Text h="18px" mt="43px" mb="10px" fontSize={'13px'}  fontWeight={'bold'}
+            color={colorMode === 'light' ? '#304156' : '#ffffff'}>
             Schedule
           </Text>
           {schedule.map((detail: any, index: number) => {
@@ -396,7 +423,7 @@ const Public = (props: {step: string}) => {
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
+                  fontWeight='bold'
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
@@ -404,7 +431,7 @@ const Public = (props: {step: string}) => {
                   <Text
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight={500}
+                    fontWeight='bold'
                     color={
                       detail.name === 'Admin' || detail.name === 'Contract'
                         ? 'blue.300'
@@ -580,6 +607,7 @@ const Public = (props: {step: string}) => {
             onClick={() => setType('Vault')}
             justifyContent={'center'}>
             <Text
+              fontWeight={'bold'}
               color={
                 type === 'Vault'
                   ? 'blue.300'
@@ -606,6 +634,7 @@ const Public = (props: {step: string}) => {
             alignItems={'center'}
             justifyContent={'center'}>
             <Text
+              fontWeight={'bold'}
               color={
                 type === 'Sale'
                   ? 'blue.300'

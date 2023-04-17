@@ -211,7 +211,12 @@ const Vesting = (props: {step: string}) => {
           px="20px"
           w="100%"
           alignItems={'center'}>
-          <Text h="18px" mb="10px" fontSize={'13px'}>
+          <Text
+            h="18px"
+            mb="10px"
+            fontWeight={'bold'}
+            color={colorMode === 'light' ? '#304156' : '#ffffff'}
+            fontSize={'13px'}>
             Vault
           </Text>
           {detailsVault.map((detail: any) => {
@@ -224,7 +229,7 @@ const Vesting = (props: {step: string}) => {
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
+                  fontWeight={'bold'}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
@@ -233,7 +238,7 @@ const Vesting = (props: {step: string}) => {
                   <Link
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight={500}
+                    fontWeight={'bold'}
                     color={'blue.300'}
                     isExternal
                     href={
@@ -253,7 +258,7 @@ const Vesting = (props: {step: string}) => {
                   <Text
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight={500}
+                    fontWeight={'bold'}
                     color={
                       detail.name === 'Admin' || detail.name === 'Contract'
                         ? 'blue.300'
@@ -274,16 +279,25 @@ const Vesting = (props: {step: string}) => {
           px="20px"
           w="100%"
           alignItems={'center'}>
-          <Text mb="10px" fontSize={'13px'} h="18px">
+          <Text
+            mb="10px"
+            fontWeight={'bold'}
+            fontSize={'13px'}
+            color={colorMode === 'light' ? '#304156' : '#ffffff'}
+            h="18px">
             Claim
           </Text>
           <Flex w="100%" h="45px" alignItems={'center'}>
-            <Text fontSize={'13px'} textAlign={'left'}>
+            <Text
+              fontSize={'13px'}
+              textAlign={'left'}
+              color={colorMode === 'light' ? '#808992' : '#949494'}
+              fontWeight={'bold'}>
               Claim Rounds ({vestingVault.claim.length})
             </Text>
           </Flex>
 
-          {vestingVault.claim.map((claim: any, index: Number) => {
+          {vestingVault.claim.map((claim: any, index: number) => {
             return (
               <Flex
                 w="100%"
@@ -293,10 +307,10 @@ const Vesting = (props: {step: string}) => {
                 <Text
                   fontSize={'12px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}
+                  fontWeight={'normal'}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                  <span style={{color: '#3d495d', marginRight: '3px'}}>
-                    0{index}
+                  <span style={{color: colorMode === 'light'? '#3d495d': '#ffffff', marginRight: '3px', fontWeight: 'bold'}}>
+                    0{index+1}
                   </span>
                   {/* {claim.claimTime} */}
                   {moment
@@ -305,15 +319,16 @@ const Vesting = (props: {step: string}) => {
                 </Text>
                 <Text
                   fontSize={'12px'}
+                  color={colorMode === 'light'? '#3d495d':'#ffffff'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight={500}>
+                  fontWeight={'bold'}>
                   {publicVault.hardCap
                     ? (
                         (publicVault.hardCap * claim.claimTokenAllocation) /
                         100
                       ).toLocaleString()
                     : 0}{' '}
-                  TON ({claim.claimTokenAllocation}%)
+                  TON  <span style={{color: colorMode === 'light'? '#7e8993':'#9d9ea5'}}>({claim.claimTokenAllocation}%)</span>
                 </Text>
               </Flex>
             );

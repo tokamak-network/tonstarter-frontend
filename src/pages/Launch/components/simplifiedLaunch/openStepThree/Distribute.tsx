@@ -129,6 +129,7 @@ const Distribute = () => {
         <Text
           fontSize={'30px'}
           fontWeight="bold"
+          fontFamily="Titillium Web, sans-serif"
           color={colorMode === 'dark' ? 'white.100' : 'gray.250'}
           textAlign={'center'}>
           Distribute tokens to all vaults
@@ -137,6 +138,8 @@ const Distribute = () => {
           mt="3px"
           color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}
           fontSize={'16px'}
+          fontWeight='semibold'
+          fontFamily="Titillium Web, sans-serif"
           textAlign={'center'}>
           (Besides Vesting Vaullt)
         </Text>
