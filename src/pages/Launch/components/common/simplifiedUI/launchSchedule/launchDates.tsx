@@ -20,7 +20,8 @@ import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
-import DateRangePicker from '../publicSaleDates/DateRangePicker'
+import DateRangePicker from '../publicSaleDates/PublicSaleDatePicker';
+import PublicSaleDatePicker from '../publicSaleDates/PublicSaleDatePicker';
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
 type LaunchDateProps = {
@@ -110,6 +111,23 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
   >(getTimeStamp() as (number | undefined)[]);
 
   useEffect(() => {
+    if (publicSale1) {
+      if (isProduction() === false) {
+        setPublicSale1End(publicSale1 + 2 * 60);
+      } else {
+        setPublicSale1End(publicSale1 + 2 * 86400);
+      }
+    }
+    if (publicSale2) {
+      if (isProduction() === false) {
+        setPublicSale2End(publicSale2 + 2 * 60);
+      } else {
+        setPublicSale2End(publicSale2 + 2 * 86400);
+      }
+    }
+  }, [publicSale2, publicSale1]);
+
+  useEffect(() => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
     // Second after snapshot
     setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
@@ -137,9 +155,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     publicSale1End,
     publicSale2,
     publicSale2End,
-    publicSale2DateRange,
     whitelistDateRange,
-    publicSale1DateRange,
   ]);
 
   // Update the start time caps for calendar inputs according to any date range changes
@@ -178,17 +194,6 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     }
   }, [unlockDate1, lastUnlockDate]);
 
-  useEffect(() => {
-    if (publicSale2DateRange) {
-      setPublicSale2(publicSale2DateRange[0]);
-      setPublicSale2End(publicSale2DateRange[1]);
-    }
-    if (publicSale1DateRange) {
-      setPublicSale1(publicSale1DateRange[0]);
-      setPublicSale1End(publicSale1DateRange[1]);
-    }
-  }, [publicSale2DateRange, publicSale2, publicSale1DateRange, publicSale1]);
-
   return (
     <Grid
       templateColumns="repeat(7, 1fr)"
@@ -197,7 +202,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
       p={0}>
       {launchSteps.map((step: string, index: number) => {
         return (
-          <Grid textAlign="center" mt={2} line-height={'1.36'} p={0} key={index}>
+          <Grid textAlign="center" mt={2} line-height={'1.36'} p={0}>
             {/* snapshot date & time */}
             {step === 'Snapshot' && (
               <GridItem w="56px" mr="14px" p={0}>
@@ -233,7 +238,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                       // testnet: whitelist end: 1 second after snapshot, 1 second before public sale 1 */}
                       Number(
                         isProduction() === false
-                          ? publicSale1 ? publicSale1 - 1 :  snapshotDate + 2 * 60
+                          ? publicSale1
+                            ? publicSale1 - 1
+                            : snapshotDate + 2 * 60
                           : snapshotDate + 1 + 86400 * 2,
                       ),
                       'MM.DD HH:mm:ss',
@@ -242,13 +249,12 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 ) : (
                   <Text ml={'7px'}>-</Text>
                 )}
-                
               </GridItem>
             )}
             {/* Public sale 1 date & time */}
             {step === 'Public Sale 1' && (
               <GridItem w={'100px'} mr={'14px'} p={0}>
-                {publicSale1 && publicSale1End ? (
+                {publicSale1 ? (
                   <Text>
                     {convertTimeStamp(
                       Number(publicSale1),
@@ -264,8 +270,8 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
                     <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
-                      <DateRangePicker
-                        setDate={setPublicSale1DateRange}
+                      <PublicSaleDatePicker
+                        setDate={setPublicSale1}
                         startTimeCap={publicSale1STC}
                         duration={2}
                       />
@@ -277,7 +283,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
             {/* Public sale 2 date & time */}
             {step === 'Public Sale 2' && (
               <GridItem w={'100px'} mr={'29px'} p={0}>
-                {publicSale2 && publicSale2End ? (
+                {publicSale2 ? (
                   <Text>
                     {convertTimeStamp(
                       Number(publicSale2),
@@ -292,9 +298,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 <Grid justifyContent={'center'}>
                   <Grid mt={'9px'} ml={'6px'} justifyContent={'center'}>
                     {!isPublicVaultDeployed && (
-                      <DateRangePicker
+                      <PublicSaleDatePicker
                         // public sale end + 1
-                        setDate={setPublicSale2DateRange}
+                        setDate={setPublicSale2}
                         startTimeCap={publicSale2STC}
                         duration={5}
                       />
@@ -338,15 +344,16 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                           <PopoverBody textAlign={'left'}>
                             <>
                               Each vault unlocks a set amount each month over a
-                              period of up to 48 months.&nbsp;  
+                              period of up to 48 months.&nbsp;
                               {/* Open claim schedule as pdf on a new tab */}
                               <Link
                                 href={pdfPath}
                                 target="_blank"
                                 without
                                 rel="noopener noreferrer"
-                                style={{ textDecoration: 'none' }}>
-                                 Learn <span style={{ color: '#2a72e5' }}>more...</span>
+                                style={{textDecoration: 'none'}}>
+                                Learn{' '}
+                                <span style={{color: '#2a72e5'}}>more...</span>
                               </Link>
                             </>
                           </PopoverBody>
