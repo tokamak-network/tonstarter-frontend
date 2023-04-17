@@ -144,7 +144,7 @@ const CustomMarkdownEditor = () => {
     <Flex flexDir={'column'} fontSize={13}>
     <Text h={18} mb={2.5}>
       <Flex fontSize={'13px'}><Text mr={'5px'} color={'#FF3B3B'}>*</Text>
-      <Text fontSize={'14px'} fontFamily={theme.fonts.roboto}>Description</Text></Flex>
+      <Text fontSize={'13px'} color={'#2d3136'} fontFamily={theme.fonts.roboto}>Description</Text></Flex>
       </Text>
       <style>{markdownStyles}</style>
       <ReactQuill
