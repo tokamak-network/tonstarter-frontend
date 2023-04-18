@@ -292,13 +292,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           library,
           address: saleContractAddress,
         });
-
+        
         //zena
         setBtnDisabled(
           !whiteListInfo[0] ||
             Number(amountAvailable.replaceAll(',', '')) < tokenExRatio ||
-            (wtonMode && Number(inputTonBalance) > maxWTONValue) ||
-            (!wtonMode && Number(inputTonBalance) > maxValue),
+            (wtonMode && Number(inputTonBalance.replaceAll(',', ''))  > maxWTONValue) ||
+            (!wtonMode && Number(inputTonBalance.replaceAll(',', ''))  > maxValue),
         );
         // setBtnDisabled(false);
         // setAmountAvailable();

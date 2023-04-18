@@ -54,7 +54,15 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   const [depositBtnDisabled, setDepositBtnDisabled] = useState<boolean>(true);
 
   useEffect(() => {
-    setDepositBtnDisabled(Number(inputTonBalance.replaceAll(',', '')) <= 0);
+    setDepositBtnDisabled(
+      Number(inputTonBalance.replaceAll(',', '')) <= 0 ||
+        (wtonMode &&
+          Number(inputTonBalance.replaceAll(',', '')) >
+            Number(wtonBalance.replaceAll(',', ''))) ||
+        (!wtonMode &&
+          Number(inputTonBalance.replaceAll(',', '')) >
+            Number(tonBalance.replaceAll(',', ''))),
+    );
   }, [inputTonBalance]);
 
   if (wtonMode === false) {
@@ -326,6 +334,19 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
                   : 'white.100'
                 : 'gray.175'
             }
+            style={{
+              border: wtonMode
+                ? Number(inputBalance) > Number(wtonBalance.replaceAll(',', ''))
+                  ? '1px solid #ff3b3b'
+                  : colorMode === 'light'
+                  ? '1px solid #dfe4ee'
+                  : '1px solid #424242'
+                : Number(inputBalance) > Number(tonBalance.replaceAll(',', ''))
+                ? '1px solid #ff3b3b'
+                : colorMode === 'light'
+                ? '1px solid #dfe4ee'
+                : '1px solid #424242',
+            }}
             value={inputBalance}
             setValue={setInputBalance}
             maxBtn={true}
