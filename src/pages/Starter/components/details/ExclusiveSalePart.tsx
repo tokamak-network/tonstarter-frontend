@@ -292,10 +292,13 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           library,
           address: saleContractAddress,
         });
+
         //zena
         setBtnDisabled(
           !whiteListInfo[0] ||
-            Number(amountAvailable.replaceAll(',', '')) < tokenExRatio,
+            Number(amountAvailable.replaceAll(',', '')) < tokenExRatio ||
+            (wtonMode && Number(inputTonBalance) > maxWTONValue) ||
+            (!wtonMode && Number(inputTonBalance) > maxValue),
         );
         // setBtnDisabled(false);
         // setAmountAvailable();
@@ -304,7 +307,16 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     if (account && library && saleContractAddress) {
       getInfo();
     }
-  }, [account, library, saleContractAddress, amountAvailable, tokenExRatio]);
+  }, [
+    account,
+    library,
+    saleContractAddress,
+    amountAvailable,
+    tokenExRatio,
+    wtonMode,
+    inputTonBalance,
+    maxWTONValue,
+  ]);
 
   return (
     <Flex flexDir="column" pl={'45px'}>
@@ -362,6 +374,19 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             w={'220px'}
             h={'32px'}
             numberOnly={true}
+            style={{
+              border: wtonMode
+                ? Number(inputTonBalance) > maxWTONValue
+                  ? '1px solid #ff3b3b'
+                  : colorMode === 'light'
+                  ? '1px solid #dfe4ee'
+                  : '1px solid #424242'
+                : Number(inputTonBalance) > maxValue
+                ? '1px solid #ff3b3b'
+                : colorMode === 'light'
+                ? '1px solid #dfe4ee'
+                : '1px solid #424242',
+            }}
             value={inputTonBalance}
             setValue={setInputTonBalance}
             color={
