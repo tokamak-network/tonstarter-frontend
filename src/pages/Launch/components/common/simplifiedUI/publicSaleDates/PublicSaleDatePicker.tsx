@@ -12,13 +12,14 @@ import CalendarActiveImg from 'assets/launch/calendar-active-icon.svg';
 import CalendarInactiveImg from 'assets/launch/calendar-inactive-icon.svg';
 import CalendarInactiveImgDark from 'assets/launch/calendar-inactive-icon-dark.svg';
 // import {CustomCalendar} from './CustomCalendar';
-import CustomizedCalendar from './CustomizedCalendar'
-import CustomizedClock from './CustomizedClock'
+import CustomizedCalendar from './CustomizedCalendar';
+import CustomizedClock from './CustomizedClock';
 import {CustomClock} from '../../CustomClock';
 import './css/CalendarLaunch.css';
 import moment from 'moment';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
+import {isProduction} from '@Launch/utils/checkConstants';
 
 type calendarComponentProps = {
   setDate?: Dispatch<SetStateAction<any>>;
@@ -34,7 +35,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   oldValues,
   valueKey,
   startTimeCap,
-  duration
+  duration,
 }) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
@@ -42,7 +43,9 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   );
   const [startTime, setStartTime] = useState<number>(0);
   const [startTimeArray, setStartTimeArray] = useState([]);
-  const [endTime, setEndTime] = useState(0);
+
+  const [endTime, setEndTime]: [number, Dispatch<SetStateAction<any>>] =
+    useState(startTime);
 
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const createTime = (onClose: any) => {
@@ -55,10 +58,6 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
     } else {
       if (setDate) {
         setDate(startTime);
-        setEndTime(startTime + duration * 86400)
-        console.log(startTime);
-        // Set end date 2 days after public sale starts
-        console.log('endDate', endTime);
       }
     }
     onClose();
@@ -74,9 +73,33 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
     setStartTime(startDates.unix());
   };
 
+  const getMonthAndDay = (startTime: number) => {
+    const date = new Date(startTime * 1000);
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+
+    return {month, day};
+  };
+
+  const monthAndDay = getMonthAndDay(startTime);
+
   useEffect(() => {
     create();
-  }, [startTimeArray, startTime, setEndTime]);
+  }, [startTimeArray, startTime]);
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -126,20 +149,43 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
               <CustomizedCalendar
                 setValue={setStartTime}
                 startTime={startTime}
-                startTimeCap={startTimeCap} />
-              <CustomizedClock
-                setTime={setStartTimeArray}
-                calendarType={'start'}
-                startDate={startTime}
                 startTimeCap={startTimeCap}
-                label={'Start time'} />
-              <CustomizedClock
-                setTime={setStartTimeArray}
-                calendarType={'start'}
-                startDate={startTime + (2 * 86400)}
-                startTimeCap={startTimeCap &&  startTimeCap + (2 * 86400)}
-                label={'End time'}
-                disabled={true} />
+              />
+              {monthAndDay && (
+                <>
+                  <CustomizedClock
+                    setTime={setStartTimeArray}
+                    calendarType={'start'}
+                    startTime={startTime}
+                    startTimeCap={startTimeCap}
+                    label={'Start time'}
+                    month={monthAndDay?.month}
+                    day={monthAndDay?.day}
+                  />
+                  {isProduction() === false ? (
+                    <CustomizedClock
+                      setTime={setEndTime}
+                      startTime={startTime}
+                      startTimeCap={startTime + 2 * 60}
+                      label={'End time'}
+                      disabled={true}
+                      month={monthAndDay?.month}
+                      day={monthAndDay?.day}
+                    />
+                  ) : (
+                    <CustomizedClock
+                      setTime={setEndTime}
+                      startTime={startTime}
+                      startTimeCap={startTime + duration * 86400}
+                      label={'End time'}
+                      disabled={true}
+                      month={monthAndDay?.month}
+                      day={monthAndDay?.day + 2}
+                    />
+                  )}
+                </>
+              )}
+
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>
                 <Button
                   type="submit"

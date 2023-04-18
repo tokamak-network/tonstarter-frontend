@@ -36,23 +36,27 @@ const themeDesign = {
 };
 
 type ClockProps = {
-  setTime: Dispatch<SetStateAction<any | number>>;
-  startDate?: number;
+  setTime?: Dispatch<SetStateAction<any>>;
+  startTime: number;
   endTime?: number;
-  calendarType: string;
+  calendarType?: string;
   startTimeCap?: number;
   label?: string;
+  month: string,
+  day: number,
   disabled?: boolean;
 };
 
 const CustomizedClock = (props: ClockProps) => {
   const {
     setTime,
-    startDate,
+    startTime,
     endTime,
     calendarType,
     startTimeCap,
     label,
+    month,
+    day,
     disabled,
   } = props;
   const {colorMode} = useColorMode();
@@ -78,14 +82,14 @@ const CustomizedClock = (props: ClockProps) => {
   const setUp = () => {
     let hour;
     if (meridiem === 'AM' && hours === 12) {
-      setTime([0, minutes, seconds]);
+      setTime && setTime([0, minutes, seconds]);
     } else if (meridiem === 'PM' && hours === 12) {
-      setTime([hours, minutes, seconds]);
+      setTime && setTime([hours, minutes, seconds]);
     } else if (meridiem === 'PM' && hours !== 12) {
       hour = hours + 12;
-      setTime([hour, minutes, seconds]);
+      setTime && setTime([hour, minutes, seconds]);
     } else {
-      setTime([hours, minutes, seconds]);
+      setTime && setTime([hours, minutes, seconds]);
     }
   };
 
@@ -106,13 +110,19 @@ const CustomizedClock = (props: ClockProps) => {
       }
       bg={colorMode === 'light' ? '#FFFFFF' : '#222222'}
       zIndex={1}>
-      {/* TODO:  */}
       <Box pt={2} textAlign={'left'}>
         <Flex>
           <Text fontSize={'13px'} fontWeight={600}>
             {label}
           </Text>
-          <Text fontSize={'13px'}> &nbsp;(April 17)</Text>
+          &nbsp;
+          {startTime ? (
+            <Text fontSize={'13px'}>
+              {month}&nbsp;{day}
+            </Text>
+          ) : (
+            <Text fontSize={'13px'}>&nbsp;-&nbsp;-&nbsp;</Text>
+          )}
         </Flex>
       </Box>
       <Flex
