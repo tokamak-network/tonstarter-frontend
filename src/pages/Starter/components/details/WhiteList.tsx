@@ -103,7 +103,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
                 Your Expected Tier :{' '}
               </Text>
               <Text {...detailSubTextStyle}>
-                {isWhiteList ? `Tier${detailInfo?.userTier}` : '-'}
+                {isWhiteList ? `Tier ${detailInfo?.userTier}` : '-'}
               </Text>
             </Flex>
             <Flex w={'235px'}>
