@@ -47,8 +47,6 @@ const InitialLiquidity = (props: {step: string}) => {
   const {tx, data} = useAppSelector(selectTxType);
 
   const initialVault = values.vaults[1] as VaultLiquidityIncentive;
-
-  console.log('values', values);
   
   const details = [
     {name: 'Vault Name', value: `${initialVault.vaultName}`},

@@ -4,7 +4,7 @@ const monthGapTimeStamp = (currentTimeStamp: number, monthes: number) => {
 };
 export const testValue = () => {
   //Plus 15 min to currentTime
-  const currentTimeStamp = Math.floor(Date.now() / 1000 + 900);
+  const currentTimeStamp = Date.now() / 1000 + 900;
   const round2EndTime = currentTimeStamp + 1200;
   const afterRound2EndTime = round2EndTime + 1;
   const defaultData = {
@@ -13,14 +13,14 @@ export const testValue = () => {
     tokenName: 'test',
     tokenSymbol: 'test',
     totalSupply: '10000000',
-    ownerAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
-    owner: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+    ownerAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
+    owner: '0xfA36995FC6B4E9C17E35191A802901741d929960',
     isTokenDeployed: false,
     isTokenDeployedErr: false,
     isAllDeployed: false,
     tokenAddress: '',
     tokenType: 'A',
-    tokenOwnerAccount: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+    tokenOwnerAccount: '0xfA36995FC6B4E9C17E35191A802901741d929960',
     tosPrice: '50',
     projectTokenPrice: '100',
     totalTokenAllocation: 6000000,
@@ -37,8 +37,8 @@ export const testValue = () => {
           claimRound: 1,
           claimTokenAllocation: null,
         },
-        addressForReceiving: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        addressForReceiving: '0xfA36995FC6B4E9C17E35191A802901741d929960',
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
         claim: [
           {
             claimRound: 1,
@@ -101,7 +101,7 @@ export const testValue = () => {
         publicRound2End: round2EndTime,
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
         claim: [
           {
             claimRound: 1,
@@ -154,7 +154,7 @@ export const testValue = () => {
         vaultType: 'Vesting',
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
         claim: [
           {
             claimRound: 1,
@@ -188,7 +188,7 @@ export const testValue = () => {
         name: 'TON Staker',
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
         claim: [
           {
             claimRound: 1,
@@ -222,7 +222,7 @@ export const testValue = () => {
         name: 'TOS Staker',
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
         claim: [
           {
             claimRound: 1,
@@ -258,7 +258,7 @@ export const testValue = () => {
         name: 'WTON-TOS LP Reward',
       },
       {
-        adminAddress: '0x8c595DA827F4182bC0E3917BccA8e654DF8223E1',
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
         claim: [
           {
             claimRound: 1,

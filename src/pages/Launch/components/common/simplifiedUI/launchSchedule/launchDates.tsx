@@ -339,6 +339,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                           h={'60px'}
                           bg={'#353c48'}
                           color={'#fff'}
+                          _focus={{}}
                           >
                           <PopoverArrow bg={'#353c48'} />
                           <PopoverBody textAlign={'left'}>
