@@ -530,11 +530,7 @@ const LPCompCond2: React.FC<LPComp2Props> = ({
     try {
       const receipt = await InitialLiquidityCompute.connect(
         signer,
-      ).setInitialPriceAndCreatePool(
-        getRatio()[0],
-        getRatio()[1],
-        encodePriceSqrt(getRatio()[0], getRatio()[1]),
-      );
+      ).setCreatePool();
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');

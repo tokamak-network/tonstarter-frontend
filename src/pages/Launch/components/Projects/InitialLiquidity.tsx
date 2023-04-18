@@ -21,7 +21,7 @@ import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityComp
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as UniswapV3FactoryABI from 'services/abis/UniswapV3Factory.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import {convertNumber} from 'utils/number';
+import { convertToWei} from 'utils/number';
 import {ethers} from 'ethers';
 import store from 'store';
 import {toastWithReceipt} from 'utils';
@@ -64,6 +64,7 @@ type Condition3 = {
   project: any;
   isAdmin: boolean;
   InitialLiquidityCompute: any;
+  createdPool:any;
   mint: Dispatch<SetStateAction<any>>;
 };
 type Condition4 = {
@@ -132,7 +133,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       setCreatedPool(pool === ZERO_ADDRESS ? '' : pool);
       // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
-      // console.log(Number(LP));
+      console.log(Number(LP));
       setLPToken(Number(LP));
     }
     getLPToken();
@@ -159,13 +160,18 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     }
     const signer = getSigner(library, account);
     try {
-      const receipt = await InitialLiquidityCompute.connect(signer).mint();
+      const bal = await TOS.balanceOf(vault.vaultAddress);  
+      console.log(vault.vaultAddress);
+          
+      const receipt = await InitialLiquidityCompute.connect(signer).mint(bal);
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
         await receipt.wait();
       }
     } catch (e) {
+      console.log(e);
+      
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
         //@ts-ignore
@@ -400,6 +406,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
             isAdmin={isAdmin}
             InitialLiquidityCompute={InitialLiquidityCompute}
             mint={mint}
+            createdPool={createdPool}
           />
         )
       ) : (
@@ -740,6 +747,7 @@ export const Condition3: React.FC<Condition3> = ({
   isAdmin,
   InitialLiquidityCompute,
   mint,
+  createdPool
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -780,8 +788,8 @@ export const Condition3: React.FC<Condition3> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          //  isDisabled={createdPool === ZERO_ADDRESS}
-          isDisabled={true}
+           isDisabled={createdPool === ZERO_ADDRESS}
+          // isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -790,7 +798,7 @@ export const Condition3: React.FC<Condition3> = ({
           _hover={{
             background: 'transparent',
             border: 'solid 1px #2a72e5',
-            color: themeDesign.tosFont[colorMode],
+            color: colorMode === 'light'? '#2a72e5':'#2a72e5',
             cursor: 'pointer',
 
             whiteSpace: 'normal',
@@ -1027,7 +1035,7 @@ export const Condition4: React.FC<Condition4> = ({
                 : {
                     background: 'transparent',
                     border: 'solid 1px #2a72e5',
-                    color: themeDesign.tosFont[colorMode],
+                    color: colorMode === 'light'? '#2a72e5':'#2a72e5',
                     cursor: 'pointer',
                     whiteSpace: 'normal',
                   }
@@ -1102,7 +1110,7 @@ export const Condition4: React.FC<Condition4> = ({
                 : {
                     background: 'transparent',
                     border: 'solid 1px #2a72e5',
-                    color: themeDesign.tosFont[colorMode],
+                    color: colorMode === 'light'? '#2a72e5':'#2a72e5',
                     cursor: 'pointer',
                     whiteSpace: 'normal',
                   }

@@ -211,7 +211,7 @@ export const PastProject = (props: PastProjectProp) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {STATER_STYLE} = theme;
-
+  const pastProjectsReversed = [...pastProject].reverse()
   return (
     <Flex flexDir="column">
       <Text
@@ -221,7 +221,7 @@ export const PastProject = (props: PastProjectProp) => {
         Past Projects
       </Text>
       <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-        {pastProject.map((project, index) => {
+        {pastProjectsReversed.map((project, index) => {
           return (
             <PastProjectContainer
               project={project}

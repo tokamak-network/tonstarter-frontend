@@ -113,12 +113,14 @@ const SwapModal = () => {
     //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
     try {
       if (PublicVaultContract && inputAmount && pools) {
-        const inputAmountRay = convertToRay(inputAmount);
+        
+        
+        const inputAmountRay = convertToRay(inputAmount);        
         const {TOS_WTON_POOL} = pools;
 
          PublicVaultContract.exchangeWTONtoTOS(
-          inputAmountRay,
-          TOS_WTON_POOL,
+          inputAmountRay
+       
         );
       return  handleCloseModal()
       }
@@ -239,7 +241,7 @@ const SwapModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {balance} {'WTON'}
+                  Balance: {balance} {'TON'}
                 </Text>
                 <Button
                   fontSize={'12px'}
