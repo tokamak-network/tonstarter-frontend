@@ -142,10 +142,12 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           const claimTimeStamp = Number(claimTime.toString());
           if (claimTimeStamp > nowTime) {
             vestingTimeStamp = claimTimeStamp;
+            roundStart++;
             break;
           }
           if (totalRoundNum === roundStart) {
             isEnd = true;
+            roundStart++;
             break;
           }
           roundStart++;
