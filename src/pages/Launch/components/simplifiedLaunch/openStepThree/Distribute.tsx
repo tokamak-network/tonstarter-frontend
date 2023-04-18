@@ -171,12 +171,12 @@ const Distribute = () => {
           mr={'12px'}
           _active={notDeployedAll || hasToken ? {} : {bg: '#2a72e5'}}
           _hover={notDeployedAll || hasToken ? {} : {bg: '#2a72e5'}}
-          _disabled={{
+          _disabled={tx !== true?{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',
-          }}
-          isDisabled={notDeployedAll || hasToken}
+          }:{}}
+          isDisabled={notDeployedAll || hasToken || tx === true}
           borderRadius={4}
           onClick={() => sendTokens()}>
              {tx !== true || notDeployedAll || hasToken

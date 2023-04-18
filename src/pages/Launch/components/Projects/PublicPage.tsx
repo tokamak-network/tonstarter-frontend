@@ -40,6 +40,7 @@ import {useCallContract} from 'hooks/useCallContract';
 import * as WTONABI from 'services/abis/WTON.json';
 import {useContract} from 'hooks/useContract';
 import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
+import {useBlockNumber} from 'hooks/useBlock';
 
 type PublicPage = {
   vault: any;
@@ -51,7 +52,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [buttonDisable, setButtonDisable] = useState<boolean>(false);
-  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const {transactionType} = useAppSelector(selectTransactionType);
   const {account, library} = useActiveWeb3React();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [fundWithdrew, setFundWithdrew] = useState<boolean>(false);
@@ -61,6 +62,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const [vestingAmount, setVestingAmount] = useState(0);
   const [sendTON, setSendTON] = useState(true);
   const network = BASE_PROVIDER._network.name;
+  const {blockNumber} = useBlockNumber();
 
   const now = moment().unix();
   const sTosTier = vault.stosTier
@@ -168,13 +170,6 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       setVestingAmount(xxAmount);
 
       const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96(); //when the pool is created and the LP token is minted in the IL vault, currentSqrtPriceX96 > 0
-
-      console.log('fundsInVesting',fundsInVesting);
-      console.log('isExchangeTOS',isExchangeTOS);
-      console.log('adminWithdraw',adminWithdraw);
-      
-     
-
       setSendTON(
         Number(fundsInVesting) !== 0 &&
           isExchangeTOS === true &&
@@ -182,7 +177,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       );
     }
     getHardCap();
-  }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
+  }, [account, project, vault.vaultAddress, transactionType, blockNumber, library, PUBLICSALE_CONTRACT, PublicSaleContract, WTON, vestingVaultContract]);
 
   const sendTOS = async () => {
     if (
@@ -265,7 +260,6 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       dark: '#fff',
     },
   };
-
 
 
   return (

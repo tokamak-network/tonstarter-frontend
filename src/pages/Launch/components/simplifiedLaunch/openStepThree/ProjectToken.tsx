@@ -190,12 +190,12 @@ const ProjectToken = () => {
           _hover={isTokenDeployed ? {} : {bg: '#2a72e5'}}
           _focus={isTokenDeployed ? {} : {bg: '#2a72e5'}}
           _active={isTokenDeployed ? {} : {bg: '#2a72e5'}}
-          _disabled={{
+          _disabled={tx !== true?{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',
-          }}
-          isDisabled={isTokenDeployed}
+          }:{}}
+          isDisabled={isTokenDeployed || tx === true}
           borderRadius={4}
           onClick={() => {
             deployToken();

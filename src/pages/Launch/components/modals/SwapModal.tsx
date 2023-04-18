@@ -85,8 +85,9 @@ const SwapModal = () => {
 
   useEffect(() => {
     if (Number(inputAmount.replaceAll(',', '')) !== 0) {
+      
       setMax(maxInput);
-    } else {
+    } else {      
       setMax(maxAmount);
     }
   }, [inputAmount, maxAmount, maxInput]);
@@ -115,7 +116,8 @@ const SwapModal = () => {
       if (PublicVaultContract && inputAmount && pools) {
         
         
-        const inputAmountRay = convertToRay(inputAmount);        
+        const inputAmountRay = convertToRay(inputAmount);
+        
         const {TOS_WTON_POOL} = pools;
 
          PublicVaultContract.exchangeWTONtoTOS(
@@ -130,16 +132,16 @@ const SwapModal = () => {
     }
   }, [PublicVaultContract, inputAmount, pools]);
 
-  useEffect(() => {
-    if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
-      setInputAmount(inputAmount.slice(1, inputAmount.length));
-    }
-    if (inputAmount.split('.')[1] !== undefined) {
-      return setInputAmount(
-        `${inputAmount.split('.')[0]}.${inputAmount.split('.')[1].slice(0, 2)}`,
-      );
-    }
-  }, [inputAmount, setInputAmount]);
+  // useEffect(() => {
+  //   if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
+  //     setInputAmount(inputAmount.slice(1, inputAmount.length));
+  //   }
+  //   if (inputAmount.split('.')[1] !== undefined) {
+  //     return setInputAmount(
+  //       `${inputAmount.split('.')[0]}.${inputAmount.split('.')[1].slice(0, 2)}`,
+  //     );
+  //   }
+  // }, [inputAmount, setInputAmount]);
   
   return (
     <Modal
@@ -206,18 +208,21 @@ const SwapModal = () => {
                 </Text>
                 <NumberInput
                   h="24px"
-                  value={Number(inputAmount) <= 0 ? 0 : inputAmount}
+                  ml='5px'
+                  max={Number(balance)}
+                  value={ inputAmount}
                   onChange={(value) => {
-                    if (
-                      (value === '0' || value === '00') &&
-                      value.length <= 2
-                    ) {
-                      return null;
-                    }
-                    if (value === '') {
-                      return setInputAmount('0');
-                    }
-                    return setInputAmount(value);
+                    setInputAmount(value)
+                    // if (
+                    //   (value === '0' || value === '00') &&
+                    //   value.length <= 2
+                    // ) {
+                    //   return null;
+                    // }
+                    // if (value === '') {
+                    //   return setInputAmount('0');
+                    // }
+                    // return setInputAmount(value);
                   }}>
                   <NumberInputField
                     placeholder="0.00"

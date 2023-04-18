@@ -71,8 +71,8 @@ export const useSwapMax = (amountIn: number) => {
               Number(ethers.utils.formatUnits(afterAmountIn, 27)) * 1.005;              
 
               const result =  isMax === true
-              ? amountIn.toLocaleString()
-              : afterAmountIn2.toLocaleString()
+              ? amountIn.toString()
+              : afterAmountIn2.toString()
 
            return  setMaxAmount(result ?? '-');
           }
