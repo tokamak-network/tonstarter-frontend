@@ -99,6 +99,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
                   : 'input-dark'
               }
               borderRadius={4}
+              autocomplete="off"
               maxLength={getMaxLength(name)}
               fontSize={13}
               {...field}
