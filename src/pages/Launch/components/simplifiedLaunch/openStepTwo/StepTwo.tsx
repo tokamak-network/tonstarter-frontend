@@ -95,6 +95,8 @@ const StepTwo = () => {
     }
   };
 
+  console.log('values',values);
+  
   const handleSelect = (option: any) => {
     setOption({
       totalSupply: option.totalSupply.toString(),
@@ -151,8 +153,9 @@ const StepTwo = () => {
       setFieldValue('vaults[2].vaultTokenAllocation', 0);
       setFieldValue('vaults[0].addressForReceiving', account);
       setFieldValue('vaults[0].adminAddress', account);
-
-      // setFieldValue(
+      setFieldValue('vaults[1].tokenPair', `${values.tokenSymbol}-TOS`)
+      setFieldValue('vaults[6].tokenPair', `${values.tokenSymbol}-TOS`)
+      // setFieldValue(]
       //   'vaults[0].publicRound1Allocation',
       //   Number(parseInt((publicAllocation * 0.5).toString())),
       // );

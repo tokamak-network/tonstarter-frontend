@@ -276,7 +276,6 @@ async function deploy(
   if (account && library && vaultState === 'Deploy') {
     const vaultContract = getContract(vaultType, library);
     const signer = getSigner(library, account);
-    console.log('create');
 
     try {
       switch (vaultType) {
@@ -296,7 +295,7 @@ async function deploy(
               data: tx.hash,
             }),
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'DeployInitial'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
@@ -368,7 +367,7 @@ async function deploy(
               data: tx.hash,
             }),
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'DeployPublic'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
@@ -408,7 +407,7 @@ async function deploy(
               data: tx.hash,
             }),
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'DeployVesting'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
@@ -450,7 +449,7 @@ async function deploy(
               data: tx.hash,
             }),
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'DeployTON'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
@@ -490,7 +489,7 @@ async function deploy(
               data: tx.hash,
             }),
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'DeployTOS'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
@@ -534,7 +533,7 @@ async function deploy(
               data: tx.hash,
             }),
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'DeployWTON'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
@@ -592,7 +591,7 @@ async function deploy(
               data: tx.hash,
             }),
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'DeployLiquidity'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
 
           const receipt = await tx.wait();
@@ -631,7 +630,7 @@ async function deploy(
               data: tx.hash,
             }),
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: `Deploy${selectedVaultDetail.vaultName}`}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           const {logs} = receipt;
@@ -685,10 +684,7 @@ async function deploy(
           const projectTokenPrice = truncNumber((values.tosPrice * 100),0);
           const vaultTokenAllocationWei = convertToWei(
             String(selectedVaultDetail?.vaultTokenAllocation),
-          );
-
-          console.log('projectTokenPrice',projectTokenPrice);
-          
+          );          
 
           const computePoolAddress =
             await InitialLiquidityVault_Contract.connect(
@@ -721,7 +717,7 @@ async function deploy(
             //@ts-ignore
             selectedVaultDetail.startTime,
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'InitializeInitial'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
 
           const receipt = await tx.wait();
@@ -878,7 +874,7 @@ async function deploy(
           const tx = await publicVaultSecondContract
             ?.connect(signer)
             .setAllsetting(param0, param1, param2, param3, param4);
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true,data: 'InitializePublic'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
           if (receipt) {
@@ -919,7 +915,7 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true,data: 'InitializeLiquidity'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
@@ -970,7 +966,7 @@ async function deploy(
             claimAmountsParam,
             3000,
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'InitializeVesting'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
@@ -1017,7 +1013,7 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'InitializeTON'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
@@ -1059,7 +1055,7 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'InitializeTOS'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
@@ -1102,7 +1098,7 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: 'InitializeWTON'}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 
@@ -1144,7 +1140,7 @@ async function deploy(
             claimTimesParam,
             claimAmountsParam,
           );
-          store.dispatch(setTxPending({tx: true}));
+          store.dispatch(setTxPending({tx: true, data: `Initialize${selectedVaultDetail.vaultName}`}));
           toastWithReceipt(tx, setTxPending, 'Launch');
           const receipt = await tx.wait();
 

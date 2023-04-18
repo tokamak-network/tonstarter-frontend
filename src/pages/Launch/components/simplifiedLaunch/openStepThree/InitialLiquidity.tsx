@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   Link,
+  CircularProgress,
 } from '@chakra-ui/react';
 import {useEffect, useState, useCallback, useMemo} from 'react';
 import {useFormikContext} from 'formik';
@@ -18,7 +19,7 @@ import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER} from 'constants/index';
-
+import {selectTxType} from 'store/tx.reducer';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {
   checkIsIniailized,
@@ -43,9 +44,12 @@ const InitialLiquidity = (props: {step: string}) => {
   // @ts-ignore
   const network = BASE_PROVIDER._network.name;
   const {blockNumber} = useBlockNumber();
+  const {tx, data} = useAppSelector(selectTxType);
 
   const initialVault = values.vaults[1] as VaultLiquidityIncentive;
 
+  console.log('values', values);
+  
   const details = [
     {name: 'Vault Name', value: `${initialVault.vaultName}`},
     {
@@ -143,7 +147,6 @@ const InitialLiquidity = (props: {step: string}) => {
     fetchContractBalance();
   }, [blockNumber, ERC20_CONTRACT, initialVault]);
 
-
   const buttonStatus = useMemo(() => {
     const status =
       step === 'Deploy'
@@ -155,7 +158,7 @@ const InitialLiquidity = (props: {step: string}) => {
         ? true
         : false;
 
-        return status
+    return status;
   }, [
     hasToken,
     initialVault.isSet,
@@ -198,7 +201,11 @@ const InitialLiquidity = (props: {step: string}) => {
         px="20px"
         w="100%"
         alignItems={'center'}>
-        <Text mb="11px" fontSize={'13px'} fontWeight='bold' color={colorMode === 'light'? '#304156':'#ffffff'}>
+        <Text
+          mb="11px"
+          fontSize={'13px'}
+          fontWeight="bold"
+          color={colorMode === 'light' ? '#304156' : '#ffffff'}>
           Vault
         </Text>
         {details.map((detail: any, index: number) => {
@@ -292,8 +299,8 @@ const InitialLiquidity = (props: {step: string}) => {
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
-          _active={buttonStatus?{}:{bg: '#2a72e5'}}
-          _hover={buttonStatus?{}:{bg: '#2a72e5'}}
+          _active={buttonStatus ? {} : {bg: '#2a72e5'}}
+          _hover={buttonStatus ? {} : {bg: '#2a72e5'}}
           _disabled={{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
@@ -303,9 +310,19 @@ const InitialLiquidity = (props: {step: string}) => {
           onClick={() => {
             vaultDeploy();
           }}
-     
           borderRadius={4}>
-          {step}
+           {tx !== true || buttonStatus
+         ?(
+          <Text>{step}</Text>
+        ): (
+            <CircularProgress
+              isIndeterminate
+              size={'20px'}
+              zIndex={100}
+              color="blue.500"
+              pos="absolute"
+            />
+          ) }
         </Button>
       </Flex>
     </Flex>

@@ -333,6 +333,7 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isDeployed: false,
       isSet: false,
       isDeployedErr: false,
+      tokenPair: undefined,
     },
     {
      

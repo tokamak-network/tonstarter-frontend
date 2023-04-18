@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   Link,
+  CircularProgress
 } from '@chakra-ui/react';
 import {useEffect, useState, useMemo, useCallback} from 'react';
 import {Projects, VaultTONStarter} from '@Launch/types';
@@ -17,6 +18,7 @@ import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {convertNumber} from 'utils/number';
 import {useActiveWeb3React} from 'hooks/useWeb3';
+import {selectTxType} from 'store/tx.reducer';
 
 import {selectLaunch} from '@Launch/launch.reducer';
 import {
@@ -45,6 +47,7 @@ const TosStaker = (props: {step: string}) => {
   const network = BASE_PROVIDER._network.name;
 
   const {blockNumber} = useBlockNumber();
+  const {tx, data} = useAppSelector(selectTxType);
 
   const tosVault = values.vaults[4] as VaultTONStarter;
   useEffect(() => {
@@ -358,7 +361,18 @@ const TosStaker = (props: {step: string}) => {
             vaultDeploy();
           }}
           borderRadius={4}>
-          {step}
+         {tx !== true || buttonStatus
+         ?(
+          <Text>{step}</Text>
+        ): (
+            <CircularProgress
+              isIndeterminate
+              size={'20px'}
+              zIndex={100}
+              color="blue.500"
+              pos="absolute"
+            />
+          ) }
         </Button>
       </Flex>
     </Flex>

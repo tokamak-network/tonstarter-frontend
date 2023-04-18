@@ -68,7 +68,7 @@ export const toastWithReceipt = async (
       .then((receipt: any) => {
         if (receipt) {
           const {account, library} = store.getState().user.data;
-          store.dispatch(setTxPending({tx: false}));
+          store.dispatch(setTxPending({tx: false, data: ''}));
 
           //@ts-ignore
           store.dispatch(fetchUserInfo({account, library}));
@@ -127,7 +127,7 @@ export const toastWithReceipt = async (
       })
       .catch((e: any) => console.log(e));
   } catch (err) {
-    store.dispatch(setTxPending({tx: false}));
+    store.dispatch(setTxPending({tx: false, data: ''}));
     console.log(err);
   }
 };

@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   Link,
+  CircularProgress
 } from '@chakra-ui/react';
 import {useEffect, useState, useCallback, useMemo} from 'react';
 import {Projects, VaultTONStarter} from '@Launch/types';
@@ -19,6 +20,7 @@ import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {convertNumber} from 'utils/number';
 import {selectLaunch} from '@Launch/launch.reducer';
 import {Scrollbars} from 'react-custom-scrollbars-2';
+import {selectTxType} from 'store/tx.reducer';
 
 import {
   checkIsIniailized,
@@ -47,6 +49,8 @@ const TonStaker = (props: {step: string}) => {
     useFormikContext<Projects['CreateSimplifiedProject']>();
 
   const tonVault = values.vaults[3] as VaultTONStarter;
+  const {tx, data} = useAppSelector(selectTxType);
+console.log(tx, data);
 
   //check vault state from contract
   useEffect(() => {
@@ -376,7 +380,18 @@ const TonStaker = (props: {step: string}) => {
             vaultDeploy();
           }}
           borderRadius={4}>
-          {step}
+        {tx !== true || buttonStatus
+         ?(
+          <Text>{step}</Text>
+        ): (
+            <CircularProgress
+              isIndeterminate
+              size={'20px'}
+              zIndex={100}
+              color="blue.500"
+              pos="absolute"
+            />
+          ) }
         </Button>
       </Flex>
     </Flex>

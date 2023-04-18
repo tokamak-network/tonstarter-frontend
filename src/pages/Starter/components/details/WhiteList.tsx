@@ -100,7 +100,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
           <Box d="flex" fontSize={'13px'}>
             <Flex mr={'25px'}>
               <Text color={'gray.400'} mr={'3px'}>
-                Your Tier :{' '}
+                Your Expected Tier :{' '}
               </Text>
               <Text {...detailSubTextStyle}>
                 {isWhiteList ? `Tier${detailInfo?.userTier}` : '-'}
@@ -108,7 +108,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
             </Flex>
             <Flex w={'235px'}>
               <Text color={'gray.400'} mr={'3px'}>
-                Your Allocation :{' '}
+                Expected Allocation :{' '}
               </Text>
               <Text mr={'3px'}> {isWhiteList ? userAllocation : '-'} </Text>
               <Text>{saleInfo?.tokenName}</Text>

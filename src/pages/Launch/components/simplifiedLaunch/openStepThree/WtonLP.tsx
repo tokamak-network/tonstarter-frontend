@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   Link,
+  CircularProgress,
 } from '@chakra-ui/react';
 import {useEffect, useState, useCallback, useMemo} from 'react';
 import {Projects, VaultLiquidityIncentive} from '@Launch/types';
@@ -25,6 +26,7 @@ import {
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
 import Scrollbars from 'react-custom-scrollbars-2';
+import {selectTxType} from 'store/tx.reducer';
 
 const WtonLP = (props: {step: string}) => {
   const {step} = props;
@@ -34,6 +36,7 @@ const WtonLP = (props: {step: string}) => {
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
   const wtonVault = values.vaults[5] as VaultLiquidityIncentive;
+  const {tx, data} = useAppSelector(selectTxType);
 
   const [btnDisable, setBtnDisable] = useState(true);
   const {account, library} = useActiveWeb3React();
@@ -380,7 +383,18 @@ const WtonLP = (props: {step: string}) => {
             vaultDeploy();
           }}
           borderRadius={4}>
-          {step}
+         {tx !== true || buttonStatus
+         ?(
+          <Text>{step}</Text>
+        ): (
+            <CircularProgress
+              isIndeterminate
+              size={'20px'}
+              zIndex={100}
+              color="blue.500"
+              pos="absolute"
+            />
+          ) }
         </Button>
       </Flex>
     </Flex>

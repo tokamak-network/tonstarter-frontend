@@ -5,6 +5,7 @@ import {
   Text,
   Image,
   Button,
+  CircularProgress,
 } from '@chakra-ui/react';
 import {useEffect, useState, Dispatch, SetStateAction} from 'react';
 import {useFormikContext} from 'formik';
@@ -27,6 +28,7 @@ import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
+import {selectTxType} from 'store/tx.reducer';
 
 const ProjectToken = () => {
   const {colorMode} = useColorMode();
@@ -46,6 +48,7 @@ const ProjectToken = () => {
   } = useAppSelector(selectLaunch);
 
   const dispatch: any = useAppDispatch();
+  const {tx, data} = useAppSelector(selectTxType);
 
   const details = [
     {
@@ -79,9 +82,8 @@ const ProjectToken = () => {
         setTempHash({
           data: tx.hash,
         }),
-      
       );
-      store.dispatch(setTxPending({tx: true}));
+      store.dispatch(setTxPending({tx: true, data: 'TokenDeploy'}));
       toastWithReceipt(tx, setTxPending, 'Launch');
       const receipt = await tx.wait();
       const {logs} = receipt;
@@ -96,7 +98,6 @@ const ProjectToken = () => {
       setFieldValue('isTokenDeployedErr', true);
     }
   }
-
 
   return (
     <Flex
@@ -208,7 +209,18 @@ const ProjectToken = () => {
             //   }),
             // );
           }}>
-          {isTokenDeployed ? 'Done' : 'Deploy'}
+          {tx === true  && !isTokenDeployed? (
+             <CircularProgress  isIndeterminate
+             size={'20px'}
+             zIndex={100}
+             color="blue.500"
+             pos="absolute" />
+            
+           
+          ) : (
+            <Text>{isTokenDeployed ? 'Done' : 'Deploy'}</Text>
+          )}
+          {/* {isTokenDeployed ? 'Done' : 'Deploy'} */}
         </Button>
       </Flex>
     </Flex>

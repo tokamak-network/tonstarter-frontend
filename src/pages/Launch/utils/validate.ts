@@ -20,11 +20,14 @@ function validateFormikValues(
     publicRound2End,
     snapshot,
   } = values.vaults[0] as VaultPublic;
-
+  
   const step2FilledOut = values.vaults.map((vault: any) => {
     const result: any[] = [];
     const thisFields: any[] = [];
-    Object.values(vault).forEach((val) => {
+    const keys = Object.keys(vault)
+    
+    Object.values(vault).forEach((val, index: number) => {
+      
       if (typeof val === 'object') {
         //STOS Tier Object handle
         if (val?.hasOwnProperty('oneTier')) {
@@ -74,7 +77,7 @@ function validateFormikValues(
           );
           // console.log(vault);
           // console.log(isMatchingTotalAllocation);
-          // console.log(vault.vaultTokenAllocation);
+          // console.log(vault.vaultTokenAllocation);          
 
           //For public vault only
           if (vault.index === 0) {
@@ -129,8 +132,9 @@ function validateFormikValues(
             (vault.vaultTokenAllocation === undefined ||
               isMatchingTotalAllocation !== vault.vaultTokenAllocation)
           ) {
+            
             thisFields.push('vaultTokenAllocation');
-            result.push(false);
+            result.push('vaultTokenAllocation',false);
           }
 
           //need to add validate to compare total and allocation
@@ -159,15 +163,17 @@ function validateFormikValues(
           });
         }
       }
-      if (val === undefined || val === '') {
+      
+      if ((keys[index] !== "vaultAddress" && keys[index] !== "poolAddress")&&  (val === undefined || val === '')) {
         //get key
-        //
-        return result.push(false);
+        //                
+        return result.push(keys[index], false);
       } else {
+        
         return result.push(true);
       }
     });
-    fileds.push(thisFields);
+    fileds.push(thisFields);    
     return result.indexOf(false) === -1 ? true : false;
   });
 

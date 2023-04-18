@@ -1,10 +1,11 @@
-import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
+import {Box, useColorMode, useTheme, Flex, Text, Link} from '@chakra-ui/react';
 import {DetailCounter} from './Detail_Counter';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {AdminObject} from '@Admin/types';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {useTime} from 'hooks/useTime';
-import {Link} from 'react-router-dom';
+// import {Link} from 'react-router-dom';
+import {BASE_PROVIDER} from 'constants/index';
 
 type WhiteListProps = {
   saleInfo: AdminObject;
@@ -17,6 +18,7 @@ const Snapshot: React.FC<WhiteListProps> = (prop) => {
 
   const {STATER_STYLE} = theme;
   const {isPassed} = useTime(saleInfo?.snapshot);
+  const network = BASE_PROVIDER._network.name;
 
   return (
     <Flex flexDir="column" pos="relative" h={'100%'} pt={'75px'} pl={'45px'}>
@@ -47,7 +49,7 @@ const Snapshot: React.FC<WhiteListProps> = (prop) => {
             date={saleInfo?.startAddWhiteTime * 1000}></DetailCounter>
         </Box>
       </Box>
-      <Link to={`/dao`}>
+      <Link  isExternal href={network === 'goerli'? 'https://goerli.tosv2.tokamak.network/stake':'https://tosv2.tokamak.network/stake'}>
         <CustomButton
           w={'150px'}
           text={'Get sTOS'}

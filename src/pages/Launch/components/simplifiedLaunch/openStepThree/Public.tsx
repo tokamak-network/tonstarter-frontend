@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   Link,
+  CircularProgress,
 } from '@chakra-ui/react';
 import {useEffect, useState, useCallback, useMemo} from 'react';
 import {useFormikContext} from 'formik';
@@ -18,6 +19,8 @@ import {useContract} from 'hooks/useContract';
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import {convertNumber} from 'utils/number';
 import {selectLaunch} from '@Launch/launch.reducer';
+import {selectTxType} from 'store/tx.reducer';
+
 import {
   checkIsIniailized,
   returnVaultStatus,
@@ -42,10 +45,10 @@ const Public = (props: {step: string}) => {
   const dispatch = useAppDispatch();
   // @ts-ignore
   const network = BASE_PROVIDER._network.name;
+  const {tx, data} = useAppSelector(selectTxType);
 
   const {blockNumber} = useBlockNumber();
   const publicVault = values.vaults[0] as VaultPublic;
-  // console.log('publicVault',publicVault);
 
   const detailsVault = [
     {name: 'Vault Name', value: `${publicVault.vaultName}`},
@@ -98,6 +101,12 @@ const Public = (props: {step: string}) => {
           ? values.projectTokenPrice.toLocaleString()
           : ''
       }${values.tokenSymbol} = 1 TON`,
+    },
+    {
+      name: 'Minimum Funding Amount',
+      value1: `${
+        publicVault.hardCap ? publicVault.hardCap.toLocaleString() : '-'
+      } TON`,
     },
   ];
 
@@ -398,7 +407,7 @@ const Public = (props: {step: string}) => {
                     <Text
                       ml="3px"
                       color={colorMode === 'dark' ? '#9d9ea5' : '#7e8993'}
-                      fontWeight='bold'
+                      fontWeight="bold"
                       fontSize={'11px'}>
                       ({detail.value2})
                     </Text>
@@ -407,7 +416,12 @@ const Public = (props: {step: string}) => {
               </Flex>
             );
           })}
-          <Text h="18px" mt="43px" mb="10px" fontSize={'13px'}  fontWeight={'bold'}
+          <Text
+            h="18px"
+            mt="43px"
+            mb="10px"
+            fontSize={'13px'}
+            fontWeight={'bold'}
             color={colorMode === 'light' ? '#304156' : '#ffffff'}>
             Schedule
           </Text>
@@ -423,7 +437,7 @@ const Public = (props: {step: string}) => {
                 <Text
                   fontSize={'13px'}
                   fontFamily={theme.fonts.roboto}
-                  fontWeight='bold'
+                  fontWeight="bold"
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
                   {detail.name}
                 </Text>
@@ -431,7 +445,7 @@ const Public = (props: {step: string}) => {
                   <Text
                     fontSize={'13px'}
                     fontFamily={theme.fonts.roboto}
-                    fontWeight='bold'
+                    fontWeight="bold"
                     color={
                       detail.name === 'Admin' || detail.name === 'Contract'
                         ? 'blue.300'
@@ -679,7 +693,18 @@ const Public = (props: {step: string}) => {
             vaultDeploy();
           }}
           borderRadius={4}>
-          {step}
+           {tx !== true || buttonStatus
+         ?(
+          <Text>{step}</Text>
+        ): (
+            <CircularProgress
+              isIndeterminate
+              size={'20px'}
+              zIndex={100}
+              color="blue.500"
+              pos="absolute"
+            />
+          ) }
         </Button>
       </Flex>
     </Flex>

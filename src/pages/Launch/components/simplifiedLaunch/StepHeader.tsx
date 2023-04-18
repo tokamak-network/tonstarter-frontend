@@ -86,6 +86,7 @@ const StepHeader = (props: {
       }
     });
     setSteps(temp);
+    
     async function checkBalance() {
       if (ERC20_CONTRACT && values.vaults[0].vaultAddress) {
         const balance = await ERC20_CONTRACT.balanceOf(

@@ -1,4 +1,11 @@
-import {Flex, useColorMode, useTheme, Text, Button} from '@chakra-ui/react';
+import {
+  Flex,
+  useColorMode,
+  useTheme,
+  Text,
+  Button,
+  CircularProgress,
+} from '@chakra-ui/react';
 import {
   useEffect,
   useState,
@@ -24,6 +31,8 @@ import store from 'store';
 import {setTxPending} from 'store/tx.reducer';
 import {toastWithReceipt} from 'utils';
 import {openToast} from 'store/app/toast.reducer';
+import {selectTxType} from 'store/tx.reducer';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
 const Distribute = () => {
   const {colorMode} = useColorMode();
@@ -37,6 +46,7 @@ const Distribute = () => {
   // const []
   const ERC20_CONTRACT = useContract(values?.tokenAddress, TON.abi);
   const {account, library} = useActiveWeb3React();
+  const {tx, data} = useAppSelector(selectTxType);
 
   const {TokenDistribute} = DEPLOYED;
 
@@ -88,7 +98,6 @@ const Distribute = () => {
         );
       });
 
-
       const totalAmount = deployedVaults.reduce(
         (accumulator, vault) => accumulator + vault.vaultTokenAllocation,
         0,
@@ -109,7 +118,7 @@ const Distribute = () => {
         amountInTON,
         data,
       );
-     
+
       store.dispatch(setTxPending({tx: true}));
       toastWithReceipt(tx, setTxPending, 'Launch');
       const receipt = await tx.wait();
@@ -138,7 +147,7 @@ const Distribute = () => {
           mt="3px"
           color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}
           fontSize={'16px'}
-          fontWeight='semibold'
+          fontWeight="semibold"
           fontFamily="Titillium Web, sans-serif"
           textAlign={'center'}>
           (Besides Vesting Vaullt)
@@ -160,18 +169,30 @@ const Distribute = () => {
           fontSize={14}
           color={'white.100'}
           mr={'12px'}
-          _active={notDeployedAll || hasToken? {}:{bg: '#2a72e5'}}
-          _hover={notDeployedAll || hasToken? {}:{bg: '#2a72e5'}}
+          _active={notDeployedAll || hasToken ? {} : {bg: '#2a72e5'}}
+          _hover={notDeployedAll || hasToken ? {} : {bg: '#2a72e5'}}
           _disabled={{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',
           }}
-         
           isDisabled={notDeployedAll || hasToken}
           borderRadius={4}
           onClick={() => sendTokens()}>
-          Distribute
+             {tx !== true || notDeployedAll || hasToken
+         ? (
+          <Text>Distribute</Text>
+            
+          ) : (
+            <CircularProgress
+            isIndeterminate
+            size={'20px'}
+            zIndex={100}
+            color="blue.500"
+            pos="absolute"
+          />
+          )}
+          
         </Button>
       </Flex>
     </Flex>

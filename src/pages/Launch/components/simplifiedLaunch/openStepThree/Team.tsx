@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   Link,
+  CircularProgress
 } from '@chakra-ui/react';
 import {useEffect, useState, useCallback, useMemo} from 'react';
 import {Projects, VaultTeam} from '@Launch/types';
@@ -25,6 +26,7 @@ import {
 } from '@Launch/utils/deployValues';
 import {BASE_PROVIDER} from 'constants/index';
 import Scrollbars from 'react-custom-scrollbars-2';
+import {selectTxType} from 'store/tx.reducer';
 
 const Team = (props: {step: string}) => {
   const {step} = props;
@@ -42,6 +44,7 @@ const Team = (props: {step: string}) => {
   // @ts-ignore
   const {blockNumber} = useBlockNumber();
   const network = BASE_PROVIDER._network.name;
+  const {tx,data} = useAppSelector(selectTxType);
 
   //check vault state from contract
   useEffect(() => {
@@ -364,7 +367,18 @@ const Team = (props: {step: string}) => {
             vaultDeploy();
           }}
           borderRadius={4}>
-          {step}
+       {tx !== true || buttonStatus
+         ? (
+          <Text>{step}</Text>
+        ): (
+            <CircularProgress
+              isIndeterminate
+              size={'20px'}
+              zIndex={100}
+              color="blue.500"
+              pos="absolute"
+            />
+          ) }
         </Button>
       </Flex>
     </Flex>
