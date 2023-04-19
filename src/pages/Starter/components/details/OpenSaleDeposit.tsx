@@ -37,9 +37,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   const {
     tonBalance,
     wtonBalance,
-    // tonAllowance,
-    // wtonAllowance,
-    // callTonDecreaseAllowance,
+  
   } = useERC20(saleContractAddress);
   const {openAnyModal} = useModal();
 
