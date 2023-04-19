@@ -90,10 +90,12 @@ export const DetailTableProject: React.FC<DetailTableProjectProps> = (prop) => {
       </Text>
       <Box d="flex" justifyContent="space-between">
         <DetailTableContainer
+        status=''
           title={projectDetailTitle}
           data={projectDetailData}
           breakPoint={projectDetailData.length}></DetailTableContainer>
         <DetailTableContainer
+        status=''
           title={projectDetailTitle2}
           data={projectDetailData2}
           breakPoint={projectDetailData2.length + 1}></DetailTableContainer>
