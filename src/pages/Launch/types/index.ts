@@ -138,6 +138,7 @@ type simplifiedVaultsAny =
 type TokenType = 'A' | 'B' | 'C';
 
 interface ProjectStep1 {
+  isSimplified: boolean;
   projectName: string | undefined;
   description: string | undefined;
   tokenName: string | undefined;

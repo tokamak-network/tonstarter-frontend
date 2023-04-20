@@ -21,6 +21,7 @@ const {
 } = DEPLOYED;
 
 const initialObj: Projects['CreateProject'] = {
+  isSimplified: false,
   projectName: undefined,
   description: undefined,
   tokenName: undefined,
