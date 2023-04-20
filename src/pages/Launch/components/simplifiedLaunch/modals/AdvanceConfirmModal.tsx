@@ -11,7 +11,7 @@ import {
     useTheme,
     useColorMode,
   } from '@chakra-ui/react';
-  import React, {useState} from 'react';
+  import React, {useState, useEffect} from 'react';
   import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
   import {selectModalType} from 'store/modal.reducer';
   import {useModal} from 'hooks/useModal';
@@ -20,7 +20,7 @@ import {
   import Line from '@Launch/components/common/Line';
   import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
   
-  const AdvanceConfirmModal = () => {
+  const AdvanceConfirmModal = ({ handleSwitchChange } : any) => {
     const {data} = useAppSelector(selectModalType);
     const {colorMode} = useColorMode();
     const theme = useTheme();
@@ -28,11 +28,10 @@ import {
     const [isCheck, setIsCheck] = useState<boolean>(false);
     const dispatch: any = useAppDispatch();
   
-    const {openAnyModal} = useModal();
-  
     const closeModal = () => {
       setIsCheck(false);
       handleCloseModal();
+      handleSwitchChange(false);
     };
   
     return (

@@ -52,6 +52,20 @@ const StepHeader = (props: {
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[3];
+  const [switchState, setSwitchState] = useState(false);
+
+  const handleSwitchChange = () => {
+    setSwitchState(!switchState);
+  };
+
+  const handleChange = () => {
+    handleSwitchChange();
+    if(switchState === false) {
+      openAnyModal('Launch_AdvanceSwitch', {
+        from: '/launch/createproject',
+      });
+    }
+  }
 
 
   useEffect(() => {
@@ -170,12 +184,9 @@ const StepHeader = (props: {
             label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
             <Flex>
               <style>{switchStyle}</style>
-              
-              <Switch style={{height: '16px'}} onChange={() => {
-                 openAnyModal('Launch_AdvanceSwitch', {
-                  from: '/launch/createproject',
-                })
-              }}></Switch>
+              <Switch style={{height: '16px'}} onChange={handleChange}
+              isChecked={switchState}
+              ></Switch>
               <Text
                 fontSize={'13px'}
                 color={colorMode === 'dark' ? '#949494' : '#848c98'}>
@@ -213,7 +224,7 @@ const StepHeader = (props: {
           <Switch />
         </Link>
       </GridItem> */}
-    <AdvanceConfirmModal/>
+    <AdvanceConfirmModal handleSwitchChange={handleSwitchChange} />
     </Grid>
   );
 };
