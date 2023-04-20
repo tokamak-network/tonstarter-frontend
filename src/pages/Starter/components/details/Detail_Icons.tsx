@@ -15,7 +15,6 @@ type DetailIconProp = {
 export const DetailIcons = (prop: DetailIconProp) => {
   const {linkInfo} = prop;
   const {colorMode} = useColorMode();
-  console.log('linkInfo', linkInfo);
 
   const [mouseOver, setMouseOver] = useState<string | boolean>(false);
   const handleMouseOut = () => {

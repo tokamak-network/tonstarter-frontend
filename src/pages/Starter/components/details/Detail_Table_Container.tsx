@@ -69,8 +69,8 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
                   onClick={() =>
                     account &&
                     library &&
-                    item.image &&
-                    addToken(item.value, library, item.image)
+                   
+                    addToken(item.value, library, item.image? item.image: '')
                   }
                 />
               </Flex>
