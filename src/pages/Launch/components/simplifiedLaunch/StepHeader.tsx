@@ -22,6 +22,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useModal} from 'hooks/useModal';
 import {Link, useRouteMatch} from 'react-router-dom';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import AdvanceConfirmModal from '@Launch/components/simplifiedLaunch/modals/AdvanceConfirmModal'
 
 import {
   selectLaunch,
@@ -169,11 +170,11 @@ const StepHeader = (props: {
             label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
             <Flex>
               <style>{switchStyle}</style>
-
+              
               <Switch style={{height: '16px'}} onChange={() => {
-                dispatch(setMode({
-                  data: 'advanced'
-                }))
+                 openAnyModal('Launch_AdvanceSwitch', {
+                  from: '/launch/createproject',
+                })
               }}></Switch>
               <Text
                 fontSize={'13px'}
@@ -212,6 +213,7 @@ const StepHeader = (props: {
           <Switch />
         </Link>
       </GridItem> */}
+    <AdvanceConfirmModal/>
     </Grid>
   );
 };
