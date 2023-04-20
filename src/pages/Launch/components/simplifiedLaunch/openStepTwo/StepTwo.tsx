@@ -143,6 +143,7 @@ const StepTwo = () => {
           (acc, round) => acc + round.claimTokenAllocation,
           0,
         );
+        
         //  const totalTokenAllocation =
         setFieldValue(`vaults[${index}].claim`, roundInfo);
         setFieldValue(`vaults[${index}].adminAddress`, account);
@@ -225,7 +226,7 @@ const StepTwo = () => {
         fontWeight={'bold'}
         color={colorMode === 'dark' ? 'white.100' : 'gray.150'}
         mb="18px">
-        Select your ,{' '}
+        Select your,{' '}
         <span style={{color: '#2a72e5'}}>
           Total Supply &amp; Token Funding Price
         </span>

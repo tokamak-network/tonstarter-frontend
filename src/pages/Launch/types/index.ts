@@ -27,7 +27,7 @@ type SimplifiedVaultName =
   | 'WTON-TOS LP Reward'
   | 'TON Staker'
   | 'TOS Staker'
-  | 'TOKEN-TOS LP Reward'
+  | 'Liquidity Incentive'
   | 'Vesting';
 type SimplifiedVaultType =
   | 'Public'

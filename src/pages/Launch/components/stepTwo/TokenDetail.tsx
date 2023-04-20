@@ -1241,6 +1241,35 @@ const PublicTokenDetail = (props: {
     );
   }
 
+  if (firstColData === null && secondColData === null && thirdColData === null) {
+    return (
+      <Grid
+        {...OpenCampaginDesign.border({colorMode})}
+        w={'100%'}
+        // templateColumns="repeat(3, 1fr)"
+        fontSize={13}>
+        <GridItem>
+          <MainTitle
+            leftTitle="Token"
+            rightTitle={`${commafy(
+              selectedVaultDetail?.vaultTokenAllocation,
+            )} ${values.tokenName}`}
+            subTitle={
+              selectedVaultDetail?.vaultTokenAllocation === 0
+                ? '-'
+                : `(${(
+                    (Number(selectedVaultDetail?.vaultTokenAllocation) * 100) /
+                    values.totalTokenAllocation
+                  )
+                    .toString()
+                    .match(/^\d+(?:\.\d{0,2})?/)}%)`
+            }></MainTitle>
+       
+        </GridItem>
+      </Grid>
+    );
+  }
+
   return (
     <Grid
       {...OpenCampaginDesign.border({colorMode})}

@@ -55,7 +55,7 @@ export const schedules = (
 
       return rounds;
 
-    case 'TOKEN-TOS LP Reward':
+    case 'Liquidity Incentive':
       for (let i = 0; i < 6; i++) {
         rounds.push({
           claimRound: i + 1,
