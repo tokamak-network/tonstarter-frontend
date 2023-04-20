@@ -47,7 +47,7 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
         <StepHeader deploySteps={false} title={'Token Economy'}/>
         <Flex pl='35px' mb="40px">
         <StepComponent/>
-         <GraphComponent vaults={values.vaults} totalTokenAlloc={values.totalTokenAllocation} totalSupply={values.totalSupply}/>
+         <GraphComponent />
         </Flex>
       </Flex>
   );
