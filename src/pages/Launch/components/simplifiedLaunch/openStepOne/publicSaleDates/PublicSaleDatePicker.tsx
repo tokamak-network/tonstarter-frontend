@@ -168,7 +168,6 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                       setTime={setEndTime}
                       startTime={startTime}
                       startTimeCap={startTime + 2 * 60}
-                      // startTimeCap={startTime + duration * 86400}
                       label={'End time'}
                       disabled={true}
                       month={monthAndDay?.month}
@@ -178,7 +177,6 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                         <CustomizedClock
                         setTime={setEndTime}
                         startTime={startTime}
-                        // startTimeCap={startTime + 2 * 60}
                       startTimeCap={startTime + duration * 86400}
                       label={'End time'}
                       disabled={true}

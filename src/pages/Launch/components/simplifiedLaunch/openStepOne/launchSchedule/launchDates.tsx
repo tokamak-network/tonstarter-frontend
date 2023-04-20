@@ -20,7 +20,6 @@ import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
-import DateRangePicker from '../publicSaleDates/PublicSaleDatePicker';
 import PublicSaleDatePicker from '../publicSaleDates/PublicSaleDatePicker';
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
