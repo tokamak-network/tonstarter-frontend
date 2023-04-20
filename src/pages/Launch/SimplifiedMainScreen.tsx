@@ -36,10 +36,10 @@ import {
 import OpenStepThreeSimplified from '@Launch/components/simplifiedLaunch/OpenStepThreeSimplified';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
-import {ActionButton} from './components/common/simplifiedUI/ActionButton';
+import {ActionButton} from './components/simplifiedLaunch/openStepOne/ActionButton';
 import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
-import RescheduleModal from './components/common/simplifiedUI/Reschedule';
+import RescheduleModal from './components/simplifiedLaunch/openStepOne/Reschedule';
 
 const StepComponent = (props: {
   step: StepNumber;

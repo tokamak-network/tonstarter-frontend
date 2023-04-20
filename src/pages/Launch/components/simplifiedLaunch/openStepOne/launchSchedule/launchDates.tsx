@@ -14,13 +14,12 @@ import {
 import React, {useState, useEffect} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import SingleCalendarPop from '../../SingleCalendarPop';
+import SingleCalendarPop from '../../../common/SingleCalendarPop';
 import {snapshotGap} from '@Launch/const';
 import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
-import DateRangePicker from '../publicSaleDates/PublicSaleDatePicker';
 import PublicSaleDatePicker from '../publicSaleDates/PublicSaleDatePicker';
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
@@ -122,7 +121,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
       if (isProduction() === false) {
         setPublicSale2End(publicSale2 + 2 * 60);
       } else {
-        setPublicSale2End(publicSale2 + 2 * 86400);
+        setPublicSale2End(publicSale2 + 5 * 86400);
       }
     }
   }, [publicSale2, publicSale1]);
@@ -173,7 +172,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
 
   useEffect(() => {
     if (publicVault.publicRound1End) {
-      setPublicSale2STC(publicVault.publicRound1End + 1);
+      setPublicSale2STC(publicVault.publicRound1End);
     }
   }, [publicVault.publicRound1End]);
 

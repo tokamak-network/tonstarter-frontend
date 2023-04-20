@@ -22,6 +22,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useModal} from 'hooks/useModal';
 import {Link, useRouteMatch} from 'react-router-dom';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import AdvanceConfirmModal from '@Launch/components/simplifiedLaunch/modals/AdvanceConfirmModal'
 
 import {
   selectLaunch,
@@ -51,6 +52,20 @@ const StepHeader = (props: {
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[3];
+  const [switchState, setSwitchState] = useState(false);
+
+  const handleSwitchChange = () => {
+    setSwitchState(!switchState);
+  };
+
+  const handleChange = () => {
+    handleSwitchChange();
+    if(switchState === false) {
+      openAnyModal('Launch_AdvanceSwitch', {
+        from: '/launch/createproject',
+      });
+    }
+  }
 
 
   useEffect(() => {
@@ -169,12 +184,9 @@ const StepHeader = (props: {
             label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
             <Flex>
               <style>{switchStyle}</style>
-
-              <Switch style={{height: '16px'}} onChange={() => {
-                dispatch(setMode({
-                  data: 'advanced'
-                }))
-              }}></Switch>
+              <Switch style={{height: '16px'}} onChange={handleChange}
+              isChecked={switchState}
+              ></Switch>
               <Text
                 fontSize={'13px'}
                 color={colorMode === 'dark' ? '#949494' : '#848c98'}>
@@ -212,6 +224,7 @@ const StepHeader = (props: {
           <Switch />
         </Link>
       </GridItem> */}
+    <AdvanceConfirmModal handleSwitchChange={handleSwitchChange} />
     </Grid>
   );
 };

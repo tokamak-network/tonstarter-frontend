@@ -5,6 +5,7 @@ import './css/CalendarLaunch.css';
 import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
 import calender_back_icon_inactive from 'assets/svgs/calender_back_icon_inactive.svg';
 import moment from 'moment';
+import {isProduction} from '@Launch/utils/checkConstants';
 
 type CalendarProps = {
   setValue: Dispatch<SetStateAction<any>>;
@@ -12,18 +13,32 @@ type CalendarProps = {
   endTime?: number;
   calendarType?: string;
   startTimeCap?: number;
-  maxDate? : Date;
+  duration: number;
 };
 
 const CustomizedCalendar = (prop: CalendarProps) => {
-  const {setValue, startTime, endTime, calendarType, startTimeCap, maxDate} = prop;
+  const {setValue, startTime, endTime, calendarType, startTimeCap, duration} =
+    prop;
   const {colorMode} = useColorMode();
   const [calVal, setCalVal] = useState(0);
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  });
 
-  const setInput = (date: any) => {
-    const dateSelected = Number(new Date(date));
-    setCalVal(dateSelected / 1000);
-    setValue(dateSelected / 1000);
+  // const setInput = (date: any) => {
+  //   const dateSelected = Number(new Date(date));
+  //   setCalVal(dateSelected / 1000);
+  //   setValue(dateSelected / 1000);
+  // }
+
+  const handleStartDateChange = (date: Date) => {
+    const endDate = new Date(date);
+    isProduction() === false
+      ? endDate.setDate(endDate.getDate() + (2 * 60) / 1000)
+      : endDate.setDate(endDate.getDate() + duration);
+    setDateRange({startDate: date, endDate});
+    setValue(date.getTime() / 1000);
   };
   const tilesDisabled = ({date, view}: any) => {
     const now = moment().startOf('day').unix();
@@ -31,7 +46,7 @@ const CustomizedCalendar = (prop: CalendarProps) => {
     const startCap = startTimeCap
       ? moment.unix(startTimeCap).startOf('day').unix()
       : moment().startOf('day').unix();
-   
+
     if (calendarType !== undefined) {
       if (view === 'month') {
         if (formattedDate < startCap) {
@@ -70,8 +85,7 @@ const CustomizedCalendar = (prop: CalendarProps) => {
       if (view === 'month') {
         if (formattedDate < startCap) {
           return true;
-        }
-          else {
+        } else {
           return false;
         }
       } else if (view === 'year') {
@@ -96,6 +110,18 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         }
       }
     }
+  };
+
+  const tileClassName = ({date}: any) => {
+    if (
+      dateRange.startDate &&
+      dateRange.endDate &&
+      date.getTime() >= dateRange.startDate.getTime() &&
+      date.getTime() <= dateRange.endDate.getTime()
+    ) {
+      return 'react-calendar__tile--active';
+    }
+    return '';
   };
 
   const dayStyle =
@@ -161,12 +187,13 @@ const CustomizedCalendar = (prop: CalendarProps) => {
     <Flex alignItems={'center'} display="flex">
       <style>{dayStyle}</style>
       <Calendar
-        onChange={setInput}
+        onChange={handleStartDateChange}
         nextLabel={<img src={calender_Forward_icon_inactive} />}
         prevLabel={<img src={calender_back_icon_inactive} />}
         minDetail={'decade'}
         locale={'en-EN'}
         tileDisabled={tilesDisabled}
+        tileClassName={tileClassName}
       />
     </Flex>
   );

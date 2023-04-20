@@ -37,7 +37,7 @@ export const TokenImageInput: React.FC<TokenImageProps> = (props) => {
       color="#c7d1d8"
       textAlign="center"
       name={'token_image'}
-      border={colorMode === 'light' ? '1px solid #c7d1d8' : ''}
+      border={colorMode === 'light' ? '1px solid #c7d1d8' : '1px solid #323232'}
       borderRadius={40}
       h="80px"
       w="80px"

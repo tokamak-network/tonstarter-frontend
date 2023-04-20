@@ -14,7 +14,7 @@ import CalendarInactiveImgDark from 'assets/launch/calendar-inactive-icon-dark.s
 // import {CustomCalendar} from './CustomCalendar';
 import CustomizedCalendar from './CustomizedCalendar';
 import CustomizedClock from './CustomizedClock';
-import {CustomClock} from '../../CustomClock';
+import {CustomClock} from '../../../common/CustomClock';
 import './css/CalendarLaunch.css';
 import moment from 'moment';
 import {useFormikContext} from 'formik';
@@ -150,6 +150,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                 setValue={setStartTime}
                 startTime={startTime}
                 startTimeCap={startTimeCap}
+                duration={duration}
               />
               {monthAndDay && (
                 <>
@@ -171,16 +172,16 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                       disabled={true}
                       month={monthAndDay?.month}
                       day={monthAndDay?.day}
-                    />
-                  ) : (
-                    <CustomizedClock
-                      setTime={setEndTime}
-                      startTime={startTime}
+                      />
+                      ) : (
+                        <CustomizedClock
+                        setTime={setEndTime}
+                        startTime={startTime}
                       startTimeCap={startTime + duration * 86400}
                       label={'End time'}
                       disabled={true}
                       month={monthAndDay?.month}
-                      day={monthAndDay?.day + 2}
+                      day={monthAndDay?.day + duration}
                     />
                   )}
                 </>
