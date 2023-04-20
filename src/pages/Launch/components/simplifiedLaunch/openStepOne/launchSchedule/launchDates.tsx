@@ -172,7 +172,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
 
   useEffect(() => {
     if (publicVault.publicRound1End) {
-      setPublicSale2STC(publicVault.publicRound1End + 1);
+      setPublicSale2STC(publicVault.publicRound1End);
     }
   }, [publicVault.publicRound1End]);
 
