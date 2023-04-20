@@ -14,7 +14,7 @@ import {
 import React, {useState, useEffect} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import SingleCalendarPop from '../../SingleCalendarPop';
+import SingleCalendarPop from '../../../common/SingleCalendarPop';
 import {snapshotGap} from '@Launch/const';
 import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';

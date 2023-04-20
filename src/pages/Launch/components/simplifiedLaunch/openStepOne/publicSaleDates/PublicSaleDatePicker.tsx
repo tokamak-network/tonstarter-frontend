@@ -14,7 +14,7 @@ import CalendarInactiveImgDark from 'assets/launch/calendar-inactive-icon-dark.s
 // import {CustomCalendar} from './CustomCalendar';
 import CustomizedCalendar from './CustomizedCalendar';
 import CustomizedClock from './CustomizedClock';
-import {CustomClock} from '../../CustomClock';
+import {CustomClock} from '../../../common/CustomClock';
 import './css/CalendarLaunch.css';
 import moment from 'moment';
 import {useFormikContext} from 'formik';

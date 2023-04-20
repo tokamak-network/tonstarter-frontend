@@ -1,4 +1,4 @@
-import {Grid, Box, Flex, Text, GridItem, useColorMode} from '@chakra-ui/react';
+import {Box, Flex, useColorMode} from '@chakra-ui/react';
 import React from 'react';
 
 type ProgressIndicatorProps = {

@@ -3,13 +3,13 @@ import {useEffect} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {testValue} from '@Launch/utils/testValue';
-import {LaunchSchedule} from '../common/simplifiedUI/LaunchSchedule';
-import {TokenImageInput} from '../common/simplifiedUI/TokenImageInput';
-import CustomMarkdownEditor from '../common/simplifiedUI/CustomMarkdownEditor';
+import {LaunchSchedule} from './openStepOne/LaunchSchedule';
+import {TokenImageInput} from './openStepOne/TokenImageInput';
+import CustomMarkdownEditor from './openStepOne/CustomMarkdownEditor';
 import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
-import TextInput from '../common/simplifiedUI/TextInput';
-import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import TextInput from './openStepOne/TextInput';
+import {useAppDispatch} from 'hooks/useRedux';
 import {setProjectStep, saveTempProjectData} from '@Launch/launch.reducer';
 const filedNameList = [
   {title: 'projectName', requirement: true},

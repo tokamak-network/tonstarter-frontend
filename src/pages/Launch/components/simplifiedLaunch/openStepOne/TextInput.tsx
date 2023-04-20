@@ -2,8 +2,7 @@ import {Box, Flex, Input, Select, Text, useColorMode} from '@chakra-ui/react';
 import {Projects} from '@Launch/types';
 import {ErrorMessage, Field, useFormikContext} from 'formik';
 import {useState} from 'react';
-import '../input.css';
-
+import '@Launch/components/common/input.css'
 type TextInputProps = {
   name: string;
   placeHolder: string;
