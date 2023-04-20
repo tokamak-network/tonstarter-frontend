@@ -54,8 +54,9 @@ export const DetailTableContainer = (prop: DetailTableContainerProp) => {
           h="65.5px"
           textAlign="center"
           justifyContent='center'>
-          {isUserTier  && <Text textAlign={'left'} h='22.5px'>Your tier</Text>}
-          <Text mt='-5px' h={'22.5px'}>{title}</Text>
+         
+          <Text  h={'22.5px'}>{title}</Text>
+          {isUserTier  && <Text color='#ffff07' textAlign={'center'} h='22.5px'>Your tier</Text>}
         </Flex>
 
         {data.map((item, index) => {

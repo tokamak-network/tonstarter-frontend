@@ -96,6 +96,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
           tooltip={
             'This button will add the current project token to your MetaMask wallet.'
           }
+          bgBlue={false}
           style={{marginLeft: '12px'}}
           func={() => {
             account &&
@@ -152,6 +153,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
           tooltip={
             'This button will add the current project token to your MetaMask wallet.'
           }
+          bgBlue={false}
           style={{marginLeft: '12px'}}
           func={() => {
             account &&

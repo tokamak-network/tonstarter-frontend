@@ -78,7 +78,6 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   // let tonApproveSameInput = false;
   // if (originTonAllowance === inputTonBalanceWei) tonApproveSameInput = true;
 
-
   if (wtonMode === false) {
     return (
       <Flex alignItems="center" justifyContent="space-between">
@@ -104,7 +103,13 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
           tooltip={
             'This button will add the current project token to your MetaMask wallet.'
           }
-          style={{marginLeft: '12px'}}
+          bgBlue={false}
+          style={{
+            marginLeft: '12px',
+            border: '1px solid #2a72e5',
+            bg: 'transparent',
+            color: '#2a72e5',
+          }}
           func={() => {
             account &&
               library &&
@@ -157,6 +162,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         tooltip={
           'This button will add the current project token to your MetaMask wallet.'
         }
+        bgBlue={false}
         func={() => {
           account &&
             library &&
@@ -242,7 +248,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     tokenExRatio,
   });
 
-  
   const {STATER_STYLE} = theme;
 
   const detailSubTextStyle = {
@@ -406,7 +411,6 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
       </Box>
       <Box d="flex" alignItems="center" mb={'30px'}>
         <Box d="flex" mr={'10px'} alignItems="center" pos="relative">
-          
           <CustomInput
             w={'220px'}
             h={'32px'}
@@ -436,12 +440,11 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             tokenName={wtonMode ? 'WTON' : 'TON'}
             maxBtn={true}
             maxValue={wtonMode ? maxWTONValue : maxValue}></CustomInput>
-             <Flex pos="absolute" left={0} top={10} fontSize={'13px'}>
+          <Flex pos="absolute" left={0} top={10} fontSize={'13px'}>
             <Text color={'gray.400'} mr={'3px'}>
-             Your investment (max) :{' '}
+              Your investment (max) :{' '}
             </Text>
-            <Text mr={'3px'}> {saleAmount} TON </Text>
-           
+            <Text mr={'3px'} color={colorMode==='dark'? '#f3f4f1':'#3d495d'}> {saleAmount} TON </Text>
           </Flex>
           <img
             src={ArrowIcon}
@@ -468,16 +471,15 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             tokenName={tokenSymbol}></CustomInput>
           <Flex pos="absolute" right={0} top={10} fontSize={'13px'}>
             <Text color={'gray.400'} mr={'3px'}>
-             Your Allocation (max) :{' '}
+              Your Allocation (max) :{' '}
             </Text>
             {/* <Text mr={'3px'}> {amountAvailable} </Text> */}
             <Text>{payAmount}</Text>
             <Text>{tokenSymbol}</Text>
           </Flex>
-          
         </Box>
       </Box>
-      <Box d="flex" flexDir="column" w={'495px'} mt='10px'>
+      <Box d="flex" flexDir="column" w={'495px'} mt="10px">
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
           Details
         </Text>

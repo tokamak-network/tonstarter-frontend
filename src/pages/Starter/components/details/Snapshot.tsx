@@ -108,6 +108,7 @@ const Snapshot: React.FC<WhiteListProps> = (prop) => {
           w={'150px'}
           text={'Get sTOS'}
           func={() => {}}
+          bgBlue={true}
           tooltip={'The higher the number of sTOS you have, the higher the tier you will be in, and the more tokens you will be allocated.'}
           style={{marginTop: '10px'}}></CustomButton>
       </Link>

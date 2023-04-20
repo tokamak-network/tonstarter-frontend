@@ -464,6 +464,7 @@ const SimplifiedMainScreen = () => {
                       <ActionButton
                           bgColor="#00c3c4"
                           btnText="List"
+                          marginRight={'224px'}
                           disabled={isSubmitting}
                           color="white.100"
                           hoverColor={'#00b3b4'}
@@ -473,7 +474,7 @@ const SimplifiedMainScreen = () => {
                         <ActionButton
                           bgColor={'blue.500'}
                           btnText="Prev"
-                          marginRight="12px"
+                         
                           disabled={isSubmitting}
                           color={'white.100'}
                           hoverColor={'#2a72e5'}
