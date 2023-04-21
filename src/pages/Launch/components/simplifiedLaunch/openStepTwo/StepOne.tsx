@@ -247,7 +247,7 @@ const StepOne = () => {
             marginLeft: '4px',
             color: colorMode === 'light' ? '#353c48' : '#f3f4f1',
           }}>
-          ${(Number(option) * 0.5).toLocaleString()}
+          ${(values.fundingTarget?(values.fundingTarget* 0.5):0).toLocaleString()}
         </span>
       </Text>
       <Text
