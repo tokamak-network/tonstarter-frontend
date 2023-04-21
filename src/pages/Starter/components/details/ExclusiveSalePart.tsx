@@ -162,6 +162,12 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
         tooltip={
           'This button will add the current project token to your MetaMask wallet.'
         }
+        style={{
+         
+          border: '1px solid #2a72e5',
+          bg: 'transparent',
+          color: '#2a72e5',
+        }}
         bgBlue={false}
         func={() => {
           account &&

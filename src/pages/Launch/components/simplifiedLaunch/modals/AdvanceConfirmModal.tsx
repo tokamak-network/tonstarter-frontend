@@ -85,7 +85,9 @@ import {
                 dispatch(setMode({
                     data: 'advanced'
                   }))
-              }}>
+                  closeModal()
+              }}
+              >
               Go
             </Button>
           </Flex>
