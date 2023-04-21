@@ -87,7 +87,7 @@ const OpenStepThreeSimplified = (props: any) => {
     const {openAnyModal} = useModal();
     useState(() => {
       openAnyModal('Launch_EstimateGas', {
-        from: 'launch/createprojectsimple',
+        from: 'launch/createproject',
       })}
     )
 
