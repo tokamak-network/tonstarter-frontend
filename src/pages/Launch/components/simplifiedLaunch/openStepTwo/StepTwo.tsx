@@ -68,6 +68,8 @@ const StepTwo = () => {
       const krwInUsd = usdPriceObj.rates.USD;
 
       const tonPriceInUsd = tonPriceKRW * krwInUsd;
+      console.log('tonPriceInUsd',tonPriceInUsd);
+      
 
       setTonInDollars(tonPriceInUsd);
       const poolData = await fetchPoolPayload(library);
@@ -117,7 +119,6 @@ const StepTwo = () => {
 
     if (marketCap) {
       const tokenPriceinDollars = fundingPrice;
-
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;      
       const tonPriceInToken = 1 / tokenPriceInTon;      
       setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
@@ -126,7 +127,12 @@ const StepTwo = () => {
       const tosPriceInTokens = 1 / tokenPriceInTos;
       setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
       const hardCap =
-        values.fundingTarget && values.fundingTarget / tonInDollars;
+        values.fundingTarget && (values.fundingTarget*0.5) / tonInDollars;
+        console.log('hardCap',hardCap);
+        
+console.log('values.fundingTarget',values.fundingTarget? values.fundingTarget/tonInDollars:0);
+
+
       setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
       const publicAllocation = parseInt((totalSupply * 0.3).toString());
 

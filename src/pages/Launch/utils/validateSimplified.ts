@@ -21,6 +21,7 @@ function validateSimplifiedFormikValues(
     publicRound2Allocation,
     vaultTokenAllocation,
     stosTier,
+    hardCap,
     claim,
   } = values.vaults[0] as VaultPublic;
 
@@ -98,8 +99,16 @@ function validateSimplifiedFormikValues(
 
   const step2FilledOut = () => {
     const thisFields: any[] = [];
+    
     // Is Funding target, marketCap, or totalSupply undefined?
+const fundingTargetInTon = hardCap;
 
+if (fundingTargetInTon && fundingTargetInTon > vaultTokenAllocation) {
+  fieldsStep2.push(false);
+}
+else {
+  fieldsStep2.push(true);
+}
     // funding target
     if (
       values.fundingTarget === undefined ||

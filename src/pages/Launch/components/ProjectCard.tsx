@@ -52,7 +52,7 @@ const ProjectCard: React.FC<{
       });
       const progressNow =
         (Number(convertedSum?.replaceAll(',', '')) /
-          Number(project.data.vaults[0].hardCap)) *
+          Number(project.data.vaults[0].vaultTokenAllocation)) *
         100;
       setTotalRaise(convertedSum);
       setProgress(Math.ceil(progressNow));
