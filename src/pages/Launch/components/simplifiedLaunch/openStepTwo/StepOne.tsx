@@ -9,6 +9,8 @@ import {
   MenuItem,
   NumberInput,
   NumberInputField,
+  Tooltip,
+  Image,
 } from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
@@ -20,6 +22,7 @@ import {fetchPoolPayload} from '@Launch/utils/fetchPoolPayload';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import truncNumber from 'utils/truncNumber';
 import {schedules} from '@Launch/utils/simplifiedClaimSchedule';
+import warning_circle_icon from 'assets/warning_circle_icon.png';
 
 const StepOne = () => {
   const {colorMode} = useColorMode();
@@ -116,10 +119,11 @@ const StepOne = () => {
   };
 
   return (
-    <Flex flexDir={'column'} h="150px" alignItems={'flex-start'}>
+    <Flex flexDir={'column'} h="162px" alignItems={'flex-start'}>
       <Text
         fontFamily={theme.fonts.roboto}
         fontSize={'14px'}
+        h="19px"
         fontWeight={'bold'}
         color={colorMode === 'dark' ? 'white.100' : 'gray.150'}
         mb="18px">
@@ -232,6 +236,55 @@ const StepOne = () => {
           <></>
         )}
       </Flex>
+      <Text
+        ml="10px"
+        mt="12px"
+        fontSize="12px"
+        color={colorMode === 'light' ? '#7e7e8f' : '#9d9ea5'}>
+        Minimum Funding Amount:
+        <span
+          style={{
+            marginLeft: '4px',
+            color: colorMode === 'light' ? '#353c48' : '#f3f4f1',
+          }}>
+          ${(Number(option) * 0.5).toLocaleString()}
+        </span>
+      </Text>
+      <Text
+        display="flex"
+        w="230px"
+        mb="20px"
+        h="32px"
+        ml="10px"
+        mt="15px"
+        fontSize="12px"
+        color={colorMode === 'light' ? '#7e7e8f' : '#9d9ea5'}>
+        If the raised funds don’t reach this amount, your funding will fail.{' '}
+        <span
+          style={{
+            width: '24px',
+            position: 'relative',
+            top: '19px',
+            right: '57px',
+          }}>
+          {' '}
+          <Tooltip
+            label={
+              'The raised funds will be refunded while all project tokens issued are burned.'
+            }
+            bg="#353c48"
+            hasArrow
+            fontSize="12px"
+            placement="top"
+            w="250px"
+            color={'#e6eaee'}
+            aria-label={'Tooltip'}
+            textAlign={'center'}
+            size={'xs'}>
+            <Image h="14px" w="14px" ml="3px" src={warning_circle_icon} />
+          </Tooltip>
+        </span>
+      </Text>
     </Flex>
   );
 };

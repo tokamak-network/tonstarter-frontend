@@ -21,6 +21,7 @@ const {
 } = DEPLOYED;
 
 const initialObj: Projects['CreateProject'] = {
+  isSimplified: false,
   projectName: undefined,
   description: undefined,
   tokenName: undefined,
@@ -322,7 +323,7 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
     },
     {
       
-      vaultName: 'TOKEN-TOS LP Reward',
+      vaultName: 'Liquidity Incentive',
       vaultType: 'Liquidity Incentive',
       vaultTokenAllocation: 0,
       adminAddress: '',
@@ -334,6 +335,7 @@ const initialSimplifiedObj: Projects['CreateSimplifiedProject'] = {
       isSet: false,
       isDeployedErr: false,
       tokenPair: undefined,
+      poolAddress: undefined,
     },
     {
      

@@ -15,13 +15,14 @@ import store from 'store';
 import {toastWithReceipt} from 'utils';
 import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
-import {useAppSelector} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import {Link, useRouteMatch} from 'react-router-dom';
 import {FC, useEffect, useRef} from 'react';
 import {LoadingComponent} from 'components/Loading';
 import moment from 'moment';
+import {selectLaunch, setMode} from '@Launch/launch.reducer';
+
 import {
   Column,
   useExpanded,
@@ -36,6 +37,8 @@ import {getSigner} from 'utils/contract';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {DEPLOYED, BASE_PROVIDER, OPENSEA} from 'constants/index';
 import * as ProjectTokenABI from 'services/abis/ProjectToken.json';
+import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+
 const {ProjectTokenProxy} = DEPLOYED;
 type MyProjectTableProps = {
   columns: Column[];
@@ -75,7 +78,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
   const {url} = match;
   const {colorMode} = useColorMode();
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
-  
+  const dispatch: any = useAppDispatch();
+
   const theme = useTheme();
   const {account, library, chainId} = useActiveWeb3React();
   const focusTarget = useRef<any>([]);
@@ -298,7 +302,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                     } = cell.row.original;
                     const type = cell.column.id;
                     // {/* TODO: Change this check value to isSimplified later */}
-                    const simplified = project?.isSimplified;                    
+                    const simplified = project?.isSimplified === true;                    
                     // const marketCap = project?.marketCap;
                     return (
                       <chakra.td
@@ -383,7 +387,15 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                                 fontSize={'12px'}
                                 border={'solid 1px #2a72e5'}
                                 _hover={{bg: 'transparent'}}
-                                _active={{bg: 'transparent'}}>
+                                _active={{bg: 'transparent'}} 
+                                
+                                onClick={() => {
+                                  dispatch(
+                                    setMode({
+                                      data: 'simplified',
+                                    }),
+                                  );
+                                }}>
                                 Edit
                               </Button>
                             </Link>) : 
@@ -398,7 +410,14 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                                 fontSize={'12px'}
                                 border={'solid 1px #2a72e5'}
                                 _hover={{bg: 'transparent'}}
-                                _active={{bg: 'transparent'}}>
+                                _active={{bg: 'transparent'}}
+                                onClick={() => {
+                                  dispatch(
+                                    setMode({
+                                      data: 'advanced',
+                                    }),
+                                  );
+                                }}>
                                 Edit
                               </Button>
                             </Link>)}

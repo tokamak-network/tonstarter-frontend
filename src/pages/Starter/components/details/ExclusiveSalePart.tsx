@@ -24,6 +24,7 @@ import {BigNumber} from 'ethers';
 import {useERC20} from '@Starter/hooks/useERC20';
 import useMaxValue from '@Starter/hooks/useMaxValue';
 import useMaxWTONVaule from '@Starter/hooks/useMaxWTONVaule';
+import {addToken} from '@Starter/actions/actions';
 
 type DepositContainerProp = {
   amountAvailable: string;
@@ -31,6 +32,7 @@ type DepositContainerProp = {
   saleContractAddress: string;
   wtonMode: boolean;
   btnDisabled: boolean;
+  saleInfo: SaleInfo;
 };
 
 const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
@@ -40,6 +42,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
     saleContractAddress,
     wtonMode,
     btnDisabled,
+    saleInfo,
   } = prop;
 
   const {account, library} = useActiveWeb3React();
@@ -95,6 +98,27 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
                 tokenType: 'TON',
               });
           }}></CustomButton>
+        <CustomButton
+          text={'Import Token'}
+          tooltip={
+            'This button will add the current project token to your MetaMask wallet.'
+          }
+          bgBlue={false}
+          style={{
+            marginLeft: '12px',
+            border: '1px solid #2a72e5',
+            bg: 'transparent',
+            color: '#2a72e5',
+          }}
+          func={() => {
+            account &&
+              library &&
+              addToken(
+                saleInfo.tokenAddress,
+                library,
+                saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
+              );
+          }}></CustomButton>
         {/* <Box
           d="flex"
           flexDir="column"
@@ -133,6 +157,21 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
             tokenType: 'WTON',
           })
         }></CustomButton>
+      <CustomButton
+        text={'Import Token'}
+        tooltip={
+          'This button will add the current project token to your MetaMask wallet.'
+        }
+        bgBlue={false}
+        func={() => {
+          account &&
+            library &&
+            addToken(
+              saleInfo.tokenAddress,
+              library,
+              saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
+            );
+        }}></CustomButton>
       {/* <Box
         d="flex"
         flexDir="column"
@@ -292,13 +331,15 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           library,
           address: saleContractAddress,
         });
-        
+
         //zena
         setBtnDisabled(
           !whiteListInfo[0] ||
             Number(amountAvailable.replaceAll(',', '')) < tokenExRatio ||
-            (wtonMode && Number(inputTonBalance.replaceAll(',', ''))  > maxWTONValue) ||
-            (!wtonMode && Number(inputTonBalance.replaceAll(',', ''))  > maxValue),
+            (wtonMode &&
+              Number(inputTonBalance.replaceAll(',', '')) > maxWTONValue) ||
+            (!wtonMode &&
+              Number(inputTonBalance.replaceAll(',', '')) > maxValue),
         );
         // setBtnDisabled(false);
         // setAmountAvailable();
@@ -399,6 +440,12 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             tokenName={wtonMode ? 'WTON' : 'TON'}
             maxBtn={true}
             maxValue={wtonMode ? maxWTONValue : maxValue}></CustomInput>
+          <Flex pos="absolute" left={0} top={10} fontSize={'13px'}>
+            <Text color={'gray.400'} mr={'3px'}>
+              Your investment (max) :{' '}
+            </Text>
+            <Text mr={'3px'} color={colorMode==='dark'? '#f3f4f1':'#3d495d'}> {saleAmount} TON </Text>
+          </Flex>
           <img
             src={ArrowIcon}
             alt={'icon_arrow'}
@@ -424,14 +471,15 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             tokenName={tokenSymbol}></CustomInput>
           <Flex pos="absolute" right={0} top={10} fontSize={'13px'}>
             <Text color={'gray.400'} mr={'3px'}>
-              Amount Available :{' '}
+              Your Allocation (max) :{' '}
             </Text>
-            <Text mr={'3px'}> {amountAvailable} </Text>
+            {/* <Text mr={'3px'}> {amountAvailable} </Text> */}
+            <Text>{payAmount}</Text>
             <Text>{tokenSymbol}</Text>
           </Flex>
         </Box>
       </Box>
-      <Box d="flex" flexDir="column" w={'495px'}>
+      <Box d="flex" flexDir="column" w={'495px'} mt="10px">
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 14})}>
           Details
         </Text>
@@ -493,6 +541,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           btnDisabled={btnDisabled}
           inputTonBalance={inputTonBalance}
           saleContractAddress={saleContractAddress}
+          saleInfo={saleInfo}
           wtonMode={wtonMode}></DepositContainer>
         {/* <CustomButton
           w={'100px'}

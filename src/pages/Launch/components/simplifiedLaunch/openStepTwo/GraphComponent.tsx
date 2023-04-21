@@ -13,9 +13,11 @@ import {useEffect, useState} from 'react';
 import {ResponsivePie} from '@nivo/pie';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {simplifiedVaultsAny} from '@Launch/types'
+import { useFormikContext } from 'formik';
+import {Projects} from '@Launch/types';
 
-const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: number | undefined, totalSupply: number | undefined}) => {
-  const {vaults, totalTokenAlloc, totalSupply} = props;
+const GraphComponent = () => {
+  // const {vaults, totalTokenAlloc, totalSupply} = props;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const colors = [
@@ -33,6 +35,8 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
     '#ffed6f',
   ];
   
+  const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
+
  // Allocation % for each vault.
  // initially allocated %
   const [vaultAllocations, setVaultAllocations] = useState({
@@ -49,6 +53,9 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
   };
   
   useEffect(() => {
+
+    const totalTokenAlloc = values.totalTokenAllocation
+    const vaults = values.vaults
     if (totalTokenAlloc) {
       const publicAlloc = calculateAllocated(totalTokenAlloc, vaults[0]?.vaultTokenAllocation? vaults[0].vaultTokenAllocation: 0);
       const teamAlloc = calculateAllocated(totalTokenAlloc, vaults[8]?.vaultTokenAllocation? vaults[8].vaultTokenAllocation: 0 );
@@ -64,8 +71,9 @@ const GraphComponent = (props: {vaults: simplifiedVaultsAny[], totalTokenAlloc: 
         tonStarter: tonStarterAlloc
       });
     }
-  }, [totalTokenAlloc, vaults]);
+  }, [values]);
 
+  
   
   const data = [
     {

@@ -310,8 +310,11 @@ export const StarterDetail = () => {
             w={'1px'}
             bg={colorMode === 'light' ? '#f4f6f8' : '#323232'}
             boxShadow={'0 1px 1px 0 rgba(96, 97, 112, 0.16)'}></Box>
-          {activeStatus === 'snapshot' && (
-            <Snapshot saleInfo={saleInfo}></Snapshot>
+
+          {/* {activeStatus === 'snapshot' && (
+           <Snapshot  userTier={detailInfo?.userTier || 0}
+              saleInfo={saleInfo}
+              detailInfo={detailInfo}></Snapshot>
           )}
           {activeStatus === 'whitelist' && (
             <WhiteList
@@ -327,12 +330,16 @@ export const StarterDetail = () => {
           {activeStatus === 'deposit' && (
             <OpenSaleDeposit saleInfo={saleInfo}></OpenSaleDeposit>
           )}
+           {activeStatus === 'claim' && <Claim saleInfo={saleInfo}></Claim>} */}
+          <ExclusiveSalePart
+            saleInfo={saleInfo}
+            detailInfo={detailInfo}></ExclusiveSalePart>
+
           {/* {projectStatus === 'active' && activeStatus === 'openSale' && (
             <OpenSaleAfterDeposit
               saleInfo={saleInfo}
               activeProjectInfo={activeProjectInfo}></OpenSaleAfterDeposit>
           )} */}
-          {activeStatus === 'claim' && <Claim saleInfo={saleInfo}></Claim>}
         </Flex>
         <Flex>
           {activeStatus && (

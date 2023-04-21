@@ -59,7 +59,7 @@ const StepThreeSteps = (props: {
     'TON Staker',
     'TOS Staker',
     'WTON-TOS LP Reward',
-    'TOKEN-TOS LP Reward',
+    'Liquidity Incentive',
     'Ecosystem',
     'Team',
     'Distribute Tokens',
@@ -69,7 +69,7 @@ const StepThreeSteps = (props: {
     'TON Staker',
     'TOS Staker',
     'WTON-TOS LP Reward',
-    'TOKEN-TOS LP Reward',
+    'Liquidity Incentive',
     'Ecosystem',
     'Team',
   ];

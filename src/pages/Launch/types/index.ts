@@ -27,7 +27,7 @@ type SimplifiedVaultName =
   | 'WTON-TOS LP Reward'
   | 'TON Staker'
   | 'TOS Staker'
-  | 'TOKEN-TOS LP Reward'
+  | 'Liquidity Incentive'
   | 'Vesting';
 type SimplifiedVaultType =
   | 'Public'
@@ -138,6 +138,7 @@ type simplifiedVaultsAny =
 type TokenType = 'A' | 'B' | 'C';
 
 interface ProjectStep1 {
+  isSimplified: boolean;
   projectName: string | undefined;
   description: string | undefined;
   tokenName: string | undefined;

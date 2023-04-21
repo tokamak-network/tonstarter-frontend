@@ -34,7 +34,7 @@ const OpenStepTwo = (props: {
 
   useEffect(() => {
     dispatch(setProjectStep({data:2}))
-    setFieldValue('isSimplified',undefined )
+    setFieldValue('isSimplified',false )
   },[dispatch])
 
   useEffect(() => {

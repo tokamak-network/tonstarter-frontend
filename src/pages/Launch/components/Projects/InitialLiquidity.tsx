@@ -21,7 +21,7 @@ import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityComp
 import * as ERC20 from 'services/abis/erc20ABI(SYMBOL).json';
 import * as UniswapV3FactoryABI from 'services/abis/UniswapV3Factory.json';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
-import { convertToWei} from 'utils/number';
+import {convertToWei} from 'utils/number';
 import {ethers} from 'ethers';
 import store from 'store';
 import {toastWithReceipt} from 'utils';
@@ -34,6 +34,11 @@ import Fraction from 'fraction.js';
 import {addPool} from 'pages/Admin/actions/actions';
 import {ZERO_ADDRESS} from 'constants/misc';
 import moment from 'moment';
+import * as UniswapV3PoolABI from 'services/abis/UniswapV3Pool.json';
+import {useBlockNumber} from 'hooks/useBlock';
+
+const univ3prices = require('@thanpolas/univ3prices');
+
 // var Fraction = require('fraction.js');
 const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 type InitialLiquidity = {
@@ -64,7 +69,7 @@ type Condition3 = {
   project: any;
   isAdmin: boolean;
   InitialLiquidityCompute: any;
-  createdPool:any;
+  createdPool: any;
   mint: Dispatch<SetStateAction<any>>;
 };
 type Condition4 = {
@@ -81,7 +86,7 @@ type Condition4 = {
 export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
+  const {transactionType} = useAppSelector(selectTransactionType);
   const {account, library, chainId} = useActiveWeb3React();
   const [disableButton, setDisableButton] = useState<boolean>(true);
   const [tosBalance, setTosBalance] = useState<string>('');
@@ -92,7 +97,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [createdPool, setCreatedPool] = useState<string>('');
   const [startTime, setStartTime] = useState<number>(0);
-
+  const {blockNumber} = useBlockNumber();
+  const [tosAmnt, setTosAmnt] = useState(0);
   const network = BASE_PROVIDER._network.name;
   const InitialLiquidityCompute = new Contract(
     vault.vaultAddress,
@@ -133,7 +139,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       setCreatedPool(pool === ZERO_ADDRESS ? '' : pool);
       // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
-      console.log(Number(LP));
+
       setLPToken(Number(LP));
     }
     getLPToken();
@@ -154,16 +160,69 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     }
   }, [account, project]);
 
+  useEffect(() => {
+    async function getTosAmount() {
+      if (
+        account === null ||
+        account === undefined ||
+        library === undefined ||
+        createdPool === ''
+      ) {
+        return;
+      }
+
+      const pool = new Contract(createdPool, UniswapV3PoolABI.abi, library);
+      const slot0 = await pool.slot0();
+      // console.log(slot0);
+      const token0 = await pool.token0();
+      const token1 = await pool.token1();
+      // console.log('token0', token0);
+      // console.log('token1', token1);
+      const token0Contract = new Contract(token0, ERC20.abi, library);
+      const token1Contract = new Contract(token1, ERC20.abi, library);
+      const amount0Balance = await token0Contract.balanceOf(vault.vaultAddress);
+      const amount1Balance = await token1Contract.balanceOf(vault.vaultAddress);
+      // console.log('amount0Balance', Number(amount0Balance));
+      // console.log('amount1Balance', Number(amount1Balance));
+      const sqrtRatio = slot0.sqrtPriceX96;
+      const price = univ3prices([18, 18], sqrtRatio).toAuto();
+      // console.log('sqrtRatio', sqrtRatio);
+      // console.log('price', price);
+      let tosAmount = 0;
+      if (TOS_ADDRESS.toLowerCase() === token0.toLowerCase()) {
+        const priceUpdated = price * 1e18;
+        let inToken0Amount = amount1Balance
+          .mul(ethers.BigNumber.from(priceUpdated + ''))
+          .div(ethers.utils.parseEther('1'));
+        inToken0Amount = inToken0Amount;
+        // console.log('amount1Balance', amount1Balance.toString());
+        // console.log('inToken0Amount', inToken0Amount.toString());
+        tosAmount = inToken0Amount;
+      } else {
+        const reversePrice = 1 / (price * 1e18);
+        let inToken1Amount = amount0Balance
+          .mul(ethers.BigNumber.from(reversePrice + ''))
+          .div(ethers.utils.parseEther('1'));
+        inToken1Amount = inToken1Amount;
+        // console.log('amount0Balance', amount0Balance.toString());
+        // console.log('inToken0Amount', inToken1Amount.toString());
+        tosAmount = inToken1Amount;
+      }
+
+      // console.log('tosAmount', tosAmount);
+      setTosAmnt(tosAmount)
+    }
+    getTosAmount();
+  }, [account, createdPool, library, vault.vaultAddress, blockNumber]);
   const mint = async () => {
     if (account === null || account === undefined || library === undefined) {
       return;
     }
     const signer = getSigner(library, account);
     try {
-      const bal = await TOS.balanceOf(vault.vaultAddress);  
-      console.log(vault.vaultAddress);
-          
-      const receipt = await InitialLiquidityCompute.connect(signer).mint(bal);
+      // const bal = await TOS.balanceOf(vault.vaultAddress);
+
+      const receipt = await InitialLiquidityCompute.connect(signer).mint(tosAmnt.toString());
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
@@ -171,7 +230,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       }
     } catch (e) {
       console.log(e);
-      
+
       store.dispatch(setTxPending({tx: false}));
       store.dispatch(
         //@ts-ignore
@@ -421,7 +480,6 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           startTime={startTime}
         />
       )}
-
     </Grid>
   );
 };
@@ -559,7 +617,6 @@ export const Condition2: React.FC<Condition2> = ({
       .toFixed();
   };
   const createPool = async () => {
-    
     if (account === null || account === undefined || library === undefined) {
       return;
     }
@@ -627,35 +684,46 @@ export const Condition2: React.FC<Condition2> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-          isDisabled={pool!==ZERO_ADDRESS &&  startTime > now}
+          isDisabled={pool !== ZERO_ADDRESS && startTime > now}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
             bg: colorMode === 'light' ? '#e9edf1' : '#353535',
             cursor: 'not-allowed',
           }}
-          _hover={pool!==ZERO_ADDRESS &&  startTime > now ? {}:
-            {
-            background: 'transparent',
-            border: 'solid 1px #2a72e5',
-            color: themeDesign.tosFont[colorMode],
-            cursor: 'pointer',
-            width: '152px',
-            whiteSpace: 'normal',
-          }}
-          _focus={pool!==ZERO_ADDRESS &&  startTime > now ? {}:{
-            background: '#2a72e5',
-            border: 'solid 1px #2a72e5',
-            color: '#fff',
-            width: '152px',
-            whiteSpace: 'normal',
-          }}
-          _active={pool!==ZERO_ADDRESS &&  startTime > now ? {}:{
-            background: '#2a72e5',
-            border: 'solid 1px #2a72e5',
-            color: '#fff',
-            width: '152px',
-            whiteSpace: 'normal',
-          }}
+          _hover={
+            pool !== ZERO_ADDRESS && startTime > now
+              ? {}
+              : {
+                  background: 'transparent',
+                  border: 'solid 1px #2a72e5',
+                  color: themeDesign.tosFont[colorMode],
+                  cursor: 'pointer',
+                  width: '152px',
+                  whiteSpace: 'normal',
+                }
+          }
+          _focus={
+            pool !== ZERO_ADDRESS && startTime > now
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                  width: '152px',
+                  whiteSpace: 'normal',
+                }
+          }
+          _active={
+            pool !== ZERO_ADDRESS && startTime > now
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                  width: '152px',
+                  whiteSpace: 'normal',
+                }
+          }
           whiteSpace={'normal'}
           onClick={() => createPool()}>
           Create Pool
@@ -747,7 +815,7 @@ export const Condition3: React.FC<Condition3> = ({
   isAdmin,
   InitialLiquidityCompute,
   mint,
-  createdPool
+  createdPool,
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -788,7 +856,7 @@ export const Condition3: React.FC<Condition3> = ({
           mt={'5px'}
           bg={'#257eee'}
           color={'#ffffff'}
-           isDisabled={createdPool === ZERO_ADDRESS}
+          isDisabled={createdPool === ZERO_ADDRESS}
           // isDisabled={true}
           _disabled={{
             color: colorMode === 'light' ? '#86929d' : '#838383',
@@ -798,7 +866,7 @@ export const Condition3: React.FC<Condition3> = ({
           _hover={{
             background: 'transparent',
             border: 'solid 1px #2a72e5',
-            color: colorMode === 'light'? '#2a72e5':'#2a72e5',
+            color: colorMode === 'light' ? '#2a72e5' : '#2a72e5',
             cursor: 'pointer',
 
             whiteSpace: 'normal',
@@ -1035,7 +1103,7 @@ export const Condition4: React.FC<Condition4> = ({
                 : {
                     background: 'transparent',
                     border: 'solid 1px #2a72e5',
-                    color: colorMode === 'light'? '#2a72e5':'#2a72e5',
+                    color: colorMode === 'light' ? '#2a72e5' : '#2a72e5',
                     cursor: 'pointer',
                     whiteSpace: 'normal',
                   }
@@ -1110,7 +1178,7 @@ export const Condition4: React.FC<Condition4> = ({
                 : {
                     background: 'transparent',
                     border: 'solid 1px #2a72e5',
-                    color: colorMode === 'light'? '#2a72e5':'#2a72e5',
+                    color: colorMode === 'light' ? '#2a72e5' : '#2a72e5',
                     cursor: 'pointer',
                     whiteSpace: 'normal',
                   }

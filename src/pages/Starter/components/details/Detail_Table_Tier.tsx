@@ -240,6 +240,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
                 title={item.title}
                 data={item.data}
                 breakPoint={item.data.length}
+                status={status}
                 isUserTier={
                   index + 1 === detailInfo?.userTier
                 }></DetailTableContainer>
@@ -256,6 +257,7 @@ export const DetailTableTier = (prop: DetailTableTierProp) => {
                 title={item.title}
                 data={item.data}
                 breakPoint={item.data.length}
+                status={status}
                 isUserTier={
                   index + 1 === detailInfo?.userTier
                 }></DetailTableContainer>
