@@ -87,6 +87,8 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
       // setInitialized(true);
 
       const currentRound = await vestingVault.currentRound(); //now round
+      console.log('currentRound',currentRound);
+      
       const nowClaimRound = await vestingVault.nowClaimRound(); //now claim round
       const totalClaimCounts = await vestingVault.totalClaimCounts(); // total rounds
       const totalClaimsAmount = await vestingVault.totalClaimsAmount(); //unit
@@ -108,11 +110,11 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
       setAccTotal(Number(convertNumber({amount: totalAllocatedAmount})));
       setAccRound(Number(convertNumber({amount: totalClaimsAmount})));
       setCompletedRounds(
-        Number(nowClaimRound) === 0 ? 0 : Number(nowClaimRound) - 1,
+        Number(nowClaimRound) === 0 ? 0 : Number(nowClaimRound) ,
       );
       setTotalRounds(Number(totalClaimCounts));
       setCurrentClaimAmount(num ? num : '0');
-      setCurrentRnd(Number(currentRound));
+      setCurrentRnd(Number(currentRound)+1);
     }
     getInfo();
   }, [account, project, vault, library, transactionType, blockNumber]);
@@ -278,7 +280,9 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
                     color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
                     {accRound === 0 || accTotal === 0
                       ? 0
-                      : ((accRound / accTotal) * 100).toLocaleString()}
+                      : ((accRound / accTotal) * 100).toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      })}
                     % claimed
                   </Text>
                 </Flex>

@@ -147,7 +147,7 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
           }
           if (totalRoundNum === roundStart) {
             isEnd = true;
-            roundStart++;
+            // roundStart++;
             break;
           }
           roundStart++;

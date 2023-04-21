@@ -209,7 +209,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         tosAmount = inToken1Amount;
       }
 
-      // console.log('tosAmount', tosAmount);
+      console.log('tosAmount', tosAmount);
       setTosAmnt(tosAmount)
     }
     getTosAmount();
@@ -220,9 +220,12 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     }
     const signer = getSigner(library, account);
     try {
-      // const bal = await TOS.balanceOf(vault.vaultAddress);
-
-      const receipt = await InitialLiquidityCompute.connect(signer).mint(tosAmnt.toString());
+      const bal = await TOS.balanceOf(vault.vaultAddress);
+    const vvv = tosAmnt > bal? bal : tosAmnt.toString()
+    console.log('vvv',vvv);
+      const receipt = await InitialLiquidityCompute.connect(signer).mint(vvv);
+     
+      
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');

@@ -172,7 +172,7 @@ const MobileProjectCard: React.FC<{
             </Text>
             <Text fontWeight={500} fontFamily={'Rajdhani'}>
               {' '}
-              / Minimum Fund Raising Amount
+              / Funding Target
             </Text>
           </Flex>
         </Box>

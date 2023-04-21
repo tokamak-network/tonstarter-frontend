@@ -50,9 +50,12 @@ const ProjectCard: React.FC<{
         amount: sum.toString(),
         localeString: true,
       });
+      console.log(convertedSum);
+      console.log('project.data.vaults[0].vaultTokenAllocation',project.data.vaults[0].vaultTokenAllocation/project.data.salePrice);
+      
       const progressNow =
         (Number(convertedSum?.replaceAll(',', '')) /
-          Number(project.data.vaults[0].vaultTokenAllocation)) *
+          Number(project.data.vaults[0].vaultTokenAllocation/project.data.salePrice)) *
         100;
       setTotalRaise(convertedSum);
       setProgress(Math.ceil(progressNow));
@@ -153,7 +156,7 @@ const ProjectCard: React.FC<{
             }}
             color={colorMode === 'light' ? 'gray.125' : 'gray.475'}>
             <Text fontWeight={600} fontFamily={'Rajdhani'} mr={'2px'}>Current </Text>
-            <Text fontWeight={500}  fontFamily={'Rajdhani'}> / Minimum Fund Raising Amount</Text>
+            <Text fontWeight={500}  fontFamily={'Rajdhani'}> / Funding Target</Text>
           </Flex>
         </Box>
         <Box mb={'30px'}>
