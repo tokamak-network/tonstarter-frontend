@@ -112,14 +112,14 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
   useEffect(() => {
     if (publicSale1) {
       if (isProduction() === false) {
-        setPublicSale1End(publicSale1 + 2 * 60);
+        setPublicSale1End(publicSale1 + 20 * 60);
       } else {
         setPublicSale1End(publicSale1 + 2 * 86400);
       }
     }
     if (publicSale2) {
       if (isProduction() === false) {
-        setPublicSale2End(publicSale2 + 2 * 60);
+        setPublicSale2End(publicSale2 + 20 * 60);
       } else {
         setPublicSale2End(publicSale2 + 5 * 86400);
       }

@@ -25,6 +25,8 @@ import {useERC20} from '@Starter/hooks/useERC20';
 import useMaxValue from '@Starter/hooks/useMaxValue';
 import useMaxWTONVaule from '@Starter/hooks/useMaxWTONVaule';
 import {addToken} from '@Starter/actions/actions';
+import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
+import {useBlockNumber} from 'hooks/useBlock';
 
 type DepositContainerProp = {
   amountAvailable: string;
@@ -33,6 +35,7 @@ type DepositContainerProp = {
   wtonMode: boolean;
   btnDisabled: boolean;
   saleInfo: SaleInfo;
+  passed: boolean;
 };
 
 const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
@@ -43,6 +46,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
     wtonMode,
     btnDisabled,
     saleInfo,
+    passed,
   } = prop;
 
   const {account, library} = useActiveWeb3React();
@@ -83,7 +87,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
       <Flex alignItems="center" justifyContent="space-between">
         <CustomButton
           text={'Acquire'}
-          isDisabled={depositBtnDisabled}
+          isDisabled={depositBtnDisabled || !passed}
           func={() => {
             account &&
               checkBalance(
@@ -163,7 +167,6 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
           'This button will add the current project token to your MetaMask wallet.'
         }
         style={{
-         
           border: '1px solid #2a72e5',
           bg: 'transparent',
           color: '#2a72e5',
@@ -211,15 +214,17 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     tokenSymbol,
     startAddWhiteTime,
     endExclusiveTime,
+    startExclusiveTime,
   } = saleInfo;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {account, library} = useActiveWeb3React();
+  const {blockNumber} = useBlockNumber();
 
   const [inputTonBalance, setInputTonBalance] = useState<string>('0');
   const [convertedTokenBalance, setConvertedTokenBalance] =
     useState<string>('0');
-
+  const [passed, setPassed] = useState(false);
   const [amountAvailable, setAmountAvailable] = useState<string>('-');
   const [userAllocation] = useState<string>(
     detailInfo
@@ -228,6 +233,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
         ]
       : '0',
   );
+
   const [userTierAllocation, setUserTierAllocation] = useState<string>('-');
   const [payAmount, setPayAmount] = useState<string>('-');
   const [saleAmount, setSaleAmount] = useState<string>('-');
@@ -239,6 +245,15 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
     saleContractAddress,
     'PUBLIC_SALE',
   );
+  useEffect(() => {
+    async function getBlocTimestamp() {
+      const provider = BASE_PROVIDER;
+
+      const block = await provider.getBlock(blockNumber);
+      setPassed(block.timestamp > startExclusiveTime);
+    }
+    getBlocTimestamp();
+  }, [blockNumber, startExclusiveTime]);
 
   const {tonBalance, wtonBalance} = useERC20(saleContractAddress);
 
@@ -450,7 +465,15 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             <Text color={'gray.400'} mr={'3px'}>
               Your investment (max) :{' '}
             </Text>
-            <Text mr={'3px'} color={colorMode==='dark'? '#f3f4f1':'#3d495d'}> {saleAmount} TON </Text>
+            <Text
+              mr={'3px'}
+              color={colorMode === 'dark' ? '#f3f4f1' : '#3d495d'}>
+              {' '}
+              {wtonMode
+                ? maxWTONValue.toLocaleString()
+                : maxValue.toLocaleString()}{' '}
+              {wtonMode ? 'WTON' : 'TON'}{' '}
+            </Text>
           </Flex>
           <img
             src={ArrowIcon}
@@ -480,7 +503,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
               Your Allocation (max) :{' '}
             </Text>
             {/* <Text mr={'3px'}> {amountAvailable} </Text> */}
-            <Text>{payAmount}</Text>
+            <Text>{convertedTokenBalance}</Text>
             <Text>{tokenSymbol}</Text>
           </Flex>
         </Box>
@@ -548,6 +571,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           inputTonBalance={inputTonBalance}
           saleContractAddress={saleContractAddress}
           saleInfo={saleInfo}
+          passed={passed}
           wtonMode={wtonMode}></DepositContainer>
         {/* <CustomButton
           w={'100px'}

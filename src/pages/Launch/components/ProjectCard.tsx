@@ -50,8 +50,9 @@ const ProjectCard: React.FC<{
         amount: sum.toString(),
         localeString: true,
       });
-      console.log(convertedSum);
-      console.log('project.data.vaults[0].vaultTokenAllocation',project.data.vaults[0].vaultTokenAllocation/project.data.salePrice);
+      // console.log(project.data.salePrice);
+      // console.log('project.data.vaults[0].vaultTokenAllocation',project.data.vaults[0].vaultTokenAllocation/project.data.salePrice);
+      // console.log(Number(convertedSum?.replaceAll(',', '')),project.data.projectName);
       
       const progressNow =
         (Number(convertedSum?.replaceAll(',', '')) /

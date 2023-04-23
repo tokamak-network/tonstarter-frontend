@@ -58,12 +58,16 @@ const StepTwo = () => {
 
   useEffect(() => {
     async function getTonPrice() {
-      const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
+
+      try {
+
+        const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
         res.json(),
       );
       const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
         res.json(),
       );
+      
       const tonPriceKRW = tonPriceObj[0].trade_price;
       const krwInUsd = usdPriceObj.rates.USD;
 
@@ -77,12 +81,19 @@ const StepTwo = () => {
       const token0Price = Number(poolData.token0Price);
 
       setTonPriceInTos(token0Price);
+      }
+
+      catch(e) {
+        console.log(e);
+        
+      }
+      
       // console.log(token0Price);
       // const tonPriceInTos =
     }
     getTonPrice();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [library, values.vaults[0], option]);
+  }, [library, values, option,fundPrice]);
 
   const buttonStatus = (option: any) => {
     switch (option.totalSupply) {
@@ -96,8 +107,6 @@ const StepTwo = () => {
         } $ ${option.fundingPrice}/ ${values.tokenSymbol}`;
     }
   };
-
-  console.log('values',values);
   
   const handleSelect = (option: any) => {
     setOption({
@@ -128,10 +137,7 @@ const StepTwo = () => {
       setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
       const hardCap =
         values.fundingTarget && (values.fundingTarget*0.5) / tonInDollars;
-        console.log('hardCap',hardCap);
         
-console.log('values.fundingTarget',values.fundingTarget? values.fundingTarget/tonInDollars:0);
-
 
       setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
       const publicAllocation = parseInt((totalSupply * 0.3).toString());

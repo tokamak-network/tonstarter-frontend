@@ -32,6 +32,7 @@ import * as vestingAbi from 'services/abis/VestingPublicFund.json';
 import {TokenImage} from '@Admin/components/TokenImage';
 import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 import {shortenAddress} from 'utils/address';
+import {fetchUsdPriceURL, fetchTonPriceURL} from 'constants/index';
 
 const VestingClaimModal = () => {
   const {data} = useAppSelector(selectModalType);
@@ -40,6 +41,27 @@ const VestingClaimModal = () => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const {handleCloseModal} = useModal();
+  const [tonInDollars, setTonInDollars] = useState(0);
+
+
+  useEffect(() => {
+    async function getTonPrice() {
+      const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
+        res.json(),
+      );
+      const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
+        res.json(),
+      );
+      const tonPriceKRW = tonPriceObj[0].trade_price;
+      const krwInUsd = usdPriceObj.rates.USD;
+
+      const tonPriceInUsd = tonPriceKRW * krwInUsd;
+      console.log(tonPriceInUsd);
+      setTonInDollars(tonPriceInUsd);
+    }
+    getTonPrice();
+  }, []);
+
 
   const VestingVaultContract = useContract(
     data?.data?.vestingVaultAddress,
@@ -154,12 +176,12 @@ const VestingClaimModal = () => {
                       </Text>
                     </Flex>
 
-                    <Text fontSize={20}>{data?.data?.currentClaimAmount}</Text>
+                    <Text fontSize={20}>{data?.data?.currentClaimAmount?data?.data?.currentClaimAmount.toLocaleString():0}</Text>
                   </Box>
                   <Box
                     fontSize={12}
                     color={colorMode === 'light' ? '#808992' : '#9d9ea5'}>
-                    Current Value: $37,546
+                    Current Value: ${(tonInDollars * Number(data?.data?.currentClaimAmount)).toLocaleString()}
                   </Box>
                 </Flex>
                 <Flex

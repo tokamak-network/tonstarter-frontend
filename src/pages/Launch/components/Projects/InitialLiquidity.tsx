@@ -194,7 +194,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         let inToken0Amount = amount1Balance
           .mul(ethers.BigNumber.from(priceUpdated + ''))
           .div(ethers.utils.parseEther('1'));
-        inToken0Amount = inToken0Amount;
+        inToken0Amount = inToken0Amount * 0.9;
         // console.log('amount1Balance', amount1Balance.toString());
         // console.log('inToken0Amount', inToken0Amount.toString());
         tosAmount = inToken0Amount;
@@ -203,7 +203,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         let inToken1Amount = amount0Balance
           .mul(ethers.BigNumber.from(reversePrice + ''))
           .div(ethers.utils.parseEther('1'));
-        inToken1Amount = inToken1Amount;
+        inToken1Amount = inToken1Amount * 0.9;
         // console.log('amount0Balance', amount0Balance.toString());
         // console.log('inToken0Amount', inToken1Amount.toString());
         tosAmount = inToken1Amount;
@@ -222,9 +222,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     try {
       const bal = await TOS.balanceOf(vault.vaultAddress);
     const vvv = tosAmnt > bal? bal : tosAmnt.toString()
-    console.log('vvv',vvv);
       const receipt = await InitialLiquidityCompute.connect(signer).mint(vvv);
-     
+      console.log(vvv);
       
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {

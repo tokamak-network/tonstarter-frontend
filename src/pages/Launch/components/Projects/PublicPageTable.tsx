@@ -18,9 +18,10 @@ type claimData = ClaimRound & {
 };
 type PublicTableProps = {
   claim: ClaimRound[];
+  vesting?: boolean
 };
 export const PublicPageTable = (prop: PublicTableProps) => {
-  const {claim} = prop;
+  const {claim,vesting} = prop;
   const {colorMode} = useColorMode();
   const theme = useTheme();
   //   const vaultsList = publicTableData;
@@ -123,7 +124,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
           fontWeight={'bold'}
           border={themeDesign.border[colorMode]}
           borderRight={'none'}>
-          Allocation
+          Allocation {vesting && '(%)'}
         </Text>
         <Text
           // border={'solid 1px #373737'
@@ -133,7 +134,7 @@ export const PublicPageTable = (prop: PublicTableProps) => {
           textAlign={'center'}
           fontWeight={'bold'}
           border={themeDesign.border[colorMode]}>
-          Accumulated
+          Accumulated {vesting && '(%)'}
         </Text>
       </Flex>
       {tableData.map((data: any, index: number) => {

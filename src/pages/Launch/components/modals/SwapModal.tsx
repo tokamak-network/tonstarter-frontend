@@ -36,6 +36,10 @@ import {useContract} from 'hooks/useContract';
 import {convertToRay, convertToWei} from 'utils/number';
 import * as LibPublicSale from 'services/abis/LibPublicSale.json';
 import {useSwapMax} from '@Launch/hooks/useSwapMax';
+import store from 'store';
+import {setTxPending} from 'store/tx.reducer';
+import {toastWithReceipt} from 'utils';
+
 const SwapModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {pools} = DEPLOYED;
@@ -50,7 +54,7 @@ const SwapModal = () => {
   const PublicVaultContract = useContract(
     data?.data?.publicVaultAddress,
     PublicSaleLogicAbi.abi,
-  );  
+  );
 
   const {WTON_BALANCE, tosAmountOut: basicPrice} = useSwapModal(
     1,
@@ -85,9 +89,8 @@ const SwapModal = () => {
 
   useEffect(() => {
     if (Number(inputAmount.replaceAll(',', '')) !== 0) {
-      
       setMax(maxInput);
-    } else {      
+    } else {
       setMax(maxAmount);
     }
   }, [inputAmount, maxAmount, maxInput]);
@@ -109,24 +112,21 @@ const SwapModal = () => {
       : commafy(result);
   }, [tosAmountOut, basicPrice, inputAmount]);
 
-  const exchangeTonToTos = useCallback(() => {    
-
+  const exchangeTonToTos = useCallback(async () => {
     //https://www.notion.so/onther/PublicSale-Front-interface-b139403abc0f41df9af75559eba87e58
     try {
       if (PublicVaultContract && inputAmount && pools) {
-        
-        
         const inputAmountRay = convertToRay(inputAmount);
-        
+
         const {TOS_WTON_POOL} = pools;
 
-         PublicVaultContract.exchangeWTONtoTOS(
-          inputAmountRay
+        const tx = await PublicVaultContract.exchangeWTONtoTOS(inputAmountRay);
+        store.dispatch(setTxPending({tx: true, data: 'DeployVesting'}));
+        toastWithReceipt(tx, setTxPending, 'Launch');
        
-        );
-      return  handleCloseModal()
+
+        return handleCloseModal();
       }
-      
     } catch (e) {
       console.log(e);
     }
@@ -142,7 +142,7 @@ const SwapModal = () => {
   //     );
   //   }
   // }, [inputAmount, setInputAmount]);
-  
+
   return (
     <Modal
       isOpen={data.modal === 'Launch_Swap' ? true : false}
@@ -186,7 +186,7 @@ const SwapModal = () => {
               h="78px"
               border={
                 colorMode === 'light'
-                  ? '1px solid #d7d9df' 
+                  ? '1px solid #d7d9df'
                   : '1px solid #535353'
               }
               borderRadius="10px"
@@ -208,11 +208,11 @@ const SwapModal = () => {
                 </Text>
                 <NumberInput
                   h="24px"
-                  ml='5px'
+                  ml="5px"
                   max={Number(balance)}
-                  value={ inputAmount}
+                  value={inputAmount}
                   onChange={(value) => {
-                    setInputAmount(value)
+                    setInputAmount(value);
                     // if (
                     //   (value === '0' || value === '00') &&
                     //   value.length <= 2
@@ -375,7 +375,7 @@ const SwapModal = () => {
                   height={'23px'}
                   lineHeight={'27px'}
                   verticalAlign={'bottom'}>
-                  {Number(data?.data?.transferredTon) + Number(inputAmount)} /
+                  {(Number(data?.data?.transferredTon) + Number(inputAmount)).toLocaleString()} /
                   {data?.data?.hardcap} TON
                 </Text>
               </Box>
@@ -418,7 +418,9 @@ const SwapModal = () => {
               cursor: 'not-allowed',
             }}
             color="white"
-            disabled={Number(balance) < Number(inputAmount) || Number(priceImpact)> 10}
+            disabled={
+              Number(balance) < Number(inputAmount) || Number(priceImpact) > 10
+            }
             onClick={() => exchangeTonToTos()}>
             Swap & Send
           </Button>

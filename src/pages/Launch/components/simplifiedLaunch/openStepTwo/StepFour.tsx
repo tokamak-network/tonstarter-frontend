@@ -15,12 +15,11 @@ const StepFour = () => {
   const theme = useTheme();
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
-    const [focus,setFocus] = useState(false)
+  const [focus, setFocus] = useState(false);
 
-  const handleInput = (e: number) => {    
-    setFieldValue('tosPrice',truncNumber(1/e,3))
+  const handleInput = (e: number) => {
+    setFieldValue('tosPrice', truncNumber(1 / e, 3));
   };
-  
 
   const getZeros = (num: number) => {
     const match = num.toString().match(/\.0*(.*)/);
@@ -31,11 +30,10 @@ const StepFour = () => {
     } else {
       return 0;
     }
-  }
-
+  };
 
   return (
-    <Flex flexDir={'column'}  alignItems={'flex-start'} h='150px'>
+    <Flex flexDir={'column'} alignItems={'flex-start'} h="150px">
       {' '}
       <Text
         fontSize={'14px'}
@@ -47,44 +45,60 @@ const StepFour = () => {
         project token and TOS, which is currently set to match the market price,
         as shown below, but you can change it if you wish.
       </Text>
-
-      <Flex fontSize={'14px'}  alignItems={'center'}  color={'#7e8993'} fontWeight={500}>
-      <Text> 1 {values.tokenSymbol} = {(1/values.projectTokenPrice).toLocaleString()}TON = {' '}</Text>
       <Flex
-        h="30px"
-        w="130px"
-        ml={'6px'}
+        fontSize={'14px'}
         alignItems={'center'}
-        borderRadius="4px"
-        bg={ 'transparent'}
-        border={
-          focus? '1px solid #2a72e5':  colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
-       }
-       onFocus={()=> setFocus(true)}
-       onBlur={()=> setFocus(false)}
-        pr="15px"
-        fontSize={'13px'}>
-        <NumberInput>
-          <NumberInputField
-            h="30px"
-            placeholder={values.tosPrice? (1/values.tosPrice).toLocaleString(undefined, {
-              minimumFractionDigits: getZeros(1 / values.tosPrice),
-            }).toString() : '0'}
-            fontSize={'13px'}
-            border="none"
-            pr="5px"
-            textAlign={'right'}
-            _focus={{}}
-            value={values.tosPrice? (1/values.tosPrice): '0'}
-            onChange={(e) => {
-              handleInput(parseInt(e.target.value));
-            }}></NumberInputField>
-        </NumberInput>
-        <Text>TOS</Text>
+        color={'#7e8993'}
+        fontWeight={500}>
+        <Text>
+          {' '}
+          1 {values.tokenSymbol} ={' '}
+          {(1 / values.projectTokenPrice).toLocaleString()}TON ={' '}
+        </Text>
+        <Flex
+          h="30px"
+          w="130px"
+          ml={'6px'}
+          alignItems={'center'}
+          borderRadius="4px"
+          bg={'transparent'}
+          border={
+            focus
+              ? '1px solid #2a72e5'
+              : colorMode === 'dark'
+              ? '1px solid #424242'
+              : '1px solid #dfe4ee'
+          }
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+          pr="15px"
+          fontSize={'13px'}>
+          <NumberInput color={colorMode === 'dark' ? '#f3f4f1' : '#3e495c'}>
+            <NumberInputField
+              h="30px"
+              placeholder={
+                values.tosPrice
+                  ? (1 / values.tosPrice)
+                      .toLocaleString(undefined, {
+                        minimumFractionDigits: getZeros(1 / values.tosPrice),
+                      })
+                      .toString()
+                  : '0'
+              }
+              _placeholder={{color: colorMode === 'dark' ? '#f3f4f1' : '#3e495c'}}
+              fontSize={'13px'}
+              border="none"
+              pr="5px"
+              textAlign={'right'}
+              _focus={{}}
+              value={values.tosPrice ? 1 / values.tosPrice : '0'}
+              onChange={(e) => {
+                handleInput(parseInt(e.target.value));
+              }}></NumberInputField>
+          </NumberInput>
+          <Text color={colorMode === 'dark' ? '#f3f4f1' : '#3e495c'}>TOS</Text>
+        </Flex>
       </Flex>
-      </Flex>
-      
-     
     </Flex>
   );
 };

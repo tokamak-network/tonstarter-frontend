@@ -110,9 +110,17 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     library,
   );
 
-  const sendTONtoVesting = useCallback(() => {
-    if (PublicSaleContract) {
-      return PublicSaleContract.depositWithdraw();
+  const sendTONtoVesting = useCallback(async() => {
+    try {
+      if (PublicSaleContract) {
+
+        const tx = await PublicSaleContract.depositWithdraw();
+        store.dispatch(setTxPending({tx: true, data: 'DeployVesting'}));
+        toastWithReceipt(tx, setTxPending, 'Launch');
+       
+      }
+    } catch (e) {
+      console.log(e);
     }
   }, [PublicSaleContract]);
 
@@ -144,19 +152,19 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         return;
       }
       const hardCapCalc = await PUBLICSALE_CONTRACT.hardcapCalcul();
-      
+
       const adminWithdraw = await PUBLICSALE_CONTRACT.adminWithdraw();
       setFundWithdrew(adminWithdraw);
 
       const wtonBalance = await WTON.balanceOf(vault.vaultAddress);
       const wt = convertNumber({amount: wtonBalance, type: 'ray'});
-      
+
       const hc = convertNumber({amount: hardCapCalc});
-      
+
       setHardcap(Number(hc));
       const isExchangeTOS = await PublicSaleContract.exchangeTOS();
-  
-      const transferred = isExchangeTOS?  Number(hc) - Number(wt) : 0;
+
+      const transferred = isExchangeTOS ? Number(hc) - Number(wt) : 0;
 
       setTransferredTon(transferred);
       const totalExPurchasedAmount =
@@ -177,7 +185,18 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       );
     }
     getHardCap();
-  }, [account, project, vault.vaultAddress, transactionType, blockNumber, library, PUBLICSALE_CONTRACT, PublicSaleContract, WTON, vestingVaultContract]);
+  }, [
+    account,
+    project,
+    vault.vaultAddress,
+    transactionType,
+    blockNumber,
+    library,
+    PUBLICSALE_CONTRACT,
+    PublicSaleContract,
+    WTON,
+    vestingVaultContract,
+  ]);
 
   const sendTOS = async () => {
     if (
@@ -260,7 +279,6 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       dark: '#fff',
     },
   };
-
 
   return (
     <Flex flexDirection={'column'}>
@@ -474,14 +492,13 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 </Link>
               </GridItem>
               <GridItem
-             
                 border={themeDesign.border[colorMode]}
                 borderRight={'none'}
                 borderBottomLeftRadius={'4px'}
                 className={'chart-cell'}
                 pt={'15px'}
                 pb="15px"
-                h={isNaN((transferredTon / hardcap) * 100)? '200px' : '245px'}>
+                h={isNaN((transferredTon / hardcap) * 100) ? '200px' : '245px'}>
                 <Flex flexDir={'column'} w="100%">
                   <Text mb={'12px'} fontSize={'13px'} fontWeight={600}>
                     Fund Initialization
@@ -539,60 +556,73 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             : 'NA'}
                         </Link>
                       </Flex>
-                      {isNaN((transferredTon / hardcap) * 100)?  <Text  textAlign={'right'}
-                          w="100%">N/A</Text>:  <Flex flexDirection='column'>
-                             <Flex w="100%" flexDir={'column'} flexDirection='column'>
-                        <Text
-                          textAlign={'right'}
-                          w="100%"
-                          color={colorMode === 'dark' ? '#9d9ea5' : '#3a495f'}
-                          fontSize="12px"
-                          fontWeight="normal">
-                          {transferredTon.toLocaleString()} /{' '}
-                          
-                          {hardcap.toLocaleString()} TON
+                      {isNaN((transferredTon / hardcap) * 100) ? (
+                        <Text textAlign={'right'} w="100%">
+                          N/A
                         </Text>
+                      ) : (
+                        <Flex flexDirection="column">
+                          <Flex
+                            w="100%"
+                            flexDir={'column'}
+                            flexDirection="column">
+                            <Text
+                              textAlign={'right'}
+                              w="100%"
+                              color={
+                                colorMode === 'dark' ? '#9d9ea5' : '#3a495f'
+                              }
+                              fontSize="12px"
+                              fontWeight="normal">
+                              {transferredTon.toLocaleString()} /{' '}
+                              {hardcap.toLocaleString()} TON
+                            </Text>
 
-                        <Progress
-                          borderRadius={10}
-                          h={'6px'}
-                          bg={colorMode === 'light' ? '#e7edf3' : '#353d48'}
-                          value={isNaN((transferredTon / hardcap) * 100)? 0: (transferredTon / hardcap) * 100}></Progress>
-                      </Flex>
-                      <Button
-                        fontSize={'11px'}
-                        w={'273px'}
-                        h={'25px'}
-                        mr={'2px'}
-                        // isDisabled={transferredTon === hardcap}
-                        _disabled={{
-                          bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-                          color: colorMode === 'light' ? '#86929d' : '#838383',
-                          cursor: 'not-allowed',
-                        }}
-                        mt="12px"
-                        bg={'#257eee'}
-                        color={'#ffffff'}
-                        isDisabled={transferredTon === hardcap}
-                        
-                        onClick={() => {
-                          dispatch(
-                            openModal({
-                              type: 'Launch_Swap',
-                              data: {
-                                publicVaultAddress:
-                                  project.vaults[0].vaultAddress,
-                                transferredTon: transferredTon,
-                                hardcap: hardcap,
-                              },
-                            }),
-                          );
-                        }}
+                            <Progress
+                              borderRadius={10}
+                              h={'6px'}
+                              bg={colorMode === 'light' ? '#e7edf3' : '#353d48'}
+                              value={
+                                isNaN((transferredTon / hardcap) * 100)
+                                  ? 0
+                                  : (transferredTon / hardcap) * 100
+                              }></Progress>
+                          </Flex>
+                          <Button
+                            fontSize={'11px'}
+                            w={'273px'}
+                            h={'25px'}
+                            mr={'2px'}
+                            // isDisabled={transferredTon === hardcap}
+                            _disabled={{
+                              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                              color:
+                                colorMode === 'light' ? '#86929d' : '#838383',
+                              cursor: 'not-allowed',
+                            }}
+                            mt="12px"
+                            bg={'#257eee'}
+                            color={'#ffffff'}
+                            isDisabled={transferredTon === hardcap}
+                            onClick={() => {
+                              dispatch(
+                                openModal({
+                                  type: 'Launch_Swap',
+                                  data: {
+                                    publicVaultAddress:
+                                      project.vaults[0].vaultAddress,
+                                    transferredTon: transferredTon,
+                                    hardcap: hardcap,
+                                  },
+                                }),
+                              );
+                            }}
+                            _hover={{cursor: 'pointer'}}>
+                            Swap & Send
+                          </Button>
+                        </Flex>
+                      )}
 
-                        _hover={{cursor: 'pointer'}}>
-                        Swap & Send
-                      </Button></Flex>}
-                     
                       {/* */}
                       {/*  */}
                     </Flex>
@@ -774,8 +804,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   w={'110px'}
                   textAlign={'right'}>
                   {moment.unix(vault.whitelist).format('YYYY.MM.DD HH:mm:ss')}
-                  <br></br>{' '}
-                  {`~`}{' '}
+                  <br></br> {`~`}{' '}
                   {moment.unix(vault.whitelistEnd).format('MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
@@ -797,8 +826,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   {moment
                     .unix(vault.publicRound1)
                     .format('YYYY.MM.DD HH:mm:ss')}{' '}
-                     <br></br>{' '}
-                  {`~`}{' '}
+                  <br></br> {`~`}{' '}
                   {moment.unix(vault.publicRound1End).format('MM.DD HH:mm:ss')}
                 </Text>
               </GridItem>
@@ -820,7 +848,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                   {moment
                     .unix(vault.publicRound2)
                     .format('YYYY.MM.DD HH:mm:ss')}
-                     <br></br>
+                  <br></br>
                   {`~`}{' '}
                   {moment.unix(vault.publicRound2End).format('MM.DD HH:mm:ss')}
                 </Text>
@@ -839,7 +867,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 mr={'-1px'}
-                h={isNaN((transferredTon / hardcap) * 100)? '200px'  : '245px'}>
+                h={isNaN((transferredTon / hardcap) * 100) ? '200px' : '245px'}>
                 <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
@@ -957,9 +985,11 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                     }
                     borderTop="none"
                     h={
-                       i === 6 - sTosTier.length - 1? isNaN((transferredTon / hardcap) * 100)? '199px' : '244px':''
-                         
-                        
+                      i === 6 - sTosTier.length - 1
+                        ? isNaN((transferredTon / hardcap) * 100)
+                          ? '199px'
+                          : '244px'
+                        : ''
                     }
                     borderLeft={'none'}
                     className={'chart-cell'}>

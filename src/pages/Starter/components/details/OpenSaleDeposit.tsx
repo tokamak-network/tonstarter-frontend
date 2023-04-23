@@ -24,17 +24,19 @@ import {useERC20} from '@Starter/hooks/useERC20';
 import {useModal} from 'hooks/useModal';
 import {addToken} from '@Starter/actions/actions';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
 
 type DepositContainerProp = {
   inputTonBalance: string;
   saleContractAddress: string;
   wtonMode: boolean;
   saleInfo: SaleInfo;
+  passed: boolean
 
 };
 
 const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
-  const {inputTonBalance, saleContractAddress, wtonMode,saleInfo} = prop;
+  const {inputTonBalance, saleContractAddress, wtonMode,saleInfo,passed} = prop;
 
   const {account, library} = useActiveWeb3React();
   const {checkBalance} = useCheckBalance();
@@ -52,6 +54,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   //   saleContractAddress,
   //   inputTonBalance,
   // );
+  console.log(passed);
 
   const [depositBtnDisabled, setDepositBtnDisabled] = useState<boolean>(true);
 
@@ -72,7 +75,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
       <Flex alignItems="center" justifyContent="space-between">
         <CustomButton
           text={'Deposit'}
-          isDisabled={depositBtnDisabled}
+          isDisabled={depositBtnDisabled || !passed}
           func={() => {
             account &&
               checkBalance(
@@ -199,7 +202,7 @@ type OpenSaleDepositProps = {
 
 export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const {saleInfo} = prop;
-  const {tokenExRatio, saleContractAddress, endDepositTime, tokenName} =
+  const {tokenExRatio, saleContractAddress, endDepositTime, tokenName,startDepositTime} =
     saleInfo;
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -214,6 +217,7 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
   const [userAllocate, setUserAllocate] = useState<string>('-');
   const [wtonMode, setWtonMode] = useState<boolean>(false);
   const [progress, setProgress] = useState('-');
+  const [passed, setPassed] = useState(false)
 
   const {blockNumber} = useBlockNumber();
   const {tonBalance, wtonBalance} = useERC20(saleContractAddress);
@@ -228,6 +232,19 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
     saleContractAddress,
     'PUBLIC_SALE',
   );
+
+
+  useEffect(() => {
+    async function getBlocTimestamp() {
+      const provider = BASE_PROVIDER;
+
+      const block = await provider.getBlock(blockNumber);
+            
+      setPassed(block.timestamp > startDepositTime);
+    }
+    getBlocTimestamp();
+  }, [blockNumber, startDepositTime]);
+
 
   //call view funcions
   useEffect(() => {
@@ -522,7 +539,8 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           inputTonBalance={inputBalance}
           saleContractAddress={saleContractAddress}
           saleInfo={saleInfo}
-          wtonMode={wtonMode}></DepositContainer>
+          wtonMode={wtonMode}
+           passed={passed}></DepositContainer>
         {/* {isApprove === true ? (
           <CustomButton
             text={'Deposit'}

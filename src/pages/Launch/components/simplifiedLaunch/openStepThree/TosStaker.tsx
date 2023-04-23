@@ -152,6 +152,8 @@ const TosStaker = (props: {step: string}) => {
     tosVault.isSet,
     hasToken,
   ]);
+  console.log('tx',buttonStatus || tx === true);
+
 
   return (
     <Flex
@@ -351,7 +353,7 @@ const TosStaker = (props: {step: string}) => {
           mr={'12px'}
           _active={buttonStatus ? {} : {bg: '#2a72e5'}}
           _hover={buttonStatus ? {} : {bg: '#2a72e5'}}
-          _disabled={tx !== true?{
+          _disabled={buttonStatus || tx !== true?{
             background: colorMode === 'dark' ? '#353535' : '#e9edf1',
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',

@@ -9,6 +9,7 @@ import {AdminObject} from '@Admin/types';
 import {convertTimeStamp} from 'utils/convertTIme';
 import {useBlockNumber} from 'hooks/useBlock';
 import {useTime} from 'hooks/useTime';
+import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
 
 type WhiteListProps = {
   userTier: Tier;
@@ -33,6 +34,17 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
         ]
       : '0',
   );
+
+  useEffect(()=>{
+     async function getBlocTimestamp() {
+      const provider = BASE_PROVIDER;
+
+      const block = await provider.getBlock(blockNumber);
+      console.log('block',block);
+    }
+
+    getBlocTimestamp()
+  },[blockNumber])
 
   useEffect(() => {
     async function getInfo() {

@@ -266,7 +266,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
             ) : (
               <Flex flexDir={'column'} fontSize={'14px'}>
                 <Flex justifyContent="flex-end">
-                  <Text>{completedRounds} Rounds Completed</Text>
+                  <Text>{completedRounds} {completedRounds <2? 'Round':'Rounds'} Completed</Text>
                   <Text
                     ml="3px"
                     color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
@@ -328,7 +328,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
                 h={'32px'}
                 bg={'#257eee'}
                 color={'#ffffff'}
-                disabled={claimDisabled}
+                // disabled={claimDisabled}
                 _disabled={{
                   color: colorMode === 'light' ? '#86929d' : '#838383',
                   bg: colorMode === 'light' ? '#e9edf1' : '#353535',
@@ -397,7 +397,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
         </Flex>
       </Grid>
       {vault.isDeployed ? (
-        <PublicPageTable claim={vault.claim} />
+        <PublicPageTable claim={vault.claim} vesting={true}/>
       ) : (
         <Flex
           justifyContent={'center'}

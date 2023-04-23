@@ -248,7 +248,7 @@ const VestingRound = () => {
                 </Box>
               </Flex>
               <Text w={'314px'} borderRight={middleStyle.border}>
-                Accumulated
+                Accumulated (%)
               </Text>
             </Flex>
             {
