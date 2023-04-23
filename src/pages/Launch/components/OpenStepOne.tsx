@@ -60,7 +60,6 @@ const OpenStepOne = () => {
     setFieldValue('isSimplified',false )
   },[dispatch])
 
-  console.log('values',values);
   
   
   return (

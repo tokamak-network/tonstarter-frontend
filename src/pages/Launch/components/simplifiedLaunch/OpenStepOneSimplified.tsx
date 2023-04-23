@@ -23,7 +23,7 @@ const OpenStepOneSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const dispatch: any = useAppDispatch();
 
-  const {values, setValues} =
+  const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
 
   useEffect(() => {
@@ -46,8 +46,10 @@ const OpenStepOneSimplified = (props: any) => {
 
   useEffect(() => {
     dispatch(saveTempProjectData({data: values}));
+    setFieldValue('isSimplified',true )
   },[values])
     
+
 
   return (
     <Flex

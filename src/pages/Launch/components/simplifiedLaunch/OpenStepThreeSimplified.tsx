@@ -93,6 +93,8 @@ const OpenStepThreeSimplified = (props: any) => {
 
     useEffect(() => {
       dispatch(setProjectStep({data: 3}));
+      setFieldValue('isSimplified',true )
+
     }, [dispatch]);
   
     

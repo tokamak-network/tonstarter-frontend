@@ -43,12 +43,15 @@ const VestingClaimModal = () => {
   const {handleCloseModal} = useModal();
   const [tonInDollars, setTonInDollars] = useState(0);
 
-
   useEffect(() => {
     async function getTonPrice() {
-      const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
-        res.json(),
-      );
+      const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) => {
+        if (!res.ok) {
+          throw new Error('error in the api');
+        }
+
+        return res.json();
+      });
       const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
         res.json(),
       );
@@ -56,12 +59,11 @@ const VestingClaimModal = () => {
       const krwInUsd = usdPriceObj.rates.USD;
 
       const tonPriceInUsd = tonPriceKRW * krwInUsd;
-      // console.log(tonPriceInUsd);
+      console.log(tonPriceInUsd);
       setTonInDollars(tonPriceInUsd);
     }
     getTonPrice();
   }, []);
-
 
   const VestingVaultContract = useContract(
     data?.data?.vestingVaultAddress,
@@ -73,7 +75,7 @@ const VestingClaimModal = () => {
       return VestingVaultContract.claim();
     }
   }, [VestingVaultContract]);
-  
+
   return (
     <Modal
       isOpen={data.modal === 'Launch_Vesting' ? true : false}
@@ -161,7 +163,7 @@ const VestingClaimModal = () => {
                         w="26px"
                         borderRadius={'50%'}
                         border={'1px solid'}
-                        mr='6px'
+                        mr="6px"
                         borderColor={
                           colorMode === 'dark' ? '#3c3c3c' : '#e7edf3'
                         }>
@@ -176,12 +178,19 @@ const VestingClaimModal = () => {
                       </Text>
                     </Flex>
 
-                    <Text fontSize={20}>{data?.data?.currentClaimAmount?data?.data?.currentClaimAmount.toLocaleString():0}</Text>
+                    <Text fontSize={20}>
+                      {data?.data?.currentClaimAmount
+                        ? data?.data?.currentClaimAmount.toLocaleString()
+                        : 0}
+                    </Text>
                   </Box>
                   <Box
                     fontSize={12}
                     color={colorMode === 'light' ? '#808992' : '#9d9ea5'}>
-                    Current Value: ${(tonInDollars * Number(data?.data?.currentClaimAmount)).toLocaleString()}
+                    Current Value: $
+                    {(
+                      tonInDollars * Number(data?.data?.currentClaimAmount)
+                    ).toLocaleString()}
                   </Box>
                 </Flex>
                 <Flex
@@ -251,7 +260,13 @@ const VestingClaimModal = () => {
                         height={'23px'}
                         lineHeight={'27px'}
                         verticalAlign={'bottom'}>
-                      {(((data?.data?.accRound+Number(data?.data?.currentClaimAmount) )/data?.data?.accTotal)*100).toLocaleString()}%
+                        {(
+                          ((data?.data?.accRound +
+                            Number(data?.data?.currentClaimAmount)) /
+                            data?.data?.accTotal) *
+                          100
+                        ).toLocaleString()}
+                        %
                       </Text>
                     </Flex>
                     <Text
@@ -261,11 +276,19 @@ const VestingClaimModal = () => {
                       lineHeight={'27px'}
                       fontFamily={'Rajdhani'}
                       verticalAlign={'bottom'}>
-                      {data?.data?.accRound && (data?.data?.accRound+Number(data?.data?.currentClaimAmount) ).toLocaleString() } /{data?.data?.accTotal && data?.data?.accTotal.toLocaleString()}TON
+                      {data?.data?.accRound &&
+                        (
+                          data?.data?.accRound +
+                          Number(data?.data?.currentClaimAmount)
+                        ).toLocaleString()}{' '}
+                      /
+                      {data?.data?.accTotal &&
+                        data?.data?.accTotal.toLocaleString()}
+                      TON
                     </Text>
                   </Box>
                   <Progress
-                    value={(data?.data?.accRound/data?.data?.accTotal)*100}
+                    value={(data?.data?.accRound / data?.data?.accTotal) * 100}
                     w={'100%'}
                     h={'6px'}
                     mt={'5px'}

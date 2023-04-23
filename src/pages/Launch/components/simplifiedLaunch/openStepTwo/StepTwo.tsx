@@ -61,11 +61,22 @@ const StepTwo = () => {
 
       try {
 
-        const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) =>
-        res.json(),
+        const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) => {
+          if (!res.ok) {
+            throw new Error('error in the api');
+          }
+  
+          return res.json();
+        }
       );
       const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
-        res.json(),
+      {
+        if (!res.ok) {
+          throw new Error('error in the api');
+        }
+
+        return res.json();
+      }
       );
       
       const tonPriceKRW = tonPriceObj[0].trade_price;
