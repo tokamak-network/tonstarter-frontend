@@ -72,7 +72,7 @@ const StepTwo = () => {
       const krwInUsd = usdPriceObj.rates.USD;
 
       const tonPriceInUsd = tonPriceKRW * krwInUsd;
-      console.log('tonPriceInUsd',tonPriceInUsd);
+      // console.log('tonPriceInUsd',tonPriceInUsd);
       
 
       setTonInDollars(tonPriceInUsd);

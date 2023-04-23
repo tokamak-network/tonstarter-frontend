@@ -669,7 +669,7 @@ async function deploy(
   if (account && library && vaultState === 'Initialize') {
     const signer = getSigner(library, account);
 
-    console.log(selectedVaultDetail);
+    // console.log(selectedVaultDetail);
 
     try {
       switch (vaultType) {

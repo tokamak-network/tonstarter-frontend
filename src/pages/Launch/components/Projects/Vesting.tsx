@@ -87,7 +87,6 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
       // setInitialized(true);
 
       const currentRound = await vestingVault.currentRound(); //now round
-      console.log('currentRound',currentRound);
       
       const nowClaimRound = await vestingVault.nowClaimRound(); //now claim round
       const totalClaimCounts = await vestingVault.totalClaimCounts(); // total rounds
@@ -328,7 +327,7 @@ export const Vesting: FC<Vesting> = ({vault, project, setVaultInfo}) => {
                 h={'32px'}
                 bg={'#257eee'}
                 color={'#ffffff'}
-                // disabled={claimDisabled}
+                disabled={claimDisabled}
                 _disabled={{
                   color: colorMode === 'light' ? '#86929d' : '#838383',
                   bg: colorMode === 'light' ? '#e9edf1' : '#353535',

@@ -112,10 +112,10 @@ const StepOne = () => {
       const tokenPriceinDollars = values.stablePrice;
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
       const tonPriceInToken = 1 / tokenPriceInTon;      
-console.log('tokenPriceInTon',tokenPriceInTon);
+// console.log('tokenPriceInTon',tokenPriceInTon);
 
       const hardCap = (fundingTarget*0.5) / tonInDollars;
-      console.log('hardCap',hardCap);
+      // console.log('hardCap',hardCap);
       
       setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
     }

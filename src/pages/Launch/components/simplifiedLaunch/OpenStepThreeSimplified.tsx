@@ -97,7 +97,7 @@ const OpenStepThreeSimplified = (props: any) => {
   
     
   useEffect(() => {
-    console.log('data changes');
+    // console.log('data changes');
     
     dispatch(saveTempProjectData({data: values}));
   },[values])

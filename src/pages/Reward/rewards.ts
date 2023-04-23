@@ -13,8 +13,8 @@ const getPoolData = async (library: any): Promise<FetchPoolData[] | undefined> =
         .then((result) => result);
       const poolData: PoolData[] = await rewardReq.datas;
       const rewardData = await getRewardData();
-  console.log('poolData',poolData);
-  console.log('rewardData',rewardData);
+  // console.log('poolData',poolData);
+  // console.log('rewardData',rewardData);
   
   
       const poolDatas = Promise.all(

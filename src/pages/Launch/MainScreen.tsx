@@ -123,7 +123,7 @@ const MainScreen = () => {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
 
-console.log('tempProjectData',tempProjectData);
+// console.log('tempProjectData',tempProjectData);
 
 
   return (

@@ -236,7 +236,7 @@ export const Reward = () => {
     },
   );
 
-  console.log('position',position);
+  // console.log('position',position);
   
   const getStatus = (token: any) => {
     if (token) {

@@ -272,7 +272,7 @@ export const MobileLiquidityIncentive: FC<LiquidityIncentive> = ({
           sig: sig,
         };
         const create = await createReward(arg);
-        console.log('create', create);
+        // console.log('create', create);
 
         if (create.success === true) {
           fetchProjectsData();

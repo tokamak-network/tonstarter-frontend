@@ -65,7 +65,7 @@ const DeployToken = () => {
     values;
   const {account} = useActiveWeb3React();
 
-  console.log('values',values,tempProjectData);
+  // console.log('values',values,tempProjectData);
   
   async function deployToken() {
     try {

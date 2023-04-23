@@ -146,7 +146,7 @@ export const MobileFLD = () => {
       const filteredProjects = projects.filter(
         (project: any) => project.isSet === true,
       );
-      console.log(filteredProjects.length);
+      // console.log(filteredProjects.length);
       
       setNumProjects(filteredProjects.length+4)
     }
