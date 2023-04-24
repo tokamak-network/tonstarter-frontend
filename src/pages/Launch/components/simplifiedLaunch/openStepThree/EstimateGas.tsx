@@ -29,7 +29,7 @@ import {BigNumber, ethers} from 'ethers';
 import {convertNumber} from 'utils/number';
 import {CustomTooltip} from 'components/Tooltip';
 
-const EstimateGasModal = () => {
+const EstimateGasModal = ({ethBalance, recommended}: any) => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -39,50 +39,47 @@ const EstimateGasModal = () => {
   const {library, account} = useActiveWeb3React();
   const match = useRouteMatch();
   const {url} = match;
-  const [recommended, setRecommended] = useState(0);
-  const [ethBalance, setEthBalance] = useState(0);
-  // Todo: Set Calculated Eth values
-  // const recommendedEth = 1.5434;
-  // const ownersEth = 2.4456;
+  // const [recommended, setRecommended] = useState(0);
+  // const [ethBalance, setEthBalance] = useState(0);
 
   const closeModal = () => {
     setIsCheck(false);
     handleCloseModal();
   };
 
-  const contract = new Contract(
-    PublicSaleVault,
-    PublicSaleVaultCreateAbi.abi,
-    library,
-  );
+  // const contract = new Contract(
+  //   PublicSaleVault,
+  //   PublicSaleVaultCreateAbi.abi,
+  //   library,
+  // );
 
-  useEffect(() => {
-    async function getGasFee() {
-      if (account) {
-        const feeData = await contract.provider.getFeeData();
+  // useEffect(() => {
+  //   async function getGasFee() {
+  //     if (account) {
+  //       const feeData = await contract.provider.getFeeData();
 
-        const {maxFeePerGas} = feeData;
-        const totalGasEstimate = 2402827 * 10 + 344776 * 9 + 478876;
+  //       const {maxFeePerGas} = feeData;
+  //       const totalGasEstimate = 2402827 * 10 + 344776 * 9 + 478876;
 
-        if (maxFeePerGas) {
-          const gasPrice = BigNumber.from(totalGasEstimate + 42000).mul(
-            maxFeePerGas,
-          );
-          const gas = convertNumber({amount: String(gasPrice)});
-          setRecommended(Number(gas) + 1);
+  //       if (maxFeePerGas) {
+  //         const gasPrice = BigNumber.from(totalGasEstimate + 42000).mul(
+  //           maxFeePerGas,
+  //         );
+  //         const gas = convertNumber({amount: String(gasPrice)});
+  //         setRecommended(Number(gas) + 1);
 
-          const eth0 = await library?.getBalance(account);
-          const balance = convertNumber({amount: String(eth0)});
-          setEthBalance(Number(balance));
-        }
-      }
-    }
-    getGasFee();
-  }, [contract.provider, library]);
+  //         const eth0 = await library?.getBalance(account);
+  //         const balance = convertNumber({amount: String(eth0)});
+  //         setEthBalance(Number(balance));
+  //       }
+  //     }
+  //   }
+  //   getGasFee();
+  // }, [contract.provider, library]);
 
   return (
     <Modal
-      isOpen={data.modal === 'Launch_EstimateGas' ? true : false}
+      isOpen={ethBalance < recommended && data.modal === 'Launch_EstimateGas' ? true : false}
       isCentered
       onClose={() => closeModal()}>
       <ModalOverlay />
@@ -115,7 +112,7 @@ const EstimateGasModal = () => {
             </Text>
           </Flex>
           <Flex flexDir={'column'} w={'100%'} textAlign={'center'}>
-            <Image src={gasIcon} px={'120px'} py={'45px'} />
+            <Image src={gasIcon} px={'120px'} pb={'45px'} pt={'20px'} />
 
             <Flex h={'45px'} pt={'14px'} pb={'13px'} px={'20px'}>
               <Text fontSize={13} mr="5px">
@@ -154,7 +151,7 @@ const EstimateGasModal = () => {
                 </Text>
               </Flex>
             )}
-            <Flex alignSelf={'center'} w={'320px'} mt={'25px'}>
+            <Flex alignSelf={'center'} w={'320px'}>
               <Line />
             </Flex>
 

@@ -2,7 +2,7 @@
 import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
 import StepHeader from './StepHeader';
 import StepThreeSteps from './openStepThree/StepThreeSteps';
-import {useState,useEffect} from 'react';
+import {useState,useEffect, useMemo} from 'react';
 import InitialLiquidity from './openStepThree/InitialLiquidity';
 import Distribute from './openStepThree/Distribute';
 import ProjectToken from './openStepThree/ProjectToken';
@@ -19,9 +19,15 @@ import WtonLP from './openStepThree/WtonLP';
 import ConfirmTokenSimplifiedModal from '../modals/ConfirmTokenSimplified';
 import {useModal} from 'hooks/useModal';
 import EstimateGasModal from './openStepThree/EstimateGas';
-
+import * as PublicSaleVaultCreateAbi from 'services/abis/PublicSaleVaultCreateAbi.json';
+import {DEPLOYED} from 'constants/index';
+import {Contract} from '@ethersproject/contracts';
+import {useActiveWeb3React} from 'hooks/useWeb3';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {selectLaunch,setProjectStep,saveTempProjectData} from '@Launch/launch.reducer';
+import {convertNumber} from 'utils/number';
+import {BigNumber, ethers} from 'ethers';
+
 
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
@@ -77,19 +83,50 @@ const VaultComp = (props: {vaultNum: Number}) => {
 const OpenStepThreeSimplified = (props: any) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
-  const [currentStep, setCurrentStep] = useState(0);
   const dispatch: any = useAppDispatch();
- 
-
+  const {openAnyModal} = useModal();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [ethBalance, setEthBalance] = useState(0);
+  const [recommended, setRecommended] = useState(0);
+  const {PublicSaleVault} = DEPLOYED;
+  const {library, account} = useActiveWeb3React();
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
+ 
 
-    const {openAnyModal} = useModal();
-    useState(() => {
-      openAnyModal('Launch_EstimateGas', {
-        from: 'launch/createproject',
-      })}
-    )
+    const contract = new Contract(
+      PublicSaleVault,
+      PublicSaleVaultCreateAbi.abi,
+      library,
+    );
+  
+    useEffect(() => {
+      async function getGasFee() {
+        if (account) {
+          const feeData = await contract.provider.getFeeData();
+  
+          const {maxFeePerGas} = feeData;
+          const totalGasEstimate = 2402827 * 10 + 344776 * 9 + 478876;
+  
+          if (maxFeePerGas) {
+            const gasPrice = BigNumber.from(totalGasEstimate + 42000).mul(
+              maxFeePerGas,
+            );
+            const gas = convertNumber({amount: String(gasPrice)});
+            setRecommended(Number(gas) + 1);
+  
+            const eth0 = await library?.getBalance(account);
+            const balance = convertNumber({amount: String(eth0)});
+            setEthBalance(Number(balance));
+          }
+        }
+
+        if(ethBalance < recommended && currentStep === 0) {
+          openAnyModal('Launch_EstimateGas', {})
+        }
+      }
+      getGasFee();
+    }, [contract.provider, library, currentStep, ethBalance, recommended]);
 
     useEffect(() => {
       dispatch(setProjectStep({data: 3}));
@@ -125,7 +162,7 @@ const OpenStepThreeSimplified = (props: any) => {
       />
     <VaultComp vaultNum={currentStep}/>
     <ConfirmTokenSimplifiedModal/>
-    <EstimateGasModal />
+    <EstimateGasModal recommended={recommended} ethBalance={ethBalance}/>
     </Flex>
   );
 };
