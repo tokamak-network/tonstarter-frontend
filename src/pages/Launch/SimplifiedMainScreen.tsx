@@ -466,7 +466,7 @@ const SimplifiedMainScreen = () => {
                    {isDeployed && isSaved && step === 2 && (
                     <>
                       {/* onClick to go to list */}
-                      <ActionButton
+                      {/* <ActionButton
                           bgColor="#00c3c4"
                           btnText="List"
                           marginRight={'224px'}
@@ -474,7 +474,15 @@ const SimplifiedMainScreen = () => {
                           color="white.100"
                           hoverColor={'#00b3b4'}
                           onClick={() => navigateToLaunchPage()}
-                        />
+                        /> */}
+                      <ActionButton
+                        bgColor={'#00c3c4'}
+                        btnText="Save"
+                        marginRight={'404px'}
+                        color={'#fff'}
+                        hoverColor={'#00b3b4'}
+                        onClick={() => handleSaveProject(values, account, true)}
+                      />
                       <ButtonGroup>
                         <ActionButton
                           bgColor={'blue.500'}
@@ -569,13 +577,21 @@ const SimplifiedMainScreen = () => {
                   )}
                   {isSaved && isDeployed && step === 3 && (
                     <>
-                      <ActionButton
+                      {/* <ActionButton
                         bgColor={'#00c3c4'}
                         btnText="List"
                         marginRight={'404px'}
                         color={'#fff'}
                         hoverColor={'#00b3b4'}
                         onClick={() => navigateToLaunchPage()}
+                      /> */}
+                      <ActionButton
+                        bgColor={'#00c3c4'}
+                        btnText="Save"
+                        marginRight={'404px'}
+                        color={'#fff'}
+                        hoverColor={'#00b3b4'}
+                        onClick={() => handleSaveProject(values, account, true)}
                       />
                       <ActionButton
                         bgColor={'blue.500'}
