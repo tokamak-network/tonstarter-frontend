@@ -179,6 +179,8 @@ const SimplifiedMainScreen = () => {
   const handleComplete = (values: any, account: string, mode: boolean) => {
     editProject(values, account as string, hashKey || isExist);
     history.push('/launch');
+    // Remove reschedule modal close state from local storage
+    localStorage.removeItem('modalClosed');
   };
 
   if (!account) {
