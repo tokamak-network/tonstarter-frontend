@@ -159,8 +159,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       const wtonBalance = await WTON.balanceOf(vault.vaultAddress);
       const wt = convertNumber({amount: wtonBalance, type: 'ray'});
 
-      const hc = convertNumber({amount: hardCapCalc});
+      // const hc = convertNumber({amount: hardCapCalc});
 
+      const hc = ethers.utils.formatEther(hardCapCalc)
+      
+      console.log('hc',hc);
+      
       setHardcap(Number(hc));
       const isExchangeTOS = await PublicSaleContract.exchangeTOS();
 
