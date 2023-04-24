@@ -41,6 +41,7 @@ import * as WTONABI from 'services/abis/WTON.json';
 import {useContract} from 'hooks/useContract';
 import * as VestingPublicFund from 'services/abis/VestingPublicFund.json';
 import {useBlockNumber} from 'hooks/useBlock';
+import Decimal from 'decimal.js';
 
 type PublicPage = {
   vault: any;
@@ -110,14 +111,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     library,
   );
 
-  const sendTONtoVesting = useCallback(async() => {
+  const sendTONtoVesting = useCallback(async () => {
     try {
       if (PublicSaleContract) {
-
         const tx = await PublicSaleContract.depositWithdraw();
         store.dispatch(setTxPending({tx: true, data: 'DeployVesting'}));
         toastWithReceipt(tx, setTxPending, 'Launch');
-       
       }
     } catch (e) {
       console.log(e);
@@ -153,22 +152,21 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       }
       const hardCapCalc = await PUBLICSALE_CONTRACT.hardcapCalcul();
 
+      const hc = ethers.utils.formatEther(hardCapCalc);
+      const numberParts = hc.split('.');
+
+      const numHc = numberParts.length > 1? Number(numberParts[0] + '.' + numberParts[1].slice(0, 5)) : Number(hc)
+      
       const adminWithdraw = await PUBLICSALE_CONTRACT.adminWithdraw();
       setFundWithdrew(adminWithdraw);
 
       const wtonBalance = await WTON.balanceOf(vault.vaultAddress);
       const wt = convertNumber({amount: wtonBalance, type: 'ray'});
 
-      // const hc = convertNumber({amount: hardCapCalc});
-
-      const hc = ethers.utils.formatEther(hardCapCalc)
-      
-      console.log('hc',hc);
-      
-      setHardcap(Number(hc));
+      setHardcap(numHc);
       const isExchangeTOS = await PublicSaleContract.exchangeTOS();
 
-      const transferred = isExchangeTOS ? Number(hc) - Number(wt) : 0;
+      const transferred = isExchangeTOS ? numHc - Number(wt) : 0;
 
       setTransferredTon(transferred);
       const totalExPurchasedAmount =
