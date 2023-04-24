@@ -184,6 +184,9 @@ const SimplifiedMainScreen = () => {
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
+  if (id !== undefined && projects[id] && projects[id]?.ownerAddress !== account) {
+    return <Redirect to={{pathname: '/launch'}}></Redirect>;
+  }
 
   return (
     <Flex
