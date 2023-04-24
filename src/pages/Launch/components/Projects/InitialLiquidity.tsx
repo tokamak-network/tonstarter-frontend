@@ -176,8 +176,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       // console.log(slot0);
       const token0 = await pool.token0();
       const token1 = await pool.token1();
-      // console.log('token0', token0);
-      // console.log('token1', token1);
+      console.log('token0', token0);
+      console.log('token1', token1);
       const token0Contract = new Contract(token0, ERC20.abi, library);
       const token1Contract = new Contract(token1, ERC20.abi, library);
       const amount0Balance = await token0Contract.balanceOf(vault.vaultAddress);
@@ -188,6 +188,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       const price = univ3prices([18, 18], sqrtRatio).toAuto();
       // console.log('sqrtRatio', sqrtRatio);
       // console.log('price', price);
+      
       let tosAmount = 0;
       if (TOS_ADDRESS.toLowerCase() === token0.toLowerCase()) {
         const priceUpdated = price * 1e18;
@@ -199,9 +200,12 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         // console.log('inToken0Amount', inToken0Amount.toString());
         tosAmount = inToken0Amount;
       } else {
-        const reversePrice = 1 / (price * 1e18);
+        const reversePrice = (1* 1e18) / (price);
+        const reverse = reversePrice.toString().split('.')
+        const reverseString = reverse.shift()
+ 
         let inToken1Amount = amount0Balance
-          .mul(ethers.BigNumber.from(reversePrice + ''))
+          .mul(ethers.BigNumber.from(reverseString + ''))
           .div(ethers.utils.parseEther('1'));
         inToken1Amount = inToken1Amount * 0.9;
         // console.log('amount0Balance', amount0Balance.toString());
@@ -209,7 +213,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         tosAmount = inToken1Amount;
       }
 
-      // console.log('tosAmount', tosAmount);
+      console.log('tosAmount', tosAmount);
       setTosAmnt(tosAmount)
     }
     getTosAmount();
@@ -221,8 +225,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     const signer = getSigner(library, account);
     try {
       const bal = await TOS.balanceOf(vault.vaultAddress);
-    const vvv = tosAmnt > bal? bal : tosAmnt.toString()
-      const receipt = await InitialLiquidityCompute.connect(signer).mint(vvv);
+    const amount = tosAmnt > bal? bal : tosAmnt.toString()
+      const receipt = await InitialLiquidityCompute.connect(signer).mint(amount);
       // console.log(vvv);
       
       store.dispatch(setTxPending({tx: true}));
