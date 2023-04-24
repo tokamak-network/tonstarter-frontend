@@ -29,7 +29,7 @@ import {BigNumber, ethers} from 'ethers';
 import {convertNumber} from 'utils/number';
 import {CustomTooltip} from 'components/Tooltip';
 
-const EstimateGasModal = ({recommended, ethBalance}: any) => {
+const EstimateGasModal = ({ethBalance, recommended}: any) => {
   const {data} = useAppSelector(selectModalType);
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -47,11 +47,11 @@ const EstimateGasModal = ({recommended, ethBalance}: any) => {
     handleCloseModal();
   };
 
-  const contract = new Contract(
-    PublicSaleVault,
-    PublicSaleVaultCreateAbi.abi,
-    library,
-  );
+  // const contract = new Contract(
+  //   PublicSaleVault,
+  //   PublicSaleVaultCreateAbi.abi,
+  //   library,
+  // );
 
   // useEffect(() => {
   //   async function getGasFee() {
@@ -79,7 +79,7 @@ const EstimateGasModal = ({recommended, ethBalance}: any) => {
 
   return (
     <Modal
-      isOpen={data.modal === 'Launch_EstimateGas' ? true : false}
+      isOpen={ethBalance < recommended && data.modal === 'Launch_EstimateGas' ? true : false}
       isCentered
       onClose={() => closeModal()}>
       <ModalOverlay />

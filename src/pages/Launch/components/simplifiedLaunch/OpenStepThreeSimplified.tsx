@@ -120,16 +120,13 @@ const OpenStepThreeSimplified = (props: any) => {
             setEthBalance(Number(balance));
           }
         }
+
+        if(ethBalance < recommended && currentStep === 0) {
+          openAnyModal('Launch_EstimateGas', {})
+        }
       }
       getGasFee();
-    }, [contract.provider, library]);
-
-    useEffect(() => {
-      const isEnoughEth = ethBalance > recommended;
-
-      if(!isEnoughEth && currentStep === 0)
-      openAnyModal('Launch_EstimateGas', {})
-    },[currentStep, ethBalance, recommended])
+    }, [contract.provider, library, currentStep, ethBalance, recommended]);
 
     useEffect(() => {
       dispatch(setProjectStep({data: 3}));
