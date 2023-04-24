@@ -45,6 +45,7 @@ const RescheduleModal = (props: any) => {
       props.onClick();
     }
     closeModal();
+    localStorage.removeItem('modalClosed');
   };
 
   return (
