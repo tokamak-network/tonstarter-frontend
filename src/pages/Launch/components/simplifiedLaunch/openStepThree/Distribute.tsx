@@ -72,7 +72,7 @@ const Distribute = () => {
       }
     }
     fetchContractBalance();
-  }, [ERC20_CONTRACT, values, vaults]);
+  }, [ERC20_CONTRACT, values, vaults,blockNumber]);
 
   const sendTokens = useCallback(async () => {
     if (account && library) {

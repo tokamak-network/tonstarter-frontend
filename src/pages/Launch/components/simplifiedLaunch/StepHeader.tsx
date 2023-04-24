@@ -120,7 +120,7 @@ const StepHeader = (props: {
     }
 
     checkBalance();
-  }, [ERC20_CONTRACT, values]);
+  }, [ERC20_CONTRACT, values,blockNumber]);
 
   const switchStyle =
     colorMode === 'light'
