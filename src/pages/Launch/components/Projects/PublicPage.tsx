@@ -679,7 +679,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                           lineHeight={1}
                           fontWeight="normal"
                           color={colorMode === 'dark' ? '#9d9ea5' : '#3a495f'}>
-                          {vestingAmount} TON
+                          {vestingAmount.toLocaleString()} TON
                         </Text>
                       </Flex>
                       <Button
