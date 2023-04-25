@@ -195,9 +195,10 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
           'Sale Period',
           'Status',
           'Action',
-        ].map((title: string) => {
+        ].map((title: string, index:number) => {
           return (
             <Text
+            key={index}
               borderTop={colorMode === 'dark' ? '1px solid #373737' : ''}
               borderLeft={
                 title === 'Name'
@@ -301,8 +302,10 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       tokenID,
                     } = cell.row.original;
                     const type = cell.column.id;
+                    
+                    
                     // {/* TODO: Change this check value to isSimplified later */}
-                    const simplified = project?.isSimplified === true;                    
+                    const simplified = project?.isSimplified === true;  
                     // const marketCap = project?.marketCap;
                     return (
                       <chakra.td

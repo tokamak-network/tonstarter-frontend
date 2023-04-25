@@ -28,7 +28,6 @@ import {
   selectLaunch,
   setTempHash,
   setCurrentDeployStep,
-  setMode
 } from '@Launch/launch.reducer';
 
 const StepHeader = (props: {
