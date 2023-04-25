@@ -13,6 +13,7 @@ interface LaunchState {
     alreadySelected: number[] | undefined;
     currentDeployStep:number;
     mode: string;
+    twoMinutes: number;
     projectStep: StepNumber;
     tempProjectData: any;
     err: {
@@ -51,6 +52,7 @@ const initialState = {
     hashKey: undefined,
     currentDeployStep:0,
     mode: 'simplified',
+    twoMinutes: 0,
     projectStep: 1,
     tempProjectData: {},
     err: {
@@ -137,6 +139,10 @@ export const launchReducer = createSlice({
     setMode: (state, {payload}:PayloadAction<ProjectPayload>) => {
       state.data.mode = payload.data
     },
+    setTwoMinutes: (state, {payload}:PayloadAction<ProjectPayload>) => {
+      state.data.twoMinutes = payload.data
+    },
+
     setProjectStep: (state, {payload}:PayloadAction<ProjectPayload>) => {
       state.data.projectStep = payload.data
     },
@@ -184,5 +190,6 @@ export const {
   setCurrentDeployStep,
   setMode,
   setProjectStep,
-  saveTempProjectData
+  saveTempProjectData,
+  setTwoMinutes
 } = launchReducer.actions;
