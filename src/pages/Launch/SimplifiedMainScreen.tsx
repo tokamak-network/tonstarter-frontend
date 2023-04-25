@@ -7,6 +7,8 @@ import {
   useTheme,
   useColorMode,
   Tooltip,
+  Switch,
+  Box
 } from '@chakra-ui/react';
 import {
   Dispatch,
@@ -40,6 +42,9 @@ import {ActionButton} from './components/simplifiedLaunch/openStepOne/ActionButt
 import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
 import RescheduleModal from './components/simplifiedLaunch/openStepOne/Reschedule';
+import AdvanceConfirmModal from '@Launch/components/simplifiedLaunch/modals/AdvanceConfirmModal'
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+
 
 const StepComponent = (props: {
   step: StepNumber;
@@ -84,6 +89,21 @@ const SimplifiedMainScreen = () => {
   const {url} = match;
   const isExist = url.split('/')[2];
   const {openAnyModal} = useModal();
+  const [switchState, setSwitchState] = useState(false);
+
+  const handleSwitchChange = () => {
+    setSwitchState(!switchState);
+  };
+
+
+  const handleChange = () => {
+    handleSwitchChange();
+    if(switchState === false) {
+      openAnyModal('Launch_AdvanceSwitch', {
+        from: '/launch/createproject',
+      });
+    }
+  }
 
   const dispatch = useAppDispatch();
   const {
@@ -186,9 +206,41 @@ const SimplifiedMainScreen = () => {
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
-  if (id !== undefined && projects[id] && projects[id]?.ownerAddress !== account) {
+  if (
+    id !== undefined &&
+    projects[id] &&
+    projects[id]?.ownerAddress !== account
+  ) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
+
+  const switchStyle =
+    colorMode === 'light'
+      ? `
+.chakra-switch__track{
+  background: #e9edf1;
+  padding: 1px;
+  height: 15px;
+  width: 36px;
+  margin-right: 6px;
+  padding-bottom: 2px;
+  padding-right: 2px
+}
+
+`
+      : `
+.chakra-switch__track{
+  background: transparent;
+  border: 1px solid #535353;
+  padding: 1px;
+  height: 15px;
+  width: 36px;
+  margin-right: 6px;
+  padding-bottom: 2px;
+  padding-right: 2px
+}
+
+`;
 
   return (
     <Flex
@@ -206,6 +258,36 @@ const SimplifiedMainScreen = () => {
           <Steps
             stepName={['Project & Token', 'Token Economy', 'Deploy']}
             currentStep={step}></Steps>
+            <Flex></Flex>
+            </Flex>
+        <Flex pos="absolute" mt={'247px'} ml={'620px'}>
+        <Tooltip
+          color={theme.colors.white[100]}
+          bg={'#353c48'}
+          p={2}
+          w="254px"
+          textAlign="center"
+          hasArrow
+          borderRadius={3}
+          placement="top"
+          fontSize={'12px'}
+          ml='8px'
+          label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
+          <Flex>
+            <style>{switchStyle}</style>
+            <Switch
+              style={{height: '16px'}}
+              onChange={handleChange}
+              isChecked={switchState}></Switch>
+            <Text
+              fontSize={'13px'}
+              color={colorMode === 'dark' ? '#949494' : '#848c98'}>
+              Advance mode
+            </Text>
+
+            <Image src={tooltipIcon} ml="6px" />
+          </Flex>
+        </Tooltip>
         </Flex>
       </Flex>
       <Formik
@@ -463,7 +545,7 @@ const SimplifiedMainScreen = () => {
                       </ButtonGroup>
                     </>
                   )}
-                   {isDeployed && isSaved && step === 2 && (
+                  {isDeployed && isSaved && step === 2 && (
                     <>
                       {/* onClick to go to list */}
                       {/* <ActionButton
@@ -487,7 +569,6 @@ const SimplifiedMainScreen = () => {
                         <ActionButton
                           bgColor={'blue.500'}
                           btnText="Prev"
-                         
                           disabled={isSubmitting}
                           color={'white.100'}
                           hoverColor={'#2a72e5'}
@@ -610,6 +691,7 @@ const SimplifiedMainScreen = () => {
           );
         }}
       </Formik>
+      <AdvanceConfirmModal handleSwitchChange={handleSwitchChange} />
       <RescheduleModal onClick={navigateToStep1} />
     </Flex>
   );
