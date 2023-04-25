@@ -263,6 +263,12 @@ const StepOne = () => {
           }}>
           ${(values.fundingTarget?(values.fundingTarget* 0.5):0).toLocaleString()}
         </span>
+        <span style={{
+            marginLeft: '4px',
+            fontWeight:'bold',
+            color: colorMode === 'light' ? '#353c48' : '#f3f4f1',
+          }}>({(values.fundingTarget?((values.fundingTarget* 0.5)/tonInDollars):0).toLocaleString()} TON)</span>
+       
       </Text>
       <Text
         display="flex"
