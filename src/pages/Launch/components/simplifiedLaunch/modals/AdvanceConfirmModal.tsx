@@ -73,7 +73,7 @@ import {
             <Flex alignSelf={'center'} w={'320px'}>
               <Line />
             </Flex>
-            <Flex alignItems={'center'} w={'320px'} mx={'100px'} mt={'25px'}>
+            <Flex alignItems={'center'} mx={'18px'}  mt={'25px'}>
             <Button
               w={'150px'}
               h={'38px'}
@@ -89,6 +89,18 @@ import {
               }}
               >
               Go
+            </Button>
+            &nbsp;&nbsp;&nbsp;
+            <Button
+              w={'150px'}
+              h={'38px'}
+              color={'#3e495c'}
+              variant={'outline'}
+              border-radius={'4px'}
+              _hover={{bg: '#fff'}}
+              onClick={() => closeModal()}
+              >
+              Cancel
             </Button>
           </Flex>
           </ModalBody>

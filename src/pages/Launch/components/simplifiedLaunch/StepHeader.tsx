@@ -170,7 +170,7 @@ const StepHeader = (props: {
             color={colorMode === 'dark' ? 'white.100' : 'black.300'}>
             {title}
           </Text>
-          <Tooltip
+          {/* <Tooltip
             color={theme.colors.white[100]}
             bg={'#353c48'}
             p={2}
@@ -196,7 +196,7 @@ const StepHeader = (props: {
               <Image src={tooltipIcon} ml="6px" />
             
             </Flex>
-            </Tooltip>
+            </Tooltip> */}
         </Flex>
       </GridItem>
       {deploySteps && (
