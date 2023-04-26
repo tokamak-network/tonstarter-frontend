@@ -7,6 +7,9 @@ import {
   FormControl,
   FormLabel,
   Switch,
+  Button,
+  Tooltip,
+  Image,
 } from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -27,6 +30,7 @@ import useMaxWTONVaule from '@Starter/hooks/useMaxWTONVaule';
 import {addToken} from '@Starter/actions/actions';
 import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
 import {useBlockNumber} from 'hooks/useBlock';
+import tooltipIconGray from 'assets/svgs/input_question_icon.svg';
 
 type DepositContainerProp = {
   amountAvailable: string;
@@ -102,27 +106,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
                 tokenType: 'TON',
               });
           }}></CustomButton>
-        <CustomButton
-          text={'Import Token'}
-          tooltip={
-            'This button will add the current project token to your MetaMask wallet.'
-          }
-          bgBlue={false}
-          style={{
-            marginLeft: '12px',
-            border: '1px solid #2a72e5',
-            bg: 'transparent',
-            color: '#2a72e5',
-          }}
-          func={() => {
-            account &&
-              library &&
-              addToken(
-                saleInfo.tokenAddress,
-                library,
-                saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
-              );
-          }}></CustomButton>
+
         {/* <Box
           d="flex"
           flexDir="column"
@@ -161,26 +145,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
             tokenType: 'WTON',
           })
         }></CustomButton>
-      <CustomButton
-        text={'Import Token'}
-        tooltip={
-          'This button will add the current project token to your MetaMask wallet.'
-        }
-        style={{
-          border: '1px solid #2a72e5',
-          bg: 'transparent',
-          color: '#2a72e5',
-        }}
-        bgBlue={false}
-        func={() => {
-          account &&
-            library &&
-            addToken(
-              saleInfo.tokenAddress,
-              library,
-              saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
-            );
-        }}></CustomButton>
+
       {/* <Box
         d="flex"
         flexDir="column"
@@ -399,7 +364,7 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
             stringFontSize={'14px'}
             date={endExclusiveTime * 1000}></DetailCounter>
         </Flex>
-        <Flex pr={2.5}>
+        <Flex>
           <FormControl display="flex" alignItems="center">
             <FormLabel htmlFor="email-alerts" mb="0">
               WTON
@@ -414,24 +379,60 @@ export const ExclusiveSalePart: React.FC<ExclusiveSalePartProps> = (prop) => {
           </FormControl>
         </Flex>
       </Box>
-      <Box d="flex">
-        <Text
-          color={colorMode === 'light' ? 'gray.375' : 'white.100'}
-          fontSize={14}
-          letterSpacing={'1.4px'}
-          mb={'10px'}>
-          Acquire Amount
-        </Text>
-        <Text
-          {...STATER_STYLE.subText({colorMode: 'light'})}
-          letterSpacing={'1.4px'}
-          mb={'10px'}>
-          (Your balance :{' '}
-          {wtonMode === false ? `${tonBalance} TON` : `${wtonBalance} WTON`})
-        </Text>
+      <Box d="flex" justifyContent="space-between" alignItems="center" mb="5px">
+        <Flex h="18px">
+          <Text
+            color={colorMode === 'light' ? 'gray.375' : 'white.100'}
+            fontSize={14}
+            letterSpacing={'1.4px'}
+            mb={'10px'}>
+            Acquire Amount
+          </Text>
+          <Text
+            {...STATER_STYLE.subText({colorMode: 'light'})}
+            letterSpacing={'1.4px'}
+            mb={'10px'}>
+            (Your balance :{' '}
+            {wtonMode === false ? `${tonBalance} TON` : `${wtonBalance} WTON`})
+          </Text>
+        </Flex>
+        <Button
+          bg="transparent"
+          height="18px"
+          padding="0px"
+          _hover={{}}
+          fontSize="14px"
+          _focus={{}}
+          _active={{}}
+          color="#0070ed"
+          onClick={() => {
+            account &&
+              library &&
+              addToken(
+                saleInfo.tokenAddress,
+                library,
+                saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
+              );
+          }}>
+          Import Token
+          <Tooltip
+            label={
+              'This button will add the current project token to your MetaMask wallet.'
+            }
+            hasArrow
+            fontSize="12px"
+            placement="top"
+            w="250px"
+            color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+            aria-label={'Tooltip'}
+            textAlign={'center'}
+            size={'xs'}>
+            <Image ml="3px" src={tooltipIconGray} />
+          </Tooltip>
+        </Button>
       </Box>
       <Box d="flex" alignItems="center" mb={'30px'}>
-        <Box d="flex" mr={'10px'} alignItems="center" pos="relative">
+        <Box d="flex" alignItems="center" pos="relative">
           <CustomInput
             w={'220px'}
             h={'32px'}
