@@ -79,7 +79,7 @@ const MAINNET_DEPLOYED = {
   DOCPool_Address: '0x369bca127b8858108536b71528ab3befa1deb6fc',
   StakeTonControl_ADDRESS: '0xacdded49ac67ba9c87b1bbc5cb248b1bd7dc0f19',
   LockTOSDividend_ADDRESS: '0x17332F84Cc0bbaD551Cd16675F406A0a2c55E28C',
-  LockTOSProxy_ADDRESS: '',
+  LockTOSProxy_ADDRESS: '0x17332f84cc0bbad551cd16675f406a0a2c55e28c',
   DividendPool_ADDRESS: '',
   DividendPoolProxy_ADDRESS: '',
   PublicSale_ADDRESS: '0xD9822E155c36Fc4E8CB396444096FffE1560769C',
