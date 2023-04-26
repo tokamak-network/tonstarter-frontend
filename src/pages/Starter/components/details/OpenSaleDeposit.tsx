@@ -6,7 +6,7 @@ import {
   Text,
   FormControl,
   FormLabel,
-  Switch, Tooltip, Image
+  Switch, Tooltip, Image, Button
 } from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
@@ -25,6 +25,7 @@ import {useModal} from 'hooks/useModal';
 import {addToken} from '@Starter/actions/actions';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import {DEPLOYED, BASE_PROVIDER} from 'constants/index';
+import tooltipIconGray from 'assets/svgs/input_question_icon.svg';
 
 type DepositContainerProp = {
   inputTonBalance: string;
@@ -94,28 +95,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
                   }),
               });
           }}></CustomButton>
-           <CustomButton
-          text={'Import Token'}
-          tooltip={
-            'This button will add the current project token to your MetaMask wallet.'
-          }
-
-          bgBlue={false}
-          style={{
-            marginLeft: '12px',
-            border: '1px solid #2a72e5',
-            bg: 'transparent',
-            color: '#2a72e5',
-          }}
-          func={() => {
-            account &&
-              library &&
-              addToken(
-                saleInfo.tokenAddress,
-                library,
-                saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
-              );
-          }}></CustomButton>
+           
         {/* <Box
           d="flex"
           flexDir="column"
@@ -157,27 +137,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
               }),
           })
         }></CustomButton>
-         <CustomButton
-          text={'Import Token'}
-          tooltip={
-            'This button will add the current project token to your MetaMask wallet.'
-          }
-          bgBlue={false}
-          style={{
-            marginLeft: '12px',
-            border: '1px solid #2a72e5',
-            bg: 'transparent',
-            color: '#2a72e5',
-          }}
-          func={() => {
-            account &&
-              library &&
-              addToken(
-                saleInfo.tokenAddress,
-                library,
-                saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
-              );
-          }}></CustomButton>
+         
       {/* <Box
         d="flex"
         flexDir="column"
@@ -377,12 +337,53 @@ export const OpenSaleDeposit: React.FC<OpenSaleDepositProps> = (prop) => {
           </FormControl>
         </Flex>
       </Box>
+      <Flex h='18px' alignItems='center'  mb={'10px'}>
       <Text
+      h='18px'
         {...STATER_STYLE.subText({colorMode})}
         letterSpacing={'1.4px'}
-        mb={'10px'}>
+        mr='12px'
+        >
         Deposited Amount
       </Text>
+      <Button
+      alignItems='end'
+      mt='2px'
+          bg="transparent"
+          height="18px"
+          padding="0px"
+          _hover={{}}
+          fontSize="14px"
+          _focus={{}}
+          _active={{}}
+          color="#0070ed"
+          onClick={() => {
+            account &&
+              library &&
+              addToken(
+                saleInfo.tokenAddress,
+                library,
+                saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
+              );
+          }}>
+          Import Token
+          <Tooltip
+            label={
+              'This button will add the current project token to your MetaMask wallet.'
+            }
+            hasArrow
+            fontSize="12px"
+            placement="top"
+            w="250px"
+            color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+            aria-label={'Tooltip'}
+            textAlign={'center'}
+            size={'xs'}>
+            <Image ml="3px" src={tooltipIconGray} mb='2px' />
+          </Tooltip>
+        </Button>
+      </Flex>
+      
       <Box d="flex" alignItems="center" mb={'20px'}>
         <Box mr={'10px'}>
           <CustomInput

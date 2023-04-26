@@ -22,7 +22,7 @@ import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {useModal} from 'hooks/useModal';
 import {Link, useRouteMatch} from 'react-router-dom';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import AdvanceConfirmModal from '@Launch/components/simplifiedLaunch/modals/AdvanceConfirmModal'
+import AdvanceConfirmModal from '@Launch/components/modals/AdvanceConfirmModal'
 
 import {
   selectLaunch,

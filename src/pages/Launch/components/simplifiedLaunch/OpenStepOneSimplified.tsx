@@ -1,5 +1,5 @@
 import {Flex, Box, Grid, GridItem, Text, useColorMode} from '@chakra-ui/react';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {testValue} from '@Launch/utils/testValue';
@@ -10,7 +10,10 @@ import validateSimplifiedFormikValues from '@Launch/utils/validateSimplified';
 import StepHeader from './StepHeader';
 import TextInput from './openStepOne/TextInput';
 import {useAppDispatch} from 'hooks/useRedux';
-import {setProjectStep, saveTempProjectData} from '@Launch/launch.reducer';
+import {setProjectStep, saveTempProjectData,selectLaunch} from '@Launch/launch.reducer';
+import store from 'store';
+import { useAppSelector} from 'hooks/useRedux';
+
 const filedNameList = [
   {title: 'projectName', requirement: true},
   {title: 'tokenName', requirement: true},
@@ -22,6 +25,11 @@ const OpenStepOneSimplified = (props: any) => {
   const {step, setDisableForStep1} = props;
   const {colorMode} = useColorMode();
   const dispatch: any = useAppDispatch();
+  const starterData = store.getState().starters.data;
+  const [listed, setListed] = useState(false);
+  const {
+    data: {projects, hashKey, projectStep},
+  } = useAppSelector(selectLaunch);
 
   const {values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
@@ -49,6 +57,12 @@ const OpenStepOneSimplified = (props: any) => {
     setFieldValue('isSimplified',true )
   },[values])
     
+
+useEffect(() => {
+  const inStarter = starterData.rawData.some((el) => el.projectKey === hashKey);
+  setListed(inStarter)
+  
+},[hashKey, starterData.rawData])
 
 
   return (
@@ -80,7 +94,7 @@ const OpenStepOneSimplified = (props: any) => {
                 return (
                   <Grid w={'212px'}   key={index}>
                     <TextInput
-                  
+                  disabled={values.isTokenDeployed}
                       name={fieldName.title}
                       placeHolder={`input ${fieldName.title}`}
                       key={fieldName.title}
@@ -93,6 +107,7 @@ const OpenStepOneSimplified = (props: any) => {
                   <Grid templateColumns="repeat(2, 1fr)"   key={index}>
                     <Box w={'212px'}>
                       <TextInput
+                        disabled={false}
                         name={fieldName.title}
                         placeHolder={`input ${fieldName.title}`}
                         key={fieldName.title}></TextInput>
@@ -106,6 +121,7 @@ const OpenStepOneSimplified = (props: any) => {
               return (
                 <GridItem w={'327px'}   key={index}>
                   <TextInput
+                    disabled={fieldName.title === 'projectName'?listed: values.isTokenDeployed}
                     name={fieldName.title}
                     placeHolder={`input ${fieldName.title}`}
                     key={fieldName.title}

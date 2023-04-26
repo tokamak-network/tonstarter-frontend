@@ -9,6 +9,7 @@ type TextInputProps = {
   nameDisplay?: boolean;
   inputStyle?: {};
   requirement?: boolean;
+  disabled: boolean
 };
 
 const InputComponentStyle = {
@@ -41,7 +42,7 @@ const getPlaceHolder = (name: string) => {
 };
 
 const TextInput: React.FC<TextInputProps> = (props) => {
-  const {name, nameDisplay, inputStyle, requirement} = props;
+  const {name, nameDisplay, inputStyle, requirement,disabled} = props;
   const {errors, values, setFieldValue} =
     useFormikContext<Projects['CreateSimplifiedProject']>();
   const {colorMode} = useColorMode();
@@ -97,6 +98,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
                   ? 'input-light'
                   : 'input-dark'
               }
+              isDisabled={disabled}
               borderRadius={4}
               autocomplete="off"
               maxLength={getMaxLength(name)}
@@ -105,6 +107,16 @@ const TextInput: React.FC<TextInputProps> = (props) => {
               id={name}
               h={'32px'}
               _focus={{}}
+              _disabled={{
+                bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+                color: colorMode === 'light' ? '#8f96a1' : '#484848',
+                cursor: 'not-allowed',
+                border:
+                  colorMode === 'light'
+                    ? '1px solid #dfe4ee'
+                    : '1px solid #323232',
+                   
+              }}
               placeholder={`${getPlaceHolder(titleTrimed)}`}
               {...inputStyle}></Input>
           );

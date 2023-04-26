@@ -36,7 +36,8 @@ type LaunchModal =
   | 'Launch_EstimateGas'
   | 'Reschedule'
   | 'Launch_Warning'
-  | 'Launch_AdvanceSwitch';
+  | 'Launch_AdvanceSwitch'
+  | 'Launch_ListConfirm';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search' | 'information' | 'confirmMulticall';

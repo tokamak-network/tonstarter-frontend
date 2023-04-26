@@ -57,9 +57,9 @@ const PastProjectContainer: React.FC<{
       const roundOneTarget = await PUBLICSALE_CONTRACT?.totalExpectSaleAmount();
       const roundTwoTarget =
         await PUBLICSALE_CONTRACT?.totalExpectOpenSaleAmount();
-console.log('roundOneTarget',Number(roundOneTarget));
-console.log('roundTwoTarget',Number(roundTwoTarget));
-console.log('/////////');
+// console.log('roundOneTarget',Number(roundOneTarget));
+// console.log('roundTwoTarget',Number(roundTwoTarget));
+// console.log('/////////');
 
       const sumTarget = BigNumber.from(roundOneTarget).add(roundTwoTarget);
       const convertedSumTarget = convertNumber({
