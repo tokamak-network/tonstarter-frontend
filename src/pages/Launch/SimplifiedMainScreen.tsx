@@ -560,7 +560,7 @@ const SimplifiedMainScreen = () => {
                       <ActionButton
                         bgColor={'#00c3c4'}
                         btnText="Save"
-                        marginRight={'404px'}
+                        marginRight={'232px'}
                         color={'#fff'}
                         hoverColor={'#00b3b4'}
                         onClick={() => handleSaveProject(values, account, true)}
