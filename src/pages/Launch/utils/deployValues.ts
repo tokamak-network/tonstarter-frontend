@@ -816,7 +816,7 @@ async function deploy(
             publicRound1AllocationWei,
             publicRound2AllocationWei,
             100,
-            (values.projectTokenPrice as number) * 100,
+            parseInt(((values.projectTokenPrice as number) * 100).toString()),
             hardCapWei,
             PublicVaultData.tokenAllocationForLiquidity as number,
           ];
