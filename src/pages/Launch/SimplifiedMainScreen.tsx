@@ -416,7 +416,7 @@ const SimplifiedMainScreen = () => {
                           }
                           btnText="Save"
                           disabled={isSubmitting}
-                          marginRight={'224px'}
+                          marginRight={'232px'}
                           color={isDisable ? '#86929d' : '#000'}
                           onClick={() =>
                             handleSaveProject(values, account, true)
@@ -492,7 +492,7 @@ const SimplifiedMainScreen = () => {
                         <ActionButton
                           bgColor={'blue.500'}
                           btnText="Prev"
-                          marginRight="12px"
+                          marginRight="4px"
                           disabled={isSubmitting}
                           color={'white.100'}
                           hoverColor={'#2a72e5'}
@@ -516,7 +516,7 @@ const SimplifiedMainScreen = () => {
                         bgColor="#00c3c4"
                         btnText="Save"
                         disabled={isSubmitting}
-                        marginRight={'224px'}
+                        marginRight={'232px'}
                         color="white.100"
                         onClick={() => handleSaveProject(values, account, true)}
                       />
@@ -524,7 +524,7 @@ const SimplifiedMainScreen = () => {
                         <ActionButton
                           bgColor={'blue.500'}
                           btnText="Prev"
-                          marginRight="12px"
+                          marginRight="4px"
                           disabled={isSubmitting}
                           color={'white.100'}
                           hoverColor={'#2a72e5'}
@@ -606,7 +606,7 @@ const SimplifiedMainScreen = () => {
                         <ActionButton
                           bgColor={'blue.500'}
                           btnText="Prev"
-                          marginRight="12px"
+                          marginRight="4px"
                           disabled={isSubmitting}
                           color={'white.100'}
                           hoverColor={'#2a72e5'}
@@ -639,7 +639,7 @@ const SimplifiedMainScreen = () => {
                         <ActionButton
                           bgColor={'blue.500'}
                           btnText="Prev"
-                          marginRight="12px"
+                          marginRight="4px"
                           disabled={isSubmitting}
                           color={'white.100'}
                           hoverColor={'#2a72e5'}
@@ -677,7 +677,6 @@ const SimplifiedMainScreen = () => {
                       <ActionButton
                         bgColor={'blue.500'}
                         btnText="Prev"
-                        marginRight="12px"
                         disabled={isSubmitting}
                         color={'white.100'}
                         hoverColor={'#2a72e5'}
