@@ -95,7 +95,7 @@ const ListConfirm = () => {
               w={'150px'}
               h={'38px'}
               color={'#fff'}
-              fontSize='14px'
+              fontSize='13px'
               border-radius={'4px'}
               _hover={{bg: 'blue.100'}}
               bg={'#257eee'}
@@ -103,7 +103,7 @@ const ListConfirm = () => {
                 data.data.func()
                 closeModal();
               }}>
-              Listing
+              List on TONStarter
             </Button>
             &nbsp;&nbsp;&nbsp;
             <Button

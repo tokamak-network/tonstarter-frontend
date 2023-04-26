@@ -377,7 +377,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                             w={'312px'}
                             justifyContent={'center'}
                             gap={'10px'}>
-                            <Button
+                            {/* <Button
                               w={'90px'}
                               h={'40px'}
                               mx={'5px'}
@@ -400,7 +400,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                                 // saveToAdmin(project, key)
                               }}>
                               List on TONStarter
-                            </Button>
+                            </Button> */}
                             {/* TODO: Change this check value to isSimplified later */}
                             {simplified ? (
                               <Link to={`${url}/${key}/`}>
