@@ -4,6 +4,7 @@ import {
   useTheme,
   Text,
   Menu,
+  Button,
   MenuButton,
   MenuList,
   MenuItem,
@@ -38,13 +39,14 @@ const StepTwo = () => {
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
 
+  console.log(values);
+
   const getPrices = useMemo(() => {
     const fundingTarget = values.fundingTarget;
     const totalSupply = [
       10000000, 100000000, 1000000000, 10000000000, 100000000000,
     ];
     const opts: any = totalSupply.map((amount: number, index: number) => {
-      
       return {
         totalSupply: amount,
         fundingPrice: fundingTarget
@@ -58,53 +60,44 @@ const StepTwo = () => {
 
   useEffect(() => {
     async function getTonPrice() {
-
       try {
-
         const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) => {
           if (!res.ok) {
             throw new Error('error in the api');
           }
-  
+
           return res.json();
-        }
-      );
-      const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
-      {
-        if (!res.ok) {
-          throw new Error('error in the api');
-        }
+        });
+        const tonPriceObj = await fetch(fetchTonPriceURL).then((res) => {
+          if (!res.ok) {
+            throw new Error('error in the api');
+          }
 
-        return res.json();
-      }
-      );
-      
-      const tonPriceKRW = tonPriceObj[0].trade_price;
-      const krwInUsd = usdPriceObj.rates.USD;
+          return res.json();
+        });
 
-      const tonPriceInUsd = tonPriceKRW * krwInUsd;
-      // console.log('tonPriceInUsd',tonPriceInUsd);
-      
+        const tonPriceKRW = tonPriceObj[0].trade_price;
+        const krwInUsd = usdPriceObj.rates.USD;
 
-      setTonInDollars(tonPriceInUsd);
-      const poolData = await fetchPoolPayload(library);
+        const tonPriceInUsd = tonPriceKRW * krwInUsd;
+        // console.log('tonPriceInUsd',tonPriceInUsd);
 
-      const token0Price = Number(poolData.token0Price);
+        setTonInDollars(tonPriceInUsd);
+        const poolData = await fetchPoolPayload(library);
 
-      setTonPriceInTos(token0Price);
-      }
+        const token0Price = Number(poolData.token0Price);
 
-      catch(e) {
+        setTonPriceInTos(token0Price);
+      } catch (e) {
         console.log(e);
-        
       }
-      
+
       // console.log(token0Price);
       // const tonPriceInTos =
     }
     getTonPrice();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [library, values, option,fundPrice]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [library, values, option, fundPrice]);
 
   const buttonStatus = (option: any) => {
     switch (option.totalSupply) {
@@ -118,7 +111,7 @@ const StepTwo = () => {
         } $ ${option.fundingPrice}/ ${values.tokenSymbol}`;
     }
   };
-  
+
   const handleSelect = (option: any) => {
     setOption({
       totalSupply: option.totalSupply.toString(),
@@ -134,21 +127,20 @@ const StepTwo = () => {
     const fundingPrice = opt.fundingPrice;
     setFundPrice(opt.fundingPrice);
     setFieldValue('totalSupply', parseInt(opt.totalSupply));
-    setFieldValue('stablePrice', fundingPrice )
+    setFieldValue('stablePrice', fundingPrice);
     const marketCap = values.marketCap;
 
     if (marketCap) {
       const tokenPriceinDollars = fundingPrice;
-      const tokenPriceInTon = tokenPriceinDollars / tonInDollars;      
-      const tonPriceInToken = 1 / tokenPriceInTon;      
+      const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
+      const tonPriceInToken = 1 / tokenPriceInTon;
       setFieldValue('salePrice', truncNumber(tonPriceInToken, 2));
       setFieldValue('projectTokenPrice', truncNumber(tonPriceInToken, 2));
       const tokenPriceInTos = tokenPriceInTon * tonPriceInTos;
       const tosPriceInTokens = 1 / tokenPriceInTos;
       setFieldValue('tosPrice', truncNumber(tosPriceInTokens, 2));
       const hardCap =
-        values.fundingTarget && (values.fundingTarget*0.5) / tonInDollars;
-        
+        values.fundingTarget && (values.fundingTarget * 0.5) / tonInDollars;
 
       setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
       const publicAllocation = parseInt((totalSupply * 0.3).toString());
@@ -166,7 +158,7 @@ const StepTwo = () => {
           (acc, round) => acc + round.claimTokenAllocation,
           0,
         );
-        
+
         //  const totalTokenAllocation =
         setFieldValue(`vaults[${index}].claim`, roundInfo);
         setFieldValue(`vaults[${index}].adminAddress`, account);
@@ -177,8 +169,8 @@ const StepTwo = () => {
       setFieldValue('vaults[2].vaultTokenAllocation', 0);
       setFieldValue('vaults[0].addressForReceiving', account);
       setFieldValue('vaults[0].adminAddress', account);
-      setFieldValue('vaults[1].tokenPair', `${values.tokenSymbol}-TOS`)
-      setFieldValue('vaults[6].tokenPair', `${values.tokenSymbol}-TOS`)
+      setFieldValue('vaults[1].tokenPair', `${values.tokenSymbol}-TOS`);
+      setFieldValue('vaults[6].tokenPair', `${values.tokenSymbol}-TOS`);
       // setFieldValue(]
       //   'vaults[0].publicRound1Allocation',
       //   Number(parseInt((publicAllocation * 0.5).toString())),
@@ -257,8 +249,23 @@ const StepTwo = () => {
       <Flex flexDir={'column'}>
         <Menu>
           <MenuButton
+            as={Button}
+            isDisabled={values.isTokenDeployed}
             pl="15px"
             textAlign={'left'}
+            _hover={{}}
+            _disabled={{
+              bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+              color: colorMode === 'light' ? '#8f96a1' : '#484848',
+              cursor: 'not-allowed',
+              border:
+                colorMode === 'light'
+                  ? '1px solid #dfe4ee'
+                  : '1px solid #323232',
+                 
+            }}
+            _focus={{}}
+            _active={[]}
             fontSize={'13px'}
             border={
               colorMode === 'dark' ? '1px solid #424242' : '1px solid #dfe4ee'
@@ -269,10 +276,12 @@ const StepTwo = () => {
             h="30px"
             bg={colorMode === 'dark' ? 'transparent' : '#ffffff'}>
             <Text {...MENU_STYLE.buttonTextStyle({colorMode})}>
-              {option.totalSupply !== 'Other' && values.totalSupply && values.stablePrice
+              {option.totalSupply !== 'Other' &&
+              values.totalSupply &&
+              values.stablePrice
                 ? ` ${values.totalSupply.toLocaleString()} ${
                     values.tokenSymbol
-                  } $ ${(values.stablePrice).toLocaleString(undefined, {
+                  } $ ${values.stablePrice.toLocaleString(undefined, {
                     minimumFractionDigits: 6,
                   })}/ ${values.tokenSymbol}`
                 : buttonStatus(option)}
@@ -283,6 +292,7 @@ const StepTwo = () => {
             </Text>
           </MenuButton>
           <MenuList
+            isLazy
             zIndex={10000}
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
             fontSize="13px"
@@ -293,7 +303,7 @@ const StepTwo = () => {
               onClick={() => setOption({totalSupply: '', fundingPrice: ''})}>
               Select One...
             </MenuItem>
-            {getPrices.map((price: any, index: number) => {              
+            {getPrices.map((price: any, index: number) => {
               return (
                 <MenuItem
                   _hover={{color: '#2a72e5', bg: 'transparent'}}

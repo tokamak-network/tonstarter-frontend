@@ -42,7 +42,7 @@ import {ActionButton} from './components/simplifiedLaunch/openStepOne/ActionButt
 import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
 import RescheduleModal from './components/simplifiedLaunch/openStepOne/Reschedule';
-import AdvanceConfirmModal from '@Launch/components/simplifiedLaunch/modals/AdvanceConfirmModal'
+import AdvanceConfirmModal from '@Launch/components/modals/AdvanceConfirmModal'
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 

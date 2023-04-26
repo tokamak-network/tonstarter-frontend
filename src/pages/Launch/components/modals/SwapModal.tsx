@@ -60,6 +60,7 @@ const SwapModal = () => {
     1,
     data?.data?.publicVaultAddress,
   );
+  
 
   useEffect(() => {
     const getDetails = async () => {
@@ -246,7 +247,7 @@ const SwapModal = () => {
                 <Text
                   fontSize={'12px'}
                   color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}>
-                  Balance: {balance} {'TON'}
+                  Balance: {Number(balance.replaceAll(',', '')).toLocaleString()} {'TON'}
                 </Text>
                 <Button
                   fontSize={'12px'}
@@ -376,7 +377,7 @@ const SwapModal = () => {
                   lineHeight={'27px'}
                   verticalAlign={'bottom'}>
                   {(Number(data?.data?.transferredTon) + Number(inputAmount)).toLocaleString()} /
-                  {data?.data?.hardcap} TON
+                  {Number(data?.data?.hardcap).toLocaleString()} TON
                 </Text>
               </Box>
               <Progress

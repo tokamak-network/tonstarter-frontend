@@ -59,7 +59,6 @@ const VestingClaimModal = () => {
       const krwInUsd = usdPriceObj.rates.USD;
 
       const tonPriceInUsd = tonPriceKRW * krwInUsd;
-      console.log(tonPriceInUsd);
       setTonInDollars(tonPriceInUsd);
     }
     getTonPrice();

@@ -1,4 +1,11 @@
-import {FC, useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {
+  FC,
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+} from 'react';
 import {
   Flex,
   Text,
@@ -8,6 +15,8 @@ import {
   useColorMode,
   Button,
   Link,
+  Tooltip,
+  Image,
 } from '@chakra-ui/react';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import * as LiquidityIncentiveAbi from 'services/abis/LiquidityIncentiveAbi.json';
@@ -27,7 +36,7 @@ import store from 'store';
 import {toastWithReceipt} from 'utils';
 import {setTxPending} from 'store/tx.reducer';
 import {openToast} from 'store/app/toast.reducer';
-import {useAppSelector} from 'hooks/useRedux';
+import {useAppSelector, useAppDispatch} from 'hooks/useRedux';
 import {selectTransactionType} from 'store/refetch.reducer';
 import {BASE_PROVIDER} from 'constants/index';
 import Fraction from 'fraction.js';
@@ -36,6 +45,8 @@ import {ZERO_ADDRESS} from 'constants/misc';
 import moment from 'moment';
 import * as UniswapV3PoolABI from 'services/abis/UniswapV3Pool.json';
 import {useBlockNumber} from 'hooks/useBlock';
+import {setTwoMinutes, selectLaunch} from '@Launch/launch.reducer';
+import tooltipIconGray from 'assets/svgs/input_question_icon.svg';
 
 const univ3prices = require('@thanpolas/univ3prices');
 
@@ -176,8 +187,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       // console.log(slot0);
       const token0 = await pool.token0();
       const token1 = await pool.token1();
-      console.log('token0', token0);
-      console.log('token1', token1);
+      // console.log('token0', token0);
+      // console.log('token1', token1);
       const token0Contract = new Contract(token0, ERC20.abi, library);
       const token1Contract = new Contract(token1, ERC20.abi, library);
       const amount0Balance = await token0Contract.balanceOf(vault.vaultAddress);
@@ -188,7 +199,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       const price = univ3prices([18, 18], sqrtRatio).toAuto();
       // console.log('sqrtRatio', sqrtRatio);
       // console.log('price', price);
-      
+
       let tosAmount = 0;
       if (TOS_ADDRESS.toLowerCase() === token0.toLowerCase()) {
         const priceUpdated = price * 1e18;
@@ -200,10 +211,10 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         // console.log('inToken0Amount', inToken0Amount.toString());
         tosAmount = inToken0Amount;
       } else {
-        const reversePrice = (1* 1e18) / (price);
-        const reverse = reversePrice.toString().split('.')
-        const reverseString = reverse.shift()
- 
+        const reversePrice = (1 * 1e18) / price;
+        const reverse = reversePrice.toString().split('.');
+        const reverseString = reverse.shift();
+
         let inToken1Amount = amount0Balance
           .mul(ethers.BigNumber.from(reverseString + ''))
           .div(ethers.utils.parseEther('1'));
@@ -213,8 +224,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         tosAmount = inToken1Amount;
       }
 
-      console.log('tosAmount', tosAmount);
-      setTosAmnt(tosAmount)
+      setTosAmnt(tosAmount);
     }
     getTosAmount();
   }, [account, createdPool, library, vault.vaultAddress, blockNumber]);
@@ -225,10 +235,12 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     const signer = getSigner(library, account);
     try {
       const bal = await TOS.balanceOf(vault.vaultAddress);
-    const amount = tosAmnt > bal? bal : tosAmnt.toString()
-      const receipt = await InitialLiquidityCompute.connect(signer).mint(amount);
+      const amount = tosAmnt > bal ? bal : tosAmnt.toString();
+      const receipt = await InitialLiquidityCompute.connect(signer).mint(
+        amount,
+      );
       // console.log(vvv);
-      
+
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
@@ -486,6 +498,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           startTime={startTime}
         />
       )}
+
+      
     </Grid>
   );
 };
@@ -608,6 +622,8 @@ export const Condition2: React.FC<Condition2> = ({
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
   const {account, library, chainId} = useActiveWeb3React();
   const bn = require('bignumber.js');
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     getRatio();
   }, [account, project]);
@@ -623,6 +639,9 @@ export const Condition2: React.FC<Condition2> = ({
       .toFixed();
   };
   const createPool = async () => {
+    const now = moment().unix();
+    dispatch(setTwoMinutes({data: now + 120}));
+
     if (account === null || account === undefined || library === undefined) {
       return;
     }
@@ -640,6 +659,9 @@ export const Condition2: React.FC<Condition2> = ({
       if (receipt) {
         toastWithReceipt(receipt, setTxPending, 'Launch');
         await receipt.wait();
+        // const now = moment().unix();
+        // const deadline = now+120
+        // dispatch(setTwoMinutes({data: {deadline}}));
         if (chainId) {
           const createPoo = addPool({
             chainId: chainId,
@@ -832,6 +854,32 @@ export const Condition3: React.FC<Condition3> = ({
     getRatio();
   }, [account, project]);
 
+  const {
+    data: {twoMinutes},
+  } = useAppSelector(selectLaunch);
+
+  const calculateDuration = (snapshot: number) =>
+    moment.duration(
+      Math.max(snapshot - Math.floor(Date.now() / 1000), 0),
+      'seconds',
+    );
+
+  const [duration, setDuration] = useState(calculateDuration(twoMinutes));
+
+  const timerCallback = useCallback(() => {
+    setDuration(calculateDuration(twoMinutes));
+  }, [twoMinutes]);
+
+  useEffect(() => {
+    const interval = setInterval(timerCallback, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timerCallback, twoMinutes]);
+
+  console.log(duration.asSeconds());
+
   const encodePriceSqrt = (reserve1: number, reserve0: number) => {
     return new bn(reserve1.toString())
       .div(reserve0.toString())
@@ -855,46 +903,78 @@ export const Condition3: React.FC<Condition3> = ({
         className={'chart-cell no-border-bottom'}
         fontSize={'16px'}>
         <Text fontFamily={theme.fonts.fld}>LP Token</Text>
-        <Button
-          fontSize={'12px'}
-          w={'150px'}
-          h={'32px'}
-          mt={'5px'}
-          bg={'#257eee'}
-          color={'#ffffff'}
-          isDisabled={createdPool === ZERO_ADDRESS}
-          // isDisabled={true}
-          _disabled={{
-            color: colorMode === 'light' ? '#86929d' : '#838383',
-            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-            cursor: 'not-allowed',
-          }}
-          _hover={{
-            background: 'transparent',
-            border: 'solid 1px #2a72e5',
-            color: colorMode === 'light' ? '#2a72e5' : '#2a72e5',
-            cursor: 'pointer',
+        <Flex alignItems="center">
+          {duration.asSeconds() > 0 ? (
+            <Flex>
+            <Text fontSize="13px" color={'#257eee'} mr="3px">
+              {duration.minutes().toString().length < 2 ? '0' : ''}
+              {duration.minutes()}:
+              {duration.seconds().toString().length < 2 ? '0' : ''}
+              {duration.seconds()}
+            </Text>
+            <Tooltip
+            label={
+              'After creating the pool, you need to wait 2 minutes before minting the LP Token'
+            }
+            hasArrow
+            fontSize="12px"
+            placement="top"
+            w="250px"
+            color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+            aria-label={'Tooltip'}
+            textAlign={'center'}
+            size={'xs'}>
+            <Image mr="15px" src={tooltipIconGray} />
+          </Tooltip>
+            </Flex>
+          ) : (
+            <></>
+          )}
+       
 
-            whiteSpace: 'normal',
-          }}
-          _focus={{
-            background: '#2a72e5',
-            border: 'solid 1px #2a72e5',
-            color: '#fff',
+          <Button
+            fontSize={'12px'}
+            w={'150px'}
+            h={'32px'}
+            mt={'5px'}
+            bg={'#257eee'}
+            color={'#ffffff'}
+            isDisabled={
+              createdPool === ZERO_ADDRESS || duration.asSeconds() > 0
+            }
+            // isDisabled={true}
+            _disabled={{
+              color: colorMode === 'light' ? '#86929d' : '#838383',
+              bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+              cursor: 'not-allowed',
+            }}
+            _hover={{
+              background: 'transparent',
+              border: 'solid 1px #2a72e5',
+              color: colorMode === 'light' ? '#2a72e5' : '#2a72e5',
+              cursor: 'pointer',
 
-            whiteSpace: 'normal',
-          }}
-          _active={{
-            background: '#2a72e5',
-            border: 'solid 1px #2a72e5',
-            color: '#fff',
+              whiteSpace: 'normal',
+            }}
+            _focus={{
+              background: '#2a72e5',
+              border: 'solid 1px #2a72e5',
+              color: '#fff',
 
-            whiteSpace: 'normal',
-          }}
-          whiteSpace={'normal'}
-          onClick={mint}>
-          Mint Lp Token
-        </Button>
+              whiteSpace: 'normal',
+            }}
+            _active={{
+              background: '#2a72e5',
+              border: 'solid 1px #2a72e5',
+              color: '#fff',
+
+              whiteSpace: 'normal',
+            }}
+            whiteSpace={'normal'}
+            onClick={mint}>
+            Mint Lp Token
+          </Button>
+        </Flex>
       </GridItem>
       <GridItem
         border={themeDesign.border[colorMode]}

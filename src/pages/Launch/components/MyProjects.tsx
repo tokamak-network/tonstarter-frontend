@@ -17,7 +17,7 @@ import {Contract} from '@ethersproject/contracts';
 import {getSigner} from 'utils/contract';
 import * as ProjectTokenABI from 'services/abis/ProjectToken.json';
 import {selectTransactionType} from 'store/refetch.reducer';
-
+import ListConfirm from '@Launch/components/modals/ListConfirm' 
 const MyProjects = () => {
   const theme = useTheme();
   // const match = useRouteMatch();
@@ -200,6 +200,7 @@ const MyProjects = () => {
           />
         </Box>
       </Box>
+      <ListConfirm/>
     </Flex>
   );
 };

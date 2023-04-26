@@ -61,7 +61,7 @@ const StepFour = () => {
           ml={'6px'}
           alignItems={'center'}
           borderRadius="4px"
-          bg={'transparent'}
+          bg={values.vaults[0].isSet? colorMode === 'dark' ? 'transparent' : '#e9edf1': 'transparent'}
           border={
             focus
               ? '1px solid #2a72e5'
@@ -73,9 +73,13 @@ const StepFour = () => {
           onBlur={() => setFocus(false)}
           pr="15px"
           fontSize={'13px'}>
-          <NumberInput color={colorMode === 'dark' ? '#f3f4f1' : '#3e495c'}>
+          <NumberInput
+            isDisabled={values.vaults[0].isSet}
+            _disabled={{color:colorMode === 'dark'?"#484848":'#8f96a1'}}
+            color={colorMode === 'dark' ? '#f3f4f1' : '#3e495c'}>
             <NumberInputField
               h="30px"
+              
               placeholder={
                 values.tosPrice
                   ? (1 / values.tosPrice)
@@ -85,7 +89,9 @@ const StepFour = () => {
                       .toString()
                   : '0'
               }
-              _placeholder={{color: colorMode === 'dark' ? '#f3f4f1' : '#3e495c'}}
+              _placeholder={{
+                color:  colorMode === 'dark' ? '#f3f4f1' : '#3e495c',
+              }}
               fontSize={'13px'}
               border="none"
               pr="5px"
@@ -96,7 +102,7 @@ const StepFour = () => {
                 handleInput(parseInt(e.target.value));
               }}></NumberInputField>
           </NumberInput>
-          <Text color={colorMode === 'dark' ? '#f3f4f1' : '#3e495c'}>TOS</Text>
+          <Text cursor={values.vaults[0].isSet? 'not-allowed':''} color={values.vaults[0].isSet?colorMode === 'dark'?"#484848":'#8f96a1': colorMode === 'dark' ? '#f3f4f1' : '#3e495c'}>TOS</Text>
         </Flex>
       </Flex>
     </Flex>

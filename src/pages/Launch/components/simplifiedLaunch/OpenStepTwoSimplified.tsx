@@ -32,10 +32,11 @@ const OpenStepTwoSimplified = (props: {  setDisableForStep2: Dispatch<SetStateAc
 
 
   useEffect(() => {
+    
     dispatch(saveTempProjectData({data: values}));
     setFieldValue('isSimplified',true )
 
-  },[values])
+  },[dispatch, setFieldValue, values])
 
   return (
     <Flex

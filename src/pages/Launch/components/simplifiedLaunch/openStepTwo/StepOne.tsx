@@ -11,6 +11,7 @@ import {
   NumberInputField,
   Tooltip,
   Image,
+  Button
 } from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
@@ -147,6 +148,18 @@ const StepOne = () => {
       <Flex>
         <Menu>
           <MenuButton
+           as={Button}
+           isDisabled={values.vaults[0].isSet}
+           _disabled={{
+            bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+            color: colorMode === 'light' ? '#8f96a1' : '#484848',
+            cursor: 'not-allowed',
+            border:
+              colorMode === 'light'
+                ? '1px solid #dfe4ee'
+                : '1px solid #323232',
+               
+          }}
             pl="15px"
             textAlign={'left'}
             fontSize={'13px'}
@@ -263,6 +276,12 @@ const StepOne = () => {
           }}>
           ${(values.fundingTarget?(values.fundingTarget* 0.5):0).toLocaleString()}
         </span>
+        <span style={{
+            marginLeft: '4px',
+            fontWeight:'bold',
+            color: colorMode === 'light' ? '#353c48' : '#f3f4f1',
+          }}>({(values.fundingTarget?((values.fundingTarget* 0.5)/tonInDollars):0).toLocaleString()} TON)</span>
+       
       </Text>
       <Text
         display="flex"

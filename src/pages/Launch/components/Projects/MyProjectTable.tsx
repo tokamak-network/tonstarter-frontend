@@ -22,6 +22,7 @@ import {FC, useEffect, useRef} from 'react';
 import {LoadingComponent} from 'components/Loading';
 import moment from 'moment';
 import {selectLaunch, setMode} from '@Launch/launch.reducer';
+import {useModal} from 'hooks/useModal';
 
 import {
   Column,
@@ -73,12 +74,13 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     useExpanded,
     usePagination,
   );
-  
+
   const match = useRouteMatch();
   const {url} = match;
   const {colorMode} = useColorMode();
   const {transactionType, blockNumber} = useAppSelector(selectTransactionType);
   const dispatch: any = useAppDispatch();
+  const {openAnyModal} = useModal();
 
   const theme = useTheme();
   const {account, library, chainId} = useActiveWeb3React();
@@ -87,8 +89,8 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     ProjectTokenProxy,
     ProjectTokenABI.abi,
     library,
-    );
-    
+  );
+
   useEffect(() => {
     async function getNFTInfo() {
       if (account === null || account === undefined || library === undefined) {
@@ -150,7 +152,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
   };
 
   //data.length === 0
-  if (!account || account === undefined || account === null ) {
+  if (!account || account === undefined || account === null) {
     return (
       <Flex
         justifyContent={'center'}
@@ -161,8 +163,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
         <Text>Please connect with Metamask</Text>
       </Flex>
     );
-  }
- else if (isLoading === true) {
+  } else if (isLoading === true) {
     return (
       <Flex
         w="1102px"
@@ -195,9 +196,10 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
           'Sale Period',
           'Status',
           'Action',
-        ].map((title: string) => {
+        ].map((title: string, index: number) => {
           return (
             <Text
+              key={index}
               borderTop={colorMode === 'dark' ? '1px solid #373737' : ''}
               borderLeft={
                 title === 'Name'
@@ -301,8 +303,9 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                       tokenID,
                     } = cell.row.original;
                     const type = cell.column.id;
+
                     // {/* TODO: Change this check value to isSimplified later */}
-                    const simplified = project?.isSimplified === true;                    
+                    const simplified = project?.isSimplified === true;
                     // const marketCap = project?.marketCap;
                     return (
                       <chakra.td
@@ -374,53 +377,78 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                             w={'312px'}
                             justifyContent={'center'}
                             gap={'10px'}>
-                              {/* TODO: Change this check value to isSimplified later */}
-                            { simplified ?
-                            (<Link to={`${url}/${key}/`}>
-                              <Button
-                                fontWeight={'normal'}
-                                w={'90px'}
-                                h={'40px'}
-                                mx={'5px'}
-                                bg={'transparent'}
-                                color={'#2a72e5'}
-                                fontSize={'12px'}
-                                border={'solid 1px #2a72e5'}
-                                _hover={{bg: 'transparent'}}
-                                _active={{bg: 'transparent'}} 
-                                
-                                onClick={() => {
-                                  dispatch(
-                                    setMode({
-                                      data: 'simplified',
-                                    }),
-                                  );
-                                }}>
-                                Edit
-                              </Button>
-                            </Link>) : 
-                            (<Link to={`${url}/${key}/`}>
-                              <Button
-                                fontWeight={'normal'}
-                                w={'90px'}
-                                h={'40px'}
-                                mx={'5px'}
-                                bg={'transparent'}
-                                color={'#2a72e5'}
-                                fontSize={'12px'}
-                                border={'solid 1px #2a72e5'}
-                                _hover={{bg: 'transparent'}}
-                                _active={{bg: 'transparent'}}
-                                onClick={() => {
-                                  dispatch(
-                                    setMode({
-                                      data: 'advanced',
-                                    }),
-                                  );
-                                }}>
-                                Edit
-                              </Button>
-                            </Link>)}
+                            <Button
+                              w={'90px'}
+                              h={'40px'}
+                              mx={'5px'}
+                              bg={'#257eee'}
+                              color={'#ffffff'}
+                              fontWeight={'normal'}
+                              fontSize={'12px'}
+                              _hover={{bg: '#257eee'}}
+                              _active={{bg: '#257eee'}}
+                              px={'9px'}
+                              whiteSpace={'normal'}
+                              onClick={() => {
+                                console.log('dd');
+                                openAnyModal('Launch_ListConfirm', {
+                                  name: name,
+                                  url: url,
+                                  key: key,
+                                  func: () => saveToAdmin(project, key),
+                                });
+                                // saveToAdmin(project, key)
+                              }}>
+                              List on TONStarter
+                            </Button>
+                            {/* TODO: Change this check value to isSimplified later */}
+                            {simplified ? (
+                              <Link to={`${url}/${key}/`}>
+                                <Button
+                                  fontWeight={'normal'}
+                                  w={'90px'}
+                                  h={'40px'}
+                                  mx={'5px'}
+                                  bg={'transparent'}
+                                  color={'#2a72e5'}
+                                  fontSize={'12px'}
+                                  border={'solid 1px #2a72e5'}
+                                  _hover={{bg: 'transparent'}}
+                                  _active={{bg: 'transparent'}}
+                                  onClick={() => {
+                                    dispatch(
+                                      setMode({
+                                        data: 'simplified',
+                                      }),
+                                    );
+                                  }}>
+                                  Edit
+                                </Button>
+                              </Link>
+                            ) : (
+                              <Link to={`${url}/${key}/`}>
+                                <Button
+                                  fontWeight={'normal'}
+                                  w={'90px'}
+                                  h={'40px'}
+                                  mx={'5px'}
+                                  bg={'transparent'}
+                                  color={'#2a72e5'}
+                                  fontSize={'12px'}
+                                  border={'solid 1px #2a72e5'}
+                                  _hover={{bg: 'transparent'}}
+                                  _active={{bg: 'transparent'}}
+                                  onClick={() => {
+                                    dispatch(
+                                      setMode({
+                                        data: 'advanced',
+                                      }),
+                                    );
+                                  }}>
+                                  Edit
+                                </Button>
+                              </Link>
+                            )}
                             {status === true ? (
                               listed === true ? (
                                 tokenID !== null ? (
@@ -465,21 +493,29 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                                 <Flex>
                                   {' '}
                                   <Button
-                                    w={'90px'}
-                                    h={'40px'}
-                                    mx={'5px'}
-                                    bg={'#257eee'}
-                                    color={'#ffffff'}
-                                    fontWeight={'normal'}
-                                    fontSize={'12px'}
-                                    _hover={{bg: '#257eee'}}
-                                    _active={{bg: '#257eee'}}
-                            
-                                    px={'9px'}
-                                    whiteSpace={'normal'}
-                                    onClick={() => saveToAdmin(project, key)}>
-                                    List on TONStarter
-                                  </Button>
+                              w={'90px'}
+                              h={'40px'}
+                              mx={'5px'}
+                              bg={'#257eee'}
+                              color={'#ffffff'}
+                              fontWeight={'normal'}
+                              fontSize={'12px'}
+                              _hover={{bg: '#257eee'}}
+                              _active={{bg: '#257eee'}}
+                              px={'9px'}
+                              whiteSpace={'normal'}
+                              onClick={() => {
+                                console.log('dd');
+                                openAnyModal('Launch_ListConfirm', {
+                                  name: name,
+                                  url: url,
+                                  key: key,
+                                  func: () => saveToAdmin(project, key),
+                                });
+                                // saveToAdmin(project, key)
+                              }}>
+                              List on TONStarter
+                            </Button>
                                   <Button
                                     w={'90px'}
                                     h={'40px'}
