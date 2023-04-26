@@ -22,7 +22,6 @@ const CreateMain = () => {
     data: {mode},
   } = useAppSelector(selectLaunch);
 
-  console.log('mode', mode);
   let historyObj = useHistory();
 
   useEffect(() => {

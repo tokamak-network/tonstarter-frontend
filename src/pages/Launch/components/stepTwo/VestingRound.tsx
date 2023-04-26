@@ -64,7 +64,7 @@ const VestingRound = () => {
       }
     });
   }, [selectedVault, vaultsList]);
-
+  
   // const [selectedDay, setSelectedDay] = useState<'14' | '30' | '60'>('14');
 
   // const [inputVals, setInputVals] = useState<undefined | VaultSchedule[]>(
@@ -185,7 +185,7 @@ const VestingRound = () => {
               w="100px"
               isDisabled={
                 //@ts-ignore
-                vaultsList[0].vaultTokenAllocation === 0
+                vaultsList[0].vaultTokenAllocation === 0 || selectedVaultDetail.isSet
               }></CustomButton>
           </Flex>
         ) : (

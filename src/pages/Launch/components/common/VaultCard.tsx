@@ -17,10 +17,11 @@ type VaultCardProps = {
   isMandatory: boolean;
   adminAddress: string;
   vaultIndex: number;
+  disabled:boolean
 };
 
 const VaultCard: React.FC<VaultCardProps> = (prop) => {
-  const {status, name, tokenAllocation, isMandatory, adminAddress, vaultIndex} =
+  const {status, name, tokenAllocation, isMandatory, adminAddress, vaultIndex,disabled} =
     prop;
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isSelected, setIsSelected] = useState<boolean>(false);
@@ -110,7 +111,7 @@ const VaultCard: React.FC<VaultCardProps> = (prop) => {
           <HoverImage
             img={PencilIcon}
             hoverImg={PencilIcon}
-            action={() =>
+            action={() => disabled? null :
               openAnyModal('Launch_VaultBasicSetting', {
                 name,
                 tokenAllocation,

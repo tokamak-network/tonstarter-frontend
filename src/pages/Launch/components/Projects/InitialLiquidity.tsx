@@ -878,7 +878,7 @@ export const Condition3: React.FC<Condition3> = ({
     };
   }, [timerCallback, twoMinutes]);
 
-  console.log(duration.asSeconds());
+  // console.log(duration.asSeconds());
 
   const encodePriceSqrt = (reserve1: number, reserve0: number) => {
     return new bn(reserve1.toString())

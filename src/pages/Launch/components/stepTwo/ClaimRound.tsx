@@ -193,7 +193,7 @@ useEffect(() => {
                 //@ts-ignore
                 selectedVaultDetail.vaultType === 'Initial Liquidity' ||
                 //@ts-ignore
-                selectedVaultDetail.vaultType === 'DAO'
+                selectedVaultDetail.vaultType === 'DAO' || selectedVaultDetail.isSet
               }></CustomButton>
           </Flex>
         ) : (

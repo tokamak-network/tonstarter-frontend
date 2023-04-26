@@ -1,14 +1,18 @@
-import {Flex, Image, Text,useColorMode} from '@chakra-ui/react';
+import {Flex, Image, Text, useColorMode} from '@chakra-ui/react';
 import {useAppDispatch} from 'hooks/useRedux';
 import {openModal} from 'store/modal.reducer';
 import PlusIcon from 'assets/launch/vault-plus-inactive-button.svg';
 import BluePlusIcon from 'assets/launch/vault-plus-active-button.svg';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {useFormikContext} from 'formik';
+import {Projects, Vault} from '@Launch/types';
 
 const AddVaultCard = () => {
   const {colorMode} = useColorMode();
   const dispatch = useAppDispatch();
   const [isHover, setIsHover] = useState<boolean>(false);
+  const {values} = useFormikContext<Projects['CreateProject']>();
+  const [disable, setDisable] = useState(false);
   function open() {
     dispatch(
       openModal({
@@ -17,6 +21,13 @@ const AddVaultCard = () => {
       }),
     );
   }
+  
+
+  useEffect(() => {
+    const isSetVaults = values.vaults.filter((vault: Vault) => vault.isSet === true);
+    setDisable(isSetVaults.length > 0 ? true : false);
+  }, [values]);
+
   return (
     <Flex
       w={'150px'}
@@ -45,9 +56,9 @@ const AddVaultCard = () => {
           h={'50px'}
           onMouseOver={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
-          src={isHover ? BluePlusIcon : PlusIcon}
+          src={disable? PlusIcon: isHover ? BluePlusIcon : PlusIcon}
           cursor="pointer"
-          onClick={() => open()}></Image>
+          onClick={() => disable? null: open()}></Image>
       </Flex>
     </Flex>
   );

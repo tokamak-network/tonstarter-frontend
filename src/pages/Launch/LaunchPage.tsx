@@ -18,7 +18,7 @@ import ConfirmTermsModal from './components/modals/ConfirmTerms';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
 import WarningModal from './components/simplifiedLaunch/openStepOne/WarningModal';
-import {setMode,setProjectStep,saveTempProjectData} from '@Launch/launch.reducer';
+import {setMode,setProjectStep,saveTempProjectData,setHashKey} from '@Launch/launch.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 
 type LaunchProps = {
@@ -77,6 +77,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
     );
     dispatch(saveTempProjectData({data: {}}));
     dispatch(setProjectStep({data:1}))
+    dispatch(setHashKey({data:undefined}))
   }, [dispatch]);
 
   const {openAnyModal} = useModal();

@@ -10,6 +10,8 @@ type InputComponentProps = {
   nameDisplay?: boolean;
   inputStyle?: {};
   requirement?: boolean;
+  disabled: boolean
+
 };
 
 const InputComponentStyle = {
@@ -52,7 +54,7 @@ const getPlaceHolder = (name: string) => {
 };
 
 const InputComponent: React.FC<InputComponentProps> = (props) => {
-  const {name, nameDisplay, inputStyle, requirement} = props;
+  const {name, nameDisplay, inputStyle, requirement,disabled} = props;
   const {errors, values, setFieldValue} =
     useFormikContext<Projects['CreateProject']>();
   const {colorMode} = useColorMode();
@@ -134,6 +136,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
             return (
               <Flex justifyContent={'space-between'}>
                 <Select
+                isDisabled={disabled}
                   style={{
                     height: '32px',
                     border:
@@ -143,6 +146,16 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                     borderRadius: '4px',
                     paddingLeft: '16px',
                     paddingRight: '16px',
+                  }}
+                  _disabled={{
+                    bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+                    color: colorMode === 'light' ? '#8f96a1' : '#484848',
+                    cursor: 'not-allowed',
+                    border:
+                      colorMode === 'light'
+                        ? '1px solid #dfe4ee'
+                        : '1px solid #323232',
+                       
                   }}
                   w={isCustom ? '127px' : '100%'}
                   fontSize={13}
@@ -159,6 +172,17 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                 </Select>
                 {isCustom && (
                   <Input
+                  isDisabled={disabled}
+                  _disabled={{
+                    bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+                    color: colorMode === 'light' ? '#8f96a1' : '#484848',
+                    cursor: 'not-allowed',
+                    border:
+                      colorMode === 'light'
+                        ? '1px solid #dfe4ee'
+                        : '1px solid #323232',
+                       
+                  }}
                     className={
                       isError
                         ? 'input-err'
@@ -191,6 +215,17 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
             return (
               <Flex justifyContent={'space-between'}>
                 <Select
+                 isDisabled={disabled}
+                 _disabled={{
+                  bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+                  color: colorMode === 'light' ? '#8f96a1' : '#484848',
+                  cursor: 'not-allowed',
+                  border:
+                    colorMode === 'light'
+                      ? '1px solid #dfe4ee'
+                      : '1px solid #323232',
+                     
+                }}
                   style={{
                     height: '32px',
                     border:
@@ -333,6 +368,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
 
           return (
             <Input
+            isDisabled={disabled}
               className={
                 isError
                   ? 'input-err'
@@ -345,6 +381,16 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
               fontSize={13}
               {...field}
               id={name}
+              _disabled={{
+                bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+                color: colorMode === 'light' ? '#8f96a1' : '#484848',
+                cursor: 'not-allowed',
+                border:
+                  colorMode === 'light'
+                    ? '1px solid #dfe4ee'
+                    : '1px solid #323232',
+                   
+              }}
               h={'32px'}
               _focus={{}}
               placeholder={`${getPlaceHolder(titleTrimed)}`}

@@ -178,7 +178,6 @@ export const WalletModal: FC<WalletProps> = ({isOpen, onClose}) => {
 
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
       const option = SUPPORTED_WALLETS[key];
-      // console.log(option);
       
 
       // if (isMobile) {

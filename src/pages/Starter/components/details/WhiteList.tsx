@@ -40,7 +40,7 @@ export const WhiteList: React.FC<WhiteListProps> = (prop) => {
       const provider = BASE_PROVIDER;
 
       const block = await provider.getBlock(blockNumber);
-      console.log('block',block);
+      // console.log('block',block);
     }
 
     getBlocTimestamp()

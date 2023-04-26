@@ -59,12 +59,15 @@ const Vaults = () => {
             animate={{x: transX}}
             style={{display: 'flex', width: '100%'}}>
             {vaultsList?.map((vault: Vault, index: number) => {
+            
+              
               const {
                 vaultName,
                 vaultTokenAllocation,
                 isMandatory,
                 adminAddress,
                 vaultType,
+                isSet,
                 index: vaultIndex,
               } = vault;
               const strVaultTokenAllocation =
@@ -94,7 +97,9 @@ const Vaults = () => {
                     tokenAllocation={strVaultTokenAllocation}
                     isMandatory={isMandatory}
                     adminAddress={adminAddress}
-                    vaultIndex={vaultIndex}></VaultCard>
+                    vaultIndex={vaultIndex}
+                    disabled={isSet || vaultsList[0].isSet }
+                    ></VaultCard>
                 </Box>
               );
             })}

@@ -91,6 +91,7 @@ const Middle: React.FC<MiddleProps> = (props) => {
       selectedVaultDetail?.vaultType !== 'Liquidity Incentive' &&
       selectedVaultDetail?.vaultType !== 'Initial Liquidity');
 
+      
   return (
     <Flex flexDir={'column'} w={'100%'}>
       <Box d={'flex'} mb={'15px'} justifyContent="space-between">
@@ -129,7 +130,7 @@ const Middle: React.FC<MiddleProps> = (props) => {
             w={'100px'}
             h={'32px'}
             text={'Edit'}
-            isDisabled={isDisable}
+            isDisabled={isDisable || selectedVaultDetail?.isSet || values.vaults[0].isSet}
             func={() => setIsEdit(true)}></CustomButton>
         )}
       </Box>

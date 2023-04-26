@@ -90,7 +90,7 @@ const MainScreen = () => {
     dispatch(
       setHashKey({data: hashKey !== undefined? hashKey: isExist === 'createproject' ? undefined : isExist}),
     );
-  }, []);
+  }, [dispatch, hashKey, isExist]);
 
   useEffect(() => {
     setStep(projectStep);

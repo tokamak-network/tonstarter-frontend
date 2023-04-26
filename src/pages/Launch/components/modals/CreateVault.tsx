@@ -66,8 +66,8 @@ const CreateVaultModal = () => {
     }
     const totalAllocation = values.vaults.reduce((acc, cur) => {
       if (cur.vaultName === nameVal.replaceAll('*', '').replaceAll(' ', '')) {
-        console.log('acc');
-        console.log(acc);
+        // console.log('acc');
+        // console.log(acc);
 
         return acc;
       }

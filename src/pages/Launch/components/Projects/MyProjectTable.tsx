@@ -505,7 +505,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
                               px={'9px'}
                               whiteSpace={'normal'}
                               onClick={() => {
-                                console.log('dd');
+                              
                                 openAnyModal('Launch_ListConfirm', {
                                   name: name,
                                   url: url,
