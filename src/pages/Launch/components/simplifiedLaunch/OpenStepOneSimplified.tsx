@@ -57,12 +57,16 @@ const OpenStepOneSimplified = (props: any) => {
     setFieldValue('isSimplified',true )
   },[values])
     
-
-useEffect(() => {
-  const inStarter = starterData.rawData.some((el) => el.projectKey === hashKey);
-  setListed(inStarter)
-  
-},[hashKey, starterData.rawData])
+  useEffect(() => {
+    if (hashKey !== undefined) {
+      const inStarter = starterData.rawData.some(
+        (el) => el.projectKey === hashKey,
+      );
+      setListed(inStarter);
+    } else {
+      setListed(false);
+    }
+  }, [hashKey, starterData.rawData]);
 
 
   return (
