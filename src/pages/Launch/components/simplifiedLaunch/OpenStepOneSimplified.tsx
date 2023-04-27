@@ -72,7 +72,6 @@ const OpenStepOneSimplified = (props: any) => {
   return (
     <Flex
       w={'774px'}
-      // h={'710px'}
       bg={colorMode === 'light' ? 'white.100' : 'none'}
       borderRadius={'10px'}
       border={colorMode === 'light' ? '' : '1px solid #373737'}
