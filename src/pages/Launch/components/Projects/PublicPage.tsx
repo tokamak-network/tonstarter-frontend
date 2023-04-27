@@ -105,12 +105,6 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     (vault: any) => vault.vaultType === 'Vesting',
   );
 
-  const vestingVaultContract = new Contract(
-    vestingVault[0].vaultAddress,
-    VestingPublicFund.abi,
-    library,
-  );
-
   const sendTONtoVesting = useCallback(async () => {
     try {
       if (PublicSaleContract) {
@@ -150,13 +144,17 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       ) {
         return;
       }
+
       const hardCapCalc = await PUBLICSALE_CONTRACT.hardcapCalcul();
 
       const hc = ethers.utils.formatEther(hardCapCalc);
       const numberParts = hc.split('.');
 
-      const numHc = numberParts.length > 1? Number(numberParts[0] + '.' + numberParts[1].slice(0, 5)) : Number(hc)
-      
+      const numHc =
+        numberParts.length > 1
+          ? Number(numberParts[0] + '.' + numberParts[1].slice(0, 5))
+          : Number(hc);
+
       const adminWithdraw = await PUBLICSALE_CONTRACT.adminWithdraw();
       setFundWithdrew(adminWithdraw);
 
@@ -179,12 +177,20 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         Number(convertNumber({amount: hardCapCalc}));
       setVestingAmount(xxAmount);
 
-      const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96(); //when the pool is created and the LP token is minted in the IL vault, currentSqrtPriceX96 > 0
-      setSendTON(
-        Number(fundsInVesting) !== 0 &&
-          isExchangeTOS === true &&
-          adminWithdraw === false,
-      );
+      if (vestingVault.length > 0) {
+        const vestingVaultContract = new Contract(
+          vestingVault[0].vaultAddress,
+          VestingPublicFund.abi,
+          library,
+        );
+
+        const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96(); //when the pool is created and the LP token is minted in the IL vault, currentSqrtPriceX96 > 0
+        setSendTON(
+          Number(fundsInVesting) !== 0 &&
+            isExchangeTOS === true &&
+            adminWithdraw === false,
+        );
+      }
     }
     getHardCap();
   }, [
@@ -197,7 +203,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     PUBLICSALE_CONTRACT,
     PublicSaleContract,
     WTON,
-    vestingVaultContract,
+    vestingVault,
   ]);
 
   const sendTOS = async () => {
@@ -493,7 +499,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                     : 'NA'}
                 </Link>
               </GridItem>
-              <GridItem
+
+              {vestingVault.length > 0 ? <GridItem
                 border={themeDesign.border[colorMode]}
                 borderRight={'none'}
                 borderBottomLeftRadius={'4px'}
@@ -707,7 +714,106 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                     </Flex>
                   </Flex>
                 </Flex>
-              </GridItem>
+              </GridItem>: <GridItem
+                border={themeDesign.border[colorMode]}
+                borderRight={'none'}
+                borderBottomLeftRadius={'4px'}
+                className={'chart-cell'}
+                h={ '95px'}
+                justifyContent={'space-between'}>
+                <Flex flexDir={'column'}>
+                  <Flex w={'273px'} justifyContent={'space-between'}>
+                    <Text
+                      fontFamily={theme.fonts.fld}
+                      color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
+                      Address for receiving funds
+                    </Text>
+                    <Link
+                      isExternal
+                      href={
+                        vault.addressForReceiving && network === 'rinkeby'
+                          ? `https://rinkeby.etherscan.io/address/${vault.addressForReceiving}`
+                          : vault.addressForReceiving && network !== 'rinkeby'
+                          ? `https://etherscan.io/address/${vault.addressForReceiving}`
+                          : ''
+                      }
+                      color={colorMode === 'light' ? '#353c48' : '#9d9ea5'}
+                      _hover={{color: '#2a72e5'}}
+                      fontFamily={theme.fonts.fld}>
+                      {vault.addressForReceiving
+                        ? shortenAddress(vault.addressForReceiving)
+                        : 'NA'}
+                    </Link>
+                  </Flex>
+
+                  <Flex alignItems={'center'} mt={'5px'}>
+                    <Button
+                      fontSize={'11px'}
+                      w={'273px'}
+                      h={'25px'}
+                      mr={'2px'}
+                      bg={'#257eee'}
+                      color={'#ffffff'}
+                      // isDisabled={
+                      //   vault.publicRound2End > moment().unix() ||
+                      //   hardcap === 0 ||
+                      //   fundWithdrew === true
+                      // }
+                      isDisabled={true}
+                      _disabled={{
+                        color: colorMode === 'light' ? '#86929d' : '#838383',
+                        bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+                        cursor: 'not-allowed',
+                      }}
+                      _hover={
+                        vault.publicRound2End > moment().unix() ||
+                        hardcap === 0 ||
+                        fundWithdrew === true
+                          ? {}
+                          : {
+                              cursor: 'pointer',
+                            }
+                      }
+                      _focus={
+                        vault.publicRound2End > moment().unix() ||
+                        hardcap === 0 ||
+                        fundWithdrew === true
+                          ? {}
+                          : {
+                              background: 'transparent',
+                              border: 'solid 1px #2a72e5',
+                              color: themeDesign.tosFont[colorMode],
+                              cursor: 'pointer',
+                            }
+                      }
+                      _active={
+                        vault.publicRound2End > moment().unix() ||
+                        hardcap === 0 ||
+                        fundWithdrew === true
+                          ? {}
+                          : {
+                              background: '#2a72e5',
+                              border: 'solid 1px #2a72e5',
+                              color: '#fff',
+                            }
+                      }
+                      onClick={() => sendTOS()}>
+                      Send Funds
+                    </Button>
+                    {/* <Tooltip
+                      label="It is only possible to send TOS after the end of Public Round 2"
+                      hasArrow
+                      placement="top"
+                      color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                      aria-label={'Tooltip'}
+                      textAlign={'center'}
+                      size={'xs'}>
+                      <Image src={tooltipIcon} />
+                    </Tooltip> */}
+                  </Flex>
+                </Flex>
+              </GridItem>}
+              
             </>
           ) : (
             <>
@@ -869,7 +975,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                 border={themeDesign.border[colorMode]}
                 className={'chart-cell'}
                 mr={'-1px'}
-                h={isNaN((transferredTon / hardcap) * 100) ? '200px' : '245px'}>
+                h={vestingVault.length < 1? '95px': isNaN((transferredTon / hardcap) * 100) ? '200px' : '245px'}>
                 <Text fontFamily={theme.fonts.fld}>{''}</Text>
               </GridItem>
             </>
@@ -986,10 +1092,11 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                       i === 6 - sTosTier.length - 1 ? '4px' : 'none'
                     }
                     borderTop="none"
-                    h={
+                    h={ 
                       i === 6 - sTosTier.length - 1
                         ? isNaN((transferredTon / hardcap) * 100)
-                          ? '199px'
+                          ? '199px':
+                          vestingVault.length < 1? '94px' 
                           : '244px'
                         : ''
                     }
