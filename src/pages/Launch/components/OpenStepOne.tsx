@@ -76,7 +76,7 @@ const OpenStepOne = () => {
     );
 
     
-    setListed(inStarter);
+    setListed(inStarter && hashKey !== undefined);
   }, [hashKey, starterData.rawData]);
 
 
