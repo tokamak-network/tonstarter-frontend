@@ -1,5 +1,5 @@
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   Flex,
   Box,
@@ -39,11 +39,11 @@ type ClockProps = {
   setTime?: Dispatch<SetStateAction<any>>;
   startTime: number;
   endTime?: number;
-  calendarType?: string;
-  startTimeCap?: number;
+  calendarType: string;
+  startTimeCap: number;
   label?: string;
-  month: string,
-  day: number,
+  // month: string,
+  // day: number,
   disabled?: boolean;
 };
 
@@ -55,8 +55,8 @@ const CustomizedClock = (props: ClockProps) => {
     calendarType,
     startTimeCap,
     label,
-    month,
-    day,
+    // month,
+    // day,
     disabled,
   } = props;
   const {colorMode} = useColorMode();
@@ -93,6 +93,35 @@ const CustomizedClock = (props: ClockProps) => {
     }
   };
 
+    const getMonthAndDay = (start: number) => {
+    const date = calendarType === 'end' ? new Date((start + 86400) * 1000) : new Date(start * 1000 );
+    console.log('date', date);
+    
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+
+    return {month, day};
+  };
+
+
+    const monthAndDay = useMemo(() => {
+    return getMonthAndDay(startTime ? startTime : startTimeCap);
+  },[startTime, startTimeCap])
+
   useEffect(() => {
     setUp();
   }, [hours, minutes, seconds, meridiem, startTimeCap]);
@@ -118,7 +147,7 @@ const CustomizedClock = (props: ClockProps) => {
           &nbsp;
           {startTime ? (
             <Text fontSize={'13px'}>
-              {month}&nbsp;{day}
+              {monthAndDay.month}&nbsp;{monthAndDay.day}
             </Text>
           ) : (
             <Text fontSize={'13px'}>&nbsp;-&nbsp;-&nbsp;</Text>

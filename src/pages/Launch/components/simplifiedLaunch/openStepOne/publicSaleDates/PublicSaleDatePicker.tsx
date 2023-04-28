@@ -1,5 +1,5 @@
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   Flex,
   useColorMode,
@@ -75,30 +75,6 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
     setStartTime(startDates.unix());
   };
 
-  const getMonthAndDay = (startTime: number) => {
-    const date = new Date(startTime * 1000);
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    const month = monthNames[date.getMonth()];
-    const day = date.getDate();
-
-    return {month, day};
-  };
-
-  const monthAndDay = getMonthAndDay(startTimeCap ? startTimeCap : Date.now());
-
   useEffect(() => {
     create();
   }, [startTimeArray, startTime]);
@@ -158,39 +134,37 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                 startTimeCap={startTimeCap}
                 duration={duration}
               />
-              {monthAndDay && (
-                <>
                   <CustomizedClock
                     setTime={setStartTimeArray}
                     calendarType={'start'}
                     startTime={startTime}
                     startTimeCap={startTimeCap}
                     label={'Start time'}
-                    month={monthAndDay?.month}
-                    day={monthAndDay?.day}
+                    // month={monthAndDay?.month}
+                    // day={monthAndDay?.day}
                   />
                   {isProduction() === false ? (
                     <CustomizedClock
                       setTime={setEndTime}
-                      startTime={startTimeCap ? startTimeCap : Date.now()}
+                      startTime={startTime ? startTime : startTimeCap}
                       startTimeCap={startTime + 2 * 60}
                       label={'End time'}
                       disabled={true}
-                      month={monthAndDay?.month}
-                      day={monthAndDay?.day}
+                      calendarType={'end'}
+                      // month={monthAndDay?.month}
+                      // day={monthAndDay?.day}
                     />
                   ) : (
                     <CustomizedClock
                       setTime={setEndTime}
-                      startTime={startTimeCap ? startTimeCap : Date.now()}
+                      startTime={startTime ? startTime : startTimeCap}
                       startTimeCap={startTime + duration * 86400}
                       label={'End time'}
                       disabled={true}
-                      month={monthAndDay?.month}
-                      day={monthAndDay?.day + duration}
+                      calendarType={'end'}
+                      // month={monthAndDay?.month}
+                      // day={monthAndDay?.day}
                     />
-                  )}
-                </>
               )}
 
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>
