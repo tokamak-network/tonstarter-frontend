@@ -214,7 +214,7 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         // minDetail={'decade'}
         locale={'en-EN'}
         tileDisabled={tilesDisabled}
-        activeStartDate={new Date(startTime*1000)}
+        // activeStartDate={new Date(startTime*1000)}
         tileClassName={tileClassName}
       />
     </Flex>
