@@ -159,7 +159,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                       calendarType={'end'}
                       duration={duration}
                       // month={monthAndDay?.month}
-                      // day={monthAndDay?.day}
+                    
                     />
                   ) : (
                     <CustomizedClock
