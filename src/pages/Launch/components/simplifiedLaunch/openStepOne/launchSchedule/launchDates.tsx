@@ -210,7 +210,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {convertTimeStamp(snapshotDate, 'YYYY.MM.DD HH:mm:ss')}
                   </Text>
                 ) : (
-                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
+                  <Text color="#ff3b3b" ml={'8px'}>
+                    Choose
+                  </Text>
                 )}
                 {!isPublicVaultDeployed && (
                   <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
@@ -255,7 +257,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
             {/* Public sale 1 date & time */}
             {step === 'Public Sale 1' && (
               <GridItem w={'100px'} mr={'14px'} p={0}>
-                {publicSale1 ? (
+                {publicSale1 && snapshotDate && snapshotDate < publicSale1 ? (
                   <Text>
                     {convertTimeStamp(
                       Number(publicSale1),
