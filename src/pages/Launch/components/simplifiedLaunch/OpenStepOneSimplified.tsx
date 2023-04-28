@@ -136,7 +136,7 @@ const OpenStepOneSimplified = (props: any) => {
           )}
         </Grid>
         <Grid id="reschedule">
-          <LaunchSchedule currentStep={step}></LaunchSchedule>
+          <LaunchSchedule currentStep={step} isListed={listed}></LaunchSchedule>
         </Grid>
         <Box w={'704px'}>
           <CustomMarkdownEditor />
