@@ -240,6 +240,8 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                           ? publicSale1
                             ? publicSale1 - 1
                             : snapshotDate + 2 * 60
+                          : publicSale1
+                          ? publicSale1 - 1
                           : snapshotDate + 1 + 86400 * 2,
                       ),
                       'MM.DD HH:mm:ss',
