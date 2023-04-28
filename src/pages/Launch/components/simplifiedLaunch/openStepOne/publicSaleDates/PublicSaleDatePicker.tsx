@@ -66,18 +66,23 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   };
 
   const create = () => {
-    const starts = moment.unix(startTime);
+ 
+    
+    const starts = startTime !== 0?  moment.unix(startTime) :moment.unix(startTimeCap) ;
+    
     const startDates = moment(starts).set({
       hour: startTimeArray[0],
       minute: startTimeArray[1],
       second: startTimeArray[2],
-    });
+    });    
+    
     setStartTime(startDates.unix());
   };
 
   useEffect(() => {
     create();
   }, [startTimeArray, startTime]);
+  
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -130,38 +135,41 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
             <Flex flexDir={'column'} justifyContent={'center'}>
               <CustomizedCalendar
                 setValue={setStartTime}
-                startTime={startTimeCap}
+                startTime={startTime !==0 ? startTime : startTimeCap}
                 startTimeCap={startTimeCap}
                 duration={duration}
               />
                   <CustomizedClock
                     setTime={setStartTimeArray}
                     calendarType={'start'}
-                    startTime={startTimeCap}
+                    startTime={startTime !==0 ? startTime : startTimeCap}
                     startTimeCap={startTimeCap}
                     label={'Start time'}
+                    duration={0}
                     // month={monthAndDay?.month}
                     // day={monthAndDay?.day}
                   />
                   {isProduction() === false ? (
                     <CustomizedClock
                       setTime={setEndTime}
-                      startTime={startTime ? startTime : startTimeCap}
+                      startTime={startTime !==0 ? startTime : startTimeCap}
                       startTimeCap={startTime + 2 * 60}
                       label={'End time'}
                       disabled={true}
                       calendarType={'end'}
+                      duration={duration}
                       // month={monthAndDay?.month}
                       // day={monthAndDay?.day}
                     />
                   ) : (
                     <CustomizedClock
                       setTime={setEndTime}
-                      startTime={startTime ? startTime : startTimeCap}
-                      startTimeCap={startTime + duration * 86400}
+                      startTime={startTime !==0  ? startTime : startTimeCap}
+                      startTimeCap={startTime !==0  ?startTime + duration * 86400: startTimeCap + duration * 86400}
                       label={'End time'}
                       disabled={true}
                       calendarType={'end'}
+                      duration={duration}
                       // month={monthAndDay?.month}
                       // day={monthAndDay?.day}
                     />

@@ -42,6 +42,7 @@ type ClockProps = {
   calendarType: string;
   startTimeCap: number;
   label?: string;
+  duration: number
   // month: string,
   // day: number,
   disabled?: boolean;
@@ -55,6 +56,7 @@ const CustomizedClock = (props: ClockProps) => {
     calendarType,
     startTimeCap,
     label,
+    duration,
     // month,
     // day,
     disabled,
@@ -93,9 +95,21 @@ const CustomizedClock = (props: ClockProps) => {
     }
   };
 
-    const getMonthAndDay = (start: number) => {
-    const date = calendarType === 'end' ? new Date((start + 86400) * 1000) : new Date(start * 1000 );
-    console.log('date', date);
+  const [month, setMonth] = useState<string>('');
+  const [date, setDate] = useState<number>(0);
+
+  useEffect(() => {
+    
+    const start = startTime ? startTime : startTimeCap;
+    const startDate = new Date(start*1000)
+   const end = start + (86400*duration)
+     const endDate = new Date(end*1000)
+     
+    const date =
+      calendarType === 'end'
+        ? endDate
+        : startDate;
+  
     
     const monthNames = [
       'January',
@@ -111,16 +125,23 @@ const CustomizedClock = (props: ClockProps) => {
       'November',
       'December',
     ];
-    const month = monthNames[date.getMonth()];
-    const day = date.getDate();
+    const monthCalc = monthNames[date.getMonth()];
+    
+    const dayCalc = date.getDate();
 
-    return {month, day};
-  };
+    // console.log(monthCalc,dayCalc);
+    
+    setMonth(monthCalc);
+    setDate(dayCalc);
 
+    // const
+  }, [calendarType, startTime, startTimeCap]);
+  // console.log(new Date(startTime*1000));
 
-    const monthAndDay = useMemo(() => {
-    return getMonthAndDay(startTime ? startTime : startTimeCap);
-  },[startTime, startTimeCap])
+  //   const monthAndDay = useMemo(() => {
+
+  //   return getMonthAndDay(startTime ? startTime : startTimeCap);
+  // },[calendarType, startTime, startTimeCap])
 
   useEffect(() => {
     setUp();
@@ -147,7 +168,7 @@ const CustomizedClock = (props: ClockProps) => {
           &nbsp;
           {startTime ? (
             <Text fontSize={'13px'}>
-              {monthAndDay.month}&nbsp;{monthAndDay.day}
+              {month}&nbsp;{date}
             </Text>
           ) : (
             <Text fontSize={'13px'}>&nbsp;-&nbsp;-&nbsp;</Text>
