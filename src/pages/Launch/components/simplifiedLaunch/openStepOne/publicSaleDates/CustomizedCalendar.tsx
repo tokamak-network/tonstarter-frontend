@@ -12,7 +12,7 @@ type CalendarProps = {
   startTime: number;
   endTime?: number;
   calendarType?: string;
-  startTimeCap?: number;
+  startTimeCap: number;
   duration: number;
 };
 

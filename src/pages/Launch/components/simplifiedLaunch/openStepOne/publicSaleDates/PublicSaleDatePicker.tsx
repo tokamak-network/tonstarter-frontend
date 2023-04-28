@@ -20,14 +20,13 @@ import moment from 'moment';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
-import {opacify} from 'polished';
 
 type calendarComponentProps = {
   setDate?: Dispatch<SetStateAction<any>>;
   fieldValueKey?: string;
   oldValues?: {};
   valueKey?: any;
-  startTimeCap?: number;
+  startTimeCap: number;
   duration: number;
   disabled: boolean;
 };
@@ -98,7 +97,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
     return {month, day};
   };
 
-  const monthAndDay = getMonthAndDay(startTime);
+  const monthAndDay = getMonthAndDay(startTimeCap ? startTimeCap : Date.now());
 
   useEffect(() => {
     create();
@@ -155,7 +154,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
             <Flex flexDir={'column'} justifyContent={'center'}>
               <CustomizedCalendar
                 setValue={setStartTime}
-                startTime={startTime}
+                startTime={startTimeCap}
                 startTimeCap={startTimeCap}
                 duration={duration}
               />
@@ -173,7 +172,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                   {isProduction() === false ? (
                     <CustomizedClock
                       setTime={setEndTime}
-                      startTime={startTime}
+                      startTime={startTimeCap ? startTimeCap : Date.now()}
                       startTimeCap={startTime + 2 * 60}
                       label={'End time'}
                       disabled={true}
@@ -183,7 +182,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                   ) : (
                     <CustomizedClock
                       setTime={setEndTime}
-                      startTime={startTime}
+                      startTime={startTimeCap ? startTimeCap : Date.now()}
                       startTimeCap={startTime + duration * 86400}
                       label={'End time'}
                       disabled={true}
