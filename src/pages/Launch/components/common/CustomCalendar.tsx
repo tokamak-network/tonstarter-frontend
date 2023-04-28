@@ -60,6 +60,8 @@ export const CustomCalendar = (prop: CalendarProps) => {
   //   }
     
   // },[startTime,endTime])
+
+  
   
   const tilesDisabled = ({date, view}: any) => {
     const now = moment().startOf('day').unix();
@@ -81,11 +83,19 @@ export const CustomCalendar = (prop: CalendarProps) => {
       } else if (view === 'year') {  
         const dateFormatted = new Date(formattedDate*1000)
         const monthFormatted = dateFormatted.getMonth();
+        const yearFormatted = dateFormatted.getFullYear();
         const nowFormatted = new Date(startTime*1000);
         const monthNow = nowFormatted.getMonth();
-        if (monthFormatted >= monthNow) {
+        const yearNow = nowFormatted.getFullYear();
+     
+        if (yearFormatted >  yearNow ) {
           return false;
         }
+
+        else if ( yearFormatted === yearNow &&  monthFormatted >= monthNow) {
+          return false;
+        }
+        
         else {
           return true;
         }
@@ -114,9 +124,17 @@ export const CustomCalendar = (prop: CalendarProps) => {
         const monthFormatted = dateFormatted.getMonth();
         const nowFormatted = new Date(now*1000);
         const monthNow = nowFormatted.getMonth();
-        if (monthFormatted >= monthNow) {
+        const yearFormatted = dateFormatted.getFullYear();
+        const yearNow = nowFormatted.getFullYear();
+        if (yearFormatted >  yearNow ) {
           return false;
-        } else {
+        }
+
+        else if ( yearFormatted === yearNow &&  monthFormatted >= monthNow) {
+          return false;
+        }
+        
+        else {
           return true;
         }
       } else {
@@ -178,6 +196,10 @@ export const CustomCalendar = (prop: CalendarProps) => {
       background: transparent
     }`;
 
+//     console.log(startTimeCap? moment.unix(startTimeCap).startOf('day').unix():  moment().startOf('day').unix());
+//   const xx =  new Date(startTimeCap ? startTimeCap * 1000 : moment().unix()*1000)
+// console.log(xx);
+
   return (
     <Flex
       alignItems={'center'}
@@ -192,6 +214,7 @@ export const CustomCalendar = (prop: CalendarProps) => {
           prevLabel={<img src={calender_back_icon_inactive} />}
           minDetail={'decade'}
           locale={'en-EN'}
+          defaultActiveStartDate={new Date(startTimeCap ? startTimeCap * 1000 : moment().unix()*1000)}
           tileDisabled={tilesDisabled}
           
            />

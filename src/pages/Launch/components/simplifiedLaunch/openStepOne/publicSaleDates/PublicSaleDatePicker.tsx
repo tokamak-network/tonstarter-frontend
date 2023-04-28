@@ -1,5 +1,5 @@
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   Flex,
   useColorMode,
@@ -26,8 +26,9 @@ type calendarComponentProps = {
   fieldValueKey?: string;
   oldValues?: {};
   valueKey?: any;
-  startTimeCap?: number;
+  startTimeCap: number;
   duration: number;
+  disabled: boolean;
 };
 const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   setDate,
@@ -36,6 +37,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   valueKey,
   startTimeCap,
   duration,
+  disabled,
 }) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
@@ -64,42 +66,23 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   };
 
   const create = () => {
-    const starts = moment.unix(startTime);
+ 
+    
+    const starts = startTime !== 0?  moment.unix(startTime) :moment.unix(startTimeCap) ;
+    
     const startDates = moment(starts).set({
       hour: startTimeArray[0],
       minute: startTimeArray[1],
       second: startTimeArray[2],
-    });
+    });    
+    
     setStartTime(startDates.unix());
   };
-
-  const getMonthAndDay = (startTime: number) => {
-    const date = new Date(startTime * 1000);
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    const month = monthNames[date.getMonth()];
-    const day = date.getDate();
-
-    return {month, day};
-  };
-
-  const monthAndDay = getMonthAndDay(startTime);
 
   useEffect(() => {
     create();
   }, [startTimeArray, startTime]);
+  
   return (
     <Popover closeOnBlur={true} placement="bottom">
       {({isOpen, onClose}) => (
@@ -115,7 +98,11 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                     : CalendarInactiveImgDark,
                 )
               }
-              style={{cursor: 'pointer'}}
+              style={{
+                cursor: disabled ? 'not-allowed' : 'pointer',
+                pointerEvents: disabled ? 'none' : 'initial',
+                opacity: disabled ? 0.5 : 1,
+              }}
               alt={'calender_icon'}></img>
           </PopoverTrigger>
           <PopoverContent
@@ -148,43 +135,44 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
             <Flex flexDir={'column'} justifyContent={'center'}>
               <CustomizedCalendar
                 setValue={setStartTime}
-                startTime={startTime}
+                startTime={startTime !==0 ? startTime : startTimeCap}
                 startTimeCap={startTimeCap}
                 duration={duration}
               />
-              {monthAndDay && (
-                <>
                   <CustomizedClock
                     setTime={setStartTimeArray}
                     calendarType={'start'}
-                    startTime={startTime}
+                    startTime={startTime !==0 ? startTime : startTimeCap}
                     startTimeCap={startTimeCap}
                     label={'Start time'}
-                    month={monthAndDay?.month}
-                    day={monthAndDay?.day}
+                    duration={0}
+                    // month={monthAndDay?.month}
+                    // day={monthAndDay?.day}
                   />
                   {isProduction() === false ? (
                     <CustomizedClock
                       setTime={setEndTime}
-                      startTime={startTime}
+                      startTime={startTime !==0 ? startTime : startTimeCap}
                       startTimeCap={startTime + 2 * 60}
                       label={'End time'}
                       disabled={true}
-                      month={monthAndDay?.month}
-                      day={monthAndDay?.day}
-                      />
-                      ) : (
-                        <CustomizedClock
-                        setTime={setEndTime}
-                        startTime={startTime}
-                      startTimeCap={startTime + duration * 86400}
+                      calendarType={'end'}
+                      duration={duration}
+                      // month={monthAndDay?.month}
+                      // day={monthAndDay?.day}
+                    />
+                  ) : (
+                    <CustomizedClock
+                      setTime={setEndTime}
+                      startTime={startTime !==0  ? startTime : startTimeCap}
+                      startTimeCap={startTime !==0  ?startTime + duration * 86400: startTimeCap + duration * 86400}
                       label={'End time'}
                       disabled={true}
-                      month={monthAndDay?.month}
-                      day={monthAndDay?.day + duration}
+                      calendarType={'end'}
+                      duration={duration}
+                      // month={monthAndDay?.month}
+                      // day={monthAndDay?.day}
                     />
-                  )}
-                </>
               )}
 
               <Flex alignItems={'center'} justifyContent={'center'} p={'15px'}>

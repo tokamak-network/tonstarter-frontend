@@ -1,5 +1,5 @@
 import {Dispatch, SetStateAction, useState, useEffect} from 'react';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   Flex,
   Box,
@@ -39,11 +39,12 @@ type ClockProps = {
   setTime?: Dispatch<SetStateAction<any>>;
   startTime: number;
   endTime?: number;
-  calendarType?: string;
-  startTimeCap?: number;
+  calendarType: string;
+  startTimeCap: number;
   label?: string;
-  month: string,
-  day: number,
+  duration: number
+  // month: string,
+  // day: number,
   disabled?: boolean;
 };
 
@@ -55,8 +56,9 @@ const CustomizedClock = (props: ClockProps) => {
     calendarType,
     startTimeCap,
     label,
-    month,
-    day,
+    duration,
+    // month,
+    // day,
     disabled,
   } = props;
   const {colorMode} = useColorMode();
@@ -93,6 +95,54 @@ const CustomizedClock = (props: ClockProps) => {
     }
   };
 
+  const [month, setMonth] = useState<string>('');
+  const [date, setDate] = useState<number>(0);
+
+  useEffect(() => {
+    
+    const start = startTime ? startTime : startTimeCap;
+    const startDate = new Date(start*1000)
+   const end = start + (86400*duration)
+     const endDate = new Date(end*1000)
+     
+    const date =
+      calendarType === 'end'
+        ? endDate
+        : startDate;
+  
+    
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const monthCalc = monthNames[date.getMonth()];
+    
+    const dayCalc = date.getDate();
+
+    // console.log(monthCalc,dayCalc);
+    
+    setMonth(monthCalc);
+    setDate(dayCalc);
+
+    // const
+  }, [calendarType, startTime, startTimeCap]);
+  // console.log(new Date(startTime*1000));
+
+  //   const monthAndDay = useMemo(() => {
+
+  //   return getMonthAndDay(startTime ? startTime : startTimeCap);
+  // },[calendarType, startTime, startTimeCap])
+
   useEffect(() => {
     setUp();
   }, [hours, minutes, seconds, meridiem, startTimeCap]);
@@ -118,7 +168,7 @@ const CustomizedClock = (props: ClockProps) => {
           &nbsp;
           {startTime ? (
             <Text fontSize={'13px'}>
-              {month}&nbsp;{day}
+              {month}&nbsp;{date}
             </Text>
           ) : (
             <Text fontSize={'13px'}>&nbsp;-&nbsp;-&nbsp;</Text>
