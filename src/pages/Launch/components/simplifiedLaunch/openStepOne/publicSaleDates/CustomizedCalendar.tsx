@@ -211,10 +211,10 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         onChange={handleStartDateChange}
         nextLabel={<img src={calender_Forward_icon_inactive} />}
         prevLabel={<img src={calender_back_icon_inactive} />}
-        // minDetail={'decade'}
+       
         locale={'en-EN'}
         tileDisabled={tilesDisabled}
-       
+      
         tileClassName={tileClassName}
       />
     </Flex>
