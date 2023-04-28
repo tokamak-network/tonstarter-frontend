@@ -20,6 +20,7 @@ import moment from 'moment';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
+import {opacify} from 'polished';
 
 type calendarComponentProps = {
   setDate?: Dispatch<SetStateAction<any>>;
@@ -28,6 +29,7 @@ type calendarComponentProps = {
   valueKey?: any;
   startTimeCap?: number;
   duration: number;
+  disabled: boolean;
 };
 const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   setDate,
@@ -36,6 +38,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
   valueKey,
   startTimeCap,
   duration,
+  disabled,
 }) => {
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
@@ -115,7 +118,11 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                     : CalendarInactiveImgDark,
                 )
               }
-              style={{cursor: 'pointer'}}
+              style={{
+                cursor: disabled ? 'not-allowed' : 'pointer',
+                pointerEvents: disabled ? 'none' : 'initial',
+                opacity: disabled ? 0.5 : 1,
+              }}
               alt={'calender_icon'}></img>
           </PopoverTrigger>
           <PopoverContent
@@ -172,11 +179,11 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                       disabled={true}
                       month={monthAndDay?.month}
                       day={monthAndDay?.day}
-                      />
-                      ) : (
-                        <CustomizedClock
-                        setTime={setEndTime}
-                        startTime={startTime}
+                    />
+                  ) : (
+                    <CustomizedClock
+                      setTime={setEndTime}
+                      startTime={startTime}
                       startTimeCap={startTime + duration * 86400}
                       label={'End time'}
                       disabled={true}

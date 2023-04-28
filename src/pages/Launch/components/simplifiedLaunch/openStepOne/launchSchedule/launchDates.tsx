@@ -273,6 +273,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                         setDate={setPublicSale1}
                         startTimeCap={publicSale1STC}
                         duration={2}
+                        disabled={snapshotDate ? false : true}
                       />
                     </Grid>
                   </Grid>
@@ -302,6 +303,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                         setDate={setPublicSale2}
                         startTimeCap={publicSale2STC}
                         duration={5}
+                        disabled={publicSale1End ? false : true}
                       />
                     )}
                   </Grid>
