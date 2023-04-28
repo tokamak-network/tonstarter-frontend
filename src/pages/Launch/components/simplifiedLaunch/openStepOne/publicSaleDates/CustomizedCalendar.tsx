@@ -1,5 +1,5 @@
 import {Flex, useColorMode, useTheme} from '@chakra-ui/react';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import Calendar from 'react-calendar';
 import './css/CalendarLaunch.css';
 import calender_Forward_icon_inactive from 'assets/svgs/calender_Forward_icon_inactive.svg';
@@ -25,6 +25,8 @@ const CustomizedCalendar = (prop: CalendarProps) => {
     startDate: new Date(),
     endDate: new Date(),
   });
+
+  const [defaultDate, setDefaultDate] = useState(new Date()) 
 
   // const setInput = (date: any) => {
   //   const dateSelected = Number(new Date(date));
@@ -65,9 +67,17 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         const monthFormatted = dateFormatted.getMonth();
         const nowFormatted = new Date(startTime * 1000);
         const monthNow = nowFormatted.getMonth();
-        if (monthFormatted >= monthNow) {
+        const yearFormatted = dateFormatted.getFullYear();
+        const yearNow = nowFormatted.getFullYear();
+        if (yearFormatted >  yearNow ) {
           return false;
-        } else {
+        }
+
+        else if ( yearFormatted === yearNow &&  monthFormatted >= monthNow) {
+          return false;
+        }
+        
+        else {
           return true;
         }
       } else {
@@ -93,9 +103,17 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         const monthFormatted = dateFormatted.getMonth();
         const nowFormatted = new Date(now * 1000);
         const monthNow = nowFormatted.getMonth();
-        if (monthFormatted >= monthNow) {
+        const yearFormatted = dateFormatted.getFullYear();
+        const yearNow = nowFormatted.getFullYear();
+        if (yearFormatted >  yearNow ) {
           return false;
-        } else {
+        }
+
+        else if ( yearFormatted === yearNow &&  monthFormatted >= monthNow) {
+          return false;
+        }
+        
+        else {
           return true;
         }
       } else {
@@ -183,6 +201,9 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         background: transparent
       }`;
 
+
+      
+
   return (
     <Flex alignItems={'center'} display="flex">
       <style>{dayStyle}</style>
@@ -190,9 +211,10 @@ const CustomizedCalendar = (prop: CalendarProps) => {
         onChange={handleStartDateChange}
         nextLabel={<img src={calender_Forward_icon_inactive} />}
         prevLabel={<img src={calender_back_icon_inactive} />}
-        minDetail={'decade'}
+        // minDetail={'decade'}
         locale={'en-EN'}
         tileDisabled={tilesDisabled}
+        activeStartDate={new Date(startTime*1000)}
         tileClassName={tileClassName}
       />
     </Flex>
