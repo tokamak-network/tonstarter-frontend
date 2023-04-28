@@ -264,9 +264,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     <br />~
                     {convertTimeStamp(Number(publicSale1End), 'MM.DD HH:mm:ss')}
                   </Text>
-                ) : (
-                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
-                )}
+                ) : <Text color="#ff3b3b" ml={'8px'}>Choose</Text>}
                 {!isPublicVaultDeployed && (
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
@@ -285,7 +283,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
             {/* Public sale 2 date & time */}
             {step === 'Public Sale 2' && (
               <GridItem w={'100px'} mr={'29px'} p={0}>
-                {publicSale2 ? (
+                {publicSale2 && publicSale1 && publicSale2 > publicSale1 ? (
                   <Text>
                     {convertTimeStamp(
                       Number(publicSale2),
@@ -294,7 +292,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     <br />~
                     {convertTimeStamp(Number(publicSale2End), 'MM.DD HH:mm:ss')}
                   </Text>
-                ) : (
+                ): (
                   <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
                 )}
                 <Grid justifyContent={'center'}>
