@@ -629,6 +629,10 @@ export const AirdropClaimTable = () => {
             ? Number(ethers.utils.formatEther(amount)).toFixed(2)
             : amount;
 
+          if (address === '0x7a88424c2547ceC49AD1e4eE8eAfCC7F935E76B1') {
+            return;
+          }
+
           return (
             <Grid
               templateColumns="repeat(1, 1fr)"
