@@ -100,7 +100,7 @@ export const Router: FC<RouterProps> = () => {
 
   useEffect(() => {
     if (chainId !== Number(DEFAULT_NETWORK) && chainId !== undefined) {
-      const netType = DEFAULT_NETWORK === 1 ? 'mainnet' : 'Goerli Test Network';
+      const netType = DEFAULT_NETWORK === 1 ? 'Mainnet' : 'Goerli Test Network';
       //@ts-ignore
       // dispatch(fetchUserInfo({reset: true}));
       return alert(`Please use ${netType}`);
