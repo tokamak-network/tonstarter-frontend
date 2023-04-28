@@ -50,8 +50,8 @@ export const LaunchSchedule: React.FC<ScheduleProps> = (props) => {
   }
 
 const vaultStatus = getVaultStatus(publicVault);
-console.log('snapshotpassed', vaultStatus.isSnapshotPassed);
-console.log('vesting1Passed', vaultStatus.isVesting1Passed);
+// console.log('snapshotpassed', vaultStatus.isSnapshotPassed);
+// console.log('vesting1Passed', vaultStatus.isVesting1Passed);
 
   const launchSteps = [
     'Snapshot',

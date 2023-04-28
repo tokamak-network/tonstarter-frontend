@@ -137,7 +137,7 @@ const PublicSaleDatePicker: React.FC<calendarComponentProps> = ({
                   <CustomizedClock
                     setTime={setStartTimeArray}
                     calendarType={'start'}
-                    startTime={startTime}
+                    startTime={startTimeCap}
                     startTimeCap={startTimeCap}
                     label={'Start time'}
                     // month={monthAndDay?.month}
