@@ -285,7 +285,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
             {/* Public sale 2 date & time */}
             {step === 'Public Sale 2' && (
               <GridItem w={'100px'} mr={'29px'} p={0}>
-                {publicSale2 && publicSale1 && publicSale2 > publicSale1 ? (
+                {publicSale2 && publicSale1 && publicSale2 > publicSale1 && snapshotDate && snapshotDate < publicSale1? (
                   <Text>
                     {convertTimeStamp(
                       Number(publicSale2),
