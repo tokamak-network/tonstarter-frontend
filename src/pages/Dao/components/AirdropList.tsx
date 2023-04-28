@@ -57,7 +57,11 @@ export const AirdropList = () => {
       }
     } while (isError === false);
 
-    const tokens = claimableTokens;
+    //remove Dum token of Dummy Project
+    const tokens = claimableTokens.filter(
+      (tokenAddress) =>
+        tokenAddress !== '0x7a88424c2547ceC49AD1e4eE8eAfCC7F935E76B1',
+    );
     const nowTimeStamp = moment().unix();
     const result: {tokenName: string; amount: string}[] = await Promise.all(
       tokens.map(async (token: string) => {
