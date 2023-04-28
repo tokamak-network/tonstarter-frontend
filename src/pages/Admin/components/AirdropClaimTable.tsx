@@ -73,112 +73,112 @@ export const AirdropClaimTable = () => {
     library,
   );
 
-  useEffect(() => {
-    async function getClaimableAirdropTonAmounts() {
-      if (account === undefined || account === null) {
-        return;
-      }
-      const tonRes =
-        await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(account);
+  // useEffect(() => {
+  //   async function getClaimableAirdropTonAmounts() {
+  //     if (account === undefined || account === null) {
+  //       return;
+  //     }
+  //     const tonRes =
+  //       await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(account);
 
-      const claimList = await getClaimalbeList({account, library});
+  //     const claimList = await getClaimalbeList({account, library});
 
-      if (tonRes === undefined && claimList === undefined) {
-        return;
-      }
+  //     if (tonRes === undefined && claimList === undefined) {
+  //       return;
+  //     }
 
-      const {claimableAmounts, claimableTokens} = tonRes;
+  //     const {claimableAmounts, claimableTokens} = tonRes;
 
-      let claimableArr: any[] = [];
-      let tempTonStakerArr: any[] = [];
-      let tempDaoAirdropArr: any[] = [];
+  //     let claimableArr: any[] = [];
+  //     let tempTonStakerArr: any[] = [];
+  //     let tempDaoAirdropArr: any[] = [];
 
-      if (claimableAmounts.length > 0 && claimableTokens) {
-        await Promise.all(
-          claimableTokens.map(async (tokenAddress: string, idx: number) => {
-            const ERC20_CONTRACT = new Contract(
-              tokenAddress,
-              ERC20.abi,
-              library,
-            );
-            let tokenSymbol = await ERC20_CONTRACT.symbol();
-            claimableArr.push({
-              address: tokenAddress,
-              amount: claimableAmounts[idx],
-              tokenSymbol: tokenSymbol,
-              id: idx,
-              tonStaker: true,
-            });
-          }),
-        );
-      }
-      if (claimList) {
-        if (claimList?.length > 0) {
-          await Promise.all(
-            claimList?.map((token: any, idx: number) => {
-              claimableArr.push({
-                address: token?.tokenAddress,
-                amount: token?.claimAmount,
-                tokenSymbol: token?.tokenName,
-                id: idx,
-                tosStaker: true,
-              });
-            }),
-          );
-        }
-      }
-      if (claimableArr.length > 0) {
-        // Push to Ton Staker arr
-        await Promise.all(
-          claimableArr.map((token: any) => {
-            if (token.tonStaker === true && token.amount !== '0.00') {
-              tempTonStakerArr.push(token);
-            }
-          }),
-        );
+  //     if (claimableAmounts.length > 0 && claimableTokens) {
+  //       await Promise.all(
+  //         claimableTokens.map(async (tokenAddress: string, idx: number) => {
+  //           const ERC20_CONTRACT = new Contract(
+  //             tokenAddress,
+  //             ERC20.abi,
+  //             library,
+  //           );
+  //           let tokenSymbol = await ERC20_CONTRACT.symbol();
+  //           claimableArr.push({
+  //             address: tokenAddress,
+  //             amount: claimableAmounts[idx],
+  //             tokenSymbol: tokenSymbol,
+  //             id: idx,
+  //             tonStaker: true,
+  //           });
+  //         }),
+  //       );
+  //     }
+  //     if (claimList) {
+  //       if (claimList?.length > 0) {
+  //         await Promise.all(
+  //           claimList?.map((token: any, idx: number) => {
+  //             claimableArr.push({
+  //               address: token?.tokenAddress,
+  //               amount: token?.claimAmount,
+  //               tokenSymbol: token?.tokenName,
+  //               id: idx,
+  //               tosStaker: true,
+  //             });
+  //           }),
+  //         );
+  //       }
+  //     }
+  //     if (claimableArr.length > 0) {
+  //       // Push to Ton Staker arr
+  //       await Promise.all(
+  //         claimableArr.map((token: any) => {
+  //           if (token.tonStaker === true && token.amount !== '0.00') {
+  //             tempTonStakerArr.push(token);
+  //           }
+  //         }),
+  //       );
 
-        // Push to DAO airdrop arr
-        await Promise.all(
-          claimableArr.map((token: any) => {
-            if (token.tosStaker === true && token.amount !== '0.00') {
-              tempDaoAirdropArr.push(token);
-            }
-          }),
-        );
-      }
+  //       // Push to DAO airdrop arr
+  //       await Promise.all(
+  //         claimableArr.map((token: any) => {
+  //           if (token.tosStaker === true && token.amount !== '0.00') {
+  //             tempDaoAirdropArr.push(token);
+  //           }
+  //         }),
+  //       );
+  //     }
 
-      const sortedTonStakerArr = tempTonStakerArr.sort((a, b) => a.id - b.id);
-      const sortedDaoAirdropArr = tempDaoAirdropArr.sort((a, b) => a.id - b.id);
+  //     const sortedTonStakerArr = tempTonStakerArr.sort((a, b) => a.id - b.id);
+  //     const sortedDaoAirdropArr = tempDaoAirdropArr.sort((a, b) => a.id - b.id);
 
-      setTonStakerAirdropTokens(
-        sortedTonStakerArr.filter((tonStakerData) => {
-          if (
-            convertNumber({amount: tonStakerData.amount.toString()}) !== '0.00'
-          ) {
-            return tonStakerData;
-          }
-        }),
-      );
-      setDaoAirdropTokens(
-        sortedDaoAirdropArr.filter((daoAirdropData) => {
-          if (daoAirdropData.amount !== '0.00') {
-            return daoAirdropData;
-          }
-        }),
-      );
+  //     setTonStakerAirdropTokens(
+  //       sortedTonStakerArr.filter((tonStakerData) => {
+  //         if (
+  //           convertNumber({amount: tonStakerData.amount.toString()}) !== '0.00'
+  //         ) {
+  //           return tonStakerData;
+  //         }
+  //       }),
+  //     );
+  //     setDaoAirdropTokens(
+  //       sortedDaoAirdropArr.filter((daoAirdropData) => {
+  //         if (daoAirdropData.amount !== '0.00') {
+  //           return daoAirdropData;
+  //         }
+  //       }),
+  //     );
 
-      let filteredAirdropData = claimableArr.filter(
-        (data) => data.amount !== '0.00',
-      );
-      const sortedArr = filteredAirdropData.sort((a, b) => a.id - b.id);
-      setLoadingData(false);
-      setAirdropData(sortedArr);
-    }
-    if (account !== undefined && library !== undefined) {
-      getClaimableAirdropTonAmounts();
-    }
-    /*eslint-disable*/
-  }, [account, transactionType, blockNumber]);
+  //     let filteredAirdropData = claimableArr.filter(
+  //       (data) => data.amount !== '0.00',
+  //     );
+  //     const sortedArr = filteredAirdropData.sort((a, b) => a.id - b.id);
+  //     setLoadingData(false);
+  //     setAirdropData(sortedArr);
+  //   }
+  //   if (account !== undefined && library !== undefined) {
+  //     getClaimableAirdropTonAmounts();
+  //   }
+  //   /*eslint-disable*/
+  // }, [account, transactionType, blockNumber]);
 
   const availableGenesisAmount = (
     roundInfo: AirDropList,
@@ -628,6 +628,10 @@ export const AirdropClaimTable = () => {
           const formattedAmt = tonStaker
             ? Number(ethers.utils.formatEther(amount)).toFixed(2)
             : amount;
+
+          if (address === '0x7a88424c2547ceC49AD1e4eE8eAfCC7F935E76B1') {
+            return;
+          }
 
           return (
             <Grid
