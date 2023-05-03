@@ -34,65 +34,26 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
   const theme = useTheme();
-
-  // Do not show calendar icons if public vault is initialized
-  const isPublicVaultDeployed = publicVault.isSet;
+  const isPublicVaultInitialized = publicVault.isSet; // Not showing calendar icons when public vault is initialized
 
   const [snapshotDate, setSnapshotDate] = useState<number | undefined>(0);
   const [publicSale1, setPublicSale1] = useState<number | undefined>(0);
   const [publicSale1End, setPublicSale1End] = useState<number | undefined>(0);
   const [publicSale2, setPublicSale2] = useState<number | undefined>(0);
   const [publicSale2End, setPublicSale2End] = useState<number | undefined>(0);
-  const [unlockDate1, setUnlockDate0] = useState<number | undefined>(0);
-  // STC : Start Time Cap
-  const [whitelistSTC, setWhitelistSTC] = useState<number>(0);
+  const [unlockDate1, setUnlockDate1] = useState<number | undefined>(0);
+  const [lastUnlockDate, setLastUnlockDate] = useState<number>(0);
   const [publicSale1STC, setPublicSale1STC] = useState<number>(0);
   const [publicSale2STC, setPublicSale2STC] = useState<number>(0);
-  const [lastUnlockDate, setLastUnlockDate] = useState<number>(0);
+  const [whitelistDateRange, setWhitelistDateRange] = useState<
+    (number | undefined)[]
+  >([]);
 
-  //  popover as a tooltip
+  // Use popover as a tooltip
   const [isOpen, setIsOpen] = React.useState(false);
-
   const handleMouseEnter = () => {
     setIsOpen(true);
   };
-
-  console.log(values);
-
-  // const stepName = '';
-  // const getTimeStamp = () => {
-  //   switch (
-  //     stepName as
-  //       | 'Snapshot'
-  //       | 'Whitelist'
-  //       | 'Public Sale 1'
-  //       | 'Public Sale 2'
-  //       | 'Unlock 1'
-  //   ) {
-  //     case 'Snapshot': {
-  //       return publicVault.snapshot;
-  //     }
-  //     case 'Whitelist': {
-  //       return [publicVault.whitelist, publicVault.whitelistEnd];
-  //     }
-  //     case 'Public Sale 1': {
-  //       return [publicVault.publicRound1, publicVault.publicRound1End];
-  //     }
-  //     case 'Public Sale 2': {
-  //       return [publicVault.publicRound2, publicVault.publicRound2End];
-  //     }
-  //     case 'Unlock 1': {
-  //       //@ts-ignore
-  //       return vaults[1].startTime;
-  //     }
-  //     default:
-  //       return 0;
-  //   }
-  // };
-
-  const [whitelistDateRange, setWhitelistDateRange] = useState<(number | undefined)[]>([]);
-  // const [publicSale1DateRange, setPublicSale1DateRange] = useState<(number | undefined)[]>([]);
-  // const [publicSale2DateRange, setPublicSale2DateRange] = useState<(number | undefined)[]>([]);
 
   const calcWhitelistTime = () => {
     if (snapshotDate) {
@@ -110,22 +71,80 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     calcWhitelistTime();
   }, [snapshotDate, publicSale1]);
 
-  useEffect(() => {
+  const calcPublicSaleDates = () => {
+    const isProd = isProduction();
+    
     if (publicSale1) {
-      if (isProduction() === false) {
-        setPublicSale1End(publicSale1 + 2 * 60);
-      } else {
-        setPublicSale1End(publicSale1 + 2 * 86400);
-      }
+      const duration = isProd ? 2 * 86400 : 2 * 60;
+      setPublicSale1End(publicSale1 + duration);
     }
+  
     if (publicSale2) {
-      if (isProduction() === false) {
-        setPublicSale2End(publicSale2 + 2 * 60);
-      } else {
-        setPublicSale2End(publicSale2 + 5 * 86400);
-      }
+      const duration = isProd ? 5 * 86400 : 2 * 60;
+      setPublicSale2End(publicSale2 + duration);
     }
-  }, [publicSale2, publicSale1]);
+  }
+
+  useEffect(() => {
+    calcPublicSaleDates();
+  }, [publicSale2, publicSale1, snapshotDate]);
+
+
+  const calcLastUnlockDate = () => {
+    if (unlockDate1) {
+      const secondsInADay = 86400;
+      const seconds = 1440 * secondsInADay; // 1440 days till Last Vesting Round
+      const lastUnlock = unlockDate1 + seconds;
+      setLastUnlockDate(lastUnlock);
+    } else {
+      setLastUnlockDate(0);
+    }
+  }
+
+  useEffect(() => {
+    calcLastUnlockDate();
+  }, [unlockDate1, lastUnlockDate, snapshotDate]);
+
+  const setStartTimeCap = () => {
+    if (whitelistDateRange[1]) {
+      setPublicSale1STC(whitelistDateRange[1] + 1);
+    }
+    if (publicSale1End) {
+      setPublicSale2STC(publicSale1End);
+    }
+    if (publicSale2End) {
+      setUnlockDate1(publicSale2End + 1);
+    }
+  };
+
+  useEffect(() => {
+    setStartTimeCap();
+  }, [whitelistDateRange[1], snapshotDate, publicSale1,publicSale2]);
+
+  const resetSchedule = () => {
+    setPublicSale1(0);
+    setPublicSale1End(0);
+    calcWhitelistTime();
+    setStartTimeCap();
+    resetVestingSchedule();
+  };
+
+  useEffect(() => {
+    resetSchedule();
+  }, [snapshotDate]);
+
+  const resetVestingSchedule = () => {
+    setPublicSale2(0);
+    setPublicSale2End(0);
+    setUnlockDate1(0);
+    setLastUnlockDate(0);
+  }
+
+  useEffect(() => {
+    if (publicSale1 && publicSale2 && publicSale1 > publicSale2) {
+      resetVestingSchedule();
+    }
+  }, [publicSale1]);
 
   useEffect(() => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
@@ -145,55 +164,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     whitelistDateRange,
   ]);
 
-  const setStartTimeCap = () => {
-    if (snapshotDate) {
-      setWhitelistSTC(snapshotDate);
-    }
-    if (whitelistDateRange[1]) {
-      setPublicSale1STC(whitelistDateRange[1] + 1);
-    }
-    if (publicSale1End) {
-      setPublicSale2STC(publicSale1End);
-    }
-    if (publicSale2End) {
-      setUnlockDate0(publicSale2End + 1);
-    }
-  };
-
-  useEffect(() => {
-    setStartTimeCap();
-  }, [
-    whitelistDateRange[1],
-    snapshotDate,
-    publicSale2End,
-    publicSale1End,
-  ]);
-
-  // Calculate last unlock time
-  useEffect(() => {
-    if (unlockDate1) {
-      const secondsInADay = 86400;
-      //  days till Last Vesting Round = 1440;
-      const seconds = 1440 * secondsInADay;
-      const lastUnlock = unlockDate1 + seconds;
-      setLastUnlockDate(lastUnlock);
-    }
-  }, [unlockDate1, lastUnlockDate]);
-
-  const resetValues = () => {
-    calcWhitelistTime();
-    setStartTimeCap();
-    setPublicSale1(0);
-    // setPublicSale2(0);
-    // setPublicSale1End(0);
-    setPublicSale2End(0);
-    setUnlockDate0(0);
-    setLastUnlockDate(0);
-  };
-
-  useEffect(() => {
-    resetValues();
-  }, [snapshotDate]);
+  console.log('values', values)
 
   return (
     <Grid
@@ -216,7 +187,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     Choose
                   </Text>
                 )}
-                {!isPublicVaultDeployed && (
+                {!isPublicVaultInitialized && (
                   <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
                     <SingleCalendarPop
                       setDate={setSnapshotDate}
@@ -237,8 +208,6 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     )}
                     <br />~
                     {convertTimeStamp(
-                      // mainnet: 2 days after snapshot time
-                      // testnet: whitelist end: 1 second after snapshot, 1 second before public sale 1 */}
                       Number(whitelistDateRange[1]),
                       'MM.DD HH:mm:ss',
                     )}
@@ -265,7 +234,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     Choose
                   </Text>
                 )}
-                {!isPublicVaultDeployed && (
+                {!isPublicVaultInitialized && (
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
                     <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
@@ -303,9 +272,8 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 )}
                 <Grid justifyContent={'center'}>
                   <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
-                    {!isPublicVaultDeployed && (
+                    {!isPublicVaultInitialized && (
                       <PublicSaleDatePicker
-                        // public sale end + 1
                         setDate={setPublicSale2}
                         startTimeCap={publicSale2STC}
                         duration={5}
