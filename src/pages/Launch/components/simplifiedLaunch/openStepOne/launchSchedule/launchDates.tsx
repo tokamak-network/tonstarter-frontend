@@ -91,7 +91,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
 
 
   const calcLastUnlockDate = () => {
-    if (unlockDate1) {
+    if (unlockDate1 && publicSale2) {
       const secondsInADay = 86400;
       const seconds = 1440 * secondsInADay; // 1440 days till Last Vesting Round
       const lastUnlock = unlockDate1 + seconds;
@@ -119,7 +119,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
 
   useEffect(() => {
     setStartTimeCap();
-  }, [whitelistDateRange[1], snapshotDate, publicSale1,publicSale2]);
+  }, [whitelistDateRange[1], snapshotDate, publicSale1,publicSale1End, publicSale2, publicSale2End]);
 
   const resetSchedule = () => {
     setPublicSale1(0);
