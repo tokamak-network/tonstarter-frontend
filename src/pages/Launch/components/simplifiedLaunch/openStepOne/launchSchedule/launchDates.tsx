@@ -38,22 +38,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
   // Do not show calendar icons if public vault is initialized
   const isPublicVaultDeployed = publicVault.isSet;
 
-  const [snapshotDate, setSnapshotDate] = useState<number | undefined>(
-    publicVault.snapshot || 0,
-  );
-
-  const [publicSale1, setPublicSale1] = useState<number | undefined>(
-    publicVault.publicRound1 || 0,
-  );
-  const [publicSale1End, setPublicSale1End] = useState<number | undefined>(
-    publicVault.publicRound1End || 0,
-  );
-  const [publicSale2, setPublicSale2] = useState<number | undefined>(
-    publicVault.publicRound2 || 0,
-  );
-  const [publicSale2End, setPublicSale2End] = useState<number | undefined>(
-    publicVault.publicRound2End || 0,
-  );
+  const [snapshotDate, setSnapshotDate] = useState<number | undefined>(0);
+  const [publicSale1, setPublicSale1] = useState<number | undefined>(0);
+  const [publicSale1End, setPublicSale1End] = useState<number | undefined>(0);
+  const [publicSale2, setPublicSale2] = useState<number | undefined>(0);
+  const [publicSale2End, setPublicSale2End] = useState<number | undefined>(0);
   const [unlockDate1, setUnlockDate0] = useState<number | undefined>(0);
   // STC : Start Time Cap
   const [whitelistSTC, setWhitelistSTC] = useState<number>(0);
@@ -70,46 +59,40 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
 
   console.log(values);
 
-  const stepName = '';
-  const getTimeStamp = () => {
-    switch (
-      stepName as
-        | 'Snapshot'
-        | 'Whitelist'
-        | 'Public Sale 1'
-        | 'Public Sale 2'
-        | 'Unlock 1'
-    ) {
-      case 'Snapshot': {
-        return publicVault.snapshot;
-      }
-      case 'Whitelist': {
-        return [publicVault.whitelist, publicVault.whitelistEnd];
-      }
-      case 'Public Sale 1': {
-        return [publicVault.publicRound1, publicVault.publicRound1End];
-      }
-      case 'Public Sale 2': {
-        return [publicVault.publicRound2, publicVault.publicRound2End];
-      }
-      case 'Unlock 1': {
-        //@ts-ignore
-        return vaults[1].startTime;
-      }
-      default:
-        return 0;
-    }
-  };
+  // const stepName = '';
+  // const getTimeStamp = () => {
+  //   switch (
+  //     stepName as
+  //       | 'Snapshot'
+  //       | 'Whitelist'
+  //       | 'Public Sale 1'
+  //       | 'Public Sale 2'
+  //       | 'Unlock 1'
+  //   ) {
+  //     case 'Snapshot': {
+  //       return publicVault.snapshot;
+  //     }
+  //     case 'Whitelist': {
+  //       return [publicVault.whitelist, publicVault.whitelistEnd];
+  //     }
+  //     case 'Public Sale 1': {
+  //       return [publicVault.publicRound1, publicVault.publicRound1End];
+  //     }
+  //     case 'Public Sale 2': {
+  //       return [publicVault.publicRound2, publicVault.publicRound2End];
+  //     }
+  //     case 'Unlock 1': {
+  //       //@ts-ignore
+  //       return vaults[1].startTime;
+  //     }
+  //     default:
+  //       return 0;
+  //   }
+  // };
 
-  const [whitelistDateRange, setWhitelistDateRange] = useState<
-    (number | undefined)[]
-  >(getTimeStamp() as (number | undefined)[]);
-  const [publicSale1DateRange, setPublicSale1DateRange] = useState<
-    (number | undefined)[]
-  >(getTimeStamp() as (number | undefined)[]);
-  const [publicSale2DateRange, setPublicSale2DateRange] = useState<
-    (number | undefined)[]
-  >(getTimeStamp() as (number | undefined)[]);
+  const [whitelistDateRange, setWhitelistDateRange] = useState<(number | undefined)[]>([]);
+  // const [publicSale1DateRange, setPublicSale1DateRange] = useState<(number | undefined)[]>([]);
+  // const [publicSale2DateRange, setPublicSale2DateRange] = useState<(number | undefined)[]>([]);
 
   const calcWhitelistTime = () => {
     if (snapshotDate) {
@@ -166,24 +149,24 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     if (snapshotDate) {
       setWhitelistSTC(snapshotDate);
     }
-    if (publicVault.whitelistEnd) {
-      setPublicSale1STC(publicVault.whitelistEnd + 1);
+    if (whitelistDateRange[1]) {
+      setPublicSale1STC(whitelistDateRange[1] + 1);
     }
-    if (publicVault.publicRound1End) {
-      setPublicSale2STC(publicVault.publicRound1End);
+    if (publicSale1End) {
+      setPublicSale2STC(publicSale1End);
     }
-    if (publicVault.publicRound2End) {
-      setUnlockDate0(publicVault.publicRound2End + 1);
+    if (publicSale2End) {
+      setUnlockDate0(publicSale2End + 1);
     }
   };
 
   useEffect(() => {
     setStartTimeCap();
   }, [
-    whitelistDateRange,
-    publicSale1STC,
-    publicSale2STC,
-    whitelistSTC
+    whitelistDateRange[1],
+    snapshotDate,
+    publicSale2End,
+    publicSale1End,
   ]);
 
   // Calculate last unlock time
@@ -201,8 +184,8 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     calcWhitelistTime();
     setStartTimeCap();
     setPublicSale1(0);
-    setPublicSale2(0);
-    setPublicSale1End(0);
+    // setPublicSale2(0);
+    // setPublicSale1End(0);
     setPublicSale2End(0);
     setUnlockDate0(0);
     setLastUnlockDate(0);
