@@ -11,7 +11,7 @@ import {
   PopoverBody,
   PopoverArrow,
 } from '@chakra-ui/react';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import SingleCalendarPop from '../../../common/SingleCalendarPop';
@@ -68,6 +68,8 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     setIsOpen(true);
   };
 
+  console.log(values);
+
   const stepName = '';
   const getTimeStamp = () => {
     switch (
@@ -109,6 +111,22 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     (number | undefined)[]
   >(getTimeStamp() as (number | undefined)[]);
 
+  const calcWhitelistTime = () => {
+    if (snapshotDate) {
+      const startDate = snapshotDate + 1;
+      let endDate =
+        !publicSale1 && isProduction()
+          ? startDate + 86400 * 2 // If in production and no public sale, set end date to 2 days after start date
+          : publicSale1 && publicSale1 - 1; // If public sale is defined, set end date to 1 second before public sale start time
+
+      setWhitelistDateRange([startDate, endDate]);
+    }
+  };
+
+  useEffect(() => {
+    calcWhitelistTime();
+  }, [snapshotDate, publicSale1]);
+
   useEffect(() => {
     if (publicSale1) {
       if (isProduction() === false) {
@@ -128,21 +146,8 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
 
   useEffect(() => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
-    // Second after snapshot
-    setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
-    // whitelist start to end - 2 min (Dev)
-    if (isProduction() === false) {
-      setFieldValue(
-        'vaults[0].whitelistEnd',
-        snapshotDate && snapshotDate + 2 * 60,
-      );
-    } else {
-      // whitelist start to end - 2 days (Prod)
-      setFieldValue(
-        'vaults[0].whitelistEnd',
-        snapshotDate && snapshotDate + 1 + 86400 * 2,
-      );
-    }
+    setFieldValue('vaults[0].whitelist', whitelistDateRange[0]);
+    setFieldValue('value[0].whitelistEnd', whitelistDateRange[1]);
     setFieldValue('vaults[0].publicRound1', publicSale1);
     setFieldValue('vaults[0].publicRound1End', publicSale1End);
     setFieldValue('vaults[0].publicRound2', publicSale2);
@@ -157,30 +162,29 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     whitelistDateRange,
   ]);
 
-  // Update the start time caps for calendar inputs according to any date range changes
-  useEffect(() => {
+  const setStartTimeCap = () => {
     if (snapshotDate) {
-      setWhitelistSTC(snapshotDate + 1);
+      setWhitelistSTC(snapshotDate);
     }
-  }, [snapshotDate]);
-
-  useEffect(() => {
     if (publicVault.whitelistEnd) {
       setPublicSale1STC(publicVault.whitelistEnd + 1);
     }
-  }, [publicVault.whitelistEnd]);
-
-  useEffect(() => {
     if (publicVault.publicRound1End) {
       setPublicSale2STC(publicVault.publicRound1End);
     }
-  }, [publicVault.publicRound1End]);
-
-  useEffect(() => {
     if (publicVault.publicRound2End) {
       setUnlockDate0(publicVault.publicRound2End + 1);
     }
-  }, [publicVault.publicRound2End]);
+  };
+
+  useEffect(() => {
+    setStartTimeCap();
+  }, [
+    whitelistDateRange,
+    publicSale1STC,
+    publicSale2STC,
+    whitelistSTC
+  ]);
 
   // Calculate last unlock time
   useEffect(() => {
@@ -192,6 +196,21 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
       setLastUnlockDate(lastUnlock);
     }
   }, [unlockDate1, lastUnlockDate]);
+
+  const resetValues = () => {
+    calcWhitelistTime();
+    setStartTimeCap();
+    setPublicSale1(0);
+    setPublicSale2(0);
+    setPublicSale1End(0);
+    setPublicSale2End(0);
+    setUnlockDate0(0);
+    setLastUnlockDate(0);
+  };
+
+  useEffect(() => {
+    resetValues();
+  }, [snapshotDate]);
 
   return (
     <Grid
@@ -210,7 +229,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {convertTimeStamp(snapshotDate, 'YYYY.MM.DD HH:mm:ss')}
                   </Text>
                 ) : (
-                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
+                  <Text color="#ff3b3b" ml={'8px'}>
+                    Choose
+                  </Text>
                 )}
                 {!isPublicVaultDeployed && (
                   <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
@@ -228,22 +249,14 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 {snapshotDate ? (
                   <Text>
                     {convertTimeStamp(
-                      Number(snapshotDate + 1),
+                      Number(whitelistDateRange[0]),
                       'YYYY.MM.DD HH:mm:ss',
                     )}
                     <br />~
                     {convertTimeStamp(
                       // mainnet: 2 days after snapshot time
                       // testnet: whitelist end: 1 second after snapshot, 1 second before public sale 1 */}
-                      Number(
-                        isProduction() === false
-                          ? publicSale1
-                            ? publicSale1 - 1
-                            : snapshotDate + 2 * 60
-                          : publicSale1
-                          ? publicSale1 - 1
-                          : snapshotDate + 1 + 86400 * 2,
-                      ),
+                      Number(whitelistDateRange[1]),
                       'MM.DD HH:mm:ss',
                     )}
                   </Text>
@@ -265,7 +278,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {convertTimeStamp(Number(publicSale1End), 'MM.DD HH:mm:ss')}
                   </Text>
                 ) : (
-                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
+                  <Text color="#ff3b3b" ml={'8px'}>
+                    Choose
+                  </Text>
                 )}
                 {!isPublicVaultDeployed && (
                   <Grid justifyContent={'center'}>
@@ -285,7 +300,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
             {/* Public sale 2 date & time */}
             {step === 'Public Sale 2' && (
               <GridItem w={'100px'} mr={'29px'} p={0}>
-                {publicSale2 ? (
+                {publicSale2 &&
+                publicSale1 &&
+                publicSale2 > publicSale1 &&
+                snapshotDate &&
+                snapshotDate < publicSale1 ? (
                   <Text>
                     {convertTimeStamp(
                       Number(publicSale2),
@@ -295,7 +314,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     {convertTimeStamp(Number(publicSale2End), 'MM.DD HH:mm:ss')}
                   </Text>
                 ) : (
-                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
+                  <Text color="#ff3b3b" ml={'8px'}>
+                    Choose
+                  </Text>
                 )}
                 <Grid justifyContent={'center'}>
                   <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
@@ -342,8 +363,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                           h={'60px'}
                           bg={'#353c48'}
                           color={'#fff'}
-                          _focus={{}}
-                          >
+                          _focus={{}}>
                           <PopoverArrow bg={'#353c48'} />
                           <PopoverBody textAlign={'left'}>
                             <>

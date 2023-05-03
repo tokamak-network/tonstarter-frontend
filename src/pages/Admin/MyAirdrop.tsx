@@ -47,8 +47,7 @@ export const MyAirdrop = () => {
   const network = BASE_PROVIDER._network.name;
 
   const {colorMode} = useColorMode();
-
-  const theme = useTheme();
+  const theme = useTheme();  
 
   const themeDesign = {
     fontColorTitle: {
@@ -124,12 +123,12 @@ export const MyAirdrop = () => {
   // Get sTOS balance
   useEffect(() => {
     async function getSTosBalance() {
-      const res = await getUserSTOSBalance({account, library});
-      if (res !== undefined) {
+      const res = await getUserSTOSBalance({account, library});      
+      if (res !== undefined) {        
         setUserStakedSTos(res);
       }
     }
-    if (account) {
+    if (account) {      
       getSTosBalance();
     } else {
       setUserStakedSTos('-');
@@ -140,18 +139,22 @@ export const MyAirdrop = () => {
   // Get TON balance
   useEffect(() => {
     async function getStakedTonBalance() {
-      const res = await getUserStakedTonBalance({account, library});
+      const res = await getUserStakedTonBalance({account, library});      
       if (res !== undefined) {
         setUserStakedTon(res);
       }
     }
     if (account) {
+      
       getStakedTonBalance();
     } else {
       setUserStakedTon('-');
     }
     /*eslint-disable*/
   }, [account, library, stakeList]);
+  
+console.log(userStakedTon);
+
 
   return (
     <Flex mt={'110px'} flexDir="column" alignItems="center">
@@ -256,7 +259,7 @@ export const MyAirdrop = () => {
                   fontSize={'20px'}
                   mr={'4px'}
                   color={themeDesign.fontColorTitle[colorMode]}>
-                  {commafy(userStakedTos)}
+                  {(userStakedTos)}
                 </Text>
                 <Text
                   fontFamily={theme.fonts.roboto}
@@ -298,7 +301,7 @@ export const MyAirdrop = () => {
                   fontSize={'20px'}
                   mr={'4px'}
                   color={themeDesign.fontColorTitle[colorMode]}>
-                  {commafy(userStakedSTos)}
+                  {(userStakedSTos)}
                 </Text>
                 <Text
                   fontFamily={theme.fonts.roboto}
