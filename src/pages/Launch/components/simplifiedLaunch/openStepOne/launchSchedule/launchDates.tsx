@@ -11,7 +11,7 @@ import {
   PopoverBody,
   PopoverArrow,
 } from '@chakra-ui/react';
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useState, useEffect} from 'react';
 import {convertTimeStamp} from 'utils/convertTIme';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 import SingleCalendarPop from '../../../common/SingleCalendarPop';
@@ -73,22 +73,15 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
 
   const calcPublicSaleDates = () => {
     const isProd = isProduction();
-    
-    if (publicSale1) {
-      const duration = isProd ? 2 * 86400 : 2 * 60;
-      setPublicSale1End(publicSale1 + duration);
-    }
-  
-    if (publicSale2) {
-      const duration = isProd ? 5 * 86400 : 2 * 60;
-      setPublicSale2End(publicSale2 + duration);
-    }
-  }
+    publicSale1 &&
+      setPublicSale1End(publicSale1 + (isProd ? 2 * 86400 : 2 * 60));
+    publicSale2 &&
+      setPublicSale2End(publicSale2 + (isProd ? 5 * 86400 : 2 * 60));
+  };
 
   useEffect(() => {
     calcPublicSaleDates();
   }, [publicSale2, publicSale1, snapshotDate]);
-
 
   const calcLastUnlockDate = () => {
     if (unlockDate1 && publicSale2) {
@@ -99,27 +92,28 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     } else {
       setLastUnlockDate(0);
     }
-  }
+  };
 
   useEffect(() => {
     calcLastUnlockDate();
   }, [unlockDate1, lastUnlockDate, snapshotDate]);
 
   const setStartTimeCap = () => {
-    if (whitelistDateRange[1]) {
-      setPublicSale1STC(whitelistDateRange[1] + 1);
-    }
-    if (publicSale1End) {
-      setPublicSale2STC(publicSale1End);
-    }
-    if (publicSale2End) {
-      setUnlockDate1(publicSale2End + 1);
-    }
+    whitelistDateRange[1] && setPublicSale1STC(whitelistDateRange[1] + 1);
+    publicSale1End && setPublicSale2STC(publicSale1End);
+    publicSale2End && setUnlockDate1(publicSale2End + 1);
   };
 
   useEffect(() => {
     setStartTimeCap();
-  }, [whitelistDateRange[1], snapshotDate, publicSale1,publicSale1End, publicSale2, publicSale2End]);
+  }, [
+    whitelistDateRange[1],
+    snapshotDate,
+    publicSale1,
+    publicSale1End,
+    publicSale2,
+    publicSale2End,
+  ]);
 
   const resetSchedule = () => {
     setPublicSale1(0);
@@ -138,7 +132,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     setPublicSale2End(0);
     setUnlockDate1(0);
     setLastUnlockDate(0);
-  }
+  };
 
   useEffect(() => {
     if (publicSale1 && publicSale2 && publicSale1 > publicSale2) {
@@ -164,7 +158,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     whitelistDateRange,
   ]);
 
-  console.log('values', values)
+  console.log('values', values);
 
   return (
     <Grid
@@ -252,11 +246,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
             {/* Public sale 2 date & time */}
             {step === 'Public Sale 2' && (
               <GridItem w={'100px'} mr={'29px'} p={0}>
-                {publicSale2 &&
-                publicSale1 &&
-                publicSale2 > publicSale1 &&
-                snapshotDate &&
-                snapshotDate < publicSale1 ? (
+                {publicSale2 ? (
                   <Text>
                     {convertTimeStamp(
                       Number(publicSale2),
