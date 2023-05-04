@@ -138,7 +138,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     if (publicSale1 && publicSale2 && publicSale1 > publicSale2) {
       resetVestingSchedule();
     }
-  }, [publicSale1]);
+  }, [publicSale1,publicSale2]);
 
   useEffect(() => {
     setFieldValue('vaults[0].snapshot', snapshotDate);
@@ -157,6 +157,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     publicSale2End,
     whitelistDateRange,
   ]);
+
+  
+  // console.log('publicsale1', snapshotDate, publicSale1STC, publicSale2STC)
 
   return (
     <Grid

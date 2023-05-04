@@ -34,8 +34,21 @@ const CustomizedCalendar = (prop: CalendarProps) => {
   //   setValue(dateSelected / 1000);
   // }
 
+  // WIP
+  useEffect(() => {
+    const endDate = new Date(startTimeCap * 1000);
+    console.log('starttimecap', startTimeCap);
+    
+    isProduction() === false
+      ? endDate.setDate(endDate.getDate() + (2 * 60) / 1000)
+      : endDate.setDate(endDate.getDate() + duration);
+    setDateRange({startDate: new Date(startTimeCap * 1000), endDate});
+    setValue(endDate.getTime() / 1000);
+  },[startTimeCap, duration])
+
+
   const handleStartDateChange = (date: Date) => {
-    const endDate = new Date(date);
+    const endDate = new Date(date);    
     isProduction() === false
       ? endDate.setDate(endDate.getDate() + (2 * 60) / 1000)
       : endDate.setDate(endDate.getDate() + duration);
@@ -203,7 +216,8 @@ const CustomizedCalendar = (prop: CalendarProps) => {
 
 
       
-
+  console.log('daterange', dateRange);
+  
   return (
     <Flex alignItems={'center'} display="flex">
       <style>{dayStyle}</style>
