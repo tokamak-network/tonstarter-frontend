@@ -158,8 +158,6 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     whitelistDateRange,
   ]);
 
-  console.log('values', values);
-
   return (
     <Grid
       templateColumns="repeat(7, 1fr)"
