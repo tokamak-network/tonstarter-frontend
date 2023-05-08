@@ -583,7 +583,7 @@ export const AirdropClaimTable = () => {
                   color={colorMode === 'light' ? '#353c48' : '#fff'}
                   minWidth={'35%'}
                   textAlign={'center'}>
-                  {commafy(formattedAmt)}
+                  {(formattedAmt)}
                 </Text>
                 <Flex minWidth={'20%'} justifyContent={'center'}>
                   <Button
@@ -678,7 +678,7 @@ export const AirdropClaimTable = () => {
                   color={colorMode === 'light' ? '#353c48' : '#fff'}
                   minWidth={'35%'}
                   textAlign={'center'}>
-                  {commafy(formattedAmt)}
+                  {(formattedAmt)}
                 </Text>
                 <Flex minWidth={'20%'} justifyContent={'center'}>
                   <Button
@@ -753,7 +753,7 @@ export const AirdropClaimTable = () => {
               color={colorMode === 'light' ? '#353c48' : '#fff'}
               minWidth={'35%'}
               textAlign={'center'}>
-              {commafy(genesisAirdropBalance)}
+              {(genesisAirdropBalance)}
             </Text>
             <Flex minWidth={'20%'} justifyContent={'center'}>
               <Button
