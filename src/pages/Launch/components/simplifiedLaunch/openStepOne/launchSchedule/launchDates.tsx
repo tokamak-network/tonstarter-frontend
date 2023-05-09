@@ -19,6 +19,7 @@ import {snapshotGap} from '@Launch/const';
 import {VaultPublic} from '@Launch/types';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
+import DateTimePicker from 'datetime-selector-react';
 import {isProduction} from '@Launch/utils/checkConstants';
 import PublicSaleDatePicker from '../publicSaleDates/PublicSaleDatePicker';
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
@@ -216,10 +217,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 )}
                 {!isPublicVaultDeployed && (
                   <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
-                    <SingleCalendarPop
+                    {/* <SingleCalendarPop
                       setDate={setSnapshotDate}
                       startTimeCap={snapshotGap}
-                    />
+                    /> */}
+                    <DateTimePicker />
                   </Grid>
                 )}
               </GridItem>
