@@ -95,10 +95,11 @@ const SimplifiedMainScreen = () => {
   };
 
   const handleChange = () => {
-    handleSwitchChange();
+    // handleSwitchChange();
 
     openAnyModal('Launch_AdvanceSwitch', {
       from: '/launch/createproject',
+      setSwitchState: setSwitchState,
     });
   };
 

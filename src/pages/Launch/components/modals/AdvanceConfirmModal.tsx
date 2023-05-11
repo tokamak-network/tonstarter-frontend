@@ -32,6 +32,7 @@ import {
       setIsCheck(false);
       handleCloseModal();
       handleSwitchChange(false);
+      data.data.setSwitchState(false)
     };
   
     return (
@@ -82,6 +83,7 @@ import {
               _hover={{bg: 'blue.100'}}
               bg={'#257eee'}
               onClick={() => {
+                data.data.setSwitchState(true)
                 dispatch(setMode({
                     data: 'advanced'
                   }))
