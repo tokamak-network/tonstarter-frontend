@@ -323,7 +323,7 @@ export const testValue = () => {
         isSet: false,
         vaultName: 'Economy',
         vaultTokenAllocation: 1000000,
-        vaultType: 'Custom',
+        vaultType: 'C',
         name: 'Economy',
       },
       {
@@ -358,7 +358,7 @@ export const testValue = () => {
         isSet: false,
         vaultName: 'Team',
         vaultTokenAllocation: 1000000,
-        vaultType: 'Custom',
+        vaultType: 'C',
         name: 'Team',
       },
     ],

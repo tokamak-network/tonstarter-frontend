@@ -276,7 +276,6 @@ async function deploy(
   if (account && library && vaultState === 'Deploy') {
     const vaultContract = getContract(vaultType, library);
     const signer = getSigner(library, account);
-
     try {
       switch (vaultType) {
         case 'Initial Liquidity': {

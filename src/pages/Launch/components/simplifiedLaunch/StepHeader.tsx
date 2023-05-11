@@ -212,7 +212,7 @@ const StepHeader = (props: {
               mr="2px">
               Progress
             </Text>
-            <Text fontWeight='bold' >{steps}/20</Text>
+            <Text fontWeight='bold' >{steps}/{(values.vaults.length*2)+2}</Text>
           </Flex>
         </GridItem>
       )}

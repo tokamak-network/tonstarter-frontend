@@ -51,18 +51,11 @@ const StepThreeSteps = (props: {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
-  const vaults = [
-    'Project Token',
-    'Initial Liquidity',
-    'Vesting',
-    'Public Sale',
-    'TON Staker',
-    'TOS Staker',
-    'WTON-TOS LP Reward',
-    'Liquidity Incentive',
-    'Ecosystem',
-    'Team',
-    'Distribute Tokens',
+  
+  const lastElements = values.vaults.slice(9,values.vaults.length)
+  const valutnames = lastElements.map((vault: VaultAny) => vault.vaultName);  
+  const vaultsOrdered = [
+   
     'Initial Liquidity',
     'Vesting',
     'Public Sale',
@@ -73,6 +66,11 @@ const StepThreeSteps = (props: {
     'Ecosystem',
     'Team',
   ];
+
+  const vaults = ['Project Token'].concat(vaultsOrdered)
+    .concat(valutnames)
+    .concat(['Distribute Tokens']).concat(vaultsOrdered)
+    .concat(valutnames);
 
   const theme = useTheme();
 
@@ -103,8 +101,8 @@ const StepThreeSteps = (props: {
   }, [ERC20_CONTRACT, values]);
 
   const StepButton: React.FC<step> = (props) => {
-    const {vault, index, currentDeployStep,currentStep} = props;
-      
+    const {vault, index, currentDeployStep, currentStep} = props;
+
     const getStatus = (step: number) => {
       switch (step) {
         case 0: {

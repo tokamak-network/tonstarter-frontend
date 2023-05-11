@@ -32,7 +32,7 @@ import {
       setIsCheck(false);
       handleCloseModal();
       handleSwitchChange(false);
-      data.data.setSwitchState(false)
+      data.data.setSwitchState(true)
     };
   
     return (
