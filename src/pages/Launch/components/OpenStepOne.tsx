@@ -24,7 +24,7 @@ import {
   selectLaunch,
   setTempHash,
   setCurrentDeployStep,
-  setMode,
+  saveTempProjectData,
   setProjectStep,
 } from '@Launch/launch.reducer';
 const filedNameList = [
@@ -66,6 +66,11 @@ const OpenStepOne = () => {
     dispatch(setProjectStep({data: 1}));
     setFieldValue('isSimplified', false);
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(saveTempProjectData({data: values}));
+    setFieldValue('isSimplified',false )
+  },[values])
 
   useEffect(() => {
     if (hashKey !== undefined) {

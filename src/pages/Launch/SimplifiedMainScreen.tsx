@@ -8,7 +8,7 @@ import {
   useColorMode,
   Tooltip,
   Switch,
-  Box
+  Box,
 } from '@chakra-ui/react';
 import {
   Dispatch,
@@ -42,9 +42,8 @@ import {ActionButton} from './components/simplifiedLaunch/openStepOne/ActionButt
 import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
 import RescheduleModal from './components/simplifiedLaunch/openStepOne/Reschedule';
-import AdvanceConfirmModal from '@Launch/components/modals/AdvanceConfirmModal'
+import AdvanceConfirmModal from '@Launch/components/modals/AdvanceConfirmModal';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-
 
 const StepComponent = (props: {
   step: StepNumber;
@@ -95,15 +94,13 @@ const SimplifiedMainScreen = () => {
     setSwitchState(!switchState);
   };
 
-
   const handleChange = () => {
     handleSwitchChange();
-    if(switchState === false) {
-      openAnyModal('Launch_AdvanceSwitch', {
-        from: '/launch/createproject',
-      });
-    }
-  }
+
+    openAnyModal('Launch_AdvanceSwitch', {
+      from: '/launch/createproject',
+    });
+  };
 
   const dispatch = useAppDispatch();
   const {
@@ -111,7 +108,7 @@ const SimplifiedMainScreen = () => {
     params: {id},
   } = match;
   const {
-    data: {projects, hashKey, projectStep},
+    data: {projects, hashKey, projectStep, tempProjectData},
   } = useAppSelector(selectLaunch);
 
   const navigateToLaunchPage = useCallback(() => {
@@ -258,42 +255,44 @@ const SimplifiedMainScreen = () => {
           <Steps
             stepName={['Project & Token', 'Token Economy', 'Deploy']}
             currentStep={step}></Steps>
-            <Flex></Flex>
-            </Flex>
+          <Flex></Flex>
+        </Flex>
         <Flex pos="absolute" mt={'247px'} ml={'620px'}>
-        <Tooltip
-          color={theme.colors.white[100]}
-          bg={'#353c48'}
-          p={2}
-          w="254px"
-          textAlign="center"
-          hasArrow
-          borderRadius={3}
-          placement="top"
-          fontSize={'12px'}
-          ml='8px'
-          label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
-          <Flex>
-            <style>{switchStyle}</style>
-            <Switch
-              style={{height: '16px'}}
-              onChange={handleChange}
-              isChecked={switchState}></Switch>
-            <Text
-              fontSize={'13px'}
-              color={colorMode === 'dark' ? '#949494' : '#848c98'}>
-              Advance mode
-            </Text>
+          <Tooltip
+            color={theme.colors.white[100]}
+            bg={'#353c48'}
+            p={2}
+            w="254px"
+            textAlign="center"
+            hasArrow
+            borderRadius={3}
+            placement="top"
+            fontSize={'12px'}
+            ml="8px"
+            label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
+            <Flex>
+              <style>{switchStyle}</style>
+              <Switch
+                style={{height: '16px'}}
+                onChange={handleChange}
+                isChecked={switchState}></Switch>
+              <Text
+                fontSize={'13px'}
+                color={colorMode === 'dark' ? '#949494' : '#848c98'}>
+                Advance mode
+              </Text>
 
-            <Image src={tooltipIcon} ml="6px" />
-          </Flex>
-        </Tooltip>
+              <Image src={tooltipIcon} ml="6px" />
+            </Flex>
+          </Tooltip>
         </Flex>
       </Flex>
       <Formik
         innerRef={formikRef}
         initialValues={
-          id && projects
+          Object.keys(tempProjectData).length !== 0
+            ? {...initialSimplifiedValues, ...tempProjectData}
+            : id && projects
             ? {...initialSimplifiedValues, ...projects[id]}
             : {
                 ...initialSimplifiedValues,

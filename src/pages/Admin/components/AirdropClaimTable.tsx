@@ -40,7 +40,7 @@ type Round = {
 type AirDropList = [Round] | undefined;
 
 export const AirdropClaimTable = () => {
-  const {account, library} = useActiveWeb3React();
+  const { account, library} = useActiveWeb3React();
   const {colorMode} = useColorMode();
   const theme = useTheme();
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
@@ -73,6 +73,7 @@ export const AirdropClaimTable = () => {
     library,
   );
 
+
   useEffect(() => {
     async function getClaimableAirdropTonAmounts() {
       if (account === undefined || account === null) {
@@ -80,8 +81,8 @@ export const AirdropClaimTable = () => {
       }
       const tonRes =
         await TOKEN_DIVIDEND_PROXY_POOL_CONTRACT.getAvailableClaims(account);
-
-      const claimList = await getClaimalbeList({account, library});
+        
+      const claimList = await getClaimalbeList({account, library});      
 
       if (tonRes === undefined && claimList === undefined) {
         return;
@@ -624,6 +625,9 @@ export const AirdropClaimTable = () => {
         })
       ) : radioValue === 'DAO Airdrop' && daoAirdropTokens.length > 0 ? (
         daoAirdropTokens.map((data: any, index: number) => {
+
+          console.log('daoAirdropTokens',daoAirdropTokens);
+          
           const {id, address, amount, tokenSymbol, tonStaker, tosStaker} = data;
           const formattedAmt = tonStaker
             ? Number(ethers.utils.formatEther(amount)).toFixed(2)
@@ -678,7 +682,7 @@ export const AirdropClaimTable = () => {
                   color={colorMode === 'light' ? '#353c48' : '#fff'}
                   minWidth={'35%'}
                   textAlign={'center'}>
-                  {commafy(formattedAmt)}
+                  {(formattedAmt)}
                 </Text>
                 <Flex minWidth={'20%'} justifyContent={'center'}>
                   <Button

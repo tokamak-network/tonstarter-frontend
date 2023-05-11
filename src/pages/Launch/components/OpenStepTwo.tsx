@@ -12,11 +12,13 @@ import Overview from '@Launch/components/stepTwo/Overview';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {useFormikContext} from 'formik';
 import validateFormikValues from '@Launch/utils/validate';
-import {Projects} from '@Launch/types';
-import {setUncompletedVaultIndex,setProjectStep} from '@Launch/launch.reducer';
+import {Projects,VaultPublic} from '@Launch/types';
+import {setUncompletedVaultIndex,setProjectStep,saveTempProjectData} from '@Launch/launch.reducer';
 import {useAppDispatch} from 'hooks/useRedux';
 import VestingRound from './stepTwo/VestingRound';
 import useSelectVault from 'hooks/launch/useSelectVault';
+import {fetchUsdPriceURL, fetchTonPriceURL} from 'constants/index';
+import truncNumber from 'utils/truncNumber';
 
 const OpenStepTwo = (props: {
   setDisableForStep2: Dispatch<SetStateAction<boolean>>;
@@ -27,6 +29,9 @@ const OpenStepTwo = (props: {
   const {values,setFieldValue} = useFormikContext<Projects['CreateProject']>();
   const dispatch = useAppDispatch();
   const {selectedVaultIndex} = useSelectVault();
+  const {vaults} = values;
+  const publicVault = vaults[0] as VaultPublic;
+  const [tonInDollars, setTonInDollars] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -42,6 +47,55 @@ const OpenStepTwo = (props: {
     setDisableForStep2(validation.result);
     dispatch(setUncompletedVaultIndex({data: validation}));
   }, [values, setDisableForStep2]);
+
+  useEffect(() => {
+    dispatch(saveTempProjectData({data: values}));
+    setFieldValue('isSimplified',false )
+  },[values])
+
+  useEffect(() => {
+    async function getTonPrice() {
+      const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) => {
+        if (!res.ok) {
+          throw new Error('error in the api');
+        }
+
+        return res.json();
+      }
+      );
+      const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
+      {
+        if (!res.ok) {
+          throw new Error('error in the api');
+        }
+
+        return res.json();
+      }
+      );
+      const tonPriceKRW = tonPriceObj[0].trade_price;
+      const krwInUsd = usdPriceObj.rates.USD;
+
+      const tonPriceInUsd = tonPriceKRW * krwInUsd;
+
+      setTonInDollars(tonPriceInUsd);
+    
+    }
+    getTonPrice();
+  }, [ values]);
+
+useEffect(() => {
+  const funding = publicVault.hardCap? publicVault.hardCap*2*tonInDollars:0;
+  setFieldValue('fundingTarget', funding);
+  setFieldValue('marketCap', funding / 0.3);
+  console.log('funding',funding);
+
+  const stable = values.totalSupply? funding /(values.totalSupply*0.3):0
+  setFieldValue('stablePrice', truncNumber(stable,6));  
+  
+},[values, tonInDollars, publicVault.hardCap])
+
+console.log(publicVault.hardCap?publicVault.hardCap*tonInDollars: 0);
+
 
   return (
     <Flex

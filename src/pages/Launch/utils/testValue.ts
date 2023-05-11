@@ -291,6 +291,76 @@ export const testValue = () => {
         vaultType: 'Liquidity Incentive',
         name: 'test-TOS LP Reward',
       },
+      {
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
+        claim: [
+          {
+            claimRound: 1,
+            claimTime: monthGapTimeStamp(afterRound2EndTime, 0),
+            claimTokenAllocation: 250000,
+          },
+          {
+            claimRound: 2,
+            claimTime: monthGapTimeStamp(afterRound2EndTime, 1),
+            claimTokenAllocation: 250000,
+          },
+          {
+            claimRound: 3,
+            claimTime: monthGapTimeStamp(afterRound2EndTime, 2),
+            claimTokenAllocation: 250000,
+          },
+          {
+            claimRound: 4,
+            claimTime: monthGapTimeStamp(afterRound2EndTime, 3),
+            claimTokenAllocation: 250000,
+          },
+          
+        ],
+        index: 7,
+        isDeployed: false,
+        isDeployedErr: false,
+        isMandatory: true,
+        isSet: false,
+        vaultName: 'Economy',
+        vaultTokenAllocation: 1000000,
+        vaultType: 'Custom',
+        name: 'Economy',
+      },
+      {
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
+        claim: [
+          {
+            claimRound: 1,
+            claimTime: monthGapTimeStamp(afterRound2EndTime, 0),
+            claimTokenAllocation: 250000,
+          },
+          {
+            claimRound: 2,
+            claimTime: monthGapTimeStamp(afterRound2EndTime, 1),
+            claimTokenAllocation: 250000,
+          },
+          {
+            claimRound: 3,
+            claimTime: monthGapTimeStamp(afterRound2EndTime, 2),
+            claimTokenAllocation: 250000,
+          },
+          {
+            claimRound: 4,
+            claimTime: monthGapTimeStamp(afterRound2EndTime, 3),
+            claimTokenAllocation: 250000,
+          },
+          
+        ],
+        index: 8,
+        isDeployed: false,
+        isDeployedErr: false,
+        isMandatory: true,
+        isSet: false,
+        vaultName: 'Team',
+        vaultTokenAllocation: 1000000,
+        vaultType: 'Custom',
+        name: 'Team',
+      },
     ],
     salePrice: 0,
   };

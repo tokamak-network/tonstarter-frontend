@@ -6,7 +6,7 @@ import ConfirmTokenModal from './modals/ConfirmToken';
 import ConfirmVaultModal from './modals/ConfirmVault';
 import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {setProjectStep} from '@Launch/launch.reducer';
+import {setProjectStep,saveTempProjectData} from '@Launch/launch.reducer';
 import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 
@@ -23,6 +23,11 @@ const OpenStepThree = () => {
     dispatch(setProjectStep({data:3}))
     setFieldValue('isSimplified',false )
   },[dispatch])
+
+  useEffect(() => {
+    dispatch(saveTempProjectData({data: values}));
+    setFieldValue('isSimplified',false )
+  },[values])
 
   return (
     <Flex

@@ -1,4 +1,4 @@
-import {Button, Flex, useTheme} from '@chakra-ui/react';
+import {Button, Flex, useTheme, Tooltip, Text, Image, Switch,useColorMode} from '@chakra-ui/react';
 import {
   Dispatch,
   SetStateAction,
@@ -17,13 +17,15 @@ import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectLaunch, setHashKey, setProjectStep} from '@Launch/launch.reducer';
+import {selectLaunch, setHashKey, setProjectStep,setMode} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {isProduction} from './utils/checkConstants';
 import {useLocation} from 'react-router-dom';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import {useModal} from 'hooks/useModal';
 
 const StepComponent = (props: {
   step: StepNumber;
@@ -53,6 +55,9 @@ const MainScreen = () => {
   const {account} = useActiveWeb3React();
   const {initialValues} = useValues(account || '');
   const {state} = useLocation();
+  const {colorMode} = useColorMode();
+  const {openAnyModal} = useModal();
+  const dispatch: any = useAppDispatch();
 
   // Access the project launch mode parameter from link
   const launchMode = state;
@@ -60,8 +65,19 @@ const MainScreen = () => {
   const match = useRouteMatch();
   const {url} = match;
   const isExist = url.split('/')[2];
+  const [switchState, setSwitchState] = useState(false);
 
-  const dispatch = useAppDispatch();
+  const handleSwitchChange = () => {
+    setSwitchState(!switchState);
+  };
+
+
+  const handleChange = () => {
+    handleSwitchChange();
+    dispatch(setMode({
+      data: 'simplified'
+    }))
+  }
   const {
     //@ts-ignore
     params: {id},
@@ -123,9 +139,34 @@ const MainScreen = () => {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
 
-// console.log('tempProjectData',tempProjectData);
 
+const switchStyle =
+colorMode === 'light'
+  ? `
+.chakra-switch__track{
+background: #e9edf1;
+padding: 1px;
+height: 15px;
+width: 36px;
+margin-right: 6px;
+padding-bottom: 2px;
+padding-right: 2px
+}
 
+`
+  : `
+.chakra-switch__track{
+background: transparent;
+border: 1px solid #535353;
+padding: 1px;
+height: 15px;
+width: 36px;
+margin-right: 6px;
+padding-bottom: 2px;
+padding-right: 2px
+}
+
+`;
   return (
     <Flex
       flexDir={'column'}
@@ -142,6 +183,35 @@ const MainScreen = () => {
           <Steps
             stepName={['Project & Token', 'Token Economy', 'Deploy']}
             currentStep={step}></Steps>
+        </Flex>
+        <Flex pos="absolute" mt={'247px'} ml={'620px'}>
+        <Tooltip
+          color={theme.colors.white[100]}
+          bg={'#353c48'}
+          p={2}
+          w="254px"
+          textAlign="center"
+          hasArrow
+          borderRadius={3}
+          placement="top"
+          fontSize={'12px'}
+          ml='8px'
+          label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
+          <Flex>
+            <style>{switchStyle}</style>
+            <Switch
+              style={{height: '16px'}}
+              onChange={handleChange}
+              isChecked={true}></Switch>
+            <Text
+              fontSize={'13px'}
+              color={colorMode === 'dark' ? '#949494' : '#848c98'}>
+              Simplified mode
+            </Text>
+
+            <Image src={tooltipIcon} ml="6px" />
+          </Flex>
+        </Tooltip>
         </Flex>
       </Flex>
       <Formik
