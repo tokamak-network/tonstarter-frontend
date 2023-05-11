@@ -9,12 +9,13 @@ import {
   Text,
   Image,
 } from '@chakra-ui/react';
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {ResponsivePie} from '@nivo/pie';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import {simplifiedVaultsAny} from '@Launch/types'
-import { useFormikContext } from 'formik';
+import {simplifiedVaultsAny, VaultAny} from '@Launch/types';
+import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
+import truncNumber from 'utils/truncNumber';
 
 const GraphComponent = () => {
   // const {vaults, totalTokenAlloc, totalSupply} = props;
@@ -34,74 +35,140 @@ const GraphComponent = () => {
     '#ccebc5',
     '#ffed6f',
   ];
-  
-  const {values, setFieldValue} = useFormikContext<Projects['CreateSimplifiedProject']>();
 
- // Allocation % for each vault.
- // initially allocated %
+  const {values, setFieldValue} =
+    useFormikContext<Projects['CreateSimplifiedProject']>();
+
+  // Allocation % for each vault.
+  // initially allocated %
   const [vaultAllocations, setVaultAllocations] = useState({
     public: 30,
     team: 15,
     eco: 35,
     liquidity: 15,
-    tonStarter: 5
+    tonStarter: 5,
   });
-  
-  const calculateAllocated = (totalAllocation: number, vaultAllocation: number) => {    
-    const allocatedAmount = (vaultAllocation / totalAllocation) * 100;
-    return Math.ceil(allocatedAmount);
-  };
-  
-  useEffect(() => {
 
-    const totalTokenAlloc = values.totalTokenAllocation
-    const vaults = values.vaults
-    if (totalTokenAlloc) {
-      const publicAlloc = calculateAllocated(totalTokenAlloc, vaults[0]?.vaultTokenAllocation? vaults[0].vaultTokenAllocation: 0);
-      const teamAlloc = calculateAllocated(totalTokenAlloc, vaults[8]?.vaultTokenAllocation? vaults[8].vaultTokenAllocation: 0 );
-      const ecoAlloc = calculateAllocated(totalTokenAlloc, vaults[7]?.vaultTokenAllocation? vaults[7].vaultTokenAllocation: 0);
-      const liquidityAlloc = calculateAllocated(totalTokenAlloc, vaults[1]?.vaultTokenAllocation && vaults[6]?.vaultTokenAllocation ? vaults[1].vaultTokenAllocation + vaults[6].vaultTokenAllocation: 0);
-      const tonStarterAlloc = calculateAllocated(totalTokenAlloc,vaults[3]?.vaultTokenAllocation && vaults[4]?.vaultTokenAllocation && vaults[5]?.vaultTokenAllocation?  vaults[3].vaultTokenAllocation + vaults[4].vaultTokenAllocation + vaults[5].vaultTokenAllocation: 0);
-  
-      setVaultAllocations({
+  const calculateAllocated = (
+    totalAllocation: number,
+    vaultAllocation: number,
+  ) => {
+    const allocatedAmount = (vaultAllocation / totalAllocation) * 100;
+    return allocatedAmount/100;
+  };
+
+  // useEffect(() => {
+
+  //   const totalTokenAlloc = values.totalTokenAllocation
+  //   const vaults = values.vaults
+  //   if (totalTokenAlloc) {
+  //     const publicAlloc = calculateAllocated(totalTokenAlloc, vaults[0]?.vaultTokenAllocation? vaults[0].vaultTokenAllocation: 0);
+  //     const teamAlloc = calculateAllocated(totalTokenAlloc, vaults[8]?.vaultTokenAllocation? vaults[8].vaultTokenAllocation: 0 );
+  //     const ecoAlloc = calculateAllocated(totalTokenAlloc, vaults[7]?.vaultTokenAllocation? vaults[7].vaultTokenAllocation: 0);
+  //     const liquidityAlloc = calculateAllocated(totalTokenAlloc, vaults[1]?.vaultTokenAllocation && vaults[6]?.vaultTokenAllocation ? vaults[1].vaultTokenAllocation + vaults[6].vaultTokenAllocation: 0);
+  //     const tonStarterAlloc = calculateAllocated(totalTokenAlloc,vaults[3]?.vaultTokenAllocation && vaults[4]?.vaultTokenAllocation && vaults[5]?.vaultTokenAllocation?  vaults[3].vaultTokenAllocation + vaults[4].vaultTokenAllocation + vaults[5].vaultTokenAllocation: 0);
+
+  //     setVaultAllocations({
+  //       public: publicAlloc,
+  //       team: teamAlloc,
+  //       eco: ecoAlloc,
+  //       liquidity: liquidityAlloc,
+  //       tonStarter: tonStarterAlloc
+  //     });
+  //   }
+  // }, [values]);
+  console.log(values);
+
+  const xx = useMemo(() => {
+    const totalTokenAlloc = values.totalTokenAllocation;
+    const vaults = values.vaults;
+    const customVaults = vaults.slice(9, vaults.length);
+
+    const customTotal = calculateAllocated(
+      totalTokenAlloc,
+      customVaults.reduce((acc, vault) => acc + vault.vaultTokenAllocation, 0),
+    );
+
+    const notAllocated = vaults.filter(
+      (vault: VaultAny) => vault.vaultTokenAllocation === undefined,
+    );
+
+    if (notAllocated.length === 0) {
+      const publicAlloc = calculateAllocated(
+        totalTokenAlloc,
+        vaults[0].vaultTokenAllocation,
+      );
+      const teamAlloc = calculateAllocated(
+        totalTokenAlloc,
+        vaults[8].vaultTokenAllocation,
+      );
+      const ecoAlloc = calculateAllocated(
+        totalTokenAlloc,
+        vaults[7].vaultTokenAllocation,
+      );
+      const liquidityAlloc = calculateAllocated(
+        totalTokenAlloc,
+        vaults[1].vaultTokenAllocation + vaults[6].vaultTokenAllocation,
+      );
+      const tonStarterAlloc = calculateAllocated(
+        totalTokenAlloc,
+        vaults[3].vaultTokenAllocation +
+          vaults[4].vaultTokenAllocation +
+          vaults[5].vaultTokenAllocation,
+      );
+      return {
         public: publicAlloc,
         team: teamAlloc,
         eco: ecoAlloc,
         liquidity: liquidityAlloc,
-        tonStarter: tonStarterAlloc
-      });
+        tonStarter: tonStarterAlloc,
+        custom: customTotal,
+      };
+    } else {
+      return {
+        public: 30,
+        team: 15,
+        eco: 35,
+        liquidity: 15,
+        tonStarter: 5,
+        custom: 0,
+      };
     }
-  }, [values]);
+  }, [values.totalTokenAllocation, values.vaults]);
 
-  
-  
   const data = [
     {
       id: 'public',
       label: 'Public',
-      value: vaultAllocations.public/100,
+      value: truncNumber(xx.public,2),
     },
     {
       id: 'ecosystem',
       label: 'Ecosystem',
-      value: vaultAllocations.eco/100,
+      value: truncNumber(xx.eco,3),
     },
     {
       id: 'team',
       label: 'Team',
-      value: vaultAllocations.team/100,
+      value: xx.team ,
     },
     {
       id: 'liquidity',
       label: 'Liquidity',
-      value: vaultAllocations.liquidity/100,
+      value: xx.liquidity,
     },
     {
       id: 'tonstarter',
       label: 'TONStarter',
-      value: vaultAllocations.tonStarter/100,
+      value: xx.tonStarter,
+    },
+    {
+      id: 'custom',
+      label: 'custom',
+      value: xx.custom ,
     },
   ];
+
   const formattedData = data.map((data: any, index: number) => {
     return {
       id: data.id,
@@ -110,8 +177,6 @@ const GraphComponent = () => {
       color: colors[index],
     };
   });
-
-  
 
   return (
     <>
@@ -169,112 +234,178 @@ const GraphComponent = () => {
                 },
               },
             }}
-            // legends={[
-            //   {
-            //     anchor: 'left',
-            //     direction: 'column',
-            //     justify: false,
-            //     translateX: 50,
-            //     translateY: 148,
-            //     itemsSpacing: 0,
-            //     itemWidth: 123,
-            //     itemHeight: 16,
-            //     itemTextColor: colorMode === 'dark' ? 'white' : 'black',
-            //     itemDirection: 'left-to-right',
-            //     itemOpacity: 1,
-            //     symbolSize: 8,
-            //     symbolShape: 'circle',
-            //     data: formattedData
-            //       .slice(0, Math.floor(formattedData.length / 2))
-            //       .map((cur: any, index: number) => ({
-            //         id: cur.id,
-            //         label: `${cur.label} (${cur.value * 100}%)`,
-            //         color: cur.color,
-            //       })),
-            //   },
-            //   {
-            //     anchor: 'left',
-            //     direction: 'column',
-            //     justify: false,
-            //     translateX: 200,
-            //     translateY: 148,
-            //     itemsSpacing: 0,
-            //     itemWidth: 123,
-            //     itemHeight: 16,
-            //     itemTextColor: colorMode === 'dark' ? 'white' : 'black',
-            //     itemDirection: 'left-to-right',
-            //     itemOpacity: 1,
-            //     symbolSize: 8,
-            //     symbolShape: 'circle',
-            //     data: formattedData
-            //       .slice(Math.floor(formattedData.length / 2))
-            //       .map((cur: any, index: number) => ({
-            //         id: cur.id,
-            //         label: `${cur.label} (${cur.value * 100}%)`,
-            //         color: cur.color,
-            //       })),
-            //   },
-            // ]}
           />
         </Flex>
         <Grid
           templateRows="repeat(3, 1fr)"
           templateColumns="repeat(2, 1fr)"
-          columnGap='20px'
+          columnGap="20px"
           w="266px"
           mt="21px">
-          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
+          <GridItem w="123px" h="18px" pl="10px" pr="13px">
             <Flex alignItems={'center'}>
-              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#2b66aa'} mr='8px' ></Flex>
-              <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
-                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Public</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.public}%</Text>
+              <Flex
+                h="8px"
+                w="9.1px"
+                borderRadius={'50%'}
+                bg={'#2b66aa'}
+                mr="8px"></Flex>
+              <Flex
+                w="100%"
+                justifyContent={'space-between'}
+                fontSize="11px"
+                fontFamily="TitilliumWeb, sans-serif">
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#f3f4f1' : '#3d495d'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  Public
+                </Text>
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#9d9ea5' : '#7e8993'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  {xx.public*100}%
+                </Text>
               </Flex>
             </Flex>
           </GridItem>
-          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
-          <Flex alignItems={'center'}>
-              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#f23c35'} mr='8px' justifyContent='flex-end'></Flex>
-              <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
-                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Ecosystem</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.eco}%</Text>
+          <GridItem w="123px" h="18px" pl="10px" pr="13px">
+            <Flex alignItems={'center'}>
+              <Flex
+                h="8px"
+                w="9.1px"
+                borderRadius={'50%'}
+                bg={'#f23c35'}
+                mr="8px"
+                justifyContent="flex-end"></Flex>
+              <Flex
+                w="100%"
+                justifyContent={'space-between'}
+                fontSize="11px"
+                fontFamily="TitilliumWeb, sans-serif">
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#f3f4f1' : '#3d495d'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  Ecosystem
+                </Text>
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#9d9ea5' : '#7e8993'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  {truncNumber(xx.eco*100,2)}%
+                </Text>
               </Flex>
             </Flex>
           </GridItem>
-          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
-          <Flex alignItems={'center'}>
-              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#f7b729'} mr='8px'></Flex>
-              <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  fontFamily="TitilliumWeb, sans-serif">
-                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Team</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.team}%</Text>
+          <GridItem w="123px" h="18px" pl="10px" pr="13px">
+            <Flex alignItems={'center'}>
+              <Flex
+                h="8px"
+                w="9.1px"
+                borderRadius={'50%'}
+                bg={'#f7b729'}
+                mr="8px"></Flex>
+              <Flex
+                w="100%"
+                justifyContent={'space-between'}
+                fontSize="11px"
+                fontFamily="TitilliumWeb, sans-serif">
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#f3f4f1' : '#3d495d'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  Team
+                </Text>
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#9d9ea5' : '#7e8993'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  {xx.team*100}%
+                </Text>
               </Flex>
             </Flex>
           </GridItem>
-          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
-          <Flex alignItems={'center'}>
-              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#5da344'} mr='8px'></Flex>
-              <Flex w='100%' justifyContent={'space-between'} fontSize='11px' >
-                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'}  fontFamily="TitilliumWeb, sans-serif">Liquidity</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'}  fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.liquidity}%</Text>
+          <GridItem w="123px" h="18px" pl="10px" pr="13px">
+            <Flex alignItems={'center'}>
+              <Flex
+                h="8px"
+                w="9.1px"
+                borderRadius={'50%'}
+                bg={'#5da344'}
+                mr="8px"></Flex>
+              <Flex w="100%" justifyContent={'space-between'} fontSize="11px">
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#f3f4f1' : '#3d495d'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  Liquidity
+                </Text>
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#9d9ea5' : '#7e8993'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  {xx.liquidity*100}%
+                </Text>
               </Flex>
             </Flex>
           </GridItem>
-          <GridItem w="123px" h="18px" pl='10px' pr='13px'>
-          <Flex alignItems={'center'}>
-              <Flex h='8px' w='9.1px' borderRadius={'50%'} bg={'#f17235'} mr='8px'></Flex>
-              <Flex w='100%' justifyContent={'space-between'} fontSize='11px'  >
-                <Text fontWeight={600} color={colorMode === 'dark'? '#f3f4f1':'#3d495d'} fontFamily="TitilliumWeb, sans-serif">TONStarter</Text>
-                <Text fontWeight={600} color={colorMode === 'dark'? '#9d9ea5':'#7e8993'} fontFamily="TitilliumWeb, sans-serif">{vaultAllocations.tonStarter}%</Text>
+          <GridItem w="123px" h="18px" pl="10px" pr="13px">
+            <Flex alignItems={'center'}>
+              <Flex
+                h="8px"
+                w="9.1px"
+                borderRadius={'50%'}
+                bg={'#f17235'}
+                mr="8px"></Flex>
+              <Flex w="100%" justifyContent={'space-between'} fontSize="11px">
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#f3f4f1' : '#3d495d'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  TONStarter
+                </Text>
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#9d9ea5' : '#7e8993'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  {truncNumber(xx.tonStarter*100,1)}%
+                </Text>
               </Flex>
             </Flex>
           </GridItem>
+          {xx.custom > 0 &&   <GridItem w="133px" h="18px" pl="10px" pr="13px">
+            <Flex alignItems={'center'}>
+              <Flex
+                h="8px"
+                w="9.1px"
+                borderRadius={'50%'}
+                bg={'#fdb462'}
+                mr="8px"></Flex>
+              <Flex w="100%" justifyContent={'space-between'} fontSize="11px">
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#f3f4f1' : '#3d495d'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  Custom
+                </Text>
+                <Text
+                  fontWeight={600}
+                  color={colorMode === 'dark' ? '#9d9ea5' : '#7e8993'}
+                  fontFamily="TitilliumWeb, sans-serif">
+                  {truncNumber(xx.custom*100,1)}%
+                </Text>
+              </Flex>
+            </Flex>
+          </GridItem>}
+          {}
         </Grid>
         <Box
           mt="14px"
           mx="auto"
           w="100%"
           pl="20"
-          
           fontSize="11px"
           display="flex"
           fontWeight={600}
