@@ -94,8 +94,7 @@ useEffect(() => {
   
 },[values, tonInDollars, publicVault.hardCap])
 
-console.log(publicVault.hardCap?publicVault.hardCap*tonInDollars: 0);
-
+console.log(values)
 
   return (
     <Flex

@@ -39,7 +39,7 @@ const VaultComp = (props: {vaultNum: number; vaults: any}) => {
 
   if (vaultNum === 0) {
     return <ProjectToken />;
-  } else if (vaultNum < 10) {
+  } else if (vaultNum < 8) {
     switch (vaultNum) {
       case 1:
         return <InitialLiquidity step="Deploy" />;
@@ -55,18 +55,18 @@ const VaultComp = (props: {vaultNum: number; vaults: any}) => {
         return <WtonLP step="Deploy" />;
       case 7:
         return <TokenLP step="Deploy" />;
-      case 8:
-        return <Ecosystem step="Deploy" />;
-      case 9:
-        return <Team step="Deploy" />;
+      // case 8:
+      //   return <Ecosystem step="Deploy" />;
+      // case 9:
+      //   return <Team step="Deploy" />;
       default:
         return <Flex>No vault</Flex>;
     }
-  } else if (9 < vaultNum && vaultNum < vaults.length + 1) {
+  } else if (7 < vaultNum && vaultNum < vaults.length + 1) {
     return <Custom step="Deploy" index={vaultNum-1} />;
   } else if (vaultNum === vaults.length + 1) {
     return <Distribute />;
-  } else if (vaults.length + 1 < vaultNum && vaultNum < vaults.length + 2 + 9) {
+  } else if (vaults.length + 1 < vaultNum && vaultNum < vaults.length + 2 + 7) {
     switch (vaultNum) {
       case vaults.length + 2:
         return <InitialLiquidity step="Initialize" />;
@@ -82,10 +82,6 @@ const VaultComp = (props: {vaultNum: number; vaults: any}) => {
         return <WtonLP step="Initialize" />;
       case vaults.length + 8:
         return <TokenLP step="Initialize" />;
-      case vaults.length + 9:
-        return <Ecosystem step="Initialize" />;
-      case vaults.length + 10:
-        return <Team step="Initialize" />;
       default:
         return <Flex>No vault</Flex>;
     }

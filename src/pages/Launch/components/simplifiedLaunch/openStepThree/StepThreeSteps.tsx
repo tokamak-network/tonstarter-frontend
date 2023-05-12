@@ -52,7 +52,7 @@ const StepThreeSteps = (props: {
 
   const {values, setFieldValue} = useFormikContext<Projects['CreateProject']>();
   
-  const lastElements = values.vaults.slice(9,values.vaults.length)
+  const lastElements = values.vaults.slice(7,values.vaults.length)
   const valutnames = lastElements.map((vault: VaultAny) => vault.vaultName);  
   const vaultsOrdered = [
    
@@ -63,8 +63,7 @@ const StepThreeSteps = (props: {
     'TOS Staker',
     'WTON-TOS LP Reward',
     'Liquidity Incentive',
-    'Ecosystem',
-    'Team',
+    
   ];
 
   const vaults = ['Project Token'].concat(vaultsOrdered)
