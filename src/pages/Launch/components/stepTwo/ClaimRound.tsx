@@ -92,6 +92,8 @@ useEffect(() => {
 },[ selectedVaultDetail])
 
   useEffect(() => {
+    console.log('uncompletedVaultIndex',uncompletedVaultIndex);
+    
     if (
       uncompletedVaultIndex?.fileds &&
       selectedVaultIndex !== undefined &&
@@ -105,6 +107,10 @@ useEffect(() => {
         ) ||
         uncompletedVaultIndex?.fileds[selectedVaultIndex]?.includes(
           'claimSchedule',
+          0,
+        )||
+        uncompletedVaultIndex?.fileds[selectedVaultIndex]?.includes(
+          'vaultTokenAllocation',
           0,
         );
       return setTokenAllocationErr(hasError);

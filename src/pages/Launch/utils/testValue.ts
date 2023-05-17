@@ -117,11 +117,11 @@ export const testValue = () => {
         vaultType: 'Initial Liquidity',
         name: 'Initial Liquidity',
         startTime: afterRound2EndTime,
-        tokenPair: '',
+        tokenPair: 'test-TOS',
         tosPrice: '50',
       },
       {
-        adminAddress: '',
+        adminAddress: '0xfA36995FC6B4E9C17E35191A802901741d929960',
         claim: [
           {
             claimRound: 1,

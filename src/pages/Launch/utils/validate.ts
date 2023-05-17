@@ -20,14 +20,13 @@ function validateFormikValues(
     publicRound2End,
     snapshot,
   } = values.vaults[0] as VaultPublic;
-  
+
   const step2FilledOut = values.vaults.map((vault: any) => {
     const result: any[] = [];
     const thisFields: any[] = [];
-    const keys = Object.keys(vault)
-    
+    const keys = Object.keys(vault);
+
     Object.values(vault).forEach((val, index: number) => {
-      
       if (typeof val === 'object') {
         //STOS Tier Object handle
         if (val?.hasOwnProperty('oneTier')) {
@@ -49,8 +48,9 @@ function validateFormikValues(
           }
         }
         // Claim array handle
+
         if (isArray(val)) {
-          if (vault.index === 1) {
+          if (vault.index === 1 || vault.vaultType === 'DAO') {
             return result.push(true);
           }
 
@@ -77,7 +77,7 @@ function validateFormikValues(
           );
           // console.log(vault);
           // console.log(isMatchingTotalAllocation);
-          // console.log(vault.vaultTokenAllocation);          
+          // console.log(vault.vaultTokenAllocation);
 
           //For public vault only
           if (vault.index === 0) {
@@ -114,7 +114,7 @@ function validateFormikValues(
             }
 
             //for sTOS Tier tab
-            if (numVaultTokenAllocation !== stosTierAllocation) {
+            if (numPublicRound1Allocation !== stosTierAllocation) {
               thisFields.push('stos tier');
             }
           }
@@ -132,9 +132,8 @@ function validateFormikValues(
             (vault.vaultTokenAllocation === undefined ||
               isMatchingTotalAllocation !== vault.vaultTokenAllocation)
           ) {
-            
             thisFields.push('vaultTokenAllocation');
-            result.push('vaultTokenAllocation',false);
+            result.push('vaultTokenAllocation', false);
           }
 
           //need to add validate to compare total and allocation
@@ -163,17 +162,24 @@ function validateFormikValues(
           });
         }
       }
-      
-      if ((keys[index] !== "vaultAddress" && keys[index] !== "poolAddress")&&  (val === undefined || val === '')) {
+
+      if (
+        keys[index] !== 'vaultAddress' &&
+        keys[index] !== 'poolAddress' &&
+        (val === undefined || val === '')
+      ) {
         //get key
-        //                
+        //
+        console.log(keys[index], false);
+
         return result.push(keys[index], false);
       } else {
-        
         return result.push(true);
       }
     });
-    fileds.push(thisFields);    
+    fileds.push(thisFields);
+    console.log(result);
+
     return result.indexOf(false) === -1 ? true : false;
   });
 
