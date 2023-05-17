@@ -44,7 +44,6 @@
     "bignumber": "^1.1.0",
     "chakra-ui-steps": "^2.0.4",
     "d3": "^7.0.0",
-    "datetime-selector-react": "^0.1.13",
     "decimal.js": "^10.4.3",
     "eth-sig-util": "^3.0.1",
     "ethereumjs-util": "^7.1.0",
