@@ -160,8 +160,6 @@ const GraphComponent = () => {
     };
   });
 
-  console.log(xx, data);
-
   return (
     <>
       <Flex mt="40px" w="100%" alignItems="center" flexDir={'column'}>

@@ -133,16 +133,7 @@ const SwapModal = () => {
     }
   }, [PublicVaultContract, inputAmount, pools]);
 
-  // useEffect(() => {
-  //   if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
-  //     setInputAmount(inputAmount.slice(1, inputAmount.length));
-  //   }
-  //   if (inputAmount.split('.')[1] !== undefined) {
-  //     return setInputAmount(
-  //       `${inputAmount.split('.')[0]}.${inputAmount.split('.')[1].slice(0, 2)}`,
-  //     );
-  //   }
-  // }, [inputAmount, setInputAmount]);
+
 
   return (
     <Modal
@@ -214,16 +205,7 @@ const SwapModal = () => {
                   value={inputAmount}
                   onChange={(value) => {
                     setInputAmount(value);
-                    // if (
-                    //   (value === '0' || value === '00') &&
-                    //   value.length <= 2
-                    // ) {
-                    //   return null;
-                    // }
-                    // if (value === '') {
-                    //   return setInputAmount('0');
-                    // }
-                    // return setInputAmount(value);
+                  
                   }}>
                   <NumberInputField
                     placeholder="0.00"

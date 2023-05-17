@@ -612,7 +612,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
                             mt="12px"
                             bg={'#257eee'}
                             color={'#ffffff'}
-                            isDisabled={transferredTon === hardcap}
+                            // isDisabled={transferredTon === hardcap}
                             onClick={() => {
                               dispatch(
                                 openModal({
