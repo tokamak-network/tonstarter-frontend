@@ -1,0 +1,111 @@
+@import 'colors';
+.cell {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  font-weight: 500;
+  font-size: 14px;
+  background-color: $base-color;
+  justify-content: center;
+  align-items: center;
+  margin: 3px 4px;
+  padding: 3px 4px 5px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid $primary-color;
+    padding: 0px;
+    color: $primary-color;
+  }
+
+  &__days {
+    font-weight: 600;
+    font-size: 10px;
+    color: $font-week-day-color;
+    padding: 8px 5px;
+  }
+
+  &__date {
+    cursor: pointer;
+  }
+
+  &__selected {
+    background-color: $primary-color;
+    color: $base-color;
+    border-radius: 50%;
+    margin: 3px 4px;
+    outline: none;
+    display: flex;
+    width: 28px;
+    height: 28px;
+    font-weight: 500;
+    font-size: 14px;
+    justify-content: center;
+    align-items: center;
+    // padding: 0px;
+
+    &:hover {
+      color: $base-color;
+    }
+  }
+
+  &__disabled {
+    color: $font-disable-color;
+    cursor: default;
+
+    &:hover {
+      color: $font-disable-color;
+      border: none;
+      cursor: default;
+      margin: 3px 4px;
+      padding: 3px 6px 5px;
+    }
+  }
+
+  &__today {
+    color: red;
+  }
+
+  &__range {
+    display: flex;
+    width: 28px;
+    height: 28px;
+    font-weight: 500;
+    font-size: 14px;
+    background-color: $primary-color;
+    color: $base-color;
+    justify-content: center;
+    align-items: center;
+    // margin: 3px 4px;
+    padding: 3px 4px 5px;
+    border-radius: 0;
+    cursor: pointer;
+
+    &:hover,
+    &__start:hover,
+    &__end:hover {
+      background-color: $primary-color;
+      color: $base-color;
+      padding: 3px 3px;
+    }
+
+    &__start {
+      border-top-left-radius: 50%;
+      border-bottom-left-radius: 50%;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      background-color: $primary-color;
+      color: $base-color;
+    }
+
+    &__end {
+      border-top-right-radius: 50%;
+      border-bottom-right-radius: 50%;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      background-color: $primary-color;
+      color: $base-color;
+    }
+  }
+}

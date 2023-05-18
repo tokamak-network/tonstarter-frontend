@@ -21,6 +21,9 @@ import {useFormikContext} from 'formik';
 import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
 import PublicSaleDatePicker from '../publicSaleDates/PublicSaleDatePicker';
+import {DateTimePicker} from '../../../../components/DateTimePicker';
+import calendarInactiveIcon from 'assets/svgs/calendar_inactive_icon.svg';
+import {relative} from 'path/posix';
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
 type LaunchDateProps = {
@@ -60,6 +63,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
   const [publicSale1STC, setPublicSale1STC] = useState<number>(0);
   const [publicSale2STC, setPublicSale2STC] = useState<number>(0);
   const [lastUnlockDate, setLastUnlockDate] = useState<number>(0);
+  const [isDateTimePickerOpen, setDateTimePickerOpen] = useState(false);
 
   //  popover as a tooltip
   const [isOpen, setIsOpen] = React.useState(false);
@@ -193,6 +197,14 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     }
   }, [unlockDate1, lastUnlockDate]);
 
+  const handleImageClick = () => {
+    setDateTimePickerOpen(true);
+  };
+
+  const closeDateTimePicker = () => {
+    setDateTimePickerOpen(false);
+  };
+
   return (
     <Grid
       templateColumns="repeat(7, 1fr)"
@@ -215,12 +227,15 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   </Text>
                 )}
                 {!isPublicVaultDeployed && (
-                  <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
-                    <SingleCalendarPop
-                      setDate={setSnapshotDate}
-                      startTimeCap={snapshotGap}
+                  <>
+                    <Image
+                      _hover={{}}
+                      position={'absolute'}
+                      src={calendarInactiveIcon}
+                      onClick={handleImageClick}
                     />
-                  </Grid>
+                    {isDateTimePickerOpen && <DateTimePicker range={false} />}
+                  </>
                 )}
               </GridItem>
             )}
@@ -266,7 +281,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     <br />~
                     {convertTimeStamp(Number(publicSale1End), 'MM.DD HH:mm:ss')}
                   </Text>
-                ) : <Text color="#ff3b3b" ml={'8px'}>Choose</Text>}
+                ) : (
+                  <Text color="#ff3b3b" ml={'8px'}>
+                    Choose
+                  </Text>
+                )}
                 {!isPublicVaultDeployed && (
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
@@ -285,7 +304,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
             {/* Public sale 2 date & time */}
             {step === 'Public Sale 2' && (
               <GridItem w={'100px'} mr={'29px'} p={0}>
-                {publicSale2 && publicSale1 && publicSale2 > publicSale1 && snapshotDate && snapshotDate < publicSale1? (
+                {publicSale2 &&
+                publicSale1 &&
+                publicSale2 > publicSale1 &&
+                snapshotDate &&
+                snapshotDate < publicSale1 ? (
                   <Text>
                     {convertTimeStamp(
                       Number(publicSale2),
@@ -294,8 +317,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     <br />~
                     {convertTimeStamp(Number(publicSale2End), 'MM.DD HH:mm:ss')}
                   </Text>
-                ): (
-                  <Text color="#ff3b3b" ml={'8px'}>Choose</Text>
+                ) : (
+                  <Text color="#ff3b3b" ml={'8px'}>
+                    Choose
+                  </Text>
                 )}
                 <Grid justifyContent={'center'}>
                   <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
@@ -342,8 +367,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                           h={'60px'}
                           bg={'#353c48'}
                           color={'#fff'}
-                          _focus={{}}
-                          >
+                          _focus={{}}>
                           <PopoverArrow bg={'#353c48'} />
                           <PopoverBody textAlign={'left'}>
                             <>
