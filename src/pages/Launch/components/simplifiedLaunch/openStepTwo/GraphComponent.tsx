@@ -72,6 +72,10 @@ const GraphComponent = () => {
     return alloc;
   }, [values.vaults]);
 
+// console.log('notAllocated',notAllocated);
+
+
+
   const xx = useMemo(() => {
     const totalTokenAlloc = values.totalTokenAllocation;
     const vaults = values.vaults;
@@ -126,6 +130,8 @@ const GraphComponent = () => {
         {name: 'Custom', value: customTotal},
       );
 
+      // console.log('tokens',tokens);
+      
       return tokens;
     } else {
       return [

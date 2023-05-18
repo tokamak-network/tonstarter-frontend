@@ -511,12 +511,12 @@ const Public = (props: {step: string}) => {
                   <Text
                     w={'120px'}
                     color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                    {stosInfo.requiredTos} TOS
+                    {(stosInfo.requiredTos).toLocaleString()} TOS
                   </Text>
                   <Text
                     w={'160px'}
                     color={colorMode === 'light' ? 'gray.250' : 'white.100'}>
-                    {stosInfo.allocationToken.toLocaleString()}{' '}
+                    {Number(stosInfo.allocationToken).toLocaleString()}{' '}
                     {values.tokenName}
                   </Text>
                 </Flex>

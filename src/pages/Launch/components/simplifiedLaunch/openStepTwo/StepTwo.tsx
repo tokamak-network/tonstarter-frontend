@@ -14,7 +14,7 @@ import {
 import {useEffect, useState, useMemo} from 'react';
 import {ChevronDownIcon} from '@chakra-ui/icons';
 import {useFormikContext} from 'formik';
-import {Projects, VaultPublic} from '@Launch/types';
+import {Projects, VaultAny, VaultPublic} from '@Launch/types';
 import {fetchUsdPriceURL, fetchTonPriceURL} from 'constants/index';
 import {fetchPoolPayload} from '@Launch/utils/fetchPoolPayload';
 import {useActiveWeb3React} from 'hooks/useWeb3';
@@ -38,8 +38,6 @@ const StepTwo = () => {
     useFormikContext<Projects['CreateSimplifiedProject']>();
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
-
-  console.log(values);
 
   const getPrices = useMemo(() => {
     const fundingTarget = values.fundingTarget;
@@ -144,76 +142,199 @@ const StepTwo = () => {
 
       setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
       const publicAllocation = parseInt((totalSupply * 0.3).toString());
-
-      const rounds = values.vaults.map((vault, index) => {
-        const roundInfo = schedules(
-          vault.vaultName,
-          totalSupply,
-          publicVault.publicRound2End ? publicVault.publicRound2End : 0,
-        );
-
-        // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
-
-        const tot = roundInfo.reduce(
-          (acc, round) => acc + round.claimTokenAllocation,
-          0,
-        );
-
-        //  const totalTokenAllocation =
-        setFieldValue(`vaults[${index}].claim`, roundInfo);
-        setFieldValue(`vaults[${index}].adminAddress`, account);
-        setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
-        return tot;
-      });
-
-      setFieldValue('vaults[2].vaultTokenAllocation', 0);
       setFieldValue('vaults[0].addressForReceiving', account);
       setFieldValue('vaults[0].adminAddress', account);
       setFieldValue('vaults[1].tokenPair', `${values.tokenSymbol}-TOS`);
       setFieldValue('vaults[6].tokenPair', `${values.tokenSymbol}-TOS`);
-      // setFieldValue(]
-      //   'vaults[0].publicRound1Allocation',
-      //   Number(parseInt((publicAllocation * 0.5).toString())),
-      // );
-      // setFieldValue(
-      //   'vaults[0].publicRound2Allocation',
-      //   publicAllocation -
-      //     Number(parseInt((publicAllocation * 0.5).toString())),
-      // );
 
-      const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
-      const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);
-      const tier3 = truncNumber(publicAllocation * 0.5 * 0.22, 0);
-      const tier4 = truncNumber(publicAllocation * 0.5 * 0.6, 0);
+      if (values.totalSupply) {
+        const sTosTier = Object.values(publicVault.stosTier);
+        console.log(sTosTier);
+        
+        const stosvalues = sTosTier.map((value: any) => {
+          return {
+            percentage:
+              Number(value.allocatedToken) /
+              Number(publicVault.publicRound1Allocation),
+            requiredStos: Number(value.requiredStos),
+          };
+        });
 
-      const public1All = tier1 + tier2 + tier3 + tier4;
+        const valutpercentages = vaults.map(
+          (vault: VaultAny, index: number) => {
+            const claimAmounts = vault.claim.map((claim: any) => {
+              return {
+                claimTime: claim.claimTime,
+                claimPercentage: values.totalSupply
+                  ? Number(claim.claimTokenAllocation / values.totalSupply)
+                  : 0,
+              };
+            });
+            return {
+              index: index,
+              claim: claimAmounts,
+              tokenAlloc: values.totalSupply
+                ? Number(vault.vaultTokenAllocation / values.totalSupply)
+                : 0,
+            };
+          },
+        );
 
-      setFieldValue('vaults[0].stosTier.fourTier.allocatedToken', tier4);
-      setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', tier1);
-      setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
-      setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
-      setFieldValue('vaults[0].publicRound1Allocation', public1All);
-      setFieldValue(
-        'vaults[0].publicRound2Allocation',
-        publicAllocation - public1All,
-      );
+        console.log(valutpercentages);
 
-      setFieldValue(
-        'vaults[1].startTime',
-        publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
-      );
-      setFieldValue(
-        'vaults[0].claimStart',
-        publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
-      );
+        let totalAlloc: any[] = [];
+        const rounds = values.vaults.map((vault, index) => {
+          const vaultAll = totalSupply * valutpercentages[index].tokenAlloc;
 
-      const mainVaults = rounds.splice(2, 1);
+          setFieldValue(`vaults[${index}].vaultTokenAllocation`, vaultAll);
+          const xx = valutpercentages[index].claim.map((claim: any, indexxx: number) => {
+            return {
+              claimRound: indexxx + 1,
+              claimTime: claim.claimTime,
+              claimTokenAllocation: totalSupply * claim.claimPercentage,
+            };
+          });
 
-      const sumTotalToken = rounds.reduce((partialSum, a) => partialSum + a, 0);
+        if (vault.vaultType !== 'DAO' && vault.vaultType !== 'Vesting') {
+          setFieldValue(`vaults[${index}].claim`, xx);
+        }
+          
+          totalAlloc.push(vaultAll);
+        });
+        const tot = totalAlloc.reduce((acc, amont) => acc + amont);
+        setFieldValue('totalTokenAllocation', tot);
 
-      setFieldValue('totalTokenAllocation', sumTotalToken);
+        // const public1Allocation =
+
+        const tier1 = truncNumber(
+          totalAlloc[0] * 0.5 * stosvalues[1].percentage,
+          0,
+        );
+        const tier2 = truncNumber(
+          totalAlloc[0] * 0.5 * stosvalues[3].percentage,
+          0,
+        );
+        const tier3 = truncNumber(
+          totalAlloc[0] * 0.5 * stosvalues[2].percentage,
+          0,
+        );
+        const tier4 = truncNumber(
+          totalAlloc[0] * 0.5 * stosvalues[0].percentage,
+          0,
+        );
+        const public1All = tier1 + tier2 + tier3 + tier4;
+
+        setFieldValue('vaults[0].stosTier.fourTier.allocatedToken', tier4);
+        setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', tier1);
+        setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
+        setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
+        setFieldValue('vaults[0].publicRound1Allocation', public1All);
+        setFieldValue(
+          'vaults[0].stosTier.fourTier.requiredStos',
+          stosvalues[0].requiredStos,
+        );
+
+        console.log(totalAlloc,totalAlloc[0], public1All);
+        
+        setFieldValue(
+          'vaults[0].stosTier.oneTier.requiredStos',
+          stosvalues[1].requiredStos,
+        );
+        setFieldValue(
+          'vaults[0].stosTier.threeTier.requiredStos',
+          stosvalues[2].requiredStos,
+        );
+        setFieldValue(
+          'vaults[0].stosTier.twoTier.requiredStos',
+          stosvalues[3].requiredStos,
+        );
+
+        setFieldValue(
+          'vaults[0].publicRound2Allocation',
+          totalAlloc[0]  - public1All,
+        );
+        setFieldValue(
+          'vaults[1].startTime',
+          publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+        );
+        setFieldValue(
+          'vaults[0].claimStart',
+          publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+        );
+      }
+       else {
+        const rounds = values.vaults.map((vault, index) => {
+          const roundInfo = schedules(
+            vault.vaultName,
+            totalSupply,
+            publicVault.publicRound2End ? publicVault.publicRound2End : 0,
+          );
+
+          // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
+
+          const tot = roundInfo.reduce(
+            (acc, round) => acc + round.claimTokenAllocation,
+            0,
+          );
+
+          //  const totalTokenAllocation =
+          setFieldValue(`vaults[${index}].claim`, roundInfo);
+          setFieldValue(`vaults[${index}].adminAddress`, account);
+          setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
+          return tot;
+        });
+
+        setFieldValue('vaults[2].vaultTokenAllocation', 0);
+
+        // setFieldValue(]
+        //   'vaults[0].publicRound1Allocation',
+        //   Number(parseInt((publicAllocation * 0.5).toString())),
+        // );
+        // setFieldValue(
+        //   'vaults[0].publicRound2Allocation',
+        //   publicAllocation -
+        //     Number(parseInt((publicAllocation * 0.5).toString())),
+        // );
+
+        const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
+        const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);
+        const tier3 = truncNumber(publicAllocation * 0.5 * 0.22, 0);
+        const tier4 = truncNumber(publicAllocation * 0.5 * 0.6, 0);
+
+        const public1All = tier1 + tier2 + tier3 + tier4;
+
+        setFieldValue('vaults[0].stosTier.fourTier.allocatedToken', tier4);
+        setFieldValue('vaults[0].stosTier.oneTier.allocatedToken', tier1);
+        setFieldValue('vaults[0].stosTier.threeTier.allocatedToken', tier3);
+        setFieldValue('vaults[0].stosTier.twoTier.allocatedToken', tier2);
+        setFieldValue('vaults[0].publicRound1Allocation', public1All);
+        setFieldValue(
+          'vaults[0].publicRound2Allocation',
+          publicAllocation - public1All,
+        );
+
+        setFieldValue(
+          'vaults[1].startTime',
+          publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+        );
+        setFieldValue(
+          'vaults[0].claimStart',
+          publicVault.publicRound2End ? publicVault.publicRound2End + 1 : 0,
+        );
+
+        const mainVaults = rounds.splice(2, 1);
+
+        const sumTotalToken = rounds.reduce(
+          (partialSum, a) => partialSum + a,
+          0,
+        );
+
+        setFieldValue('totalTokenAllocation', sumTotalToken);
+      }
     }
   };
+
+  console.log(values);
 
   const themeDesign = {
     border: {
@@ -262,7 +383,6 @@ const StepTwo = () => {
                 colorMode === 'light'
                   ? '1px solid #dfe4ee'
                   : '1px solid #323232',
-                 
             }}
             _focus={{}}
             _active={[]}

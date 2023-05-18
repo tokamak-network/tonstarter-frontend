@@ -170,7 +170,6 @@ function validateFormikValues(
       ) {
         //get key
         //
-        console.log(keys[index], false);
 
         return result.push(keys[index], false);
       } else {
@@ -178,7 +177,6 @@ function validateFormikValues(
       }
     });
     fileds.push(thisFields);
-    console.log(result);
 
     return result.indexOf(false) === -1 ? true : false;
   });
