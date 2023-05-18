@@ -1,5 +1,6 @@
 import {
   Grid,
+  Box,
   Text,
   GridItem,
   Image,
@@ -23,7 +24,7 @@ import {isProduction} from '@Launch/utils/checkConstants';
 import PublicSaleDatePicker from '../publicSaleDates/PublicSaleDatePicker';
 import {DateTimePicker} from '../../../../components/DateTimePicker';
 import calendarInactiveIcon from 'assets/svgs/calendar_inactive_icon.svg';
-import {relative} from 'path/posix';
+import calendarActiveIcon from 'assets/svgs/calendar_active_icon.svg';
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
 type LaunchDateProps = {
@@ -230,19 +231,22 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   <>
                     <Popover>
                       <PopoverTrigger>
-                        <Image
-                          _hover={{}}
+                        <Box
+                          as="button"
                           mt={'9px'}
-                          ml={'20px'}
-                          justifyContent={'center'}
-                          src={calendarInactiveIcon}
-                          onClick={handleImageClick}
-                        />
+                          ml={'10px'}
+                          _hover={{
+                            backgroundImage: `url(${calendarActiveIcon})`,
+                          }}
+                          transition="background-image 0.3s">
+                          <img
+                            src={calendarInactiveIcon}
+                            alt="Inactive image"
+                          />
+                        </Box>
                       </PopoverTrigger>
-                      <PopoverContent>
-                        {isDateTimePickerOpen && (
-                          <DateTimePicker range={false} />
-                        )}
+                      <PopoverContent _focus={{border: 'none'}}>
+                        <DateTimePicker range={false} />
                       </PopoverContent>
                     </Popover>
                   </>
@@ -299,14 +303,35 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 {!isPublicVaultDeployed && (
                   <Grid justifyContent={'center'}>
                     {/* Public sale 1 date & time input whitelist end + 1s*/}
-                    <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
+                    {/* <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
                       <PublicSaleDatePicker
                         setDate={setPublicSale1}
                         startTimeCap={publicSale1STC}
                         duration={2}
                         disabled={snapshotDate ? false : true}
                       />
-                    </Grid>
+                    </Grid> */}
+                    <Popover>
+                      {/* <Popover isOpen={!!snapshotDate}> */}
+                      <PopoverTrigger>
+                        <Box
+                          as="button"
+                          mt={'9px'}
+                          ml={'10px'}
+                          _hover={{
+                            backgroundImage: `url(${calendarActiveIcon})`,
+                          }}
+                          transition="background-image 0.3s">
+                          <img
+                            src={calendarInactiveIcon}
+                            alt="Inactive image"
+                          />
+                        </Box>
+                      </PopoverTrigger>
+                      <PopoverContent _focus={{border: 'none'}}>
+                        <DateTimePicker range={true} />
+                      </PopoverContent>
+                    </Popover>
                   </Grid>
                 )}
               </GridItem>
@@ -332,19 +357,39 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     Choose
                   </Text>
                 )}
-                <Grid justifyContent={'center'}>
-                  <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
-                    {!isPublicVaultDeployed && (
-                      <PublicSaleDatePicker
-                        // public sale end + 1
-                        setDate={setPublicSale2}
-                        startTimeCap={publicSale2STC}
-                        duration={5}
-                        disabled={publicSale1End ? false : true}
-                      />
-                    )}
-                  </Grid>
-                </Grid>
+                {/* <Grid justifyContent={'center'}> */}
+                {/* <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}> */}
+                {!isPublicVaultDeployed && (
+                  // <PublicSaleDatePicker
+                  //   // public sale end + 1
+                  //   setDate={setPublicSale2}
+                  //   startTimeCap={publicSale2STC}
+                  //   duration={5}
+                  //   disabled={publicSale1End ? false : true}
+                  // />
+                  <Popover>
+                    {/* <Popover isOpen={!!snapshotDate}> */}
+                    <PopoverTrigger>
+                      <Box
+                        as="button"
+                        mt={'9px'}
+                        ml={'10px'}
+                        disabled={!publicSale1End}
+                        _hover={{
+                          backgroundImage:
+                            !publicSale1End && `url(${calendarInactiveIcon})`,
+                        }}
+                        transition="background-image 0.3s">
+                        <img src={calendarInactiveIcon} alt="Inactive image" />
+                      </Box>
+                    </PopoverTrigger>
+                    <PopoverContent _focus={{border: 'none'}}>
+                      <DateTimePicker range={true} />
+                    </PopoverContent>
+                  </Popover>
+                )}
+                {/* </Grid> */}
+                {/* </Grid> */}
               </GridItem>
             )}
             {step === 'Unlock 1' && (
