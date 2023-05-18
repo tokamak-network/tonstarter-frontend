@@ -239,10 +239,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                             backgroundImage: `url(${calendarActiveIcon})`,
                           }}
                           transition="background-image 0.3s">
-                          <img
-                            src={calendarInactiveIcon}
-                            alt="Inactive image"
-                          />
+                          <img src={calendarActiveIcon} alt="Inactive image" />
                         </Box>
                       </PopoverTrigger>
                       <PopoverContent _focus={{border: 'none'}}>
@@ -312,18 +309,27 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                       />
                     </Grid> */}
                     <Popover>
-                      {/* <Popover isOpen={!!snapshotDate}> */}
                       <PopoverTrigger>
                         <Box
                           as="button"
                           mt={'9px'}
-                          ml={'10px'}
+                          ml={'7px'}
+                          disabled={!snapshotDate}
+                          style={{
+                            cursor: !snapshotDate ? 'default' : 'pointer',
+                          }}
                           _hover={{
-                            backgroundImage: `url(${calendarActiveIcon})`,
+                            backgroundImage: snapshotDate
+                              ? `url(${calendarActiveIcon})`
+                              : '',
                           }}
                           transition="background-image 0.3s">
                           <img
-                            src={calendarInactiveIcon}
+                            src={
+                              publicSale1End
+                                ? calendarActiveIcon
+                                : calendarInactiveIcon
+                            }
                             alt="Inactive image"
                           />
                         </Box>
@@ -368,19 +374,29 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   //   disabled={publicSale1End ? false : true}
                   // />
                   <Popover>
-                    {/* <Popover isOpen={!!snapshotDate}> */}
                     <PopoverTrigger>
                       <Box
                         as="button"
                         mt={'9px'}
-                        ml={'10px'}
+                        ml={'7px'}
                         disabled={!publicSale1End}
+                        style={{
+                          cursor: !publicSale1End ? 'default' : 'pointer',
+                        }}
                         _hover={{
-                          backgroundImage:
-                            !publicSale1End && `url(${calendarInactiveIcon})`,
+                          backgroundImage: publicSale1End
+                            ? `url(${calendarActiveIcon})`
+                            : '',
                         }}
                         transition="background-image 0.3s">
-                        <img src={calendarInactiveIcon} alt="Inactive image" />
+                        <img
+                          src={
+                            publicSale1End
+                              ? calendarActiveIcon
+                              : calendarInactiveIcon
+                          }
+                          alt="Inactive image"
+                        />
                       </Box>
                     </PopoverTrigger>
                     <PopoverContent _focus={{border: 'none'}}>
