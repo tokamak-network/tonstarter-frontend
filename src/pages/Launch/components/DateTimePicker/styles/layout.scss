@@ -1,6 +1,8 @@
 @import 'colors';
 
 .date-time-selector {
+  position: absolute;
+  z-index: 10;
   width: 300px;
   border-radius: 4px;
   border: 1px solid $border-color;

@@ -228,13 +228,23 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 )}
                 {!isPublicVaultDeployed && (
                   <>
-                    <Image
-                      _hover={{}}
-                      position={'absolute'}
-                      src={calendarInactiveIcon}
-                      onClick={handleImageClick}
-                    />
-                    {isDateTimePickerOpen && <DateTimePicker range={false} />}
+                    <Popover>
+                      <PopoverTrigger>
+                        <Image
+                          _hover={{}}
+                          mt={'9px'}
+                          ml={'20px'}
+                          justifyContent={'center'}
+                          src={calendarInactiveIcon}
+                          onClick={handleImageClick}
+                        />
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        {isDateTimePickerOpen && (
+                          <DateTimePicker range={false} />
+                        )}
+                      </PopoverContent>
+                    </Popover>
                   </>
                 )}
               </GridItem>
