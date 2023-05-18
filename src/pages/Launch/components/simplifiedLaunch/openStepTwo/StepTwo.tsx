@@ -186,7 +186,7 @@ const StepTwo = () => {
         const rounds = values.vaults.map((vault, index) => {
           const vaultAll = totalSupply * valutpercentages[index].tokenAlloc;
 
-          setFieldValue(`vaults[${index}].vaultTokenAllocation`, vaultAll);
+          setFieldValue(`vaults[${index}].vaultTokenAllocation`, truncNumber(vaultAll,0));
           const xx = valutpercentages[index].claim.map((claim: any, indexxx: number) => {
             return {
               claimRound: indexxx + 1,
