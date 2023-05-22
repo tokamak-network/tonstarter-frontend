@@ -198,11 +198,11 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     }
   }, [unlockDate1, lastUnlockDate]);
 
-  const handleImageClick = () => {
-    setDateTimePickerOpen(true);
+  const handleTogglePicker = () => {
+    setDateTimePickerOpen(!isDateTimePickerOpen);
   };
 
-  const closeDateTimePicker = () => {
+  const handlePickerCancel = () => {
     setDateTimePickerOpen(false);
   };
 
@@ -228,25 +228,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   </Text>
                 )}
                 {!isPublicVaultDeployed && (
-                  <>
-                    <Popover>
-                      <PopoverTrigger>
-                        <Box
-                          as="button"
-                          mt={'9px'}
-                          ml={'10px'}
-                          _hover={{
-                            backgroundImage: `url(${calendarActiveIcon})`,
-                          }}
-                          transition="background-image 0.3s">
-                          <img src={calendarActiveIcon} alt="Inactive image" />
-                        </Box>
-                      </PopoverTrigger>
-                      <PopoverContent _focus={{border: 'none'}}>
-                        <DateTimePicker range={false} />
-                      </PopoverContent>
-                    </Popover>
-                  </>
+                  <Box mt={'8px'} ml={'20px'}>
+                    <DateTimePicker range={false} />
+                  </Box>
                 )}
               </GridItem>
             )}

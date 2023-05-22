@@ -1,17 +1,17 @@
 import React from 'react';
-import { Button } from './Button';
+import {Button} from './Button';
 import '../styles/clock.scss';
 
 type ActionBarProps = {
-  onClick?: () => void;
-  onReset?: () => void;
+  onSet?: () => void;
+  onCancel?: () => void;
 };
 
-export const ActionBar: React.FC<ActionBarProps> = ({ onClick, onReset }) => {
+export const ActionBar: React.FC<ActionBarProps> = ({onSet, onCancel}) => {
   return (
-    <div className='date-time-selector__actions'>
-      <Button className='button__set-up' text={'Set up'} onClick={onClick} />
-      <Button className='button__cancel' text={'Cancel'} onClick={onReset} />
+    <div className="date-time-selector__actions">
+      <Button className="button__set-up" text={'Set up'} onClick={onSet} />
+      <Button className="button__cancel" text={'Cancel'} onClick={onCancel} />
     </div>
   );
 };
