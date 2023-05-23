@@ -141,9 +141,12 @@ export const useSwapStake = (amountIn: number) => {
             const exactOutFormatted = Number(
               ethers.utils.formatUnits(_quoteExactOut, 27),
             );
+            console.log('exactOutFormatted.toString()',exactOutFormatted.toString());
+            
             return setMaxAmount(exactOutFormatted.toString());
           } else {
             console.log('lll');
+            console.log('amountIn.toString()',amountIn.toString());
             
             return setMaxAmount(amountIn.toString());
           }
