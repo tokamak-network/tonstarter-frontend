@@ -74,9 +74,9 @@ export const useSwapStake = (amountIn: number) => {
         let changeTick = await tonStakeUpgrade6.changeTick();
         console.log('changeTick', changeTick);
 
-        // if (changeTick === 0) {
-        //   changeTick = 18;
-        // }
+        if (changeTick === 0) {
+          changeTick = 18;
+        }
 
         if (slot0.tick > acceptMaxTick) {
           console.log(
