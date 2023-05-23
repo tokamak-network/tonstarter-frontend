@@ -143,6 +143,8 @@ export const useSwapStake = (amountIn: number) => {
             );
             return setMaxAmount(exactOutFormatted.toString());
           } else {
+            console.log('lll');
+            
             return setMaxAmount(amountIn.toString());
           }
         }
