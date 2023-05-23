@@ -153,8 +153,6 @@ export const MyAirdrop = () => {
     /*eslint-disable*/
   }, [account, library, stakeList]);
   
-console.log(userStakedTon);
-
 
   return (
     <Flex mt={'110px'} flexDir="column" alignItems="center">

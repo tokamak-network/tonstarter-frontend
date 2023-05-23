@@ -222,7 +222,7 @@ const MobileAirDrop = () => {
           }>
           <Text style={leftText}>My Staked TON</Text>
           <Text style={rightText}>
-          {commafy(userStakedTon)} TON
+          {userStakedTon} TON
           </Text>
         </GridItem>
         <GridItem
@@ -232,13 +232,13 @@ const MobileAirDrop = () => {
           }>
           <Text style={leftText}>My Staked TOS</Text>
           <Text style={rightText}>
-          {commafy(userStakedTos)} TOS
+          {userStakedTos} TOS
           </Text>
         </GridItem>
         <GridItem style={gridItemStyle}>
           <Text style={leftText}>My sTOS</Text>
           <Text style={rightText}>
-          {commafy(userStakedSTos)} sTOS
+          {(userStakedSTos)} sTOS
           </Text>
         </GridItem>
       </Grid>
