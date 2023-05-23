@@ -220,7 +220,6 @@ export const ManageModal = () => {
           }
 
           setSwapBalance(totalStakedBalance.toString() || '-');
-
           //calculate swap balance
           // if (Number(convertedUnstakeNum) <= 0) {
           //   return setSwapBalance('0.00');

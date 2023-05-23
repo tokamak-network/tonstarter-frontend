@@ -33,8 +33,8 @@ import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 import TOS_SYMBOL from 'assets/tokens/TOS_symbol.svg';
 import TOS_symbolDark from 'assets/tokens/TOS_symbolDark.svg';
 import {useSwapModal} from '@Launch/hooks/useSwapModal';
-import {useSwapMax} from '@Launch/hooks/useSwapMax';
-
+// import {useSwapMax} from '@Launch/hooks/useSwapMax';
+ import {useSwapStake} from '../hooks/useSwapStake'
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useActiveWeb3React();
@@ -51,8 +51,8 @@ export const SwapModal = () => {
   const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
 
-  const maxAmount = useSwapMax(Number(swapBalance));
-  const maxInput = useSwapMax(Number(inputAmount.replaceAll(',', '')));
+  const maxAmount = useSwapStake(Number(swapBalance));
+  const maxInput = useSwapStake(Number(inputAmount.replaceAll(',', '')));
 
   useEffect(() => {
     if (Number(inputAmount.replaceAll(',', '')) !== 0) {
