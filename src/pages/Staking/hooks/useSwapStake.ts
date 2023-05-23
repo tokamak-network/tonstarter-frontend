@@ -30,6 +30,9 @@ export const useSwapStake = (amountIn: number) => {
 
   useEffect(() => {
     async function callData() {
+
+        console.log('amountIn',amountIn);
+        
       if (QUOTER_CONTRACT && tonStakeUpgrade6 && UniswapV3Pool) {
         const FEE_SIZE = 3;
         const encodePath = (path: any, fees: any) => {

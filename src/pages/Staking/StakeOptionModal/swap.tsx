@@ -54,6 +54,9 @@ export const SwapModal = () => {
   const maxAmount = useSwapStake(Number(swapBalance));
   const maxInput = useSwapStake(Number(inputAmount.replaceAll(',', '')));
 
+
+  console.log('maxAmount',maxAmount);
+  
   useEffect(() => {
     if (Number(inputAmount.replaceAll(',', '')) !== 0) {
       setMax(maxInput);
