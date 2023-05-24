@@ -30,7 +30,7 @@ export const useSwapMax = (amountIn: number) => {
           return encoded.toLowerCase();
         };
 
-        console.log('amountIn', amountIn);
+        // console.log('amountIn', amountIn);
 
         const path = encodePath([WTON_ADDRESS, TOS_ADDRESS], [3000]);
         const outputPath = encodePath([TOS_ADDRESS, WTON_ADDRESS], [3000]);
@@ -39,7 +39,7 @@ export const useSwapMax = (amountIn: number) => {
           convertToRay(String(amountIn)),
         );
 
-        console.log('amountOut_BN', amountOut_BN);
+        // console.log('amountOut_BN', amountOut_BN);
 
         const limitParameters = await LibraryContract?.limitPrameters(
           convertToRay(String(amountIn)),
@@ -49,7 +49,7 @@ export const useSwapMax = (amountIn: number) => {
           18,
         );
 
-        console.log('limitParameters', limitParameters);
+        // console.log('limitParameters', limitParameters);
 
         const amountOutMinimum2 = amountOut_BN;
         const amountOutMinimum = Number(
@@ -59,30 +59,30 @@ export const useSwapMax = (amountIn: number) => {
           ),
         );
 
-        console.log('amountOutMinimum', amountOutMinimum);
+        // console.log('amountOutMinimum', amountOutMinimum);
 
         const amountOutMinimum3 =
           Number(ethers.utils.formatUnits(amountOutMinimum2.toString(), 18)) *
           0.995;
-        console.log('amountOutMinimum3', amountOutMinimum3);
+        // console.log('amountOutMinimum3', amountOutMinimum3);
 
         const isMax = amountOutMinimum3 > amountOutMinimum;
-        console.log('isMax', isMax);
+        // console.log('isMax', isMax);
 
         const afterAmountIn = await QUOTER_CONTRACT.callStatic.quoteExactOutput(
           outputPath,
           convertToWei(String(amountOutMinimum3)), //wei
         ); //ray
 
-        console.log('afterAmountIn', afterAmountIn);
+        // console.log('afterAmountIn', afterAmountIn);
 
         const afterAmountIn2 =
           Number(ethers.utils.formatUnits(afterAmountIn, 27)) * 1.005;
-        console.log('afterAmountIn2', afterAmountIn2);
+        // console.log('afterAmountIn2', afterAmountIn2);
 
         const result =
           isMax === true ? amountIn.toString() : afterAmountIn2.toString();
-        console.log('result', result);
+        // console.log('result', result);
 
         return setMaxAmount(result ?? '-');
       }
