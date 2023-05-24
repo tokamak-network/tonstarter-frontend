@@ -33,8 +33,8 @@ import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 import TOS_SYMBOL from 'assets/tokens/TOS_symbol.svg';
 import TOS_symbolDark from 'assets/tokens/TOS_symbolDark.svg';
 import {useSwapModal} from '@Launch/hooks/useSwapModal';
-import {useSwapMax} from '@Launch/hooks/useSwapMax';
-
+// import {useSwapMax} from '@Launch/hooks/useSwapMax';
+ import {useSwapStake} from '../hooks/useSwapStake'
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useActiveWeb3React();
@@ -51,16 +51,15 @@ export const SwapModal = () => {
   const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
 
-  const maxAmount = useSwapMax(Number(swapBalance));
-  const maxInput = useSwapMax(Number(inputAmount.replaceAll(',', '')));
+  const maxAmount = useSwapStake(Number(swapBalance));
+  const maxInput = useSwapStake(Number(inputAmount.replaceAll(',', '')));
 
+
+  console.log('maxAmount',maxAmount);
+  
   useEffect(() => {
-    if (Number(inputAmount.replaceAll(',', '')) !== 0) {
-      setMax(maxInput);
-    } else {
-      setMax(maxAmount);
-    }
-  }, [inputAmount, maxAmount, maxInput]);
+    setMax(maxAmount);
+  }, [ maxAmount]);
 
 
   const {tosAmountOut: basicPrice} = useSwapModal(1);
@@ -105,6 +104,10 @@ export const SwapModal = () => {
       );
     }
   }, [inputAmount, setInputAmount]);
+
+
+console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount));
+
 
   return (
     <Modal
@@ -184,7 +187,10 @@ export const SwapModal = () => {
                   TON
                 </Text>
                 <NumberInput
-                  h="24px"
+                  h="26px"
+                  ml='10px'
+                  borderRadius={'4px'}
+                  border={Number(inputAmount) > Number(maxAmount)? '1px solid red': ''}
                   value={Number(inputAmount) <= 0 ? 0 : inputAmount}
                   onChange={(value) => {
                     if (
@@ -202,7 +208,7 @@ export const SwapModal = () => {
                     placeholder="0.00"
                     h="24px"
                     textAlign={'right'}
-                    errorBorderColor="red.300"
+                    // errorBorderColor="red.300"
                     verticalAlign={'sub'}
                     fontSize={20}
                     fontWeight={'bold'}
@@ -384,6 +390,7 @@ export const SwapModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
+              disabled={Number(maxAmount) === 0 ||  Number(inputAmount) === 0 || Number(inputAmount) > Number(maxAmount) }
               onClick={() => {
                 const isBalance = checkBalance(
                   Number(inputAmount),

@@ -20,6 +20,7 @@ import {injected} from 'connectors';
 import WarningModal from './components/simplifiedLaunch/openStepOne/WarningModal';
 import {setMode,setProjectStep,saveTempProjectData,setHashKey} from '@Launch/launch.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
+import {DEFAULT_NETWORK} from 'constants/index';
 
 type LaunchProps = {
   numPairs: Number;
@@ -37,6 +38,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   } = match;
   const {url} = match;
   const {active, activate, connector} = useActiveWeb3React();
+  const {account, chainId} = useActiveWeb3React();
 
   const showLaunchModes = () => {
     setShowLaunchMode(true);
@@ -81,7 +83,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   }, [dispatch]);
 
   const {openAnyModal} = useModal();
-
+  
   return (
     <Flex
       flexDir={'column'}
@@ -148,6 +150,10 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                 }
                 if (!active) {
                   return activate(injected);
+                }
+                if (chainId !== Number(DEFAULT_NETWORK) || chainId === undefined || !account) {
+                  const netType = DEFAULT_NETWORK === 1 ? 'Mainnet' : 'Goerli Test Network';
+                  return alert(`Please use ${netType}`);
                 }
                 openAnyModal('Launch_Warning', {
                   from: 'advance-launch',

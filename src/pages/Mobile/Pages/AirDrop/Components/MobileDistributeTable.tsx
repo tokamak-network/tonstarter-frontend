@@ -144,7 +144,7 @@ export const MobileDistributeTable: FC<DistributeTable> = ({
               h={'42px'}
            
               textAlign={'center'}>
-             {commafy(token.amount)}
+             {token.amount}
             </Text>
           </GridItem>
         )

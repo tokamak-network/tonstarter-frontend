@@ -60,4 +60,5 @@ export type DEPLOYED_TYPE = {
   StakingV2Proxy: string;
   Quoter: string;
   LibPublicSaleLogic: string;
+  StakeTONAddress: string;
 };

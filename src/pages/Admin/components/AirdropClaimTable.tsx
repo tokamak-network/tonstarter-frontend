@@ -583,7 +583,7 @@ export const AirdropClaimTable = () => {
                   color={colorMode === 'light' ? '#353c48' : '#fff'}
                   minWidth={'35%'}
                   textAlign={'center'}>
-                  {commafy(formattedAmt)}
+                  {(formattedAmt)}
                 </Text>
                 <Flex minWidth={'20%'} justifyContent={'center'}>
                   <Button
@@ -628,6 +628,10 @@ export const AirdropClaimTable = () => {
           const formattedAmt = tonStaker
             ? Number(ethers.utils.formatEther(amount)).toFixed(2)
             : amount;
+
+          if (address === '0x7a88424c2547ceC49AD1e4eE8eAfCC7F935E76B1') {
+            return;
+          }
 
           return (
             <Grid
@@ -674,7 +678,7 @@ export const AirdropClaimTable = () => {
                   color={colorMode === 'light' ? '#353c48' : '#fff'}
                   minWidth={'35%'}
                   textAlign={'center'}>
-                  {commafy(formattedAmt)}
+                  {(formattedAmt)}
                 </Text>
                 <Flex minWidth={'20%'} justifyContent={'center'}>
                   <Button
@@ -749,7 +753,7 @@ export const AirdropClaimTable = () => {
               color={colorMode === 'light' ? '#353c48' : '#fff'}
               minWidth={'35%'}
               textAlign={'center'}>
-              {commafy(genesisAirdropBalance)}
+              {(genesisAirdropBalance)}
             </Text>
             <Flex minWidth={'20%'} justifyContent={'center'}>
               <Button

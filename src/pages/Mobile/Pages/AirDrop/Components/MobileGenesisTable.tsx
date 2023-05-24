@@ -174,7 +174,7 @@ export const MobileGenesisTable: FC<Genesis> = ({
           color={colorMode === 'light' ? '#353c48' : '#fff'}
           w={'26.6%'}
           textAlign={'center'}>
-          {commafy(genesisAirdropBalance)}
+          {genesisAirdropBalance}
         </Text>
         <Flex w={'31.3%'} justifyContent={'center'}>
           <Button

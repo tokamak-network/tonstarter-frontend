@@ -1,4 +1,4 @@
-import {Box, useColorMode, useTheme, Flex, Text} from '@chakra-ui/react';
+import {Box, useColorMode, useTheme, Flex, Text, Button, Tooltip, Image} from '@chakra-ui/react';
 import {CustomInput} from 'components/Basic';
 import {CustomButton} from 'components/Basic/CustomButton';
 import {useEffect, useState} from 'react';
@@ -11,6 +11,8 @@ import {useCallContract} from 'hooks/useCallContract';
 import {BigNumber} from 'ethers';
 import {convertNumber} from 'utils/number';
 import {useBlockNumber} from 'hooks/useBlock';
+import {addToken} from '@Starter/actions/actions';
+import tooltipIconGray from 'assets/svgs/input_question_icon.svg';
 
 type ClaimProps = {
   saleInfo: AdminObject;
@@ -334,20 +336,58 @@ export const Claim: React.FC<ClaimProps> = (prop) => {
   }
 
   return (
-    <Flex flexDir="column" pl={'45px'}>
+    <Flex flexDir="column" pl={'45px'} >
       <Box d="flex" textAlign="center" alignItems="center" mb={'20px'}>
         <Text {...STATER_STYLE.mainText({colorMode, fontSize: 25})} mr={'20px'}>
           Claim
         </Text>
       </Box>
-      <Box d="flex">
+      <Box d="flex" h='18px' mb={'10px'}>
         <Text
+          mr='12px'
           color={colorMode === 'light' ? 'gray.375' : 'white.100'}
           fontSize={14}
           letterSpacing={'1.4px'}
-          mb={'10px'}>
+         >
           Available to Claim
         </Text>
+        <Button
+      alignItems='end'
+      mt='2px'
+          bg="transparent"
+          height="18px"
+          padding="0px"
+          _hover={{}}
+          fontSize="14px"
+          _focus={{}}
+          _active={{}}
+          color="#0070ed"
+          onClick={() => {
+            account &&
+              library &&
+              addToken(
+                saleInfo.tokenAddress,
+                library,
+                saleInfo.tokenSymbolImage ? saleInfo.tokenSymbolImage : '',
+              );
+          }}>
+          Import Token
+          <Tooltip
+            label={
+              'This button will add the current project token to your MetaMask wallet.'
+            }
+            hasArrow
+            fontSize="12px"
+            placement="top"
+            w="250px"
+            color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+            aria-label={'Tooltip'}
+            textAlign={'center'}
+            size={'xs'}>
+            <Image ml="3px" src={tooltipIconGray} mb='2px' />
+          </Tooltip>
+        </Button>
+
       </Box>
       <Box d="flex" alignItems="center" mb={'30px'}>
         <Box d="flex" mr={'10px'} alignItems="center">

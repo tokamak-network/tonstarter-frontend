@@ -100,7 +100,7 @@ export const Router: FC<RouterProps> = () => {
 
   useEffect(() => {
     if (chainId !== Number(DEFAULT_NETWORK) && chainId !== undefined) {
-      const netType = DEFAULT_NETWORK === 1 ? 'mainnet' : 'Goerli Test Network';
+      const netType = DEFAULT_NETWORK === 1 ? 'Mainnet' : 'Goerli Test Network';
       //@ts-ignore
       // dispatch(fetchUserInfo({reset: true}));
       return alert(`Please use ${netType}`);
@@ -227,7 +227,7 @@ export const Router: FC<RouterProps> = () => {
           <Route exact path="/rewards/rewardProgram" component={Reward} />
           {/* <Route exact path="/starter" component={Starter} /> */}
           <Route exact path="/starter" component={Starter} />
-          <Route exact path="/dao" component={DAO} />
+          {/* <Route exact path="/dao" component={DAO} /> */}
           <Route exact path="/myairdrop" component={MyAirdrop} />
 
           <Route exact path={`/starter/:id`} component={StarterDetail} />

@@ -55,7 +55,7 @@ const DepositContainer: React.FC<DepositContainerProp> = (prop) => {
   //   saleContractAddress,
   //   inputTonBalance,
   // );
-  // console.log(passed);
+ 
 
   const [depositBtnDisabled, setDepositBtnDisabled] = useState<boolean>(true);
 

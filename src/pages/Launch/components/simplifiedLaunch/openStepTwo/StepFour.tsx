@@ -26,7 +26,6 @@ const StepFour = () => {
     if (match && match[1] && num > 0) {
       const numZeros = num.toString().length - 1 - match[1].length;
       return numZeros;
-      // return zeros; // Output:
     } else {
       return 0;
     }

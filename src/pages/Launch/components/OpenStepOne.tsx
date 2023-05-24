@@ -68,15 +68,14 @@ const OpenStepOne = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const inStarter = starterData.rawData.some(
-      (el) => {
-        
-      return  el.projectKey === hashKey
-      },
-    );
-
-    
-    setListed(inStarter);
+    if (hashKey !== undefined) {
+      const inStarter = starterData.rawData.some(
+        (el) => el.projectKey === hashKey,
+      );
+      setListed(inStarter);
+    } else {
+      setListed(false);
+    }
   }, [hashKey, starterData.rawData]);
 
 

@@ -178,7 +178,7 @@ export const MobileDAOTable: FC<DAO> = ({
               color={colorMode === 'light' ? '#353c48' : '#fff'}
               w={'26.6%'}
               textAlign={'center'}>
-             {commafy(formattedAmt)}
+             {formattedAmt}
             </Text>
             <Flex w={'31.3%'} justifyContent={'center'}>
               <Button
