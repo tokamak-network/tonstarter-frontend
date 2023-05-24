@@ -391,7 +391,7 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              disabled={Number(max) === 0 ||  Number(inputAmount) === 0 || Number(inputAmount) > Number(max) }
+              disabled={Number(maxAmount) === 0 ||  Number(inputAmount) === 0 || Number(inputAmount) > Number(maxAmount) }
               onClick={() => {
                 const isBalance = checkBalance(
                   Number(inputAmount),
