@@ -83,7 +83,7 @@ export const useSwapStake = (amountIn: number) => {
             'The current price is greater than the average price over the last 2 minutes. Swap is not supported in this environment.',
           );
 
-          return;
+          return setMaxAmount('0');
         } else {
           const _quoteExactInput =
             await QUOTER_CONTRACT.callStatic.quoteExactInput(

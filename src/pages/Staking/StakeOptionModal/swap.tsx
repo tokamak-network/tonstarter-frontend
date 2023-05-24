@@ -387,6 +387,7 @@ export const SwapModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
+              disabled={Number(max) === 0 || Number(inputAmount) > Number(max) }
               onClick={() => {
                 const isBalance = checkBalance(
                   Number(inputAmount),
