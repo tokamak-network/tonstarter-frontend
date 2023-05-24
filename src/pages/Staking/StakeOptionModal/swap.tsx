@@ -215,7 +215,8 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                     fontSize={20}
                     fontWeight={'bold'}
                     border="none"
-                    isInvalid={Number(inputAmount) > Number(maxAmount)}
+                    isInvalid={true}
+                    disabled={true}
                     _focus={{
                       borderWidth: 0,
                     }}
