@@ -192,6 +192,7 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                 </Text>
                 <NumberInput
                   h="24px"
+                  border='1px solid red'
                   value={Number(inputAmount) <= 0 ? 0 : inputAmount}
                   onChange={(value) => {
                     if (
