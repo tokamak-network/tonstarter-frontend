@@ -77,8 +77,8 @@
     color: $base-color;
     justify-content: center;
     align-items: center;
-    // margin: 3px 4px;
-    padding: 3px 4px 5px;
+    margin: 3px 4px;
+    padding: 3px 18px 5px;
     border-radius: 0;
     cursor: pointer;
 
@@ -97,6 +97,7 @@
       border-bottom-right-radius: 0;
       background-color: $primary-color;
       color: $base-color;
+      padding: 3px 18px 5px;
     }
 
     &__end {
@@ -106,6 +107,7 @@
       border-bottom-left-radius: 0;
       background-color: $primary-color;
       color: $base-color;
+      padding: 3px 18px 5px;
     }
   }
 }

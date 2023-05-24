@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import * as dateFns from 'date-fns';
-import '../styles/calendar.scss';
-import '../styles/cell.scss';
 import {Cell} from '../components/Cell';
 import {daysOfWeek} from '../utils/dateUtils';
 import calender_Forward_icon from '../assets/calender_Forward_icon.svg';
 import calender_back_icon from '../assets/calender_back_icon.svg';
+
+import '../styles/cell.scss';
+import '../styles/calendar.scss';
 
 type CalendarProps = {
   value?: Date;

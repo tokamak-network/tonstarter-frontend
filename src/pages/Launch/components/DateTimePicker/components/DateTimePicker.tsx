@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Dispatch, SetStateAction} from 'react';
 import {Calendar} from './Calendar';
 import {ActionBar} from './ActionBar';
 import {Clock} from './Clock';
@@ -18,10 +18,11 @@ import * as dateFns from 'date-fns';
 
 import '../styles/layout.scss';
 import '../styles/button.scss';
+import '../styles/cell.scss';
 
 // Props
 type DateTimePickerProps = {
-  date?: Date | null;
+  setDate?: Dispatch<SetStateAction<any>>;
   range?: boolean;
   startDate?: number;
   endDate?: number;
@@ -32,35 +33,55 @@ type DateTimePickerProps = {
 
 export const DateTimePicker: React.FC<DateTimePickerProps> = ({
   range,
-  date,
+  setDate,
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<number>(0);
+  const [endTime, setEndTime] = useState<number>(0);
   const [startTimeArray, setStartTimeArray] = useState<any>([]);
   const {colorMode} = useColorMode();
   const [image, setImage] = useState(
     colorMode === 'light' ? calendarInactiveIcon : calendarInactiveIconDark,
   );
 
+  let dateInEpoch: number = 0;
+  let endDateInEpoch: number = 0;
+
   const setSelectedDateTime = (onClose: any) => {
     setSelectedDate(selectedDate ? new Date(selectedDate.getTime()) : null);
     setEndDate(endDate ? new Date(endDate.getTime()) : null);
-    console.log('selected date range ', selectedDate);
 
     if (selectedDate) {
-      const date = dateFns.parse(
-        selectedDate.toString(),
-        'EEE MMM dd yyyy',
-        new Date(),
-      );
+      const date = new Date(selectedDate.getTime());
+      const time = new Date(startTime * 1000);
 
-      const epochTime = Math.floor(dateFns.getTime(date) / 1000);
+      date.setHours(time.getHours());
+      date.setMinutes(time.getMinutes());
+      date.setSeconds(time.getSeconds());
 
-      create();
-      console.log('date in epoch', epochTime);
-      console.log('start time', startTime);
+      dateInEpoch = Math.floor(date.getTime() / 1000);
+      setStartTime(Math.floor(date.getTime() / 1000));
+
+      if (setDate) {
+        setDate(dateInEpoch);
+      }
+    }
+    if (endDate) {
+      const date = new Date(endDate.getTime());
+      const time = new Date(startTime * 1000);
+
+      date.setHours(time.getHours());
+      date.setMinutes(time.getMinutes());
+      date.setSeconds(time.getSeconds());
+
+      endDateInEpoch = Math.floor(date.getTime() / 1000);
+      setEndTime(Math.floor(date.getTime() / 1000));
+
+      if (setDate) {
+        setDate(endDateInEpoch);
+      }
     }
 
     onClose();
@@ -126,7 +147,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
                       setTime={setStartTimeArray}
                       range={true}
                       text={'End time'}
-                      time={startTime}
+                      time={endTime}
                     />
                   </div>
                 ) : (

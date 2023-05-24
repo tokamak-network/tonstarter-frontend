@@ -8,9 +8,16 @@
   border: 1px solid $border-color;
   background-color: $base-color;
 
+  // &_time-input-area {
+  //   position: relative;
+
+  // }
+
   &__actions {
     padding: 15px 45px 15px 45px;
     display: flex;
     border-top: 1px solid $border-color-2;
   }
+
+
 }

@@ -229,7 +229,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                 )}
                 {!isPublicVaultDeployed && (
                   <Box mt={'8px'} ml={'20px'}>
-                    <DateTimePicker range={false} />
+                    <DateTimePicker range={false} setDate={setSnapshotDate} />
                   </Box>
                 )}
               </GridItem>
@@ -292,36 +292,9 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                         disabled={snapshotDate ? false : true}
                       />
                     </Grid> */}
-                    <Popover>
-                      <PopoverTrigger>
-                        <Box
-                          as="button"
-                          mt={'9px'}
-                          ml={'7px'}
-                          disabled={!snapshotDate}
-                          style={{
-                            cursor: !snapshotDate ? 'default' : 'pointer',
-                          }}
-                          _hover={{
-                            backgroundImage: snapshotDate
-                              ? `url(${calendarActiveIcon})`
-                              : '',
-                          }}
-                          transition="background-image 0.3s">
-                          <img
-                            src={
-                              publicSale1End
-                                ? calendarActiveIcon
-                                : calendarInactiveIcon
-                            }
-                            alt="Inactive image"
-                          />
-                        </Box>
-                      </PopoverTrigger>
-                      <PopoverContent _focus={{border: 'none'}}>
-                        <DateTimePicker range={true} />
-                      </PopoverContent>
-                    </Popover>
+                    <Box mt={'8px'} ml={'20px'}>
+                      <DateTimePicker range={true} setDate={setPublicSale1} />
+                    </Box>
                   </Grid>
                 )}
               </GridItem>
@@ -384,7 +357,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                       </Box>
                     </PopoverTrigger>
                     <PopoverContent _focus={{border: 'none'}}>
-                      <DateTimePicker range={true} />
+                      <DateTimePicker range={true} setDate={setPublicSale2} />
                     </PopoverContent>
                   </Popover>
                 )}

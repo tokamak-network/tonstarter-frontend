@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  padding-bottom:10px;
 
   &__month-date {
     padding-top: 10px;
@@ -21,7 +22,6 @@
 
   .clock {
     display: flex;
-    padding: 10px 0px;
 
     &__time-input {
       width: 32px;
