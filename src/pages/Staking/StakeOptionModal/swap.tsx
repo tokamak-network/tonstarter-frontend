@@ -191,8 +191,9 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                   TON
                 </Text>
                 <NumberInput
-                  h="24px"
-                 
+                  h="26px"
+                  ml='10px'
+                  border={Number(inputAmount) > Number(maxAmount)? '1px solid red': ''}
                   value={Number(inputAmount) <= 0 ? 0 : inputAmount}
                   onChange={(value) => {
                     if (
@@ -215,8 +216,6 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                     fontSize={20}
                     fontWeight={'bold'}
                     border="none"
-                    isInvalid={true}
-                    // disabled={true}
                     _focus={{
                       borderWidth: 0,
                     }}
