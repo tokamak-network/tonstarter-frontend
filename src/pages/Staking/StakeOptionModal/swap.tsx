@@ -58,12 +58,8 @@ export const SwapModal = () => {
   console.log('maxAmount',maxAmount);
   
   useEffect(() => {
-    if (Number(inputAmount.replaceAll(',', '')) !== 0) {
-      setMax(maxInput);
-    } else {
-      setMax(maxAmount);
-    }
-  }, [inputAmount, maxAmount, maxInput]);
+    setMax(maxAmount);
+  }, [ maxAmount]);
 
 
   const {tosAmountOut: basicPrice} = useSwapModal(1);
