@@ -210,11 +210,12 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                     placeholder="0.00"
                     h="24px"
                     textAlign={'right'}
-                    border='1px solid red'
+                    errorBorderColor="red.300"
                     verticalAlign={'sub'}
                     fontSize={20}
                     fontWeight={'bold'}
-                    // border="none"
+                    border="none"
+                    isInvalid={Number(inputAmount) > Number(maxAmount)}
                     _focus={{
                       borderWidth: 0,
                     }}
