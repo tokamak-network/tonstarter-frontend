@@ -193,6 +193,7 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                 <NumberInput
                   h="26px"
                   ml='10px'
+                  borderRadius={'10px'}
                   border={Number(inputAmount) > Number(maxAmount)? '1px solid red': ''}
                   value={Number(inputAmount) <= 0 ? 0 : inputAmount}
                   onChange={(value) => {
@@ -211,7 +212,7 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                     placeholder="0.00"
                     h="24px"
                     textAlign={'right'}
-                    errorBorderColor="red.300"
+                    // errorBorderColor="red.300"
                     verticalAlign={'sub'}
                     fontSize={20}
                     fontWeight={'bold'}
