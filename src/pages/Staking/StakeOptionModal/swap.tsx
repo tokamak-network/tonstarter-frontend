@@ -109,6 +109,10 @@ export const SwapModal = () => {
     }
   }, [inputAmount, setInputAmount]);
 
+
+console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount));
+
+
   return (
     <Modal
       isOpen={sub.type === 'manage_swap' ? true : false}
@@ -387,7 +391,7 @@ export const SwapModal = () => {
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              disabled={Number(max) === 0 || Number(inputAmount) > Number(max) }
+              disabled={Number(max) === 0 ||  Number(inputAmount) === 0 || Number(inputAmount) > Number(max) }
               onClick={() => {
                 const isBalance = checkBalance(
                   Number(inputAmount),
