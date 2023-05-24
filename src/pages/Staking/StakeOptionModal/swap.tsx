@@ -216,7 +216,7 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                     fontWeight={'bold'}
                     border="none"
                     isInvalid={true}
-                    disabled={true}
+                    // disabled={true}
                     _focus={{
                       borderWidth: 0,
                     }}
