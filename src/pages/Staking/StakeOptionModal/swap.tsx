@@ -16,6 +16,7 @@ import {
   Avatar,
   NumberInput,
   NumberInputField,
+  Link,
 } from '@chakra-ui/react';
 import React, {useCallback, useState, useEffect, useMemo} from 'react';
 import {useAppSelector} from 'hooks/useRedux';
@@ -373,9 +374,12 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
             fontSize="12px"
             textAlign={'center'}
             mt="30px">
-            This interface is designed to prevent sandwich attack. The txn will
-            revert if the conditions for the price impact and the average price
-            are not met.
+            Swap will take place in Uniswap V3's <Link  isExternal={true}
+                  href={'https://info.uniswap.org/#/pools/0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4'}
+                  color={'blue.100'}>WTON-TOS pool</Link>, but will not be
+            executed if the last 2-minute average price differs from the current
+            price by more than 4.8%. Slippage is designed to be a maximum of
+            5.5%.
           </Text>
           <Box
             as={Flex}
