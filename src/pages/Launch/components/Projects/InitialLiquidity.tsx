@@ -444,7 +444,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           </Text>{' '}
         </GridItem>
       </Flex>
-      {/* {Number(tosBalance) === 0 ? (
+      {Number(tosBalance) === 0 ? (
         isPool && isLpToken ? (
           <Condition4
             themeDesign={themeDesign}
@@ -491,17 +491,6 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         )
       ) : (
         <Condition2
-          themeDesign={themeDesign}
-          projTokenBalance={projTokenBalance}
-          tosBalance={tosBalance}
-          project={project}
-          isAdmin={isAdmin}
-          InitialLiquidityCompute={InitialLiquidityCompute}
-          pool={createdPool}
-          startTime={startTime}
-        />
-      )} */}
-      <Condition2
         themeDesign={themeDesign}
         projTokenBalance={projTokenBalance}
         tosBalance={tosBalance}
@@ -512,6 +501,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         vault={vault}
         startTime={startTime}
       />
+      )}
+     
     </Grid>
   );
 };
