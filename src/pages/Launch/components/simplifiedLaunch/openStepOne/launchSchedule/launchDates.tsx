@@ -282,16 +282,10 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   </Text>
                 )}
                 {!isPublicVaultDeployed && (
+                  // TODO:
+                  // pass startTimeCap as prop, set duration for 5 days initially
+                  // disabled={snapshotTime ? false : true}
                   <Grid justifyContent={'center'}>
-                    {/* Public sale 1 date & time input whitelist end + 1s*/}
-                    {/* <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}>
-                      <PublicSaleDatePicker
-                        setDate={setPublicSale1}
-                        startTimeCap={publicSale1STC}
-                        duration={2}
-                        disabled={snapshotDate ? false : true}
-                      />
-                    </Grid> */}
                     <Box mt={'8px'} ml={'20px'}>
                       <DateTimePicker range={true} setDate={setPublicSale1} />
                     </Box>
@@ -320,49 +314,16 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                     Choose
                   </Text>
                 )}
-                {/* <Grid justifyContent={'center'}> */}
-                {/* <Grid mt={'9px'} ml={'8px'} justifyContent={'center'}> */}
                 {!isPublicVaultDeployed && (
-                  // <PublicSaleDatePicker
-                  //   // public sale end + 1
-                  //   setDate={setPublicSale2}
-                  //   startTimeCap={publicSale2STC}
-                  //   duration={5}
-                  //   disabled={publicSale1End ? false : true}
-                  // />
-                  <Popover>
-                    <PopoverTrigger>
-                      <Box
-                        as="button"
-                        mt={'9px'}
-                        ml={'7px'}
-                        disabled={!publicSale1End}
-                        style={{
-                          cursor: !publicSale1End ? 'default' : 'pointer',
-                        }}
-                        _hover={{
-                          backgroundImage: publicSale1End
-                            ? `url(${calendarActiveIcon})`
-                            : '',
-                        }}
-                        transition="background-image 0.3s">
-                        <img
-                          src={
-                            publicSale1End
-                              ? calendarActiveIcon
-                              : calendarInactiveIcon
-                          }
-                          alt="Inactive image"
-                        />
-                      </Box>
-                    </PopoverTrigger>
-                    <PopoverContent _focus={{border: 'none'}}>
+                  // TODO:
+                  // pass startTimeCap as prop, set duration for 5 days initially
+                  // disabled={publicSale1End ? false : true}
+                  <Grid justifyContent={'center'}>
+                    <Box mt={'8px'} ml={'20px'}>
                       <DateTimePicker range={true} setDate={setPublicSale2} />
-                    </PopoverContent>
-                  </Popover>
+                    </Box>
+                  </Grid>
                 )}
-                {/* </Grid> */}
-                {/* </Grid> */}
               </GridItem>
             )}
             {step === 'Unlock 1' && (

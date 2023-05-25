@@ -62,7 +62,7 @@ export const Calendar = (props: CalendarProps) => {
   const isBeforeToday = (date: Date) => {
     return dateFns.isBefore(date, dateFns.startOfDay(today));
   };
-
+  // TODO: add dates from prev & next month
   return (
     <div className="calendar">
       <div className="calendar__header">
