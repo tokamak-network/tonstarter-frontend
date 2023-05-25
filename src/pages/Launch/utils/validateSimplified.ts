@@ -37,14 +37,14 @@ function validateSimplifiedFormikValues(
     if (publicRound1 && snapshot && snapshot < publicRound1) {
       fields.push(true);
     } else {
-      fields.push(false);
+      fields.push('publicRound1 && snapshot && snapshot < publicRound1',false);
     }
 
     // Public sale 1 should be later than whitelist
     if (publicRound1 && whitelistEnd && whitelistEnd < publicRound1) {
       fields.push(true);
     } else {
-      fields.push(false);
+      fields.push('publicRound1 && whitelistEnd && whitelistEnd < publicRound1',false);
     }
 
     const getDuration = (start: any, end: any) => {
@@ -56,27 +56,27 @@ function validateSimplifiedFormikValues(
       if (whitelistEnd && publicRound1) {
         getDuration(whitelistEnd, publicRound1) >= 1
           ? fields.push(true)
-          : fields.push(false);
+          : fields.push('whitelistEnd && publicRound1',false);
       }
 
       // Is there 2 day gap btw publicRound1End ~ publicRound2
       if (publicRound1End && publicRound2) {
         getDuration(publicRound1End, publicRound2) >= 1
           ? fields.push(true)
-          : fields.push(false);
+          : fields.push('publicRound1End && publicRound2',false);
       }
     } else {
       if (whitelistEnd && publicRound1) {
         getDuration(whitelistEnd, publicRound1) <= 86400 * 2
           ? fields.push(true)
-          : fields.push(false);
+          : fields.push('whitelistEnd && publicRound1',false);
       }
 
       // Is there 2 day gap btw publicRound1End ~ publicRound2
       if (publicRound1End && publicRound2) {
         getDuration(publicRound1End, publicRound2) <= 86400 * 2
           ? fields.push(true)
-          : fields.push(false);
+          : fields.push('publicRound1End && publicRound2', false);
       }
     }
 
@@ -84,14 +84,17 @@ function validateSimplifiedFormikValues(
     if (publicRound2 && publicRound1End && publicRound1End < publicRound2) {
       fields.push(true);
     } else {
-      fields.push(false);
+      fields.push('publicRound2 && publicRound1End && publicRound1End < publicRound2',false);
     }
 
     if (values.description !== '' && values.description !== undefined) {
       fields.push(true);
     } else {
-      fields.push(false);
+      fields.push('values.description', false);
     }
+
+    console.log('results',fields);
+    
 
     const results = fields.filter((field: boolean) => field === false);
     return results.length > 0 ? false : true;

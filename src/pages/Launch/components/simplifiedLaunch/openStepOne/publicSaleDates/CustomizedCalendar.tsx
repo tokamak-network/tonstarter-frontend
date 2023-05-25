@@ -37,7 +37,7 @@ const CustomizedCalendar = (prop: CalendarProps) => {
   // WIP
   useEffect(() => {
     const endDate = new Date(startTimeCap * 1000);
-    console.log('starttimecap', startTimeCap);
+    // console.log('starttimecap', startTimeCap);
     
     isProduction() === false
       ? endDate.setDate(endDate.getDate() + (2 * 60) / 1000)
@@ -216,7 +216,7 @@ const CustomizedCalendar = (prop: CalendarProps) => {
 
 
       
-  console.log('daterange', dateRange);
+  // console.log('daterange', dateRange);
   
   return (
     <Flex alignItems={'center'} display="flex">

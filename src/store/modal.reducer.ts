@@ -37,7 +37,8 @@ type LaunchModal =
   | 'Reschedule'
   | 'Launch_Warning'
   | 'Launch_AdvanceSwitch'
-  | 'Launch_ListConfirm';
+  | 'Launch_ListConfirm'
+  | 'Launch_ConfirmTx';
 
 type GeneralModal = 'calendar';
 type RewardModal = 'search' | 'information' | 'confirmMulticall';

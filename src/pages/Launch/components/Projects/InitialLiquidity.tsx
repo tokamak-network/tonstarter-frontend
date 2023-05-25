@@ -47,6 +47,7 @@ import * as UniswapV3PoolABI from 'services/abis/UniswapV3Pool.json';
 import {useBlockNumber} from 'hooks/useBlock';
 import {setTwoMinutes, selectLaunch} from '@Launch/launch.reducer';
 import tooltipIconGray from 'assets/svgs/input_question_icon.svg';
+import {openModal} from 'store/modal.reducer';
 
 const univ3prices = require('@thanpolas/univ3prices');
 
@@ -441,7 +442,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           </Text>{' '}
         </GridItem>
       </Flex>
-      {Number(tosBalance) === 0 ? (
+      {/* {Number(tosBalance) === 0 ? (
         isPool && isLpToken ? (
           <Condition4
             themeDesign={themeDesign}
@@ -497,9 +498,17 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           pool={createdPool}
           startTime={startTime}
         />
-      )}
-
-      
+      )} */}
+      <Condition2
+        themeDesign={themeDesign}
+        projTokenBalance={projTokenBalance}
+        tosBalance={tosBalance}
+        project={project}
+        isAdmin={isAdmin}
+        InitialLiquidityCompute={InitialLiquidityCompute}
+        pool={createdPool}
+        startTime={startTime}
+      />
     </Grid>
   );
 };
@@ -753,7 +762,17 @@ export const Condition2: React.FC<Condition2> = ({
                 }
           }
           whiteSpace={'normal'}
-          onClick={() => createPool()}>
+          // onClick={() => createPool()}
+          onClick={() => {
+            dispatch(
+              openModal({
+                type: 'Launch_ConfirmTx',
+                data: {
+                  func: () => createPool(),
+                },
+              }),
+            );
+          }}>
           Create Pool
         </Button>
       </GridItem>
@@ -906,31 +925,30 @@ export const Condition3: React.FC<Condition3> = ({
         <Flex alignItems="center">
           {duration.asSeconds() > 0 ? (
             <Flex>
-            <Text fontSize="13px" color={'#257eee'} mr="3px">
-              {duration.minutes().toString().length < 2 ? '0' : ''}
-              {duration.minutes()}:
-              {duration.seconds().toString().length < 2 ? '0' : ''}
-              {duration.seconds()}
-            </Text>
-            <Tooltip
-            label={
-              'After creating the pool, you need to wait 2 minutes before minting the LP Token'
-            }
-            hasArrow
-            fontSize="12px"
-            placement="top"
-            w="250px"
-            color={colorMode === 'light' ? '#e6eaee' : '#424242'}
-            aria-label={'Tooltip'}
-            textAlign={'center'}
-            size={'xs'}>
-            <Image mr="15px" src={tooltipIconGray} />
-          </Tooltip>
+              <Text fontSize="13px" color={'#257eee'} mr="3px">
+                {duration.minutes().toString().length < 2 ? '0' : ''}
+                {duration.minutes()}:
+                {duration.seconds().toString().length < 2 ? '0' : ''}
+                {duration.seconds()}
+              </Text>
+              <Tooltip
+                label={
+                  'After creating the pool, you need to wait 2 minutes before minting the LP Token'
+                }
+                hasArrow
+                fontSize="12px"
+                placement="top"
+                w="250px"
+                color={colorMode === 'light' ? '#e6eaee' : '#424242'}
+                aria-label={'Tooltip'}
+                textAlign={'center'}
+                size={'xs'}>
+                <Image mr="15px" src={tooltipIconGray} />
+              </Tooltip>
             </Flex>
           ) : (
             <></>
           )}
-       
 
           <Button
             fontSize={'12px'}

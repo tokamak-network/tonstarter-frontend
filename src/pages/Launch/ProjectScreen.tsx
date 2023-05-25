@@ -23,6 +23,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LoadingComponent} from 'components/Loading';
 import VestingClaimModal from './components/modals/VestingClaim';
 import SwapModal from './components/modals/SwapModal';
+import ConfirmTx from './components/modals/ConfirmTx';
 
 const ProjectScreen = () => {
   const {openAnyModal} = useModal();
@@ -144,6 +145,7 @@ const ProjectScreen = () => {
       <DownloadModal />
       <VestingClaimModal />
       <SwapModal />
+      <ConfirmTx/>
     </Flex>
   );
 };
