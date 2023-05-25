@@ -20,7 +20,18 @@ import {CloseButton} from 'components/Modal';
 import Line from '../common/Line';
 import {LoadingComponent} from 'components/Loading';
 import {selectApp} from 'store/app/app.reducer';
-import {selectLaunch, setTempHash} from '@Launch/launch.reducer';
+import {setTwoMinutes,selectLaunch, setTempHash} from '@Launch/launch.reducer';
+import moment from 'moment';
+import {Contract} from '@ethersproject/contracts';
+import InitialLiquidityComputeAbi from 'services/abis/Vault_InitialLiquidityCompute.json';
+import {useActiveWeb3React} from 'hooks/useWeb3';
+import {getSigner} from 'utils/contract';
+import store from 'store';
+import {toastWithReceipt} from 'utils';
+import {setTxPending} from 'store/tx.reducer';
+import {openToast} from 'store/app/toast.reducer';
+import {DEPLOYED} from 'constants/index';
+import {addPool} from 'pages/Admin/actions/actions';
 
 const ConfirmTx = () => {
   const {data} = useAppSelector(selectModalType);
@@ -38,8 +49,85 @@ const ConfirmTx = () => {
     data: {tempHash},
   } = useAppSelector(selectLaunch);
   const dispatch = useAppDispatch();
+  const {account, library, chainId} = useActiveWeb3React();
+  const {TOS_ADDRESS, UniswapV3Factory, NPM_Address} = DEPLOYED;
 
-  const {func} = data.data;
+
+  if (!data?.data?.vaultInfo) {
+    return <></>;
+  }
+
+  const {
+    vaultInfo: {vault, project},
+    func,
+  } = data.data;
+
+//   const {vaultInfo: {vault,project} , func} = data.data;
+
+
+  const InitialLiquidityCompute = new Contract(
+    vault.vaultAddress,
+    InitialLiquidityComputeAbi.abi,
+    library,
+  );
+
+  const createPool = async () => {
+    const now = moment().unix();
+    dispatch(setTwoMinutes({data: now + 120}));
+
+    if (account === null || account === undefined || library === undefined) {
+      return;
+    }
+    const signer = getSigner(library, account);
+
+    const computePoolAddress = await InitialLiquidityCompute.connect(
+      signer,
+    ).computePoolAddress(TOS_ADDRESS, project.tokenAddress, 3000);
+
+    try {
+      const receipt = await InitialLiquidityCompute.connect(
+        signer,
+      ).setCreatePool();
+      store.dispatch(setTxPending({tx: true}));
+      if (receipt) {
+        toastWithReceipt(receipt, setTxPending, 'Launch');
+        await receipt.wait();
+        // const now = moment().unix();
+        // const deadline = now+120
+        // dispatch(setTwoMinutes({data: {deadline}}));
+        if (chainId) {
+          addPool({
+            chainId: chainId,
+            poolName: `TOS / ${project.tokenSymbol}`,
+            poolAddress: computePoolAddress[0],
+            token0Address: TOS_ADDRESS,
+            token1Address: project.tokenAddress,
+            token0Image:
+              'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+            token1Image: project.tokenSymbolImage,
+            feeTier: 3000,
+          });
+          setDeployStep('Done');
+
+        }
+      }
+    } catch (e) {
+        setDeployStep('Error');
+      store.dispatch(setTxPending({tx: false}));
+      store.dispatch(
+        //@ts-ignore
+        openToast({
+          payload: {
+            status: 'error',
+            title: 'Tx fail to send',
+            description: `something went wrong`,
+            duration: 5000,
+            isClosable: true,
+          },
+        }),
+      );
+    }
+  };
 
   function closeModal() {
     try {
@@ -72,22 +160,7 @@ const ConfirmTx = () => {
           pb="25px">
           <CloseButton closeFunc={() => closeModal()}></CloseButton>
           <ModalBody p={0}>
-            <Box
-              pb={'1.250em'}
-              borderBottom={
-                colorMode === 'light'
-                  ? '1px solid #f4f6f8'
-                  : '1px solid #373737'
-              }>
-              <Heading
-                fontSize={'1.250em'}
-                fontWeight={'bold'}
-                fontFamily={theme.fonts.titil}
-                color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                textAlign={'center'}>
-                Confirm Your Transaction
-              </Heading>
-            </Box>
+          
 
             <Flex
               flexDir="column"
@@ -97,7 +170,9 @@ const ConfirmTx = () => {
               fontSize={15}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               >
-                <Text fontSize={12} color={'gray.225'}>
+                <Text  fontSize={16}
+                color={'black.300'}
+                fontWeight={600}>
                 Confirm the Create Pool transaction
                 </Text>
             
@@ -112,7 +187,7 @@ const ConfirmTx = () => {
                 w={'150px'}
                 fontSize="14px"
                 _hover={{}}
-                onClick={() => func() && setDeployStep('Deploying')}>
+                onClick={() => createPool() && setDeployStep('Deploying')}>
                 Deploy
               </Button>
             </Box>
@@ -198,27 +273,21 @@ const ConfirmTx = () => {
           <CloseButton closeFunc={handleCloseModal}></CloseButton>
           <ModalBody p={0}>
             <Flex
-              pt={'56px'}
+              pt={'36px'}
               flexDir={'column'}
               alignItems="center"
               justifyContent={'center'}>
               <Text
-                w={'186px'}
+                w={'230px'}
+               
+                mb={'30px'}
                 fontSize={16}
                 color={'black.300'}
                 fontWeight={600}
                 textAlign={'center'}>
-                Completed to deploy
+                Completed creating the pool
               </Text>
-              <Text
-                w={'186px'}
-                mb={'20px'}
-                fontSize={16}
-                color={'black.300'}
-                fontWeight={600}
-                textAlign={'center'}>
-                your token
-              </Text>
+             
               <Box w={'100%'} px={'15px'} mb={'25px'}>
                 <Line></Line>
               </Box>

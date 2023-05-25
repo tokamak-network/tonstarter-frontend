@@ -72,6 +72,8 @@ type Condition2 = {
   isAdmin: boolean;
   InitialLiquidityCompute: any;
   pool: string;
+  vault: any;
+
   startTime: number;
 };
 type Condition3 = {
@@ -507,6 +509,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         isAdmin={isAdmin}
         InitialLiquidityCompute={InitialLiquidityCompute}
         pool={createdPool}
+        vault={vault}
         startTime={startTime}
       />
     </Grid>
@@ -623,6 +626,7 @@ export const Condition2: React.FC<Condition2> = ({
   isAdmin,
   InitialLiquidityCompute,
   pool,
+  vault,
   startTime,
 }) => {
   const {colorMode} = useColorMode();
@@ -768,6 +772,8 @@ export const Condition2: React.FC<Condition2> = ({
               openModal({
                 type: 'Launch_ConfirmTx',
                 data: {
+                 
+                  vaultInfo: {vault, project},
                   func: () => createPool(),
                 },
               }),
