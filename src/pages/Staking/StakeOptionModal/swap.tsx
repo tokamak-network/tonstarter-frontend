@@ -60,7 +60,7 @@ export const SwapModal = () => {
   const stableAmount = useStable()
   console.log('stableAmount',stableAmount);
   
-  console.log('maxAmount', maxAmount);
+  // console.log('maxAmount', maxAmount);
 
   useEffect(() => {
     setMax(maxAmount);
@@ -108,12 +108,12 @@ export const SwapModal = () => {
     }
   }, [inputAmount, setInputAmount]);
 
-  console.log(
-    'Number(max)',
-    Number(max),
-    'Number(inputAmount)',
-    Number(inputAmount),
-  );
+  // console.log(
+  //   'Number(max)',
+  //   Number(max),
+  //   'Number(inputAmount)',
+  //   Number(inputAmount),
+  // );
 
   return (
     <Modal
