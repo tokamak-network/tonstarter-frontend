@@ -57,9 +57,9 @@ export const SwapModal = () => {
   const maxAmount = useSwapStake(Number(swapBalance));
   const maxInput = useSwapStake(Number(inputAmount.replaceAll(',', '')));
 
-  const stableAmount = useStable()
-  console.log('stableAmount',stableAmount);
-  
+  const stableAmount = useStable();
+  console.log('stableAmount', stableAmount);
+
   // console.log('maxAmount', maxAmount);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export const SwapModal = () => {
 
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
-console.log('numTosAmountOut',numTosAmountOut);
+    console.log('numTosAmountOut', numTosAmountOut);
 
     const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
 
@@ -115,7 +115,7 @@ console.log('numTosAmountOut',numTosAmountOut);
   //   'Number(inputAmount)',
   //   Number(inputAmount),
   // );
-console.log('priceImpact',priceImpact,inputAmount);
+  console.log('priceImpact', priceImpact, inputAmount);
 
   return (
     <Modal
@@ -383,16 +383,25 @@ console.log('priceImpact',priceImpact,inputAmount);
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
             mb={'25px'}></Stack> */}
-          {Number(priceImpact) >= 5.5 ? (
-            <Text
-              margin={'0px 25px 25px'}
-              fontSize="12px"
-              textAlign={'center'}
-              color={'#ff3b3b'}
-              mt="30px">
-              Price impact has to be less than 5.5%
-            </Text>
-          ) : null}
+          <Flex h="73px">
+            {Number(priceImpact) >= 5.5 ? (
+              <Text
+                margin={'0px 25px 25px'}
+                fontSize="12px"
+                textAlign={'center'}
+                color={'#ff3b3b'}
+                mt="30px">
+                Price impact has to be less than 5.5%
+              </Text>
+            ) : (
+              <Text
+                margin={'0px 25px 25px'}
+                fontSize="12px"
+                textAlign={'center'}
+                color={'#ff3b3b'}
+                mt="30px"></Text>
+            )}
+          </Flex>
 
           <Text
             margin={'0px 25px 25px'}
