@@ -40,13 +40,21 @@ export const useStable = () => {
         const outputPath = encodePath([TOS_ADDRESS, WTON_ADDRESS], [3000]);
 
         const slot0 = await UniswapV3Pool.slot0();
+        console.log('slot0',slot0);
+        
         const currentLiquidity = await UniswapV3Pool.liquidity();
+        console.log('currentLiquidity',currentLiquidity);
+        
         const sqrtRatioAX96 = univ3prices.tickMath.getSqrtRatioAtTick(
           slot0.tick,
         );
+        console.log('sqrtRatioAX96',sqrtRatioAX96);
+        
         const sqrtRatioBX96 = univ3prices.tickMath.getSqrtRatioAtTick(
           slot0.tick + 60,
         );
+        console.log('sqrtRatioBX96',sqrtRatioBX96);
+        
         const reserves = univ3prices.getAmountsForLiquidityRange(
           slot0.sqrtPriceX96.toString(),
           sqrtRatioAX96,
@@ -54,7 +62,12 @@ export const useStable = () => {
           currentLiquidity.toString(),
         );
 
+        console.log('reserves',reserves);
+        
+
         const reserve0 = ethers.BigNumber.from(reserves[0].toString());
+        console.log('reserve0',reserve0);
+        
         console.log(
           'expected TOS amount ',
           ethers.utils.formatUnits(reserve0, 18),
