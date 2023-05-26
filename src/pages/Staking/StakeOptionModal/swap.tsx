@@ -114,6 +114,7 @@ export const SwapModal = () => {
   //   'Number(inputAmount)',
   //   Number(inputAmount),
   // );
+console.log('priceImpact',priceImpact);
 
   return (
     <Modal
