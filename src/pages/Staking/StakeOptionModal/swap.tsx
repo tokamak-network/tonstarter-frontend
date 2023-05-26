@@ -247,6 +247,20 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                   }}>
                   Max
                 </Button>
+                <Button
+                  w={'50px'}
+                  h={'20px'}
+                  fontSize={12}
+                  fontWeight={600}
+                  onClick={() => setInputAmount(max.replace(/,/g, ''))}
+                  type={'button'}
+                  variant="outline"
+                  borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
+                  _focus={{
+                    outline: 'none',
+                  }}>
+                  Stable
+                </Button>
               </Flex>
             </Flex>
           </Stack>
