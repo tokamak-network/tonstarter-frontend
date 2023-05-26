@@ -83,6 +83,8 @@ export const useStable = () => {
           ethers.utils.formatUnits(_quoteExactOut, 27),
           'WTON',
         );
+
+        return setStableAmount(ethers.utils.formatUnits(_quoteExactOut, 27))
       }
     }
     callData().catch((e) => {
