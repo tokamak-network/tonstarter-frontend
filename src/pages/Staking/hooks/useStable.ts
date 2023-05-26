@@ -72,6 +72,10 @@ export const useStable = () => {
         );
       }
     }
+    callData().catch((e) => {
+        console.log('**fetchErr3 on useSwapModal**');
+        console.log(e);
+      });
   },[QUOTER_CONTRACT, TOS_ADDRESS, UniswapV3Pool, WTON_ADDRESS]);
   return stableAmount;
 };
