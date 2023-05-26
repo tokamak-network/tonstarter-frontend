@@ -247,7 +247,7 @@ export const SwapModal = () => {
                   h={'20px'}
                   fontSize={12}
                   fontWeight={600}
-                  onClick={() => setInputAmount(max.replace(/,/g, ''))}
+                  onClick={() => setInputAmount(stableAmount.replace(/,/g, ''))}
                   type={'button'}
                   variant="outline"
                   mr="6px"
