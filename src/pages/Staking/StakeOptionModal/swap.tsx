@@ -114,7 +114,7 @@ export const SwapModal = () => {
   //   'Number(inputAmount)',
   //   Number(inputAmount),
   // );
-console.log('priceImpact',priceImpact);
+console.log('priceImpact',priceImpact,inputAmount);
 
   return (
     <Modal
@@ -389,7 +389,7 @@ console.log('priceImpact',priceImpact);
               textAlign={'center'}
               color={'#ff3b3b'}
               mt="30px">
-              Price impact has to be less than 10%
+              Price impact has to be less than 5.5%
             </Text>
           ) : null}
 
