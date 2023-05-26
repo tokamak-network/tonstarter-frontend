@@ -30,8 +30,6 @@ export const useSwapStake = (amountIn: number) => {
 
   useEffect(() => {
     async function callData() {
-
-        console.log('amountIn',amountIn);
         
       if (QUOTER_CONTRACT && tonStakeUpgrade6 && UniswapV3Pool) {
         const FEE_SIZE = 3;
@@ -52,36 +50,29 @@ export const useSwapStake = (amountIn: number) => {
         const outputPath = encodePath([TOS_ADDRESS, WTON_ADDRESS], [3000]);
 
         const slot0 = await UniswapV3Pool.slot0();
-        console.log('slot0', slot0);
 
         const averageTick = await tonStakeUpgrade6.consult(
           pools.TOS_WTON_Address,
           120,
         );
-        console.log('averageTick', averageTick);
 
         const acceptTickIntervalInOracle =
           await tonStakeUpgrade6.acceptTickIntervalInOracle();
-        console.log('acceptTickIntervalInOracle', acceptTickIntervalInOracle);
 
         const acceptMaxTick = await tonStakeUpgrade6.acceptMaxTick(
           averageTick,
           60,
           acceptTickIntervalInOracle,
         );
-        console.log('acceptMaxTick', acceptMaxTick);
 
         let changeTick = await tonStakeUpgrade6.changeTick();
-        console.log('changeTick', changeTick);
 
         if (changeTick === 0) {
           changeTick = 18;
         }
 
         if (slot0.tick > acceptMaxTick) {
-          console.log(
-            'The current price is greater than the average price over the last 2 minutes. Swap is not supported in this environment.',
-          );
+       
 
           return setMaxAmount('0');
         } else {
@@ -91,11 +82,7 @@ export const useSwapStake = (amountIn: number) => {
               convertToRay(String(amountIn)),
             );
 
-          console.log(
-            'The amount of TOS swapped when you actually swap in Uniswap : _quoteExactInput  ',
-            ethers.utils.formatUnits(_quoteExactInput, 18),
-            'TOS',
-          );
+         
 
           const limitPrameters = await tonStakeUpgrade6.limitPrameters(
             convertToRay(String(amountIn)),
@@ -105,11 +92,7 @@ export const useSwapStake = (amountIn: number) => {
             changeTick,
           );
 
-          console.log(
-            'Minimum swap amount allowed : limitPrameters',
-            ethers.utils.formatUnits(limitPrameters[0], 18),
-            'TOS',
-          );
+         
 
           const _quoteExactInput1 =
             await QUOTER_CONTRACT.callStatic.quoteExactInputSingle(
@@ -120,11 +103,7 @@ export const useSwapStake = (amountIn: number) => {
               limitPrameters[2],
             );
 
-          console.log(
-            '_quoteExactInput1  ',
-            ethers.utils.formatUnits(_quoteExactInput1, 18),
-            'TOS',
-          );
+         
           if (limitPrameters[0].gt(_quoteExactInput)) {
             const _quoteExactOut =
               await QUOTER_CONTRACT.callStatic.quoteExactOutput(
@@ -133,20 +112,13 @@ export const useSwapStake = (amountIn: number) => {
                   .mul(ethers.BigNumber.from('10005'))
                   .div(ethers.BigNumber.from('10000')),
               );
-            console.log(
-              're-calculate the input amount of WTON to swap ',
-              ethers.utils.formatUnits(_quoteExactOut, 27),
-              'WTON',
-            );
+           
             const exactOutFormatted = Number(
               ethers.utils.formatUnits(_quoteExactOut, 27),
             );
-            console.log('exactOutFormatted.toString()',exactOutFormatted.toString());
             
             return setMaxAmount(exactOutFormatted.toString());
           } else {
-            console.log('lll');
-            console.log('amountIn.toString()',amountIn.toString());
             
             return setMaxAmount(amountIn.toString());
           }

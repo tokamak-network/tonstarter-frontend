@@ -35,7 +35,9 @@ import TOS_SYMBOL from 'assets/tokens/TOS_symbol.svg';
 import TOS_symbolDark from 'assets/tokens/TOS_symbolDark.svg';
 import {useSwapModal} from '@Launch/hooks/useSwapModal';
 // import {useSwapMax} from '@Launch/hooks/useSwapMax';
- import {useSwapStake} from '../hooks/useSwapStake'
+import {useSwapStake} from '../hooks/useSwapStake';
+import {useStable} from '../hooks/useStable';
+
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useActiveWeb3React();
@@ -55,13 +57,14 @@ export const SwapModal = () => {
   const maxAmount = useSwapStake(Number(swapBalance));
   const maxInput = useSwapStake(Number(inputAmount.replaceAll(',', '')));
 
-
-  console.log('maxAmount',maxAmount);
+  const stableAmount = useStable()
+  console.log('stableAmount',stableAmount);
   
+  console.log('maxAmount', maxAmount);
+
   useEffect(() => {
     setMax(maxAmount);
-  }, [ maxAmount]);
-
+  }, [maxAmount]);
 
   const {tosAmountOut: basicPrice} = useSwapModal(1);
 
@@ -70,7 +73,6 @@ export const SwapModal = () => {
       Number(inputAmount.replaceAll(',', '')) === 0
       ? 0
       : Number(inputAmount.replaceAll(',', '')),
-   
   );
 
   const handleCloseModal = () => {
@@ -93,7 +95,7 @@ export const SwapModal = () => {
     return isNaN(result) || result === Infinity || result === -Infinity
       ? '-'
       : commafy(result);
-  }, [tosAmountOut, basicPrice,inputAmount]);
+  }, [tosAmountOut, basicPrice, inputAmount]);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -106,9 +108,12 @@ export const SwapModal = () => {
     }
   }, [inputAmount, setInputAmount]);
 
-
-console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount));
-
+  console.log(
+    'Number(max)',
+    Number(max),
+    'Number(inputAmount)',
+    Number(inputAmount),
+  );
 
   return (
     <Modal
@@ -189,9 +194,13 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                 </Text>
                 <NumberInput
                   h="26px"
-                  ml='10px'
+                  ml="10px"
                   borderRadius={'4px'}
-                  border={Number(inputAmount) > Number(maxAmount)? '1px solid red': ''}
+                  border={
+                    Number(inputAmount) > Number(maxAmount)
+                      ? '1px solid red'
+                      : ''
+                  }
                   value={Number(inputAmount) <= 0 ? 0 : inputAmount}
                   onChange={(value) => {
                     if (
@@ -241,6 +250,7 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                   onClick={() => setInputAmount(max.replace(/,/g, ''))}
                   type={'button'}
                   variant="outline"
+                  mr="6px"
                   borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
                   _focus={{
                     outline: 'none',
@@ -295,33 +305,32 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 pt={'16px'}>
-               <Flex>
-               <Avatar
-                  src={colorMode === 'light' ? TOS_SYMBOL : TOS_symbolDark}
-                  backgroundColor={'transparent'}
-                  bg="transparent"
-                  color="#c7d1d8"
-                  name={'token_image'}
-                  border={
-                    colorMode === 'light'
-                      ? '1px solid #e7edf3'
-                      : '1px solid #3c3c3c'
-                  }
-                  borderRadius={25}
-                  h="26px"
-                  w="26px"
-                  mr="6px"
-                />
-                <Text
-                  fontSize={16}
-                  fontWeight={600}
-                  color={colorMode === 'dark' ? '#ffffff' : '#3d495d'}
-                  textAlign={'center'}
-                  lineHeight={'24px'}>
-                  TOS
-                </Text>
-               </Flex>
-                
+                <Flex>
+                  <Avatar
+                    src={colorMode === 'light' ? TOS_SYMBOL : TOS_symbolDark}
+                    backgroundColor={'transparent'}
+                    bg="transparent"
+                    color="#c7d1d8"
+                    name={'token_image'}
+                    border={
+                      colorMode === 'light'
+                        ? '1px solid #e7edf3'
+                        : '1px solid #3c3c3c'
+                    }
+                    borderRadius={25}
+                    h="26px"
+                    w="26px"
+                    mr="6px"
+                  />
+                  <Text
+                    fontSize={16}
+                    fontWeight={600}
+                    color={colorMode === 'dark' ? '#ffffff' : '#3d495d'}
+                    textAlign={'center'}
+                    lineHeight={'24px'}>
+                    TOS
+                  </Text>
+                </Flex>
 
                 <Text
                   fontFamily={theme.fonts.roboto}
@@ -388,12 +397,18 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
             fontSize="12px"
             textAlign={'center'}
             mt="30px">
-            Swap will take place in Uniswap V3's <Link  isExternal={true}
-                  href={'https://info.uniswap.org/#/pools/0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4'}
-                  color={'blue.100'}>WTON-TOS pool</Link>, but will not be
-            executed if the last 2-minute average price differs from the current
-            price by more than 4.8%. Slippage is designed to be a maximum of
-            5.5%.
+            Swap will take place in Uniswap V3's{' '}
+            <Link
+              isExternal={true}
+              href={
+                'https://info.uniswap.org/#/pools/0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4'
+              }
+              color={'blue.100'}>
+              WTON-TOS pool
+            </Link>
+            , but will not be executed if the last 2-minute average price
+            differs from the current price by more than 4.8%. Slippage is
+            designed to be a maximum of 5.5%.
           </Text>
           <Box
             as={Flex}
@@ -408,7 +423,11 @@ console.log('Number(max)',Number(max), 'Number(inputAmount)',Number(inputAmount)
               color="white.100"
               fontSize="14px"
               _hover={{...theme.btnHover}}
-              disabled={Number(maxAmount) === 0 ||  Number(inputAmount) === 0 || Number(inputAmount) > Number(maxAmount) }
+              disabled={
+                Number(maxAmount) === 0 ||
+                Number(inputAmount) === 0 ||
+                Number(inputAmount) > Number(maxAmount)
+              }
               onClick={() => {
                 const isBalance = checkBalance(
                   Number(inputAmount),
