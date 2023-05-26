@@ -383,7 +383,7 @@ export const SwapModal = () => {
               colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
             }
             mb={'25px'}></Stack> */}
-          <Flex h="73px">
+          <Flex h="73px" w='100%' justifyContent='center' >
             {Number(priceImpact) >= 5.5 ? (
               <Text
                 margin={'0px 25px 25px'}
