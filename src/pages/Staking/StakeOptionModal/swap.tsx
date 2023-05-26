@@ -82,6 +82,7 @@ export const SwapModal = () => {
 
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
+console.log('numTosAmountOut',numTosAmountOut);
 
     const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
 
