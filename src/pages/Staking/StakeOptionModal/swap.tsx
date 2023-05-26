@@ -58,7 +58,7 @@ export const SwapModal = () => {
   const maxInput = useSwapStake(Number(inputAmount.replaceAll(',', '')));
 
   const stableAmount = useStable();
-  console.log('stableAmount', stableAmount);
+  // console.log('stableAmount', stableAmount);
 
   // console.log('maxAmount', maxAmount);
 
@@ -82,7 +82,7 @@ export const SwapModal = () => {
 
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
-    console.log('numTosAmountOut', numTosAmountOut);
+    // console.log('numTosAmountOut', numTosAmountOut);
 
     const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
 
@@ -115,7 +115,7 @@ export const SwapModal = () => {
   //   'Number(inputAmount)',
   //   Number(inputAmount),
   // );
-  console.log('priceImpact', priceImpact, inputAmount);
+  // console.log('priceImpact', priceImpact, inputAmount);
 
   return (
     <Modal
