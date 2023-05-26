@@ -407,7 +407,7 @@ export const SwapModal = () => {
             margin={'0px 25px 25px'}
             fontSize="12px"
             textAlign={'center'}
-            mt="30px">
+           >
             Swap will take place in Uniswap V3's{' '}
             <Link
               isExternal={true}
