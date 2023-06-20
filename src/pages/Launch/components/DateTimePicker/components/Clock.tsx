@@ -36,9 +36,7 @@ export const Clock: React.FC<ClockProps> = ({
   const [hours, setHours] = useState<number>(value.getHours() % 12 || 12);
   const [minutes, setMinutes] = useState<number>(value.getMinutes());
   const [seconds, setSeconds] = useState<number>(value.getSeconds());
-  const [meridiem, setMeridiem] = useState<string>(
-    value.getHours() >= 12 ? 'PM' : 'AM',
-  );
+  const [meridiem, setMeridiem] = useState<string>('AM');
 
   const getStartEndTimeText = () => {
     if (time) {
