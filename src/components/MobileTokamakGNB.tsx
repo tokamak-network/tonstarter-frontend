@@ -7,37 +7,37 @@ import styled from '@emotion/styled';
 import '@fontsource/titillium-web';
 
 const menus = [
-  {
-    title: 'Vision',
-    url: 'https://vision.tokamak.network/',
-    isFoucsed: false,
-  },
-  {
-    title: 'Tokamak Network',
-    url: 'https://tokamak.network/#/',
-    isFoucsed: false,
-  },
-  {
-    title: 'Simple Staking',
-    url: 'https://simple.staking.tokamak.network/',
-    isFoucsed: false,
-  },
-  {
-    title: 'Tokamak Network DAO',
-    url: 'https://dao.tokamak.network/#/',
-    isFoucsed: false,
-  },
-  {
-    title: 'Swap',
-    url: 'https://swap.tokamak.network/',
-    isFoucsed: false,
-  },
-  {
-    title: 'TONStarter',
-    url: 'https://tonstarter.tokamak.network/',
-    isFoucsed: true,
-  },
-];
+    {
+      title: "Tokamak Network",
+      url: "https://tokamak.network/#/",
+      isFoucsed: false,
+    },
+    {
+      title: "L2 Mainnet",
+      url: "http://titan.tokamak.network/",
+      isFoucsed: false,
+    },
+    {
+      title: "Bridge & Swap",
+      url: "https://bridge.tokamak.network/#/",
+      isFoucsed: false,
+    },
+    {
+      title: "Staking",
+      url: "https://simple.staking.tokamak.network/#/",
+      isFoucsed: false,
+    },
+    {
+      title: "DAO",
+      url: "https://dao.tokamak.network//",
+      isFoucsed: false,
+    },
+    {
+      title: "Launchpad",
+      url: "https://tonstarter.tokamak.network/",
+      isFoucsed: true,
+    },
+  ];
 
 let currentPosition = 0;
 let touchStartX = 0;
@@ -75,7 +75,7 @@ const toLeftXvalue = () => {
   }
 };
 
-const catchTouchStart = (e: any) => {
+const catchTouchStart = (e: any) => {  
   const touchObj = e.changedTouches[0];
   touchStartX = touchObj.pageX;
 };
@@ -142,6 +142,7 @@ const handleNavigation = (e: any, rightArrow?: boolean) => {
     ref[5].style.transition = transition;
     ref[5].style.transform = traslateX;
   } finally {
+    
     if (-1 < currentPosition && currentPosition < 4) {
       direction ? (currentPosition += 1) : (currentPosition -= 1);
     }
@@ -163,6 +164,10 @@ function MobileTokamakGNB() {
     handleNavigation(undefined, true);
   }, 1000);
 
+  console.log('currentPosition',currentPosition);
+console.log('deviceWidth',deviceWidth);
+
+
   return (
     <div
       className="gnb_mobile_header"
@@ -180,13 +185,17 @@ function MobileTokamakGNB() {
             className="gnb_mobile_menu"
             style={{
               minWidth:
-                menu.title === 'Tokamak Network DAO'
-                  ? '186px'
-                  : menu.title === 'Tokamak Network'
-                  ? '160px'
-                  : menu.title === 'Simple Staking'
-                  ? '140px'
-                  : '',
+                menu.title === "L2 Mainnet"
+                  ? "120px"
+                  : menu.title === "DAO"
+                  ? "90px"
+                  : menu.title === "Tokamak Network"
+                  ? "160px"
+                  : menu.title === "Staking"
+                  ? "100px"
+                  : menu.title === "Bridge & Swap"
+                  ? "136px"
+                  : "",
               fontWeight: menu.isFoucsed ? 600 : '',
               opacity: menu.isFoucsed ? 1 : 0.25,
               marginLeft: index === 0 ? `${(deviceWidth - 80 - 78) / 2}px` : '',
