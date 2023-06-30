@@ -13,7 +13,7 @@ function TokamakGNB() {
         bg={props.activetab ? '#FFFFFF' : ''}
         color={props.activetab ? '#353C48' : ''}
         fontFamily={'Titillium Web, sans-serif'}
-        fontWeight="bold"
+        // fontWeight="bold"
         {...props}>
         <Link
           outline={'none'}
@@ -40,27 +40,37 @@ function TokamakGNB() {
       fontSize={15}
       fontWeight={'bold'}
       justifyContent={'center'}>
+       <Menu
+        title={"Tokamak Network"}
+        w={"158px"}
+        url={"https://tokamak.network/#/"}
+      ></Menu>
       <Menu
-        title={'Vision'}
-        w={'100px'}
-        url={'https://vision.tokamak.network/'}></Menu>
+        title={"L2 Mainnet"}
+        w={"137px"}
+        url={"https://titan.tokamak.network"}
+      ></Menu>
       <Menu
-        title={'Tokamak Network'}
-        w={'158px'}
-        url={'https://tokamak.network/#/'}></Menu>
+        title={"Bridge & Swap"}
+        w={"190px"}
+        url={"https://bridge.tokamak.network/#/"}
+      ></Menu>
       <Menu
-        title={'Simple Staking'}
-        w={'137px'}
-        url={'https://simple.staking.tokamak.network/'}></Menu>
+        title={"Staking"}
+        w={"76px"}
+        url={"https://simple.staking.tokamak.network/"}
+      ></Menu>
       <Menu
-        title={'Tokamak Network DAO'}
-        w={'190px'}
-        url={'https://dao.tokamak.network/#/'}></Menu>
+        title={"DAO"}
+        w={"100px"}
+        url={"https://dao.tokamak.network/#/"}
+      ></Menu>
       <Menu
-        title={'Swap'}
-        w={'76px'}
-        url={'https://swap.tokamak.network/'}></Menu>
-      <Menu title={'TONStarter'} w={'114px'} url={'#'} activetab={'true'}></Menu>
+        title={"Launchpad"}
+        activetab={"true"}
+        w={"100px"}
+        url={"https://tonstarter.tokamak.network/"}
+      ></Menu>
     </Flex>
   );
 }

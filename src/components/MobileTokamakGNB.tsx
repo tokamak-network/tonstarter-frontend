@@ -8,33 +8,33 @@ import '@fontsource/titillium-web';
 
 const menus = [
   {
-    title: 'Vision',
-    url: 'https://vision.tokamak.network/',
+    title: "Tokamak Network",
+    url: "https://tokamak.network/#/",
     isFoucsed: false,
   },
   {
-    title: 'Tokamak Network',
-    url: 'https://tokamak.network/#/',
+    title: "L2 Mainnet",
+    url: "http://titan.tokamak.network/",
     isFoucsed: false,
   },
   {
-    title: 'Simple Staking',
-    url: 'https://simple.staking.tokamak.network/',
+    title: "Bridge & Swap",
+    url: "https://bridge.tokamak.network/#/",
     isFoucsed: false,
   },
   {
-    title: 'Tokamak Network DAO',
-    url: 'https://dao.tokamak.network/#/',
+    title: "Staking",
+    url: "https://simple.staking.tokamak.network/#/",
     isFoucsed: false,
   },
   {
-    title: 'Swap',
-    url: 'https://swap.tokamak.network/',
+    title: "DAO",
+    url: "https://dao.tokamak.network//",
     isFoucsed: false,
   },
   {
-    title: 'TONStarter',
-    url: 'https://tonstarter.tokamak.network/',
+    title: "Launchpad",
+    url: "https://tonstarter.tokamak.network/",
     isFoucsed: true,
   },
 ];
@@ -180,13 +180,17 @@ function MobileTokamakGNB() {
             className="gnb_mobile_menu"
             style={{
               minWidth:
-                menu.title === 'Tokamak Network DAO'
-                  ? '186px'
-                  : menu.title === 'Tokamak Network'
-                  ? '160px'
-                  : menu.title === 'Simple Staking'
-                  ? '140px'
-                  : '',
+              menu.title === "L2 Mainnet"
+              ? "120px"
+              : menu.title === "DAO"
+              ? "90px"
+              : menu.title === "Tokamak Network"
+              ? "160px"
+              : menu.title === "Staking"
+              ? "100px"
+              : menu.title === "Bridge & Swap"
+              ? "136px"
+              : "",
               fontWeight: menu.isFoucsed ? 600 : '',
               opacity: menu.isFoucsed ? 1 : 0.25,
               marginLeft: index === 0 ? `${(deviceWidth - 80 - 78) / 2}px` : '',
