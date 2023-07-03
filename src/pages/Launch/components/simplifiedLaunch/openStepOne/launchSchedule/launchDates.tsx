@@ -114,17 +114,20 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     (number | undefined)[]
   >(getTimeStamp() as (number | undefined)[]);
 
+  // Default values
   useEffect(() => {
     if (publicSale1) {
-      if (isProduction() === false) {
+      if (isProduction() === true) {
         setPublicSale1End(publicSale1 + 2 * 60);
+        console.log('public sale 1', publicSale1);
       } else {
         setPublicSale1End(publicSale1 + 2 * 86400);
       }
     }
     if (publicSale2) {
-      if (isProduction() === false) {
+      if (isProduction() === true) {
         setPublicSale2End(publicSale2 + 2 * 60);
+        console.log('public sale 2', publicSale2);
       } else {
         setPublicSale2End(publicSale2 + 5 * 86400);
       }
@@ -136,7 +139,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
     // Second after snapshot
     setFieldValue('vaults[0].whitelist', snapshotDate && snapshotDate + 1);
     // whitelist start to end - 2 min (Dev)
-    if (isProduction() === false) {
+    if (isProduction() === true) {
       setFieldValue(
         'vaults[0].whitelistEnd',
         snapshotDate && snapshotDate + 2 * 60,
@@ -248,7 +251,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                       // mainnet: 2 days after snapshot time
                       // testnet: whitelist end: 1 second after snapshot, 1 second before public sale 1 */}
                       Number(
-                        isProduction() === false
+                        isProduction() === true
                           ? publicSale1
                             ? publicSale1 - 1
                             : snapshotDate + 2 * 60
@@ -287,7 +290,12 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   // disabled={snapshotTime ? false : true}
                   <Grid justifyContent={'center'}>
                     <Box mt={'8px'} ml={'20px'}>
-                      <DateTimePicker range={true} setDate={setPublicSale1} />
+                      <DateTimePicker
+                        range={true}
+                        setDate={setPublicSale1}
+                        startDate={publicSale1}
+                        endDate={publicSale1End}
+                      />
                     </Box>
                   </Grid>
                 )}
@@ -315,7 +323,6 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   </Text>
                 )}
                 {!isPublicVaultDeployed && (
-                  // TODO:
                   // pass startTimeCap as prop, set duration for 5 days initially
                   // disabled={publicSale1End ? false : true}
                   <Grid justifyContent={'center'}>

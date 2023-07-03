@@ -54,6 +54,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
     setEndDate(endDate ? new Date(endDate.getTime()) : null);
 
     if (selectedDate) {
+      console.log('Selected Date', selectedDate);
       const date = new Date(selectedDate.getTime());
       const time = new Date(startTime * 1000);
 
@@ -78,6 +79,8 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
 
       endDateInEpoch = Math.floor(date.getTime() / 1000);
       setEndTime(Math.floor(date.getTime() / 1000));
+
+      console.log('date', date);
 
       if (setDate) {
         setDate(endDateInEpoch);

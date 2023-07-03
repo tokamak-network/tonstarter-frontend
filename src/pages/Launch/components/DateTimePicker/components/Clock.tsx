@@ -45,8 +45,6 @@ export const Clock: React.FC<ClockProps> = ({
         new Date(time),
       );
       const date = new Date(time).getDate();
-      console.log('date in clock', date);
-      console.log('date in clock', `${month} ${date}`);
       return `${month} ${date}`;
     } else {
       return `--`;
