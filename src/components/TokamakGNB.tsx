@@ -13,6 +13,7 @@ function TokamakGNB() {
         bg={props.activetab ? '#FFFFFF' : ''}
         color={props.activetab ? '#353C48' : ''}
         fontFamily={'Titillium Web, sans-serif'}
+        target={props.title === 'Bridge & Swap' ? '_blank' : '_self'}
         // fontWeight="bold"
         {...props}>
         <Link
