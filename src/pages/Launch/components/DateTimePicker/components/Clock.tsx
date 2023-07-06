@@ -37,6 +37,7 @@ export const Clock: React.FC<ClockProps> = ({
   const [minutes, setMinutes] = useState<number>(value.getMinutes());
   const [seconds, setSeconds] = useState<number>(value.getSeconds());
   const [meridiem, setMeridiem] = useState<string>('AM');
+  const {colorMode} = useColorMode();
 
   const getStartEndTimeText = () => {
     if (time) {
@@ -73,9 +74,15 @@ export const Clock: React.FC<ClockProps> = ({
 
   return (
     <>
-      <div className="container">
+      <div
+        className={`container${
+          colorMode === 'light' ? '--light-mode' : '--dark-mode'
+        }`}>
         {range && (
-          <div className="container__month-date">{`${text} : ${monthAndDate}`}</div>
+          <div
+            className={`container__month-date${
+              colorMode === 'light' ? '--light-mode' : '--dark-mode'
+            }`}>{`${text} : ${monthAndDate}`}</div>
         )}
         <div className="clock">
           <Flex p={'10px 10px'} flexDirection="row" alignItems="center">
@@ -105,7 +112,7 @@ export const Clock: React.FC<ClockProps> = ({
               <NumberInputField
                 fontSize="28px"
                 pl={'0px'}
-                color={'gray.800'}
+                color={colorMode === 'light' ? 'gray.800' : '#dee4ef'}
                 pr={'14px'}
                 focusBorderColor="transparent"
                 textAlign={'right'}
@@ -150,7 +157,7 @@ export const Clock: React.FC<ClockProps> = ({
                 fontSize="28px"
                 pl={'0px'}
                 pr={'14px'}
-                color={''}
+                color={colorMode === 'light' ? 'gray.800' : '#dee4ef'}
                 focusBorderColor="transparent"
                 textAlign={'right'}
                 _hover={{
@@ -191,7 +198,7 @@ export const Clock: React.FC<ClockProps> = ({
               <NumberInputField
                 fontSize="28px"
                 pl={'0px'}
-                color={'gray.800'}
+                color={colorMode === 'light' ? 'gray.800' : '#dee4ef'}
                 pr={'14px'}
                 focusBorderColor="transparent"
                 textAlign={'right'}
@@ -214,7 +221,7 @@ export const Clock: React.FC<ClockProps> = ({
               w={'72px'}
               fontSize={'13px'}
               fontWeight={'bold'}
-              color={'gray.800'}
+              color={colorMode === 'light' ? 'gray.800' : '#dee4ef'}
               mr={'10px'}
               onChange={(e) => {
                 setMeridiem(e.target.value);

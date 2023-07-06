@@ -1,3 +1,7 @@
+/** This component renders snapshotDate, public sale date ranges.
+ * TODO: Notes for incomplete tasks.
+ * FIXME: : Needs to be fixed.
+ */
 import {
   Grid,
   Box,
@@ -13,18 +17,31 @@ import {
   PopoverArrow,
 } from '@chakra-ui/react';
 import React, {useState, useEffect} from 'react';
+
+// utils
 import {convertTimeStamp} from 'utils/convertTIme';
-import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-import SingleCalendarPop from '../../../common/SingleCalendarPop';
+
+// constants
 import {snapshotGap} from '@Launch/const';
-import {VaultPublic} from '@Launch/types';
-import {useFormikContext} from 'formik';
-import {Projects} from '@Launch/types';
 import {isProduction} from '@Launch/utils/checkConstants';
+
+// hooks
+import {useFormikContext} from 'formik';
+
+//types
+import {VaultPublic} from '@Launch/types';
+import {Projects} from '@Launch/types';
+
+// components
+import SingleCalendarPop from '../../../common/SingleCalendarPop';
 import PublicSaleDatePicker from '../publicSaleDates/PublicSaleDatePicker';
 import {DateTimePicker} from '../../../../components/DateTimePicker';
+
+// svg, icons
 import calendarInactiveIcon from 'assets/svgs/calendar_inactive_icon.svg';
 import calendarActiveIcon from 'assets/svgs/calendar_active_icon.svg';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+
 const pdfPath = require('assets/ClaimSchedule.pdf').default;
 
 type LaunchDateProps = {
@@ -323,6 +340,7 @@ export const LaunchDates: React.FC<LaunchDateProps> = (props) => {
                   </Text>
                 )}
                 {!isPublicVaultDeployed && (
+                  // TODO:
                   // pass startTimeCap as prop, set duration for 5 days initially
                   // disabled={publicSale1End ? false : true}
                   <Grid justifyContent={'center'}>

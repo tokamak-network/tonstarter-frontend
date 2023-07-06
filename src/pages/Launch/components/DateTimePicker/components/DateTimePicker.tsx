@@ -1,3 +1,8 @@
+/** This component renders the Calendar, & Time picker used on the step 1 simplified launch
+ * TODO: Notes for incomplete tasks.
+ * FIXME: : Needs to be fixed.
+ */
+
 import React, {useState, useEffect, Dispatch, SetStateAction} from 'react';
 import {Calendar} from './Calendar';
 import {ActionBar} from './ActionBar';
@@ -11,11 +16,16 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@chakra-ui/react';
+
+// icons
 import calendarInactiveIcon from 'assets/svgs/calendar_inactive_icon.svg';
 import calendarActiveIcon from 'assets/svgs/calendar_active_icon.svg';
 import calendarInactiveIconDark from 'assets/launch/calendar-inactive-icon-dark.svg';
+
+// library
 import * as dateFns from 'date-fns';
 
+// styles
 import '../styles/layout.scss';
 import '../styles/button.scss';
 import '../styles/cell.scss';
@@ -123,7 +133,10 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
               alt={'calender_icon'}></img>
           </PopoverTrigger>
           <PopoverContent _focus={{border: 'none'}} style={{border: 'none'}}>
-            <div className="date-time-selector">
+            <div
+              className={`date-time-selector${
+                colorMode === 'light' ? '--light-mode' : '--dark-mode'
+              }`}>
               <Calendar
                 value={currentDate}
                 onChange={setCurrentDate}
@@ -135,10 +148,11 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
               />
               <>
                 {range ? (
+                  // FIXME: selected dates are not shown when selecting date
+                  //range.
                   <div>
                     <Clock
                       value={currentDate}
-                      // onChange={setStartTimeArray}
                       range={true}
                       text={'Start time'}
                       time={startTime}
@@ -146,7 +160,6 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
                     />
                     <Clock
                       value={currentDate}
-                      // onChange={setStartTime}
                       setTime={setStartTimeArray}
                       range={true}
                       text={'End time'}
@@ -154,6 +167,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
                     />
                   </div>
                 ) : (
+                  // FIXME: styles,
                   <Clock
                     value={currentDate}
                     setTime={setStartTimeArray}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useColorMode} from '@chakra-ui/react';
 import * as dateFns from 'date-fns';
 import {Cell} from '../components/Cell';
 import {daysOfWeek} from '../utils/dateUtils';
@@ -19,6 +19,7 @@ type CalendarProps = {
 };
 
 export const Calendar = (props: CalendarProps) => {
+  const {colorMode} = useColorMode();
   const {
     value = new Date(),
     onChange,
@@ -38,6 +39,12 @@ export const Calendar = (props: CalendarProps) => {
   const prevMonth = () => onChange && onChange(dateFns.sub(value, {months: 1}));
   const nextMonth = () => onChange && onChange(dateFns.add(value, {months: 1}));
   const today = new Date();
+  const currentMonthDays = dateFns.getDaysInMonth(startDate);
+  const totalCells = 42; // Total cells in a 6-week calendar view
+  // TODO: change the total cells to 35 if in a 5-week calendar view
+
+  // Calculate the number of suffix days
+  const suffixDays = totalCells - prefixDays - currentMonthDays;
 
   const handleClickDate = (index: number) => {
     const date = dateFns.setDate(value, index);
@@ -62,10 +69,14 @@ export const Calendar = (props: CalendarProps) => {
   const isBeforeToday = (date: Date) => {
     return dateFns.isBefore(date, dateFns.startOfDay(today));
   };
-  // TODO: add dates from prev & next month
   return (
-    <div className="calendar">
-      <div className="calendar__header">
+    <div className={'calendar'}>
+      <div
+        className={`calendar__header ${
+          colorMode === 'light'
+            ? 'calendar__header--light-mode'
+            : 'calendar__header--dark-mode'
+        }`}>
         <div className="calendar__header__navigation" onClick={prevMonth}>
           <img src={calender_back_icon} alt="Previous Month" />
         </div>
@@ -83,9 +94,24 @@ export const Calendar = (props: CalendarProps) => {
           </Cell>
         ))}
         {/* prefix days */}
-        {Array.from({length: prefixDays}).map((_, index) => (
-          <Cell key={index} />
-        ))}
+        {Array.from({length: prefixDays}).map((_, index) => {
+          const prevMonthDate = dateFns.subMonths(startDate, 1);
+          const prevMonthDays = dateFns.getDaysInMonth(prevMonthDate);
+          const prevMonthStartDay = dateFns
+            .addDays(startDate, -prefixDays + index)
+            .getDate();
+
+          const cellClass =
+            colorMode === 'dark'
+              ? 'cell__prev-month--dark-mode'
+              : 'cell__prev-month--light-mode';
+
+          return (
+            <Cell className={cellClass} key={`prev-${index}`}>
+              {prevMonthStartDay}
+            </Cell>
+          );
+        })}
         {totalDates.map((date) => {
           if (date.getMonth() !== value.getMonth()) {
             return <Cell key={date.toString()} />;
@@ -130,12 +156,39 @@ export const Calendar = (props: CalendarProps) => {
               }
               startDate={selectedDate}
               endDate={selectedEndDate}
-              className={`cell ${isDisabled ? 'cell__disabled' : ''}`}
+              className={`cell ${
+                isDisabled
+                  ? `cell__disabled${
+                      colorMode === 'light' ? '--light-mode' : '--dark-mode'
+                    }`
+                  : ''
+              }`}
               key={date.toString()}
               onClick={
                 isDisabled ? undefined : () => handleClickDate(date.getDate())
               }>
               {dateFns.format(date, 'd')}
+            </Cell>
+          );
+        })}
+        {/*  TODO: add dates next month */}
+        {/* suffix days */}
+        {Array.from({length: suffixDays}).map((_, index) => {
+          const nextMonthDate = dateFns.addMonths(startDate, 1);
+          const nextMonthStartDay = index + 1;
+          const nextMonthDateValue = dateFns.setDate(
+            nextMonthDate,
+            nextMonthStartDay,
+          );
+
+          const cellClass =
+            colorMode === 'dark'
+              ? 'cell__next-month--dark-mode'
+              : 'cell__next-month--light-mode';
+
+          return (
+            <Cell className={cellClass} key={`next-${index}`}>
+              {nextMonthDateValue.getDate()}
             </Cell>
           );
         })}

@@ -1,3 +1,8 @@
+/** Renders the timeline of the project as a progress indicator (blue line with dots for each stage).
+ * TODO: Notes for incomplete tasks.
+ * FIXME: : Needs to be fixed.
+ */
+
 import {Box, Flex, useColorMode, Progress} from '@chakra-ui/react';
 import React from 'react';
 
@@ -90,19 +95,19 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = (props) => {
               return isListed && isPublicSale2Passed;
             }
 
-              case 'Unlock 1': {
-                return isListed && isVesting1Passed;
-              }
+            case 'Unlock 1': {
+              return isListed && isVesting1Passed;
+            }
 
-              case 'Unlock ..': {
-                return isListed && isVesting2Passed && isVesting3Passed;
-              }
+            case 'Unlock ..': {
+              return isListed && isVesting2Passed && isVesting3Passed;
+            }
 
-              case 'Unlock 7': {
-                return isListed && isVesting4Passed;
-              }
-            
-              default:
+            case 'Unlock 7': {
+              return isListed && isVesting4Passed;
+            }
+
+            default:
               return false;
           }
         };

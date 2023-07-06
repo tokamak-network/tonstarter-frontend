@@ -3,14 +3,22 @@
   width: 100%;
 
   &__header {
-    display: flex;
-    height: 47px;
-    align-items: center;
-    text-align: center;
-    justify-items: center;
-    border-bottom: 1px solid $border-color-2;
-    font-size: 14px;
-    font-weight: 600;
+      display: flex;
+      height: 47px;
+      align-items: center;
+      text-align: center;
+      justify-items: center;
+      font-weight: 600;
+      font-size: 14px;
+    
+      &--dark-mode {
+        border-bottom: 1px solid $border-color-4;
+      }
+    
+      &--light-mode {
+        border-bottom: 1px solid $border-color-2;
+      }
+    
 
     &__navigation {
       width: 44px;

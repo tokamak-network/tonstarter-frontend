@@ -1,8 +1,9 @@
+/** Renders the name of each step (Snapshot, whitelist, public sale 1 etc..) */
+
 import {Grid, Flex, Text, GridItem} from '@chakra-ui/react';
 import React from 'react';
 
 export const StepNames = () => {
-
   return (
     <Flex>
       <Grid
@@ -33,7 +34,10 @@ export const StepNames = () => {
         <GridItem w={'78px'} mr={'43px'}>
           <Flex>
             <Text mr={'3px'} color={'#FF3B3B'}>
-              *</Text>Public Sale 2</Flex>
+              *
+            </Text>
+            Public Sale 2
+          </Flex>
         </GridItem>
         {/* Line breaks from 'Unlock' if w={'46px'} */}
         <GridItem w={'48px'} mr={'78px'}>
@@ -42,9 +46,7 @@ export const StepNames = () => {
         <GridItem w={'10px'} mr={'75px'}>
           ...
         </GridItem>
-        <GridItem w={'54px'}>
-          Unlock 7
-        </GridItem>
+        <GridItem w={'54px'}>Unlock 7</GridItem>
       </Grid>
     </Flex>
   );

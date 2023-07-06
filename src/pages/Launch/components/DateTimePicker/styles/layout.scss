@@ -5,19 +5,29 @@
   z-index: 1;
   width: 300px;
   border-radius: 4px;
-  border: 1px solid $border-color;
-  background-color: $base-color;
-
-  // &_time-input-area {
-  //   position: relative;
-
-  // }
-
-  &__actions {
-    padding: 15px 45px 15px 45px;
-    display: flex;
-    border-top: 1px solid $border-color-2;
+  
+  &--light-mode {
+    border: 1px solid $border-color;
+    background-color: $base-color;
+  }
+  
+  &--dark-mode {
+    background-color: $dark-mode-bg;
+    border: solid 1px $border-color-4;
   }
 
+  &__actions {
 
+    &--light-mode {
+      border-top: 1px solid $border-color;
+      padding: 15px 45px 15px 45px;
+    display: flex;
+    }
+    
+    &--dark-mode {
+      border-top: solid 1px $border-color-4;
+      padding: 15px 45px 15px 45px;
+    display: flex;
+    }
+  }
 }
