@@ -40,6 +40,7 @@ type DateTimePickerProps = {
   startTimeCap?: number;
   onCancel?: () => void;
 };
+// TODO: construct startDate & time, endDate & time when in range.
 
 export const DateTimePicker: React.FC<DateTimePickerProps> = ({
   range,
@@ -134,6 +135,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
           </PopoverTrigger>
           <PopoverContent _focus={{border: 'none'}} style={{border: 'none'}}>
             <div
+              // FIXME: selected dates are not shown when selecting date range.
               className={`date-time-selector${
                 colorMode === 'light' ? '--light-mode' : '--dark-mode'
               }`}>
@@ -148,8 +150,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
               />
               <>
                 {range ? (
-                  // FIXME: selected dates are not shown when selecting date
-                  //range.
+                  // FIXME: selected times are not shown when selecting date range.
                   <div>
                     <Clock
                       value={currentDate}
@@ -167,7 +168,6 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
                     />
                   </div>
                 ) : (
-                  // FIXME: styles,
                   <Clock
                     value={currentDate}
                     setTime={setStartTimeArray}
