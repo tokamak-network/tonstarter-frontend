@@ -1,14 +1,17 @@
 // Unit Test code for Deploy vaults
+// jest test file
 
 // imports
-import DeployVault, {DeployVaultProp, getContract} from "../../Launch/components/stepThree/DeployVault";
+import DeployVault, {
+  DeployVaultProp,
+  getContract,
+} from '../../Launch/components/stepThree/DeployVault';
 import {Contract} from '@ethersproject/contracts';
 import {DEPLOYED} from 'constants/index';
 
-
 // Define vault props
 const deployVault = (props: DeployVaultProp) => {
-  const { vault } = props;
+  const {vault} = props;
 
   if (!vault) {
     throw new Error('No vault provided');
@@ -43,14 +46,17 @@ const deployVault = (props: DeployVaultProp) => {
 //   });
 // });
 
-
 //Get Contract for each vault
 describe('getContract', () => {
   it('should return the correct contract for Public', () => {
     const library = 'LibraryType';
     const vaultType = 'Public';
 
-    const expectedContract = new Contract(DEPLOYED.PublicSaleVault, PublicSaleVaultCreateAbi.abi, library);
+    const expectedContract = new Contract(
+      DEPLOYED.PublicSaleVault,
+      PublicSaleVaultCreateAbi.abi,
+      library,
+    );
 
     expect(getContract(vaultType, library)).toEqual(expectedContract);
   });
@@ -59,7 +65,11 @@ describe('getContract', () => {
     const library = 'LibraryType';
     const vaultType = 'Initial Liquidity';
 
-    const expectedContract = new Contract(DEPLOYED.InitialLiquidityVault, InitialLiquidityAbi.abi, library);
+    const expectedContract = new Contract(
+      DEPLOYED.InitialLiquidityVault,
+      InitialLiquidityAbi.abi,
+      library,
+    );
 
     expect(getContract(vaultType, library)).toEqual(expectedContract);
   });
@@ -68,7 +78,11 @@ describe('getContract', () => {
     const library = 'LibraryType';
     const vaultType = 'Vesting';
 
-    const expectedContract = new Contract(DEPLOYED.VestingVault, VestingPublicFundFactoryAbi.abi, library);
+    const expectedContract = new Contract(
+      DEPLOYED.VestingVault,
+      VestingPublicFundFactoryAbi.abi,
+      library,
+    );
 
     expect(getContract(vaultType, library)).toEqual(expectedContract);
   });
@@ -77,7 +91,11 @@ describe('getContract', () => {
     const library = 'LibraryType';
     const vaultType = 'Liquidity Incentive';
 
-    const expectedContract = new Contract(DEPLOYED.LiquidityIncentiveVault, LiquidityIncentiveAbi.abi, library);
+    const expectedContract = new Contract(
+      DEPLOYED.LiquidityIncentiveVault,
+      LiquidityIncentiveAbi.abi,
+      library,
+    );
 
     expect(getContract(vaultType, library)).toEqual(expectedContract);
   });
@@ -86,13 +104,17 @@ describe('getContract', () => {
     const library = 'LibraryType';
     const vaultType = 'TON Staker';
 
-    const expectedContract = new Contract(DEPLOYED.TonStakerVault, TONStakerAbi.abi, library);
+    const expectedContract = new Contract(
+      DEPLOYED.TonStakerVault,
+      TONStakerAbi.abi,
+      library,
+    );
 
     expect(getContract(vaultType, library)).toEqual(expectedContract);
   });
-});					  	  	  	  	  	  	  	  	  	  	
+});
 
-// 
+//
 describe('DeployVault', () => {
   it('should return the correct vault state', () => {
     const vaultType = 'Public';

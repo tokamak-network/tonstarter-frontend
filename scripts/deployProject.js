@@ -1,3 +1,10 @@
+//  Script to auto deploy vaults after deploying the token
+// 1. IsTokenDeployed? -> yes -> Start deploying vaults
+//    IsTokenDeployed? -> no -> wait till token is deployed?
+// 2. Start Deploying vaults? -> yes -> Finish deploying all vaults
+// 3. Finish Send tokens to all vaults
+// 4. Finish Initializing all vaults.
+
 const fs = require('fs');
 const { testValue } = require('./helpers/testValues.js');
 const { ethers } = require('ethers');
@@ -63,7 +70,7 @@ let LPR_VAULT_ADDRESS = ''
 let LI_VAULT_ADDRESS = ''
 
 
-// TODO: Get project name from user
+// TODO: Get project name from user from console
 PROJECT_NAME = 'test2';
 console.log('project name:', PROJECT_NAME);
 
@@ -81,7 +88,8 @@ const encodePriceSqrt = (reserve1, reserve0) => {
 const provider = new ethers.providers.JsonRpcProvider(goerliRPC);
 const signer = new ethers.Wallet(
   // process.env.PRIVATE_KEY,
-  'df4602acf8cafcc103cd2633d4c2c082bfe14bf0743376bb35abe5da69efaefa',
+  // TODO: Provide a metamask private key to confirm txn without the popup.
+  'df460XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
   provider
 )
 console.log('signer', signer);
@@ -113,7 +121,7 @@ const getAddress = async (rawTx, abi) => {
   // return TOKEN_ADDRESS
   return args[0];
 }
-// Step 3 (Deploy Token)
+// * Step 3 (Deploy Token)
 const deployToken = async () => {
   // contract initialize (change token abi according to contract type (Type A/B/C).
   console.log('Start deploying token...');
@@ -134,7 +142,7 @@ const deployToken = async () => {
     }
 }
 
-// Deploy Initial Liquidity Vault
+// * Deploy Initial Liquidity Vault
 const deployVaultIL = async () => {
   //  initialize vault contract
   console.log('Deploying Initial liquidity vault...');
@@ -156,7 +164,7 @@ const deployVaultIL = async () => {
   }
 }
 
-// Deploy Vesting Vault
+// * Deploy Vesting Vault
 const deployVaultVesting = async () => {
   console.log('Deploying Vesting vault...');
   const vestingVaultContract = new ethers.Contract(VestingVault, VestingPublicFundFactoryAbi.abi, signer).connect(signer);
@@ -172,7 +180,7 @@ const deployVaultVesting = async () => {
   }
 }
 
-// Deploy Public Vault
+// * Deploy Public Vault
 const deployPublicVault = async () => {
   console.log('Deploying Public vault...');
   const publicVaultContract = new ethers.Contract(PublicSaleVault, PublicSaleVaultCreateAbi.abi, signer).connect(signer);
@@ -192,7 +200,7 @@ const deployPublicVault = async () => {
   }
 }
 
-// Deploy Ton Staking Vault
+// * Deploy Ton Staking Vault
 const deployTONStakerVault = async () => {
   console.log('Deploying TONStaker vault...');
   const tsVaultContract = new ethers.Contract(TonStakerVault, TONStakerAbi.abi, signer).connect(signer);
@@ -210,7 +218,7 @@ const deployTONStakerVault = async () => {
   }
 }
 
-// Deploy Tos Staking Vault
+// * Deploy Tos Staking Vault
 const deployTOSStakerVault = async () => {
   console.log('Deploying TOSStaker vault...');
   const tosSVaultContract = new ethers.Contract(TosStakerVault, TOSStakerAbi.abi, signer).connect(signer);
@@ -228,7 +236,7 @@ const deployTOSStakerVault = async () => {
   }
 }
 
-// Deploy WTON-TOS LP Reward Vault
+// * Deploy WTON-TOS LP Reward Vault
 const deployLPRewardVault = async () => {
   console.log('Deploying WTON-TOS LP Reward vault...');
   const lpRewardVaultContract = new ethers.Contract(LPrewardVault, LPrewardVaultAbi.abi, signer).connect(signer);
@@ -249,7 +257,7 @@ const deployLPRewardVault = async () => {
 
 }
 
-// Deploy Liquidity Incentive Vault
+// * Deploy Liquidity Incentive Vault
 const deployLiquidityIncentiveVault = async () => {
   console.log('Deploying liquidity incentive vault...');
   const InitialLiquidity_Contract = new ethers.Contract(IL_VAULT_ADDRESS, Vault_InitialLiquidityComputeAbi.abi, signer);
@@ -274,7 +282,7 @@ const deployLiquidityIncentiveVault = async () => {
   }
 }
 
-// start deploying vaults
+// * start deploying vaults
 const startDeployVaults = async () => {
   try {
     if(TOKEN_ADDRESS) {
@@ -293,8 +301,8 @@ const startDeployVaults = async () => {
 
 
 
-// Send tokens to each vault
-// send tokens to Initial Liquidity vault
+// * Send tokens to each vault
+// * send tokens to Initial Liquidity vault
 const sendTokensPublic = async () => {
   console.log('Sending tokens to public vault...')
   const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
@@ -311,7 +319,7 @@ const sendTokensPublic = async () => {
 
 const sendTokensIL = async () => {
   console.log('Sending tokens to IL vault...');
-  // send tokens to the 
+  // * send tokens to the 
   const ERC20_CONTRACT = new ethers.Contract(TOKEN_ADDRESS, ERC20.abi, signer);
   try {
     await ERC20_CONTRACT?.transfer(
@@ -376,7 +384,7 @@ const sendTokensLI = async () => {
   }
 }
 
-// send tokens to all vaults
+// * send tokens to all vaults
 const sendTokens = async () => {
   await sendTokensIL();
   await sendTokensPublic();
@@ -387,7 +395,7 @@ const sendTokens = async () => {
 }
 
 
-// initialize all vaults
+// * initialize all vaults
 
 const initILVault = async () => {
   console.log('Initializing IL Vault');
@@ -659,7 +667,7 @@ const initTOSStakerVault = async () => {
   }
 }
 
-// WTON - TOS LP Reward
+// * WTON - TOS LP Reward
 const initLPRewardVault = async () => {
   console.log('Initializing LP Reward Vault..');
   const selectedVaultDetail = testValue.vaults[5];
@@ -710,6 +718,7 @@ const initializeVaults = async () => {
 }
 
 deployToken();
+// TODO: Uncomment functions below once deploy token is successful
 // startDeployVaults();
 // sendTokens();
 // initializeVaults();
