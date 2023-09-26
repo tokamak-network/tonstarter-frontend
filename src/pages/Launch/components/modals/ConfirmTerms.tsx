@@ -437,7 +437,7 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <br />
                   <Text fontSize={15} fontWeight="bold">
-                    6. Onther’s employees, agents and officers
+                    6. Tokamak Network’s employees, agents and officers
                   </Text>
                   <Text>
                     <b>6.1</b> You will not harass, annoy, intimidate, or
@@ -673,14 +673,14 @@ const ConfirmTermsModal = () => {
                   <br />
                   <Text>
                     <b>14.7</b>Any content of whatever kind or form (“Content”)
-                    made available through the Platform are Onther’s or its
-                    licensors’ exclusive property. To the fullest extent allowed
-                    by law, we provide the Platform, Services and Content on an
-                    "as-is" and "as-available" basis and grant no warranties of
-                    any kind, either express, implied, statutory or otherwise
-                    with respect to the Services or the Platform (including all
-                    content contained therein) including (without limitation)
-                    any implied warranties of satisfactory quality,
+                    made available through the Platform are Tokamak Network’s or
+                    its licensors’ exclusive property. To the fullest extent
+                    allowed by law, we provide the Platform, Services and
+                    Content on an "as-is" and "as-available" basis and grant no
+                    warranties of any kind, either express, implied, statutory
+                    or otherwise with respect to the Services or the Platform
+                    (including all content contained therein) including (without
+                    limitation) any implied warranties of satisfactory quality,
                     merchantability, fitness for a particular purpose,
                     expectations of privacy, or non-infringement. We do not
                     warrant that the Platform or Services will be uninterrupted
