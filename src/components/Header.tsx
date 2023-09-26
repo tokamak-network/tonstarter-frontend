@@ -605,7 +605,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
+                    'https://github.com/tokamak-network/papers/blob/master/cryptoeconomics/tokamak-cryptoeconomics-en.md',
                   );
                 }}>
                 <MenuItem
