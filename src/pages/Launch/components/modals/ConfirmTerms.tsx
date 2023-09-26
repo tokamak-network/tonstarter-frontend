@@ -28,7 +28,7 @@ const ConfirmTermsModal = () => {
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [isCheck, setIsCheck] = useState<boolean>(false);
-  const { chainId} = useActiveWeb3React();
+  const {chainId} = useActiveWeb3React();
 
   const match = useRouteMatch();
   const {url} = match;
@@ -37,7 +37,7 @@ const ConfirmTermsModal = () => {
     setIsCheck(false);
     handleCloseModal();
   };
-  
+
   return (
     <Modal
       isOpen={data.modal === 'Launch_ConfirmTerms' ? true : false}
@@ -128,21 +128,22 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <br />
                   <Text>
-                    <b>1.3</b> Onther Pte. Ltd. ("<b>Onther</b>") operates the
-                    Platform and shall have the right at any time to change or
-                    discontinue any aspect or feature of the Platform and the
-                    right to modify these Terms of Use and/or any other terms
-                    and conditions applicable to users of the Platform, or any
-                    part thereof. Such changes, modification, additions or
-                    deletions shall be effective immediately upon posting on the
-                    Platform. Any continued use by you of the Platform or the
-                    use of the Services offered in or through the Platform shall
-                    be deemed to constitute your acceptance of such changes.
+                    <b>1.3</b> Tokamak Network Pte. Ltd. ("<b>Tokamak</b>")
+                    operates the Platform and shall have the right at any time
+                    to change or discontinue any aspect or feature of the
+                    Platform and the right to modify these Terms of Use and/or
+                    any other terms and conditions applicable to users of the
+                    Platform, or any part thereof. Such changes, modification,
+                    additions or deletions shall be effective immediately upon
+                    posting on the Platform. Any continued use by you of the
+                    Platform or the use of the Services offered in or through
+                    the Platform shall be deemed to constitute your acceptance
+                    of such changes.
                   </Text>
                   <br />
                   <Text>
                     <b>1.4</b> In these Terms of Use, "we", "our" and "us"
-                    refers to Onther and "you" and "your" is defined to any
+                    refers to Tokamakand "you" and "your" is defined to any
                     person who accesses and uses the Platform.
                   </Text>
                   <br />
@@ -211,11 +212,11 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <br />
                   <Text>
-                    <b>3.3</b> Onther reserves the right at any time without
+                    <b>3.3</b> Tokamakreserves the right at any time without
                     providing any notice, to make such modifications,
                     improvements or additions to the Platform and any other
                     systems necessary for the operations or security of the
-                    Platform, as Onther deems fit.
+                    Platform, as Tokamakdeems fit.
                   </Text>
                   <br />
                   <Text fontSize={15} fontWeight="bold">
@@ -387,7 +388,7 @@ const ConfirmTermsModal = () => {
                     such related services. In this regard, any investment
                     opportunities in respect of the Projects that may be listed
                     or published on TONStarter shall be provided solely by the
-                    Publishers of such Projects, and Onther shall not be
+                    Publishers of such Projects, and Tokamakshall not be
                     involved in any manner with regards to the provision of such
                     investment opportunities. Publishers and Participants shall
                     have the sole responsibility of ensuring that they comply
@@ -406,7 +407,7 @@ const ConfirmTermsModal = () => {
                   <br />
                   <Text>
                     <b>5.5</b> The Projects that may be listed or published on
-                    TONStarter are not related to Onther and/or its affiliates,
+                    TONStarter are not related to Tokamakand/or its affiliates,
                     unless otherwise notified or stated in writing, and we shall
                     not be responsible for any disputes arising out of or in
                     connection with such projects. You shall have the sole
@@ -699,18 +700,18 @@ const ConfirmTermsModal = () => {
                   <br />
                   <Text>
                     <b>14.8</b>As the Contents provided through the Platform is
-                    on an “as-is”, “as-available” basis, Onther does not warrant
+                    on an “as-is”, “as-available” basis, Tokamakdoes not warrant
                     the results that may be obtained from the use of the
                     Platform, or the accuracy, reliability, currency, or
                     adequacy of any Content (whether from us or any third
-                    party), and Onther expressly disclaims any liability for
+                    party), and Tokamakexpressly disclaims any liability for
                     errors or omissions in the Contents.
                   </Text>
                   <br />
                   <Text>
                     <b>14.9</b>You agree that you will only use the Contents as
                     expressly authorised by Onther. Unless expressly stated
-                    otherwise in the terms for Services, Onther does not
+                    otherwise in the terms for Services, Tokamakdoes not
                     transfer any right, title or interest in the Contents to
                     you. You must not copy, modify, reproduce, distribute,
                     publish, forward, on-forward or commercially exploit the
@@ -745,7 +746,7 @@ const ConfirmTermsModal = () => {
                   <Text>
                     <b>15.2</b>In the development and operations of the Platform
                     and/or Services, special emphasis has been placed on
-                    security. To protect you, Onther has developed multi-level
+                    security. To protect you, Tokamakhas developed multi-level
                     security capabilities. However, you acknowledge that you may
                     still be exposed to security risks, including without
                     limitation:
@@ -788,7 +789,7 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <br />
                   <Text>
-                    <b>15.3</b>Onther will use best endeavours to protect the
+                    <b>15.3</b>Tokamakwill use best endeavours to protect the
                     Platform and/or Services from the security risks outlined
                     above. In the event of security risks being detected, Onther
                     reserves the right but shall not be obliged at any time to
@@ -847,7 +848,7 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <br />
                   <Text>
-                    <b>15.6</b>Onther may, at its sole discretion, appoint,
+                    <b>15.6</b>Tokamakmay, at its sole discretion, appoint,
                     partner or collaborate with third party service providers to
                     provide Services connected to the utilisation and operations
                     of the Platform.
@@ -856,7 +857,7 @@ const ConfirmTermsModal = () => {
                   <Text>
                     <b>15.7</b>Save for the obligations in Clause 14.3, Clause
                     14 is not, and shall not be deemed to constitute, an express
-                    or implied agreement by Onther for a higher standard of
+                    or implied agreement by Tokamakfor a higher standard of
                     security than that prescribed in any applicable law.
                   </Text>
                   <br />
@@ -970,35 +971,37 @@ const ConfirmTermsModal = () => {
                     : '1px solid #535353',
                 color: colorMode === 'light' ? '#3e495c' : '',
               }}></CustomButton>
-            {data.data.from === 'advance-launch' &&  (chainId === Number(DEFAULT_NETWORK) && chainId !== undefined) &&(
-              <Link
-                to={{
-                  pathname: isCheck ? `/launch/createproject` : '#',
-                  state: data.data.mode,
-                }}>
-                   <CustomButton
-                  text={'Confirm'}
-                  func={() => {
-                    if (isCheck) return closeModal();
-                  }}
-                  isDisabled={!isCheck}
-                  style={{
-                    backgroundColor: isCheck
-                      ? 'blue.500'
-                      : colorMode === 'light'
-                      ? '#e9edf1'
-                      : '#353535',
-                    color:
-                      colorMode === 'light'
-                        ? isCheck
+            {data.data.from === 'advance-launch' &&
+              chainId === Number(DEFAULT_NETWORK) &&
+              chainId !== undefined && (
+                <Link
+                  to={{
+                    pathname: isCheck ? `/launch/createproject` : '#',
+                    state: data.data.mode,
+                  }}>
+                  <CustomButton
+                    text={'Confirm'}
+                    func={() => {
+                      if (isCheck) return closeModal();
+                    }}
+                    isDisabled={!isCheck}
+                    style={{
+                      backgroundColor: isCheck
+                        ? 'blue.500'
+                        : colorMode === 'light'
+                        ? '#e9edf1'
+                        : '#353535',
+                      color:
+                        colorMode === 'light'
+                          ? isCheck
+                            ? '#ffffff'
+                            : '#86929d'
+                          : isCheck
                           ? '#ffffff'
-                          : '#86929d'
-                        : isCheck
-                        ? '#ffffff'
-                        : '#838383',
-                  }}></CustomButton>
+                          : '#838383',
+                    }}></CustomButton>
                 </Link>
-            )}
+              )}
             {data.data.from === 'simplified-launch' && (
               <Link
                 to={{
