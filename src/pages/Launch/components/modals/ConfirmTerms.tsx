@@ -28,7 +28,7 @@ const ConfirmTermsModal = () => {
   const theme = useTheme();
   const {handleCloseModal} = useModal();
   const [isCheck, setIsCheck] = useState<boolean>(false);
-  const { chainId} = useActiveWeb3React();
+  const {chainId} = useActiveWeb3React();
 
   const match = useRouteMatch();
   const {url} = match;
@@ -37,7 +37,7 @@ const ConfirmTermsModal = () => {
     setIsCheck(false);
     handleCloseModal();
   };
-  
+
   return (
     <Modal
       isOpen={data.modal === 'Launch_ConfirmTerms' ? true : false}
@@ -128,22 +128,23 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <br />
                   <Text>
-                    <b>1.3</b> Onther Pte. Ltd. ("<b>Onther</b>") operates the
-                    Platform and shall have the right at any time to change or
-                    discontinue any aspect or feature of the Platform and the
-                    right to modify these Terms of Use and/or any other terms
-                    and conditions applicable to users of the Platform, or any
-                    part thereof. Such changes, modification, additions or
-                    deletions shall be effective immediately upon posting on the
-                    Platform. Any continued use by you of the Platform or the
-                    use of the Services offered in or through the Platform shall
-                    be deemed to constitute your acceptance of such changes.
+                    <b>1.3</b> Tokamak Network Pte. Ltd. ("
+                    <b>Tokamak Network</b>") operates the Platform and shall
+                    have the right at any time to change or discontinue any
+                    aspect or feature of the Platform and the right to modify
+                    these Terms of Use and/or any other terms and conditions
+                    applicable to users of the Platform, or any part thereof.
+                    Such changes, modification, additions or deletions shall be
+                    effective immediately upon posting on the Platform. Any
+                    continued use by you of the Platform or the use of the
+                    Services offered in or through the Platform shall be deemed
+                    to constitute your acceptance of such changes.
                   </Text>
                   <br />
                   <Text>
                     <b>1.4</b> In these Terms of Use, "we", "our" and "us"
-                    refers to Onther and "you" and "your" is defined to any
-                    person who accesses and uses the Platform.
+                    refers to Tokamak Network and "you" and "your" is defined to
+                    any person who accesses and uses the Platform.
                   </Text>
                   <br />
                   <Text>
@@ -202,20 +203,20 @@ const ConfirmTermsModal = () => {
                   <Text>
                     <b>3.2</b> You shall take all reasonable precautions to
                     prevent any act that may interfere with the proper working
-                    of the Platform or the Services, not to transmit to Onther
-                    or the Platform any form of malicious software or any file
-                    which contains viruses, worms, Trojan horses or any other
-                    contaminating or destructive features, or that otherwise
-                    interfere with the proper working of the Platform or the
-                    Services.
+                    of the Platform or the Services, not to transmit to Tokamak
+                    Network or the Platform any form of malicious software or
+                    any file which contains viruses, worms, Trojan horses or any
+                    other contaminating or destructive features, or that
+                    otherwise interfere with the proper working of the Platform
+                    or the Services.
                   </Text>
                   <br />
                   <Text>
-                    <b>3.3</b> Onther reserves the right at any time without
-                    providing any notice, to make such modifications,
+                    <b>3.3</b> Tokamak Network reserves the right at any time
+                    without providing any notice, to make such modifications,
                     improvements or additions to the Platform and any other
                     systems necessary for the operations or security of the
-                    Platform, as Onther deems fit.
+                    Platform, as Tokamak Network deems fit.
                   </Text>
                   <br />
                   <Text fontSize={15} fontWeight="bold">
@@ -387,13 +388,13 @@ const ConfirmTermsModal = () => {
                     such related services. In this regard, any investment
                     opportunities in respect of the Projects that may be listed
                     or published on TONStarter shall be provided solely by the
-                    Publishers of such Projects, and Onther shall not be
-                    involved in any manner with regards to the provision of such
-                    investment opportunities. Publishers and Participants shall
-                    have the sole responsibility of ensuring that they comply
-                    with all relevant laws and regulations applicable to them in
-                    respect of the listing or publishing of any Projects on
-                    TONStarter, and the participation in any investment
+                    Publishers of such Projects, and Tokamak Network shall not
+                    be involved in any manner with regards to the provision of
+                    such investment opportunities. Publishers and Participants
+                    shall have the sole responsibility of ensuring that they
+                    comply with all relevant laws and regulations applicable to
+                    them in respect of the listing or publishing of any Projects
+                    on TONStarter, and the participation in any investment
                     opportunities related to any Projects that may be listed or
                     published on TONStarter. We do not represent, warrant, or
                     guarantee any of the information that may be provided by the
@@ -406,11 +407,11 @@ const ConfirmTermsModal = () => {
                   <br />
                   <Text>
                     <b>5.5</b> The Projects that may be listed or published on
-                    TONStarter are not related to Onther and/or its affiliates,
-                    unless otherwise notified or stated in writing, and we shall
-                    not be responsible for any disputes arising out of or in
-                    connection with such projects. You shall have the sole
-                    responsibility of ensuring that your use of TONStarter
+                    TONStarter are not related to Tokamak Network and/or its
+                    affiliates, unless otherwise notified or stated in writing,
+                    and we shall not be responsible for any disputes arising out
+                    of or in connection with such projects. You shall have the
+                    sole responsibility of ensuring that your use of TONStarter
                     (which shall include without limitation, your listing or
                     publishing of any Projects on TONStarter, and your
                     investment or participation in any Projects that may be
@@ -699,25 +700,25 @@ const ConfirmTermsModal = () => {
                   <br />
                   <Text>
                     <b>14.8</b>As the Contents provided through the Platform is
-                    on an “as-is”, “as-available” basis, Onther does not warrant
-                    the results that may be obtained from the use of the
-                    Platform, or the accuracy, reliability, currency, or
+                    on an “as-is”, “as-available” basis, Tokamak Network does
+                    not warrant the results that may be obtained from the use of
+                    the Platform, or the accuracy, reliability, currency, or
                     adequacy of any Content (whether from us or any third
-                    party), and Onther expressly disclaims any liability for
-                    errors or omissions in the Contents.
+                    party), and Tokamak Network expressly disclaims any
+                    liability for errors or omissions in the Contents.
                   </Text>
                   <br />
                   <Text>
                     <b>14.9</b>You agree that you will only use the Contents as
-                    expressly authorised by Onther. Unless expressly stated
-                    otherwise in the terms for Services, Onther does not
-                    transfer any right, title or interest in the Contents to
-                    you. You must not copy, modify, reproduce, distribute,
-                    publish, forward, on-forward or commercially exploit the
-                    Contents or create derivative works from the Contents
-                    without expressly being authorised to do so by Onther.  No
-                    licence or right is granted to the user by implication,
-                    estoppel or otherwise.
+                    expressly authorised by Tokamak Network. Unless expressly
+                    stated otherwise in the terms for Services, Tokamak Network
+                    does not transfer any right, title or interest in the
+                    Contents to you. You must not copy, modify, reproduce,
+                    distribute, publish, forward, on-forward or commercially
+                    exploit the Contents or create derivative works from the
+                    Contents without expressly being authorised to do so by
+                    Tokamak Network.  No licence or right is granted to the user
+                    by implication, estoppel or otherwise.
                   </Text>
                   <br />
                   <Text fontSize={15} fontWeight="bold">
@@ -730,25 +731,25 @@ const ConfirmTermsModal = () => {
                     and Services at your own risk and expense. If new or
                     different versions of the web browser and/or other software
                     and/or hardware and/or equipment necessary for the operation
-                    of the Platform and for Services to become available, Onther
-                    reserves the right to discontinue support for any prior
-                    version of the web browser and/or other software and/or
-                    hardware and/or equipment. If you fail to update the
-                    relevant web browser and/or other software and/or hardware
-                    and/or equipment as required, the Platform may fail to
-                    receive the electronic communications or to process them
+                    of the Platform and for Services to become available,
+                    Tokamak Network reserves the right to discontinue support
+                    for any prior version of the web browser and/or other
+                    software and/or hardware and/or equipment. If you fail to
+                    update the relevant web browser and/or other software and/or
+                    hardware and/or equipment as required, the Platform may fail
+                    to receive the electronic communications or to process them
                     correctly, or you may be unable to obtain access to all
-                    features and/or services available, in which events Onther
-                    shall not be held liable.
+                    features and/or services available, in which events Tokamak
+                    Network shall not be held liable.
                   </Text>
                   <br />
                   <Text>
                     <b>15.2</b>In the development and operations of the Platform
                     and/or Services, special emphasis has been placed on
-                    security. To protect you, Onther has developed multi-level
-                    security capabilities. However, you acknowledge that you may
-                    still be exposed to security risks, including without
-                    limitation:
+                    security. To protect you, Tokamak Network has developed
+                    multi-level security capabilities. However, you acknowledge
+                    that you may still be exposed to security risks, including
+                    without limitation:
                   </Text>
                   <Text>
                     <b>15.2.1</b>Insufficient technical knowledge and lack of
@@ -765,8 +766,8 @@ const ConfirmTermsModal = () => {
                   <Text>
                     <b>15.2.3</b>Third parties may gain unnoticed access to your
                     computer systems and detect access to the Platform and
-                    Services and communications with Onther, and/or engage in
-                    fraudulent transactions via your accounts;
+                    Services and communications with Tokamak Network, and/or
+                    engage in fraudulent transactions via your accounts;
                   </Text>
                   <Text>
                     <b>15.2.4</b>Viruses and other malicious codes may interfere
@@ -788,12 +789,12 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <br />
                   <Text>
-                    <b>15.3</b>Onther will use best endeavours to protect the
-                    Platform and/or Services from the security risks outlined
-                    above. In the event of security risks being detected, Onther
-                    reserves the right but shall not be obliged at any time to
-                    suspend the Platform and Services for your protection until
-                    the risks are removed.
+                    <b>15.3</b>Tokamak Network will use best endeavours to
+                    protect the Platform and/or Services from the security risks
+                    outlined above. In the event of security risks being
+                    detected, Tokamak Network reserves the right but shall not
+                    be obliged at any time to suspend the Platform and Services
+                    for your protection until the risks are removed.
                   </Text>
                   <br />
                   <Text>
@@ -847,17 +848,18 @@ const ConfirmTermsModal = () => {
                   </Text>
                   <br />
                   <Text>
-                    <b>15.6</b>Onther may, at its sole discretion, appoint,
-                    partner or collaborate with third party service providers to
-                    provide Services connected to the utilisation and operations
-                    of the Platform.
+                    <b>15.6</b>Tokamak Network may, at its sole discretion,
+                    appoint, partner or collaborate with third party service
+                    providers to provide Services connected to the utilisation
+                    and operations of the Platform.
                   </Text>
                   <br />
                   <Text>
                     <b>15.7</b>Save for the obligations in Clause 14.3, Clause
                     14 is not, and shall not be deemed to constitute, an express
-                    or implied agreement by Onther for a higher standard of
-                    security than that prescribed in any applicable law.
+                    or implied agreement by Tokamak Network for a higher
+                    standard of security than that prescribed in any applicable
+                    law.
                   </Text>
                   <br />
                   <Text fontSize={15} fontWeight="bold">
@@ -899,9 +901,9 @@ const ConfirmTermsModal = () => {
                     18. Ownership
                   </Text>
                   <Text>
-                    <b>18.1</b>TONStarter - Tokamak is fully owned and operated
-                    by Tokamak Network Pte. Ltd. (UEN 201807447M), a company
-                    incorporated in Singapore.
+                    <b>18.1</b>TONStarter - Tokamak Network is fully owned and
+                    operated by Tokamak Network Pte. Ltd. (UEN 201807447M), a
+                    company incorporated in Singapore.
                   </Text>
                   <br />
                   <Text fontSize={15} fontWeight="bold">
@@ -970,35 +972,37 @@ const ConfirmTermsModal = () => {
                     : '1px solid #535353',
                 color: colorMode === 'light' ? '#3e495c' : '',
               }}></CustomButton>
-            {data.data.from === 'advance-launch' &&  (chainId === Number(DEFAULT_NETWORK) && chainId !== undefined) &&(
-              <Link
-                to={{
-                  pathname: isCheck ? `/launch/createproject` : '#',
-                  state: data.data.mode,
-                }}>
-                   <CustomButton
-                  text={'Confirm'}
-                  func={() => {
-                    if (isCheck) return closeModal();
-                  }}
-                  isDisabled={!isCheck}
-                  style={{
-                    backgroundColor: isCheck
-                      ? 'blue.500'
-                      : colorMode === 'light'
-                      ? '#e9edf1'
-                      : '#353535',
-                    color:
-                      colorMode === 'light'
-                        ? isCheck
+            {data.data.from === 'advance-launch' &&
+              chainId === Number(DEFAULT_NETWORK) &&
+              chainId !== undefined && (
+                <Link
+                  to={{
+                    pathname: isCheck ? `/launch/createproject` : '#',
+                    state: data.data.mode,
+                  }}>
+                  <CustomButton
+                    text={'Confirm'}
+                    func={() => {
+                      if (isCheck) return closeModal();
+                    }}
+                    isDisabled={!isCheck}
+                    style={{
+                      backgroundColor: isCheck
+                        ? 'blue.500'
+                        : colorMode === 'light'
+                        ? '#e9edf1'
+                        : '#353535',
+                      color:
+                        colorMode === 'light'
+                          ? isCheck
+                            ? '#ffffff'
+                            : '#86929d'
+                          : isCheck
                           ? '#ffffff'
-                          : '#86929d'
-                        : isCheck
-                        ? '#ffffff'
-                        : '#838383',
-                  }}></CustomButton>
+                          : '#838383',
+                    }}></CustomButton>
                 </Link>
-            )}
+              )}
             {data.data.from === 'simplified-launch' && (
               <Link
                 to={{

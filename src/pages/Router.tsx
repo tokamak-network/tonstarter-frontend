@@ -44,7 +44,8 @@ import MainScreen from '@Launch/MainScreen';
 import ProjectScreen from '@Launch/ProjectScreen';
 import TokamakGNB from 'components/TokamakGNB';
 import MobileTokamakGNB from 'components/MobileTokamakGNB';
-import SimplifiedMainScreen from '@Launch/SimplifiedMainScreen'
+import SimplifiedMainScreen from '@Launch/SimplifiedMainScreen';
+import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -251,6 +252,7 @@ export const Router: FC<RouterProps> = () => {
       <Footer />
       <WalletModal state={walletState} isOpen={isModalOpen} onClose={onClose} />
       <AirdropModal />
+      <ConfirmTermsModal />
     </div>
   );
 };
