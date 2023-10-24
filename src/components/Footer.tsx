@@ -1,6 +1,5 @@
 import {Box, Container, Flex, Link, Text, useTheme} from '@chakra-ui/react';
 import {useColorMode} from '@chakra-ui/react';
-// import emailIcon from 'assets/svgs/email.svg';
 import {IconTelegram} from './Icons/IconTelegram';
 import {IconGithub} from './Icons/IconGithub';
 import {IconMedium} from './Icons/IconMedium';
