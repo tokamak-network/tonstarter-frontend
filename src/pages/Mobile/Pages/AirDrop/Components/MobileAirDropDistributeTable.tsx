@@ -60,7 +60,7 @@ export const MobileAirDropDistributeTable = () => {
   const {btnStyle} = theme;
   const [tokenAddress, setTokenAddress] = useState<string>(TON_ADDRESS);
   const [distributeToValue, setDistributeToValue] =
-    useState<string>('TON Holder');
+    useState<string>('sTOS Holder');
   const [tokenAmount, setTokenAmount] = useState('');
   const [allowance, setAllowance] = useState<string>('');
   const [ableDistribute, setAbleDistribute] = useState<boolean>(false);
@@ -191,7 +191,7 @@ export const MobileAirDropDistributeTable = () => {
     'CUSTOM TOKEN',
   ];
   const selectDistributeOptionValues = [
-    'TON Holder',
+    // 'TON Holder',
     // 'TOS Holder',
     'sTOS Holder',
   ];
