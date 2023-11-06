@@ -10,7 +10,7 @@ import {
   Link,
   Grid,
   GridItem,
-  Button
+  Button,
 } from '@chakra-ui/react';
 import {shortenAddress} from 'utils';
 import {MobileVaultTable} from './MobileVaultTable';
@@ -93,7 +93,6 @@ export const MobileTonStaker: FC<TonStaker> = ({vault, project}) => {
     }
     getLPToken();
   }, [account, library, transactionType, blockNumber, project, vault]);
-
 
   async function distribute() {
     if (account === null || account === undefined || library === undefined) {
@@ -375,49 +374,52 @@ const DistributeComp: React.FC<DistributeCompProps> = ({
           </Text>
         </Flex>
         <Button
-              fontSize={'13px'}
-              w={'100px'}
-              h={'32px'}
-              bg={'#257eee'}
-              color={'#ffffff'}
-              isDisabled={distributeDisable}
-              _disabled={{
-                color: colorMode === 'light' ? '#86929d' : '#838383',
-                bg: colorMode === 'light' ? '#e9edf1' : '#353535',
-                cursor: 'not-allowed',
-              }}
-              _hover={
-                distributeDisable
-                  ? {}
-                  : {
-                    
-                      cursor: 'pointer',
-                    }
-              }
-              _active={
-                distributeDisable
-                  ? {}
-                  : {
-                      background: '#2a72e5',
-                      border: 'solid 1px #2a72e5',
-                      color: '#fff',
-                    }
-              }
-              onClick={ distribute}>
-              Distribute
-            </Button>
+          fontSize={'13px'}
+          w={'100px'}
+          h={'32px'}
+          bg={'#257eee'}
+          color={'#ffffff'}
+          // isDisabled={distributeDisable}
+          isDisabled={true}
+          _disabled={{
+            color: colorMode === 'light' ? '#86929d' : '#838383',
+            bg: colorMode === 'light' ? '#e9edf1' : '#353535',
+            cursor: 'not-allowed',
+          }}
+          _hover={
+            distributeDisable
+              ? {}
+              : {
+                  cursor: 'pointer',
+                }
+          }
+          _active={
+            distributeDisable
+              ? {}
+              : {
+                  background: '#2a72e5',
+                  border: 'solid 1px #2a72e5',
+                  color: '#fff',
+                }
+          }
+          onClick={distribute}>
+          Distribute
+        </Button>
       </GridItem>
       <GridItem style={gridItemStyle}>
-       <Flex flexDir={'column'}>
-       <Text
+        <Flex flexDir={'column'}>
+          <Text
             fontFamily={theme.fonts.fld}
             fontSize={'12px'}
             color={colorMode === 'light' ? '#7e8993' : '#9d9ea5'}>
-           You can distribute on
+            You can distribute on
           </Text>
-          <Text style={rightText}>  {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
-                    {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}</Text>
-       </Flex>
+          <Text style={rightText}>
+            {' '}
+            {moment.unix(claimTime).format('MMM, DD, yyyy HH:mm:ss')}{' '}
+            {momentTZ.tz(momentTZ.tz.guess()).zoneAbbr()}
+          </Text>
+        </Flex>
       </GridItem>
     </Grid>
   );
