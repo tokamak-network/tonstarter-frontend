@@ -54,11 +54,6 @@ export const getUserTonBalance = async ({
 };
 
 export const getUserStakedTonBalance = async ({account, library}: any) => {
-  const contract = new Contract(
-    AutoCoinageSnapshot2_ADDRESS,
-    AUTOCOINAGESNAPSHOT2ABI.abi,
-    library,
-  );
   const seigManager = getTokamakContract('SeigManager', library);  
 const userStaked = await seigManager['stakeOf(address)'](account);
 
