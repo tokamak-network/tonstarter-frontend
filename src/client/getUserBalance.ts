@@ -7,7 +7,6 @@ import * as ERC20 from 'services/abis/ERC20.json';
 import * as TOSABI from 'services/abis/TOS.json';
 import * as LockTOSABI from 'services/abis/LockTOS.json';
 import * as WTONABI from 'services/abis/WTON.json';
-import * as AUTOCOINAGESNAPSHOT2ABI from 'services/abis/AutoCoinageSnapshot2.json';
 import * as StakingV2ProxyABI from 'services/abis/StakingV2Proxy.json';
 
 import {ethers} from 'ethers';
@@ -15,7 +14,7 @@ import {BigNumber} from 'ethers';
 import {UserContract} from 'types/index';
 import { log } from 'console';
 
-const {TON_ADDRESS, TOS_ADDRESS, AutoCoinageSnapshot2_ADDRESS} = DEPLOYED;
+const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
 export const getUserBalance = async (
   account: string,
