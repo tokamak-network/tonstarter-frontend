@@ -1,6 +1,6 @@
 import {Contract} from '@ethersproject/contracts';
 import * as StakeTON from 'services/abis/StakeTON.json';
-import {getContract} from 'utils/contract';
+import {getContract, getTokamakContract} from 'utils/contract';
 import {convertNumber} from 'utils/number';
 import {BASE_PROVIDER, DEPLOYED} from 'constants/index';
 import * as ERC20 from 'services/abis/ERC20.json';
@@ -13,6 +13,7 @@ import * as StakingV2ProxyABI from 'services/abis/StakingV2Proxy.json';
 import {ethers} from 'ethers';
 import {BigNumber} from 'ethers';
 import {UserContract} from 'types/index';
+import { log } from 'console';
 
 const {TON_ADDRESS, TOS_ADDRESS, AutoCoinageSnapshot2_ADDRESS} = DEPLOYED;
 
@@ -58,10 +59,14 @@ export const getUserStakedTonBalance = async ({account, library}: any) => {
     AUTOCOINAGESNAPSHOT2ABI.abi,
     library,
   );
-  const totalSupply = await contract.balanceOf(account);
+  const seigManager = getTokamakContract('SeigManager', library);  
+const userStaked = await seigManager['stakeOf(address)'](account);
+
+  // const totalSupply = await contract.balanceOf(account);
   const formattedNumber = Number(
-    ethers.utils.formatUnits(totalSupply, 27),
+    ethers.utils.formatUnits(userStaked, 27),
   ).toFixed(2);
+  
   return formattedNumber;
   // const balance = convertNumber({amount: String(contractIserBalance)});
   // return {ton: balance || '0', tonOrigin: contractIserBalance.toString()};

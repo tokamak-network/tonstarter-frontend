@@ -40,7 +40,7 @@ const getUserInfoForManage = async (
     StakeTONContract?.userStaked(account),
     L2Contract?.stakedOf(account),
     StakeTONContract.totalStakedAmount(),
-    seigManager.stakeOf(TokamakLayer2_ADDRESS, contractAddress),
+    seigManager['stakeOf(address,address)'](TokamakLayer2_ADDRESS, contractAddress),
     depositManager.pendingUnstaked(TokamakLayer2_ADDRESS, contractAddress),
     WTON.balanceOf(contractAddress),
     TON.balanceOf(contractAddress),
