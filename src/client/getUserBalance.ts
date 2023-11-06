@@ -12,7 +12,6 @@ import * as StakingV2ProxyABI from 'services/abis/StakingV2Proxy.json';
 import {ethers} from 'ethers';
 import {BigNumber} from 'ethers';
 import {UserContract} from 'types/index';
-import { log } from 'console';
 
 const {TON_ADDRESS, TOS_ADDRESS} = DEPLOYED;
 
