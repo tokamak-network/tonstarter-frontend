@@ -39,7 +39,6 @@ export type DEPLOYED_TYPE = {
   LPrewardVault: string;
   TypeCVault: string;
   DAOVault: string;
-  AutoCoinageSnapshot2_ADDRESS: string;
   TokenDividendProxyPool_ADDRESS: string;
   TokenDistribute: string;
   pools: {

@@ -270,7 +270,8 @@ export const TonStaker: FC<TonStaker> = ({vault, project}) => {
               h={'32px'}
               bg={'#257eee'}
               color={'#ffffff'}
-              isDisabled={distributeDisable}
+              // isDisabled={distributeDisable}
+              isDisabled={true}
               _disabled={{
                 color: colorMode === 'light' ? '#86929d' : '#838383',
                 bg: colorMode === 'light' ? '#e9edf1' : '#353535',
