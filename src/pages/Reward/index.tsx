@@ -119,18 +119,21 @@ export const Reward = () => {
   const [positions, setPositions] = useState<any[]>([]);
   const [selectedTokenType, setSelectedTokenType] = useState<string>('');
   const [tokensFromAPI, setTokensFromAPI] = useState<any[]>([]);
-  // const arr: any = [];
+
+  //When the account address changes or network changes, set the loaded data to undefined 1st
   useEffect(() => {
     setSelectdPosition(undefined);
   }, [account, library]);
+
+  //fetch the data from the API when the address, network or selected state changes
   useEffect(() => {
     async function fetchProjectsData() {
-      const poolsData: any = await views.getPoolData(library);
-      const tokens = await views.getTokensData();
-      const rewardData = await views.getRewardData();
-      setPoolsFromAPI(poolsData);
+      const poolsData: any = await views.getPoolData(library); //get the pools data from pools API
+      const tokens = await views.getTokensData(); //get the tokens deployed from tokens API
+      const rewardData = await views.getRewardData(); //get the rewards from the rewards API
+      setPoolsFromAPI(poolsData); // will be used later to fetch more pools data from the contracts
 
-      const poolArray: any = [];
+      const poolArray: any = []; //an array with just the addresses of all the pools from the api
       if (poolsData) {
         poolsData.map((pool: any) => {
           poolArray.push(pool.poolAddress.toLowerCase());
@@ -142,16 +145,17 @@ export const Reward = () => {
           reward.index = index + 1;
         });
 
-        setDatas(rewardData);
+        setDatas(rewardData); //adds the index to the rewards data
       }
       if (tokens) {
-        setTokensFromAPI(tokens);
+        setTokensFromAPI(tokens); //save the tokens to local state
       }
       setPoolAddresses(poolArray);
     }
     fetchProjectsData();
   }, [account, library, selected]);
 
+  //get all the pool information using the pool addresses array
   const poolArr = usePoolByArrayQuery(
     {address: poolAddresses},
     {
@@ -159,6 +163,7 @@ export const Reward = () => {
     },
   );
 
+  //get all the reward programs for each pool using the pool addresses array
   const positionsByPool = usePositionByPoolQuery(
     {pool_id: poolAddresses},
     {
@@ -166,18 +171,21 @@ export const Reward = () => {
     },
   );
 
+  //set ordered reward programs and filtered reward programs initially
   useEffect(() => {
     const filteredData = filterDatas();
     setOrderedData(filteredData);
     setFilteredData(filteredData);
   }, [sortString, datas]);
 
+  //function for the onChange of sort menu. Set the sortString value to the menuitem value
   const changeSelect = (e: any) => {
     const filterValue = e.target.value;
     order === 'desc' ? setOrder('asc') : setOrder('desc');
     setSortString(filterValue);
   };
 
+  //sort the data by the sortString value
   const filterDatas = () => {
     const now = moment().unix();
     switch (sortString) {
@@ -205,6 +213,7 @@ export const Reward = () => {
     }
   };
 
+  //using the pools data from graphql, and the data from the pools API, create a new array of pools data with the pool's token information
   useEffect(() => {
     const addPoolsInfo = () => {
       const pols = poolArr.data?.pools;
@@ -229,6 +238,7 @@ export const Reward = () => {
     addPoolsInfo();
   }, [account, transactionType, blockNumber, poolArr]);
 
+  //get the reward programs information using graphQL
   const position = usePositionByUserQuery(
     {address: account},
     {
@@ -236,8 +246,7 @@ export const Reward = () => {
     },
   );
 
-  // console.log('position',position);
-  
+  //get the open/closed status of the liquidity token
   const getStatus = (token: any) => {
     if (token) {
       const liquidity = Number(
@@ -255,6 +264,7 @@ export const Reward = () => {
     }
   };
 
+  //get the liquidity status of the reward program
   useEffect(() => {
     async function getPosition() {
       const uniswapStakerContract = new Contract(
@@ -262,14 +272,19 @@ export const Reward = () => {
         STAKERABI.abi,
         library,
       );
+
+      //gets the range data for the reward program
       async function getRangedData(stringResult: any) {
         const res = await Promise.all(
           stringResult.map(async (data: any) => {
+            //finds the pool that the reward programs belongs to
             const includedPool = pool.find(
               (pol: any) =>
                 ethers.utils.getAddress(pol.id) ===
                 ethers.utils.getAddress(data.pool.id),
             );
+
+            //if the pool exists, get the range of the pool, and return the following data for the reward program
             if (includedPool) {
               const rang = await getRange(
                 Number(data.id),
@@ -284,6 +299,8 @@ export const Reward = () => {
             }
           }),
         );
+
+        //depending on the results of the above getRange function, create the state string and order them by ascending or descending order
         const closedIn = res.filter(
           (token: any) => getStatus(token) === 'closedIn',
         );
@@ -318,22 +335,27 @@ export const Reward = () => {
           ['desc'],
         );
 
-        const open = openInOrdered.concat(openOutOrdered);
-        const close = closedInOrdered.concat(closedOutOrdered);
-        const tokenList = open.concat(close);
+        const open = openInOrdered.concat(openOutOrdered); //all the open reward programs
+        const close = closedInOrdered.concat(closedOutOrdered); //all the closed reward programs
+        const tokenList = open.concat(close); //all the reward programs closed and open
         setPositions(tokenList);
       }
+
+      //refetch the reward programs data from graphql
       if (position.data && positionsByPool.data) {
         position.refetch();
 
+        //if a pool is selected from the pools menu
         if (
           selectedPool !== undefined &&
           account !== undefined &&
           account !== null
         ) {
+          //get the positions (reward programs) belonging to the selected pool
           const withStakedPosition = position.data.positions.filter(
             (position: any) => selectedPool.id === position.pool.id,
           );
+          //from the reward programs of the pool, find the reward programs belonging to the user or the uniswap contract
           const pols = positionsByPool.data.positions.filter(
             (position: any) =>
               ethers.utils.getAddress(position.owner) ===
@@ -353,7 +375,8 @@ export const Reward = () => {
           }
           const signer = getSigner(library, account);
           let stringResult: any = [];
-
+          //get the tokens that were staked in the selected pool. if the owner of the result of the deposits function is the user,
+          //then the user has deposited the lp token in the pool (staked)
           await Promise.all(
             poolsFromSelected.map(async (token: any) => {
               const depositInfo = await uniswapStakerContract
@@ -366,12 +389,15 @@ export const Reward = () => {
             }),
           );
 
-          const allPos = withStakedPosition.concat(stringResult);
-          await getRangedData(allPos);
+          const allPos = withStakedPosition.concat(stringResult); //all the reward programs staked and unstaked
+          await getRangedData(allPos); //get the range data of all the reward programs
           setTimeout(() => {
             setIsPositionLoading(false);
           }, 1500);
-        } else if (
+        }
+        //if the pool is not selected from the pools menu
+        // functions are same as above
+        else if (
           selectedPool === undefined &&
           account !== undefined &&
           account !== null
@@ -443,6 +469,7 @@ export const Reward = () => {
     orderedData,
   ]);
 
+  //gets the range of the reward program
   const getRange = async (id: number, tick: string, address: string) => {
     const result = await rangePayload({library, id, account, tick, address});
     return result;
@@ -462,8 +489,11 @@ export const Reward = () => {
     return result;
   };
 
+  //filters the reward programs
   useEffect(() => {
     if (account !== undefined && account !== null) {
+      //these are the reward programs belonging to the user
+      //will be sent to the manageContainer as props
       const filtered = orderedData.filter(
         (data) =>
           ethers.utils.getAddress(data.incentiveKey.refundee) ===
@@ -474,17 +504,14 @@ export const Reward = () => {
     }
   }, [orderedData, sortString, account, library]);
 
+  //gets the pool when the selected pool is changed from the pools menu and sets the reward programs data accordingly
   const getSelectedPool = (e: any) => {
     const poolAddress = e.target.value;
-    // console.log(poolAddress);
-    // console.log(pool);
-
     const selected: Pool = pool.find(
       (pool) =>
         ethers.utils.getAddress(pool.id) ===
         ethers.utils.getAddress(poolAddress),
     );
-    // console.log('selected',selected);
 
     setSelectedPool(selected);
     setSelectedToken(undefined);
@@ -506,28 +533,36 @@ export const Reward = () => {
     }
   };
 
+  //function to handle reward token menu select change
   const getSelectedReardToken = (e: any) => {
     const tokenAddress = e.target.value;
+
+    //filter the selected reward token from the tokens from the API depending on the value of the tokens menu
     const rewardToken: Token = tokenList.find(
       (token) => token.token === tokenAddress,
     );
     setSelectedToken(rewardToken);
 
     if (tokenAddress !== '') {
+      //depending on the value from the menu, filter the reward programs that belong to the user
       const selectedManageRewards = manageDatas.filter(
         (data: any) =>
           ethers.utils.getAddress(data.rewardToken.toString()) ===
           ethers.utils.getAddress(tokenAddress),
       );
+
       setFilteredManageData(selectedManageRewards);
+      //if the ordered data array is empty, filter the reward programs according to the selected reward token
       if (orderedData.length === 0) {
         const selectedRewards = datas.filter(
           (data) =>
             ethers.utils.getAddress(data.rewardToken.toString()) ===
             ethers.utils.getAddress(tokenAddress),
         );
+
         setFilteredData(selectedRewards);
       } else {
+        //if not empty, filter the ordered reward programs according to the selected reward token
         const selectedRewards = orderedData.filter(
           (data) =>
             ethers.utils.getAddress(data.rewardToken.toString()) ===
@@ -540,16 +575,20 @@ export const Reward = () => {
       setFilteredManageData(manageDatas);
     }
   };
+//get the reward programs that have been staked with the selected LP token
   const getSelectedPosition = (e: any) => {
     const pos = e.target.value;
     const selectedLP: any = positions.find((position) => position.id === pos);
     setSelectdPosition(selectedLP);
   };
+
+  //gets the ERC20 token symbol
   const getTokenFromContract = async (address: string) => {
     const symbolContract = await getTokenSymbol(address, library);
     return symbolContract;
   };
 
+  //gets the list of reward tokens from all the reward programs
   useEffect(() => {
     const getTokenList = async () => {
       const rewardTokens = [
@@ -596,6 +635,7 @@ export const Reward = () => {
               flexDir={'row'}
               justifyContent={'space-between'}>
               <Flex alignItems={'center'}>
+                {/* pools menu */}
                 <Menu isLazy>
                   <MenuButton
                     border={themeDesign.border[colorMode]}
@@ -631,6 +671,7 @@ export const Reward = () => {
                     ))}
                   </MenuList>
                 </Menu>
+                {/* reward tokens menu */}
                 <Menu isLazy>
                   <MenuButton
                     border={themeDesign.border[colorMode]}
@@ -662,8 +703,7 @@ export const Reward = () => {
                     ))}
                   </MenuList>
                 </Menu>
-                {/* <Button border={'2px solid #2a72e5'} bg={'transparent'} _hover={{bg:'none'}} _active={{bg:'none'}}
-                    {...MENU_STYLE.buttonStyle({colorMode})}></Button> */}
+                {/* lp tokens menu */}
                 <Menu isLazy>
                   <MenuButton
                     border={'2px solid #2a72e5'}
@@ -911,6 +951,7 @@ export const Reward = () => {
                     </MenuItem>
                   </MenuList>
                 </Menu>
+                {/* sorting menu */}
                 <Menu isLazy>
                   <MenuButton
                     border={themeDesign.border[colorMode]}
@@ -977,6 +1018,7 @@ export const Reward = () => {
                     </MenuItem>
                   </MenuList>
                 </Menu>
+
                 {selected === 'reward' ? (
                   <Text
                     textDecoration={'underline'}
@@ -1021,6 +1063,7 @@ export const Reward = () => {
                   </Text>
                 )}
               </Flex>
+              {/* switch button for manage state */}
               <Flex>
                 <FormControl display="flex" alignItems="center">
                   <FormLabel htmlFor="email-alerts" mb="0">
@@ -1036,8 +1079,10 @@ export const Reward = () => {
                   />
                 </FormControl>
               </Flex>
+              {/*  */}
             </Flex>
             <Flex flexDir={'row'} mt={'30px'} justifyContent={'space-between'}>
+              {/* if the selected state is reward, render the reward child components else render the manage child components*/}
               {selected === 'reward' ? (
                 <Box>
                   <Flex
@@ -1258,6 +1303,8 @@ export const Reward = () => {
                   tokens={tokensFromAPI}
                 />
               )}
+
+              {/* display the side container */}
               <SideContainer
                 pools={pool}
                 selected={selected}
