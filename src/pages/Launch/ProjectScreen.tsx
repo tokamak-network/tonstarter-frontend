@@ -31,20 +31,23 @@ const ProjectScreen = () => {
   const theme = useTheme();
   const {account} = useActiveWeb3React();
   const [project, setProject] = useState<any>();
+
+  //takes back to the main launch page when the 'Back to List' button is clicked
   const goBackToList = useCallback(() => {
     history.push('/launch');
   }, []);
   const match = useRouteMatch();
   const {url} = match;
-  const isExist = url.split('/')[3];
+  const isExist = url.split('/')[3]; //gets the project hashkey from the URL
   const dispatch = useAppDispatch();
-  // console.log(window.location);
 
   const {
     //@ts-ignore
     params: {name},
   } = match;
 
+
+  //gets all the projects from the API
   const {data, isLoading, error} = useQuery(
     ['test'],
     () =>
@@ -59,6 +62,7 @@ const ProjectScreen = () => {
     },
   );
 
+  //set the main project state of this page to the project with the same hashkey from the above results
   useEffect(() => {
     if (data) {
       const {data: datas} = data;
@@ -95,6 +99,7 @@ const ProjectScreen = () => {
     },
   };
 
+//set the global state to the hashkey if it exists
   useEffect(() => {
     dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
   }, []);

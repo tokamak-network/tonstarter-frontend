@@ -126,29 +126,30 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
   );
   const projectToken = new Contract(project.tokenAddress, ERC20.abi, library);
   const NPM = new Contract(NPM_Address, NPMABI.abi, library);
+
+
   useEffect(() => {
     async function getLPToken() {
       if (account === null || account === undefined || library === undefined) {
         return;
       }
       const signer = getSigner(library, account);
-      const LP = await InitialLiquidityCompute.lpToken();
-      const pool = await InitialLiquidityCompute.pool();
-      const start = await InitialLiquidityCompute.startTime();
+      const LP = await InitialLiquidityCompute.lpToken(); //checks if an LP token is created for the initial liquidity vault
+      const pool = await InitialLiquidityCompute.pool(); //checks if the pool is created
+      const start = await InitialLiquidityCompute.startTime(); //checks if the claim time has started
       setStartTime(start);
-      const tosBal = await TOS.balanceOf(vault.vaultAddress);
-      const tokBalance = await projectToken.balanceOf(vault.vaultAddress);
-      const TOSBal = ethers.utils.formatEther(tosBal);
+      const tosBal = await TOS.balanceOf(vault.vaultAddress); //check if there is any TOS in the IL vault
+      const tokBalance = await projectToken.balanceOf(vault.vaultAddress); //balance of the project token in the IL vault
+      const TOSBal = ethers.utils.formatEther(tosBal); //format the tos amount
       setTosBalance(TOSBal);
       setProjTokenBalance(ethers.utils.formatEther(tokBalance));
       const getPool = await UniswapV3Fact.getPool(
         TOS_ADDRESS,
         project.tokenAddress,
         3000,
-      );
+      ); 
       setIsPool(pool === ZERO_ADDRESS ? false : true);
       setCreatedPool(pool === ZERO_ADDRESS ? '' : pool);
-      // setIsPool(false)
       setIsLpToken(Number(LP) === 0 ? false : true);
 
       setLPToken(Number(LP));
@@ -182,34 +183,32 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
         return;
       }
 
-      const pool = new Contract(createdPool, UniswapV3PoolABI.abi, library);
-      const slot0 = await pool.slot0();
-      // console.log(slot0);
-      const token0 = await pool.token0();
-      const token1 = await pool.token1();
-      // console.log('token0', token0);
-      // console.log('token1', token1);
+      const pool = new Contract(createdPool, UniswapV3PoolABI.abi, library); //creates the pool contract
+      const slot0 = await pool.slot0(); //slot0 of the pool
+     
+      const token0 = await pool.token0(); //token 0 of the pool
+      const token1 = await pool.token1(); //token1 of the pool
+    
       const token0Contract = new Contract(token0, ERC20.abi, library);
       const token1Contract = new Contract(token1, ERC20.abi, library);
-      const amount0Balance = await token0Contract.balanceOf(vault.vaultAddress);
-      const amount1Balance = await token1Contract.balanceOf(vault.vaultAddress);
-      // console.log('amount0Balance', Number(amount0Balance));
-      // console.log('amount1Balance', Number(amount1Balance));
-      const sqrtRatio = slot0.sqrtPriceX96;
+      const amount0Balance = await token0Contract.balanceOf(vault.vaultAddress); //balance of token0 in the vault
+      const amount1Balance = await token1Contract.balanceOf(vault.vaultAddress); //balance of token1 in teh vault
+     
+      const sqrtRatio = slot0.sqrtPriceX96; //sqrtPriceX96
       const price = univ3prices([18, 18], sqrtRatio).toAuto();
-      // console.log('sqrtRatio', sqrtRatio);
-      // console.log('price', price);
-
+      
       let tosAmount = 0;
+      //if the pool is a tos pool
+      //ask zena for clarification of this part
       if (TOS_ADDRESS.toLowerCase() === token0.toLowerCase()) {
         const priceUpdated = price * 1e18;
         let inToken0Amount = amount1Balance
           .mul(ethers.BigNumber.from(priceUpdated + ''))
           .div(ethers.utils.parseEther('1'));
-        inToken0Amount = inToken0Amount * 0.9;
-        // console.log('amount1Balance', amount1Balance.toString());
-        // console.log('inToken0Amount', inToken0Amount.toString());
+        inToken0Amount = inToken0Amount * 0.9; //buffer amount of 0.1
+      
         tosAmount = inToken0Amount;
+
       } else {
         const reversePrice = (1 * 1e18) / price;
         const reverse = reversePrice.toString().split('.');
@@ -219,8 +218,7 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
           .mul(ethers.BigNumber.from(reverseString + ''))
           .div(ethers.utils.parseEther('1'));
         inToken1Amount = inToken1Amount * 0.9;
-        // console.log('amount0Balance', amount0Balance.toString());
-        // console.log('inToken0Amount', inToken1Amount.toString());
+       
         tosAmount = inToken1Amount;
       }
 
@@ -228,6 +226,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
     }
     getTosAmount();
   }, [account, createdPool, library, vault.vaultAddress, blockNumber]);
+
+  //minting LP token function
   const mint = async () => {
     if (account === null || account === undefined || library === undefined) {
       return;
@@ -239,7 +239,6 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       const receipt = await InitialLiquidityCompute.connect(signer).mint(
         amount,
       );
-      // console.log(vvv);
 
       store.dispatch(setTxPending({tx: true}));
       if (receipt) {
@@ -264,6 +263,8 @@ export const InitialLiquidity: FC<InitialLiquidity> = ({vault, project}) => {
       );
     }
   };
+
+  //function to collect funds
   const collect = async () => {
     if (account === null || account === undefined || library === undefined) {
       return;

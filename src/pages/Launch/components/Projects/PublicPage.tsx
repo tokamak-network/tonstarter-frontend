@@ -66,6 +66,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   const {blockNumber} = useBlockNumber();
 
   const now = moment().unix();
+
+  //sort the stos tiers 
   const sTosTier = vault.stosTier
     ? Object.keys(vault.stosTier)
         .map((tier) => {
@@ -85,11 +87,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
         })
         .sort((a, b) => a.tier - b.tier)
     : [];
-  // console.log('vault', vault);
 
+    //these two projects were created before vesting vault was created. so they should be treated differently 
   const isOld =
     project.name === 'Door Open' || project.name === 'Dragons of Midgard';
 
+    //using the public vault vault address, create the public sale contract
   const PUBLICSALE_CONTRACT = useCallContract(
     vault.vaultAddress,
     'PUBLIC_SALE',
@@ -101,10 +104,12 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     PublicSaleVaultLogicAbi.abi,
   );
 
+  //gets the vesting vault if exists 
   const vestingVault = project.vaults.filter(
     (vault: any) => vault.vaultType === 'Vesting',
   );
 
+  //function to send ton to the vesting vault after fund raising is done
   const sendTONtoVesting = useCallback(async () => {
     try {
       if (PublicSaleContract) {
@@ -118,6 +123,8 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
   }, [PublicSaleContract]);
 
   const WTON = new Contract(WTON_ADDRESS, WTONABI.abi, library);
+
+  //checks if the connected user is the admin of the project
   useEffect(() => {
     if (account !== undefined && account !== null) {
       if (
@@ -133,6 +140,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     }
   }, [account, project, vault.vaultAddress, transactionType, blockNumber]);
 
+  //checks if the hardcap of the project has been reached and 
   useEffect(() => {
     async function getHardCap() {
       if (
@@ -144,33 +152,44 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
       ) {
         return;
       }
-
+      //gets the harcap amount from the public vault contract
       const hardCapCalc = await PUBLICSALE_CONTRACT.hardcapCalcul();
 
-      const hc = ethers.utils.formatEther(hardCapCalc);
+      const hc = ethers.utils.formatEther(hardCapCalc); //converts to eth unit
       const numberParts = hc.split('.');
 
+      //converts the amount to only 5 decimal places
       const numHc =
         numberParts.length > 1
           ? Number(numberParts[0] + '.' + numberParts[1].slice(0, 5))
           : Number(hc);
 
+          //find if the admin has withdraw funds or not
       const adminWithdraw = await PUBLICSALE_CONTRACT.adminWithdraw();
       setFundWithdrew(adminWithdraw);
 
+      //find the balance of WTOn in the public vault
       const wtonBalance = await WTON.balanceOf(vault.vaultAddress);
       const wt = convertNumber({amount: wtonBalance, type: 'ray'});
 
       setHardcap(numHc);
+      //find if the wton has been exchanged to tos 
       const isExchangeTOS = await PublicSaleContract.exchangeTOS();
 
+      //transferred ton amount 
       const transferred = isExchangeTOS ? numHc - Number(wt) : 0;
 
       setTransferredTon(transferred);
+
+      //total exclusive sale funding amount received
       const totalExPurchasedAmount =
         await PUBLICSALE_CONTRACT.totalExPurchasedAmount();
+
+        //total public sale funding amount received
       const totalOpenPurchasedAmount =
         await PUBLICSALE_CONTRACT.totalOpenPurchasedAmount();
+
+        //vesting amount
       const xxAmount =
         Number(convertNumber({amount: totalExPurchasedAmount})) +
         Number(convertNumber({amount: totalOpenPurchasedAmount})) -
@@ -183,7 +202,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
           VestingPublicFund.abi,
           library,
         );
-
+//funding amount in the vesting vault
         const fundsInVesting = await vestingVaultContract.currentSqrtPriceX96(); //when the pool is created and the LP token is minted in the IL vault, currentSqrtPriceX96 > 0
         setSendTON(
           Number(fundsInVesting) !== 0 &&
@@ -206,6 +225,7 @@ export const PublicPage: FC<PublicPage> = ({vault, project}) => {
     vestingVault,
   ]);
 
+  //send stos
   const sendTOS = async () => {
     if (
       account === null ||

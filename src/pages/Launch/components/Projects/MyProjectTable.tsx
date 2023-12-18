@@ -96,7 +96,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
       if (account === null || account === undefined || library === undefined) {
         return;
       }
-
+      //from all the projects of the user that have been minted as NFT
       const tokensOfOwner = await ProjectToken.tokensOfOwner(account);
       const uris = await Promise.all(
         tokensOfOwner.map(async (token: any) => {
@@ -108,6 +108,7 @@ export const MyProjectTable: FC<MyProjectTableProps> = ({
     getNFTInfo();
   }, [transactionType, blockNumber, projects, data]);
 
+  //mint the NFT on opensea
   const mintNFT = async (project: any) => {
     if (account === null || account === undefined || library === undefined) {
       return;
