@@ -62,6 +62,8 @@ const MyProjects = () => {
       if (account === null || account === undefined || library === undefined) {
           return;
         }
+
+        //if these projects belong to the connected address
         const tokensOfOwner = await ProjectToken.tokensOfOwner(account);
         const uris = await Promise.all(
           tokensOfOwner.map(async (token: any) => {
