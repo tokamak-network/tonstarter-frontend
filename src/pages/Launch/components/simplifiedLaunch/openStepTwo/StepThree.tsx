@@ -36,6 +36,7 @@ const StepThree = (props: {currentStep: Number}) => {
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
 
+  //same function as step one
   useEffect(() => {
     async function getTonPrice() {
       const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) => {
@@ -66,8 +67,6 @@ const StepThree = (props: {currentStep: Number}) => {
       const token0Price = Number(poolData.token0Price);
 
       setTonPriceInTos(token0Price);
-      // console.log(token0Price);
-      // const tonPriceInTos =
     }
     getTonPrice();
   }, [library, values.vaults[0], option, currentStep]);
@@ -110,6 +109,7 @@ const StepThree = (props: {currentStep: Number}) => {
   };
 
 
+  // calculates several properties of the project using the stable price selected by the user
   const handleInput = (option: number) => {
     setFieldValue('stablePrice', option);
     const marketCap = values.marketCap;
@@ -139,14 +139,10 @@ const StepThree = (props: {currentStep: Number}) => {
           totalSupply,
           publicVault.publicRound2End ? publicVault.publicRound2End : 0,
         );
-
-        // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
-
         const tot = roundInfo.reduce(
           (acc, round) => acc + round.claimTokenAllocation,
           0,
         );
-        //  const totalTokenAllocation =
         setFieldValue(`vaults[${index}].claim`, roundInfo);
         setFieldValue(`vaults[${index}].adminAddress`, account);
         setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
@@ -156,16 +152,6 @@ const StepThree = (props: {currentStep: Number}) => {
       setFieldValue('vaults[2].vaultTokenAllocation', 0);
       setFieldValue('vaults[0].addressForReceiving', account);
       setFieldValue('vaults[0].adminAddress', account);
-
-      // setFieldValue(
-      //   'vaults[0].publicRound1Allocation',
-      //   Number(parseInt((publicAllocation * 0.5).toString())),
-      // );
-      // setFieldValue(
-      //   'vaults[0].publicRound2Allocation',
-      //   publicAllocation -
-      //     Number(parseInt((publicAllocation * 0.5).toString())),
-      // );
 
       const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
       const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);

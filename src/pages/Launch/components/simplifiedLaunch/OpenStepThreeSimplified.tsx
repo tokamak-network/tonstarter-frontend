@@ -29,11 +29,10 @@ import {convertNumber} from 'utils/number';
 import {BigNumber, ethers} from 'ethers';
 
 
+//display each step component depending on the current step
 const VaultComp = (props: {vaultNum: Number}) => {
   const {vaultNum} = props;
   switch (vaultNum) {
-    // case 0: 
-    // return <Flex>Gas check</Flex>
     case 0:
       return <ProjectToken />;
     case 1:
@@ -101,12 +100,14 @@ const OpenStepThreeSimplified = (props: any) => {
     );
   
     useEffect(() => {
+
+      //calculates the estimated gas amount needed to create the token, deploy all the vaults, send tokens to each vault, and initiate all the vaults
       async function getGasFee() {
         if (account) {
           const feeData = await contract.provider.getFeeData();
   
           const {maxFeePerGas} = feeData;
-          const totalGasEstimate = 2402827 * 10 + 344776 * 9 + 478876;
+          const totalGasEstimate = 2402827 * 10 + 344776 * 9 + 478876; 
   
           if (maxFeePerGas) {
             const gasPrice = BigNumber.from(totalGasEstimate + 42000).mul(

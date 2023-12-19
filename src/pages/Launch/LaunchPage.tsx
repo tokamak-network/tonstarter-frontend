@@ -18,7 +18,12 @@ import ConfirmTermsModal from './components/modals/ConfirmTerms';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {injected} from 'connectors';
 import WarningModal from './components/simplifiedLaunch/openStepOne/WarningModal';
-import {setMode,setProjectStep,saveTempProjectData,setHashKey} from '@Launch/launch.reducer';
+import {
+  setMode,
+  setProjectStep,
+  saveTempProjectData,
+  setHashKey,
+} from '@Launch/launch.reducer';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
 import {DEFAULT_NETWORK} from 'constants/index';
 
@@ -71,6 +76,8 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
     },
   };
 
+  //sets the create project mode to simplified at the initial load
+  //initializes all the states
   useEffect(() => {
     dispatch(
       setMode({
@@ -78,12 +85,12 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
       }),
     );
     dispatch(saveTempProjectData({data: {}}));
-    dispatch(setProjectStep({data:1}))
-    dispatch(setHashKey({data:undefined}))
+    dispatch(setProjectStep({data: 1}));
+    dispatch(setHashKey({data: undefined}));
   }, [dispatch]);
 
   const {openAnyModal} = useModal();
-  
+
   return (
     <Flex
       flexDir={'column'}
@@ -130,6 +137,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           </Flex>
           <Flex justifyContent={'center'} w={'100%'}>
             {/* <Link to={`${url}/createproject`}> */}
+            {/* links to the create project page when clicked. the initial create project mode will be simplified mode */}
             <Button
               _hover={{bg: '#2a72e5'}}
               bg={'#257eee'}
@@ -151,8 +159,13 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
                 if (!active) {
                   return activate(injected);
                 }
-                if (chainId !== Number(DEFAULT_NETWORK) || chainId === undefined || !account) {
-                  const netType = DEFAULT_NETWORK === 1 ? 'Mainnet' : 'Goerli Test Network';
+                if (
+                  chainId !== Number(DEFAULT_NETWORK) ||
+                  chainId === undefined ||
+                  !account
+                ) {
+                  const netType =
+                    DEFAULT_NETWORK === 1 ? 'Mainnet' : 'Goerli Test Network';
                   return alert(`Please use ${netType}`);
                 }
                 openAnyModal('Launch_Warning', {
@@ -268,6 +281,7 @@ const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
           </Button>
         </Flex>
       </Box>
+      {/* displays the appropriate projects depending on the selected tab */}
       {showAllProjects ? <AllProjects /> : <MyProjects />}
       <ConfirmTermsModal></ConfirmTermsModal>
       <WarningModal />

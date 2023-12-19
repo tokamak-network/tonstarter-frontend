@@ -68,6 +68,8 @@ const ProjectToken = () => {
   const {isTokenDeployed, tokenName, totalSupply, tokenAddress, tokenSymbol} =
     values;
 
+    //the function to deploy the token. 
+    //when the token is deployed, save it to the token api
   async function deployToken() {
     try {
       const {tokenName, tokenSymbol, totalSupply, ownerAddress} = values;
@@ -195,19 +197,10 @@ const ProjectToken = () => {
             color: colorMode === 'dark' ? '#838383' : '#86929d',
             cursor: 'not-allowed',
           }:{}}
-          isDisabled={isTokenDeployed || tx === true}
+          isDisabled={isTokenDeployed || tx === true} //if the token is already deployed or a tx is currently pending, disable the button
           borderRadius={4}
           onClick={() => {
             deployToken();
-            // dispatch(
-            //   openModal({
-            //     type: 'Launch_ConfirmTokenSimplified',
-            //     data: {
-            //       tokenInfo: {tokenName, totalSupply, tokenSymbol},
-            //       func: () => deployToken(),
-            //     },
-            //   }),
-            // );
           }}>
           {tx === true  && !isTokenDeployed? (
              <CircularProgress  isIndeterminate

@@ -8,7 +8,7 @@ import {
   useColorMode,
   Tooltip,
   Switch,
-  Box
+  Box,
 } from '@chakra-ui/react';
 import {
   Dispatch,
@@ -42,9 +42,8 @@ import {ActionButton} from './components/simplifiedLaunch/openStepOne/ActionButt
 import {useFormikContext} from 'formik';
 import {useModal} from 'hooks/useModal';
 import RescheduleModal from './components/simplifiedLaunch/openStepOne/Reschedule';
-import AdvanceConfirmModal from '@Launch/components/modals/AdvanceConfirmModal'
+import AdvanceConfirmModal from '@Launch/components/modals/AdvanceConfirmModal';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
-
 
 const StepComponent = (props: {
   step: StepNumber;
@@ -95,29 +94,35 @@ const SimplifiedMainScreen = () => {
     setSwitchState(!switchState);
   };
 
-
+  //onchange function for switch to advance mode switch
   const handleChange = () => {
     handleSwitchChange();
-    if(switchState === false) {
+    if (switchState === false) {
       openAnyModal('Launch_AdvanceSwitch', {
         from: '/launch/createproject',
       });
     }
-  }
+  };
 
   const dispatch = useAppDispatch();
+
+  //gets the project hashkey from the URL
   const {
     //@ts-ignore
     params: {id},
   } = match;
+
+  //get the global states projects, hashKey, projectStep
   const {
     data: {projects, hashKey, projectStep},
   } = useAppSelector(selectLaunch);
 
+  //go back to main launch page
   const navigateToLaunchPage = useCallback(() => {
     history.push('/launch');
   }, [history]);
 
+  //block reload
   useEffect(() => {
     //@ts-ignore
     const unBlock = history.block((loc, action) => {
@@ -140,6 +145,7 @@ const SimplifiedMainScreen = () => {
     });
   }, []);
 
+  //set the global state hashkey depending on if the URL contains a hashkey or not
   useEffect(() => {
     dispatch(
       setHashKey({
@@ -153,10 +159,12 @@ const SimplifiedMainScreen = () => {
     );
   }, [dispatch, isExist]);
 
+  //set the local state step to the global state projectStep
   useEffect(() => {
     setStep(projectStep);
   }, []);
 
+  //function to go to the next step
   const handleStep = useCallback(
     (isNext: boolean) => {
       const prevStepNum =
@@ -168,6 +176,7 @@ const SimplifiedMainScreen = () => {
     [step],
   );
 
+  //get the color of the save button depending on the step, disabled status and the hashkey
   const getSaveButtonColor = () => {
     if (isDisable) {
       return '#e9edf1';
@@ -183,12 +192,16 @@ const SimplifiedMainScreen = () => {
     return step;
   };
 
+  //save the project to the db
+  //if there is no hashl=key, create a new entry and if there is  a hashkey, edit an existing project
   const handleSaveProject = (values: any, account: string, mode: boolean) => {
     account && isExist === 'createproject' && hashKey === undefined
       ? saveProject(values, account, mode)
       : editProject(values, account as string, hashKey || isExist, mode);
   };
 
+  //save the project to the db and navigate to next step
+  //if there is no hashl=key, create a new entry and if there is  a hashkey, edit an existing project
   const handleSaveAndContinue = (values: any, account: string) => {
     account && isExist === 'createproject' && hashKey === undefined
       ? saveProject(values, account)
@@ -196,6 +209,7 @@ const SimplifiedMainScreen = () => {
     handleStep(true);
   };
 
+  //the function for 'Complete' button at step 3
   const handleComplete = (values: any, account: string, mode: boolean) => {
     editProject(values, account as string, hashKey || isExist);
     history.push('/launch');
@@ -203,9 +217,12 @@ const SimplifiedMainScreen = () => {
     localStorage.removeItem('modalClosed');
   };
 
+  //if the account is disconnected, redirect to the main launch page
   if (!account) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
+
+  //if the hashkey exists and the project owner address is not user address (change of connected account when the project is saved) redirect to the main launch page
   if (
     id !== undefined &&
     projects[id] &&
@@ -258,38 +275,39 @@ const SimplifiedMainScreen = () => {
           <Steps
             stepName={['Project & Token', 'Token Economy', 'Deploy']}
             currentStep={step}></Steps>
-            <Flex></Flex>
-            </Flex>
+          <Flex></Flex>
+        </Flex>
         <Flex pos="absolute" mt={'247px'} ml={'620px'}>
-        <Tooltip
-          color={theme.colors.white[100]}
-          bg={'#353c48'}
-          p={2}
-          w="254px"
-          textAlign="center"
-          hasArrow
-          borderRadius={3}
-          placement="top"
-          fontSize={'12px'}
-          ml='8px'
-          label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
-          <Flex>
-            <style>{switchStyle}</style>
-            <Switch
-              style={{height: '16px'}}
-              onChange={handleChange}
-              isChecked={switchState}></Switch>
-            <Text
-              fontSize={'13px'}
-              color={colorMode === 'dark' ? '#949494' : '#848c98'}>
-              Advance mode
-            </Text>
+          <Tooltip
+            color={theme.colors.white[100]}
+            bg={'#353c48'}
+            p={2}
+            w="254px"
+            textAlign="center"
+            hasArrow
+            borderRadius={3}
+            placement="top"
+            fontSize={'12px'}
+            ml="8px"
+            label="You can fine-tune your project settings in Advance Mode. But if you leave this default mode, you cannot come back here again.">
+            <Flex>
+              <style>{switchStyle}</style>
+              <Switch
+                style={{height: '16px'}}
+                onChange={handleChange}
+                isChecked={switchState}></Switch>
+              <Text
+                fontSize={'13px'}
+                color={colorMode === 'dark' ? '#949494' : '#848c98'}>
+                Advance mode
+              </Text>
 
-            <Image src={tooltipIcon} ml="6px" />
-          </Flex>
-        </Tooltip>
+              <Image src={tooltipIcon} ml="6px" />
+            </Flex>
+          </Tooltip>
         </Flex>
       </Flex>
+      {/* formik component to save data */}
       <Formik
         innerRef={formikRef}
         initialValues={

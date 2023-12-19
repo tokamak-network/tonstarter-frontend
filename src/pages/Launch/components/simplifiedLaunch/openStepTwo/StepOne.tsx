@@ -69,8 +69,11 @@ const StepOne = () => {
       dark: 'dashed 1px #535353',
     },
   };
+  
+  //gets the TON price in $ and the TOS price in TON
   useEffect(() => {
     async function getTonPrice() {
+      //fetch the price of ₩ in $
       const usdPriceObj = await fetch(fetchUsdPriceURL).then((res) => {
         if (!res.ok) {
           throw new Error('error in the api');
@@ -79,6 +82,7 @@ const StepOne = () => {
         return res.json();
       }
       );
+      //gets the price of TON in ₩
       const tonPriceObj = await fetch(fetchTonPriceURL).then((res) =>
       {
         if (!res.ok) {
@@ -88,6 +92,8 @@ const StepOne = () => {
         return res.json();
       }
       );
+
+      // calculate the ton price in $
       const tonPriceKRW = tonPriceObj[0].trade_price;
       const krwInUsd = usdPriceObj.rates.USD;
 
@@ -112,22 +118,22 @@ const StepOne = () => {
     handleInput(option);
   };
 
+  //calculates and saves the hardCap, funcding target and the marketcap of the project
   const handleInput = (option: number) => {
-    // setOption(option.toString());
+
     const fundingTarget = option;
-    const marketCap = option / 0.3;
+    const marketCap = option / 0.3; //market cap is 30% of the funding target
     setFieldValue('fundingTarget', option);
     setFieldValue('marketCap', option / 0.3);
+
 
     if (values.totalSupply && values.stablePrice) {
       const totalSupply = values.totalSupply;
       const tokenPriceinDollars = values.stablePrice;
       const tokenPriceInTon = tokenPriceinDollars / tonInDollars;
       const tonPriceInToken = 1 / tokenPriceInTon;      
-// console.log('tokenPriceInTon',tokenPriceInTon);
 
-      const hardCap = (fundingTarget*0.5) / tonInDollars;
-      // console.log('hardCap',hardCap);
+      const hardCap = (fundingTarget*0.5) / tonInDollars; //hardcap is half of the funding target in TON 
       
       setFieldValue(`vaults[0].hardCap`, hardCap ? truncNumber(hardCap, 2) : 0);
     }
