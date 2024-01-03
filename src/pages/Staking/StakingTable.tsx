@@ -288,14 +288,13 @@ export const StakingTable: FC<StakingTableProps> = ({
   };
 
   const clickOpen = (contractAddress: string, index: number) => {
-    setIsOpen('0x9a8294566960ab244d78d266ffe0f284cdf728f1');
-    // setIsOpen(contractAddress);
-    // setTimeout(() => {
-    //   focusTarget?.current[index]?.scrollIntoView({
-    //     behavior: 'smooth',
-    //     block: 'start',
-    //   });
-    // }, 100);
+    setIsOpen(contractAddress);
+    setTimeout(() => {
+      focusTarget?.current[index]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 100);
   };
 
   const renderBtn = (contractAddress: string, index: number) => {
