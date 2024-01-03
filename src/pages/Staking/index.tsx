@@ -96,7 +96,7 @@ const GetDate = ({
             fontWeight={'bold'}
             w="100%"
             mb={'5px'}>
-            {date}
+            {type === 'mining-end' && '~ '} {date}
           </Text>
           <Text fontSize={13} color={'#808992'}>
             <span style={{marginRight: '5px'}}>{time}</span>
@@ -335,20 +335,6 @@ export const Staking = () => {
       const {account, contractAddress, fetchBlock, library, status} =
         row.original;
 
-      // return (
-      //   <Flex w="100%" m={0} border={'none'} pt={'45px'} px={'172px'}>
-      //     <Flex flexDir={'column'} gridRowGap={'3px'}>
-      //       <Text
-      //         fontSize={15}
-      //         color={'#2a72e5'}
-      //         fontWeight={'bold'}
-      //         lineHeight={'20px'}>
-      //         My Staked
-      //       </Text>
-      //       <Text>1,000</Text>
-      //     </Flex>
-      //   </Flex>
-      // );
       return (
         <Flex
           w="100%"

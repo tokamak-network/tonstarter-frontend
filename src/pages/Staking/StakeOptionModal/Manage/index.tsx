@@ -13,10 +13,11 @@ import {
   useTheme,
   useColorMode,
   Tooltip,
+  Checkbox,
 } from '@chakra-ui/react';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectModalType} from 'store/modal.reducer';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, Dispatch, SetStateAction} from 'react';
 import {fetchStakedBalancePayload} from '../utils/fetchStakedBalancePayload';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {selectTransactionType} from 'store/refetch.reducer';
@@ -64,6 +65,128 @@ const TooltipPendingMsg = (
   );
 };
 
+const Notice = ({
+  totalStaked,
+  mystaked,
+  setIsConfirmed,
+}: {
+  totalStaked: string;
+  mystaked: string;
+  setIsConfirmed: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const {colorMode} = useColorMode();
+  const theme = useTheme();
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  console.log('isChecked', isChecked);
+
+  return (
+    <ModalBody p={0}>
+      <Box
+        textAlign="center"
+        pb={'1.250em'}
+        borderBottom={
+          colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
+        }>
+        <Heading
+          fontSize={'1.250em'}
+          fontWeight={'bold'}
+          fontFamily={theme.fonts.titil}
+          color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+          textAlign={'center'}
+          mb={'8px'}>
+          Notice
+        </Heading>
+      </Box>
+
+      <Stack
+        as={Flex}
+        pt={'1.875em'}
+        pl={'1.875em'}
+        pr={'1.875em'}
+        justifyContent={'center'}
+        alignItems={'center'}>
+        <Text fontSize={13} fontWeight={600} color={'#304156'} mb={'12px'}>
+          Your staked on TOS Mining
+        </Text>
+        <Flex
+          w={'302px'}
+          h={'82px'}
+          borderWidth={1}
+          borderColor={'#d7d9df'}
+          borderRadius={'10px'}
+          flexDir={'column'}
+          px={'20px'}
+          py={'17px'}
+          justifyContent={'space-between'}>
+          <Box d={'flex'} justifyContent={'space-between'} w={'100%'}>
+            <Text fontSize={13} color={'#808992'}>
+              Total Staked
+            </Text>
+            <Text fontSize={15} fontWeight={600}>
+              {totalStaked} <span style={{fontSize: 11}}>TON</span>
+            </Text>
+          </Box>
+          <Box d={'flex'} justifyContent={'space-between'}>
+            <Text fontSize={13} color={'#808992'}>
+              {`My Staked (%)`}
+            </Text>
+            <Text fontSize={15} fontWeight={600}>
+              {mystaked} <span style={{fontSize: 11}}>TON</span>
+            </Text>
+          </Box>
+        </Flex>
+        <Flex w={'300px'} textAlign={'center'} flexDir={'column'}>
+          <Text
+            fontSize={13}
+            color={'#ff3b3b'}
+            fontWeight={'bold'}
+            mb={'10px'}
+            mt={'30px'}>
+            Warning
+          </Text>
+          <Text mb={'21px'} fontSize={12} color={'#3e495c'}>
+            While TOS mining is not accepting new stakers, swapping related
+            functions are open to anyone.
+          </Text>
+          <Flex justifyContent={'center'} gridColumnGap={'9px'}>
+            <Checkbox
+              w={'18px'}
+              h={'18px'}
+              checked={isChecked}
+              onChange={() => setIsChecked(!isChecked)}></Checkbox>
+            <Text fontSize={12} color={'#3d495d'} fontWeight={600}>
+              Agree
+            </Text>
+          </Flex>
+          <Flex mt={'61px'} flexDir={'column'} mb={'56px'}>
+            <Text fontSize={12} color={'#353c48'} mb={'15px'}>
+              About TOS Mining
+            </Text>
+            <Text fontSize={12} color={'#808992'}>
+              Users can stake TON to TOS mining and seigniorage earned from it
+              can be swapped to TOS and claimable by stakers at the end of
+              mining date.
+            </Text>
+          </Flex>
+          <Button
+            alignSelf={'center'}
+            bg={isChecked ? '#257eee' : '#e9edf1'}
+            fontSize={14}
+            color={isChecked ? '#fff' : '#86929d'}
+            fontWeight={600}
+            w={'150px'}
+            h={'38px'}
+            onClick={() => setIsConfirmed(true)}
+            _hover={{}}>
+            Confirm
+          </Button>
+        </Flex>
+      </Stack>
+    </ModalBody>
+  );
+};
+
 export const ManageModal = () => {
   const {data} = useAppSelector(selectModalType);
   const {TokamakLayer2_ADDRESS} = DEPLOYED;
@@ -77,7 +200,14 @@ export const ManageModal = () => {
   const {handleOpenConfirmModal, handleCloseModal} = useModal();
 
   const {
-    data: {contractAddress, vault, globalWithdrawalDelay, miningEndTime, name},
+    data: {
+      contractAddress,
+      vault,
+      globalWithdrawalDelay,
+      miningEndTime,
+      name,
+      mystaked,
+    },
   } = data;
 
   //Buttons
@@ -336,6 +466,8 @@ export const ManageModal = () => {
     currentBlock,
   ]);
 
+  const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+
   const handleCloseManageModal = () => {
     setStakeL2Disabled(true);
     setUnstakeL2Disable(true);
@@ -350,6 +482,8 @@ export const ManageModal = () => {
     setOriginalStakeBalance(0);
     setOriginalSwapBalance('0');
     setSaleClosed(true);
+    setIsConfirmed(false);
+
     handleCloseModal();
   };
 
@@ -366,275 +500,303 @@ export const ManageModal = () => {
         pt={'1.250em'}
         pb={'1.563em'}>
         <CloseButton closeFunc={handleCloseManageModal}></CloseButton>
-        <ModalBody p={0}>
-          <Box
-            textAlign="center"
-            pb={'1.250em'}
-            borderBottom={
-              colorMode === 'light' ? '1px solid #f4f6f8' : '1px solid #373737'
-            }>
-            <Heading
-              fontSize={'1.250em'}
-              fontWeight={'bold'}
-              fontFamily={theme.fonts.titil}
-              color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-              textAlign={'center'}
-              mb={'8px'}>
-              Manage
-            </Heading>
-            <Text color="gray.175" fontSize={'0.750em'}>
-              You can manage {name} Product
-            </Text>
-          </Box>
-
-          <Stack
-            as={Flex}
-            pt={'1.875em'}
-            pl={'1.875em'}
-            pr={'1.875em'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            mb={'25px'}>
-            <Box textAlign={'center'}>
-              <Text fontSize={'0.813em'} color={'blue.300'} mb={'1.125em'}>
-                Available balance
-              </Text>
-              <Text fontSize={'2em'}>
-                {availableBalance} <span style={{fontSize: '13px'}}>TON</span>
-              </Text>
-            </Box>
+        {isConfirmed === false ? (
+          <Notice
+            totalStaked={totalStaked}
+            mystaked={mystaked}
+            setIsConfirmed={setIsConfirmed}
+          />
+        ) : (
+          <ModalBody p={0}>
             <Box
-              display={'flex'}
-              justifyContent="space-between"
-              flexDir="column"
-              w={'100%'}
+              textAlign="center"
+              pb={'1.250em'}
               borderBottom={
                 colorMode === 'light'
                   ? '1px solid #f4f6f8'
                   : '1px solid #373737'
               }>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Total Staked
+              <Heading
+                fontSize={'1.250em'}
+                fontWeight={'bold'}
+                fontFamily={theme.fonts.titil}
+                color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                textAlign={'center'}
+                mb={'8px'}>
+                Manage
+              </Heading>
+              <Text color="gray.175" fontSize={'0.750em'}>
+                You can manage {name} Product
+              </Text>
+            </Box>
+
+            <Stack
+              as={Flex}
+              pt={'1.875em'}
+              pl={'1.875em'}
+              pr={'1.875em'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              mb={'25px'}>
+              <Box textAlign={'center'}>
+                <Text fontSize={'0.813em'} color={'blue.300'} mb={'1.125em'}>
+                  Available balance
                 </Text>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'15px'}>
-                  {totalStaked} TON
+                <Text fontSize={'2em'}>
+                  {availableBalance} <span style={{fontSize: '13px'}}>TON</span>
                 </Text>
-              </Flex>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Staked in Layer 2
-                </Text>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'15px'}>
-                  {stakedL2} TON
-                </Text>
-              </Flex>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Seigniorage
-                </Text>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'15px'}>
-                  {seigBalance} TON
-                </Text>
-              </Flex>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Flex>
-                  <Text
-                    color={'gray.400'}
-                    fontSize="13px"
-                    fontWeight={500}
-                    mr={1}>
-                    Pending UnStaked in Layer 2
+              </Box>
+              <Box
+                display={'flex'}
+                justifyContent="space-between"
+                flexDir="column"
+                w={'100%'}
+                borderBottom={
+                  colorMode === 'light'
+                    ? '1px solid #f4f6f8'
+                    : '1px solid #373737'
+                }>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="55px">
+                  <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                    Total Staked
                   </Text>
-                  {pendingL2Balance === '-' ||
-                  Number(pendingL2Balance) <= 0 ? null : (
+                  <Text
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                    fontWeight={500}
+                    fontSize={'15px'}>
+                    {totalStaked} TON
+                  </Text>
+                </Flex>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="55px">
+                  <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                    Staked in Layer 2
+                  </Text>
+                  <Text
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                    fontWeight={500}
+                    fontSize={'15px'}>
+                    {stakedL2} TON
+                  </Text>
+                </Flex>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="55px">
+                  <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
+                    Seigniorage
+                  </Text>
+                  <Text
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                    fontWeight={500}
+                    fontSize={'15px'}>
+                    {seigBalance} TON
+                  </Text>
+                </Flex>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="55px">
+                  <Flex>
+                    <Text
+                      color={'gray.400'}
+                      fontSize="13px"
+                      fontWeight={500}
+                      mr={1}>
+                      Pending UnStaked in Layer 2
+                    </Text>
+                    {pendingL2Balance === '-' ||
+                    Number(pendingL2Balance) <= 0 ? null : (
+                      <Tooltip
+                        hasArrow
+                        placement="top"
+                        label={TooltipPendingMsg(
+                          currentBlock,
+                          withdrawableBlock,
+                          withdrawableAmount,
+                        )}
+                        color={theme.colors.white[100]}
+                        bg={theme.colors.gray[375]}
+                        p={0}
+                        w="220px"
+                        h="50px"
+                        borderRadius={3}
+                        fontSize="12px">
+                        <img src={tooltipIcon} />
+                      </Tooltip>
+                    )}
+                  </Flex>
+                  <Text
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                    fontWeight={500}
+                    fontSize={'15px'}>
+                    {pendingL2Balance} TON
+                  </Text>
+                </Flex>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="55px">
+                  <Flex>
+                    <Text
+                      color={'gray.400'}
+                      fontSize="13px"
+                      fontWeight={500}
+                      mr="2px">
+                      Available to swap
+                    </Text>
                     <Tooltip
                       hasArrow
                       placement="top"
-                      label={TooltipPendingMsg(
-                        currentBlock,
-                        withdrawableBlock,
-                        withdrawableAmount,
-                      )}
+                      label={tooltipMsg()}
                       color={theme.colors.white[100]}
                       bg={theme.colors.gray[375]}
                       p={0}
-                      w="220px"
-                      h="50px"
+                      w="227px"
+                      h="70px"
                       borderRadius={3}
                       fontSize="12px">
                       <img src={tooltipIcon} />
                     </Tooltip>
-                  )}
-                </Flex>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'15px'}>
-                  {pendingL2Balance} TON
-                </Text>
-              </Flex>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Flex>
+                  </Flex>
                   <Text
-                    color={'gray.400'}
-                    fontSize="13px"
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                     fontWeight={500}
-                    mr="2px">
-                    Available to swap
-                  </Text>
-                  <Tooltip
-                    hasArrow
-                    placement="top"
-                    label={tooltipMsg()}
-                    color={theme.colors.white[100]}
-                    bg={theme.colors.gray[375]}
-                    p={0}
-                    w="227px"
-                    h="70px"
-                    borderRadius={3}
-                    fontSize="12px">
-                    <img src={tooltipIcon} />
-                  </Tooltip>
-                </Flex>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'15px'}>
-                  {swapBalance} TON
-                </Text>
-              </Flex>
-              <Flex justifyContent="space-between" alignItems="center" h="55px">
-                <Flex>
-                  <Text
-                    color={'gray.400'}
-                    fontSize="13px"
-                    fontWeight={500}
-                    mr="2px">
-                    Swapped TOS
+                    fontSize={'15px'}>
+                    {swapBalance} TON
                   </Text>
                 </Flex>
-                <Text
-                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  fontWeight={500}
-                  fontSize={'15px'}>
-                  {swappedTosBalance} TOS
-                </Text>
-              </Flex>
-            </Box>
-          </Stack>
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  h="55px">
+                  <Flex>
+                    <Text
+                      color={'gray.400'}
+                      fontSize="13px"
+                      fontWeight={500}
+                      mr="2px">
+                      Swapped TOS
+                    </Text>
+                  </Flex>
+                  <Text
+                    color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                    fontWeight={500}
+                    fontSize={'15px'}>
+                    {swappedTosBalance} TOS
+                  </Text>
+                </Flex>
+              </Box>
+            </Stack>
 
-          <Grid
-            templateColumns={'repeat(2, 1fr)'}
-            pl="19px"
-            pr="19px"
-            gap={'12px'}>
-            <Button
-              width="150px"
-              bg={'blue.500'}
-              color={'white.100'}
-              fontSize={'12px'}
-              fontWeight={100}
-              _hover={{backgroundColor: 'blue.100'}}
-              // {...(stakeL2Disabled === true
-              //   ? {...btnStyle.btnDisable({colorMode})}
-              //   : {...btnStyle.btnAble()})}
-              // isDisabled={stakeL2Disabled}
-              {...btnStyle.btnDisable({colorMode})}
-              isDisabled={true}
-              onClick={() =>
-                handleOpenConfirmModal({
-                  type: 'manage_stakeL2',
-                  data: {
-                    balance: availableBalance,
-                    contractAddress,
-                    originalStakeBalance,
-                  },
-                })
-              }>
-              Stake in Layer 2
-            </Button>
-            <Button
-              width="150px"
-              bg={'blue.500'}
-              color={'white.100'}
-              fontSize={'12px'}
-              fontWeight={100}
-              _hover={{backgroundColor: 'blue.100'}}
-              {...(unstakeL2Disable === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={unstakeL2Disable}
-              onClick={() =>
-                handleOpenConfirmModal({
-                  type: 'manage_unstakeL2',
-                  data: {
-                    canUnstakedL2,
-                    contractAddress,
-                    unstakeAll,
-                    name,
-                  },
-                })
-              }>
-              Unstake from Layer 2
-            </Button>
-            <Button
-              width="150px"
-              bg={'blue.500'}
-              color={'white.100'}
-              fontSize={'12px'}
-              fontWeight={100}
-              _hover={{backgroundColor: 'blue.100'}}
-              {...(withdrawDisable === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={withdrawDisable}
-              onClick={() =>
-                handleOpenConfirmModal({
-                  type: 'manage_withdraw',
-                  data: {
-                    contractAddress,
-                    pendingL2Balance: canWithdralAmount,
-                  },
-                })
-              }>
-              Withdraw
-            </Button>
-            <Button
-              width="150px"
-              bg={'blue.500'}
-              color={'white.100'}
-              fontSize={'12px'}
-              fontWeight={100}
-              _hover={{backgroundColor: 'blue.100'}}
-              {...(swapDisabled === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={swapDisabled}
-              onClick={() =>
-                handleOpenConfirmModal({
-                  type: 'manage_swap',
-                  data: {
-                    contractAddress,
-                    swapBalance,
-                    originalSwapBalance,
-                    currentTosPrice,
-                  },
-                })
-              }>
-              Swap
-            </Button>
-          </Grid>
-        </ModalBody>
+            <Grid
+              templateColumns={'repeat(2, 1fr)'}
+              pl="19px"
+              pr="19px"
+              gap={'12px'}>
+              <Button
+                width="150px"
+                bg={'blue.500'}
+                color={'white.100'}
+                fontSize={'12px'}
+                fontWeight={100}
+                _hover={{backgroundColor: 'blue.100'}}
+                // {...(stakeL2Disabled === true
+                //   ? {...btnStyle.btnDisable({colorMode})}
+                //   : {...btnStyle.btnAble()})}
+                // isDisabled={stakeL2Disabled}
+                {...btnStyle.btnDisable({colorMode})}
+                isDisabled={true}
+                onClick={() =>
+                  handleOpenConfirmModal({
+                    type: 'manage_stakeL2',
+                    data: {
+                      balance: availableBalance,
+                      contractAddress,
+                      originalStakeBalance,
+                    },
+                  })
+                }>
+                Stake in Layer 2
+              </Button>
+              <Button
+                width="150px"
+                bg={'blue.500'}
+                color={'white.100'}
+                fontSize={'12px'}
+                fontWeight={100}
+                _hover={{backgroundColor: 'blue.100'}}
+                {...(unstakeL2Disable === true
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                isDisabled={unstakeL2Disable}
+                onClick={() =>
+                  handleOpenConfirmModal({
+                    type: 'manage_unstakeL2',
+                    data: {
+                      canUnstakedL2,
+                      contractAddress,
+                      unstakeAll,
+                      name,
+                    },
+                  })
+                }>
+                Unstake from Layer 2
+              </Button>
+              <Button
+                width="150px"
+                bg={'blue.500'}
+                color={'white.100'}
+                fontSize={'12px'}
+                fontWeight={100}
+                _hover={{backgroundColor: 'blue.100'}}
+                {...(withdrawDisable === true
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                isDisabled={withdrawDisable}
+                onClick={() =>
+                  handleOpenConfirmModal({
+                    type: 'manage_withdraw',
+                    data: {
+                      contractAddress,
+                      pendingL2Balance: canWithdralAmount,
+                    },
+                  })
+                }>
+                Withdraw
+              </Button>
+              <Button
+                width="150px"
+                bg={'blue.500'}
+                color={'white.100'}
+                fontSize={'12px'}
+                fontWeight={100}
+                _hover={{backgroundColor: 'blue.100'}}
+                {...(swapDisabled === true
+                  ? {...btnStyle.btnDisable({colorMode})}
+                  : {...btnStyle.btnAble()})}
+                isDisabled={swapDisabled}
+                onClick={() =>
+                  handleOpenConfirmModal({
+                    type: 'manage_swap',
+                    data: {
+                      contractAddress,
+                      swapBalance,
+                      originalSwapBalance,
+                      currentTosPrice,
+                    },
+                  })
+                }>
+                Swap
+              </Button>
+            </Grid>
+          </ModalBody>
+        )}
       </ModalContent>
     </Modal>
   );
