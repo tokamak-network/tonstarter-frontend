@@ -237,109 +237,92 @@ export const WalletInformation: FC<WalletInformationProps> = ({
   const {btnStyle} = theme;
 
   return (
-    <Container
-      maxW={'sm'}
-      shadow={'md'}
-      borderRadius={'lg'}
-      border={
-        colorMode === 'light' ? 'solid 1px #f4f6f8' : 'solid 1px #373737'
-      }>
-      <Box w={'100%'} p={0} textAlign={'center'} py={10} px={5}>
-        <Heading
-          color={'blue.300'}
-          display="flex"
-          alignItems="center"
-          justifyContent="center">
-          {userTonBalance === undefined && account !== undefined ? (
-            <LoadingDots />
-          ) : (
-            userTonBalance
-          )}{' '}
-          TON
-        </Heading>
-        <Box py={5}>
-          <Text fontSize={'15px'} color={'gray.400'}>
-            Available in wallet
-          </Text>
-        </Box>
-        <Grid pos="relative" templateColumns={'repeat(2, 1fr)'} gap={6}>
-          <Button
-            {...(stakeDisabled === true
-              ? {...btnStyle.btnDisable({colorMode})}
-              : {...btnStyle.btnAble()})}
-            isDisabled={stakeDisabled}
-            fontSize={'14px'}
-            opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('stake')}>
-            Stake
-          </Button>
-          <Button
-            {...(unstakeDisabled === true
-              ? {...btnStyle.btnDisable({colorMode})}
-              : {...btnStyle.btnAble()})}
-            isDisabled={unstakeDisabled}
-            fontSize={'14px'}
-            opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('unstake')}>
-            Unstake
-          </Button>
-          <Button
-            {...(claimDisabled === true
-              ? {...btnStyle.btnDisable({colorMode})}
-              : {...btnStyle.btnAble()})}
-            isDisabled={claimDisabled}
-            fontSize={'14px'}
-            opacity={loading === true ? 0.5 : 1}
-            onClick={() => modalData('claim')}>
-            Claim
-          </Button>
-          {manageDisabled === true ? (
-            <Button
-              {...(data.saleClosed || endSaleBtnDisabled === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={endSaleBtnDisabled || data.saleClosed}
-              fontSize={'14px'}
-              opacity={loading === true ? 0.5 : 1}
-              onClick={() =>
-                data.miningEndTime !== undefined
-                  ? closeSale({
-                      userAddress: account,
-                      vaultContractAddress: data.vault,
-                      library,
-                    })
-                  : null
-              }>
-              {status === 'start' ? 'Manage' : 'End Sale'}
-            </Button>
-          ) : (
-            <Button
-              {...(manageBtnDisabled === true
-                ? {...btnStyle.btnDisable({colorMode})}
-                : {...btnStyle.btnAble()})}
-              isDisabled={manageBtnDisabled}
-              fontSize={'14px'}
-              opacity={loading === true ? 0.5 : 1}
-              onClick={() => modalData('manage')}>
-              Manage
-            </Button>
-          )}
+    <Flex w={'750px'} gridColumnGap={'15px'} justifyContent={'center'}>
+      <Button
+        {...(stakeDisabled === true
+          ? {...btnStyle.btnDisable({colorMode})}
+          : {...btnStyle.btnAble()})}
+        isDisabled={stakeDisabled}
+        w={'150px'}
+        h={'38px'}
+        fontSize={'14px'}
+        opacity={loading === true ? 0.5 : 1}
+        onClick={() => modalData('stake')}>
+        Stake
+      </Button>
+      <Button
+        {...(unstakeDisabled === true
+          ? {...btnStyle.btnDisable({colorMode})}
+          : {...btnStyle.btnAble()})}
+        isDisabled={unstakeDisabled}
+        w={'150px'}
+        h={'38px'}
+        fontSize={'14px'}
+        opacity={loading === true ? 0.5 : 1}
+        onClick={() => modalData('unstake')}>
+        Unstake
+      </Button>
+      <Button
+        {...(claimDisabled === true
+          ? {...btnStyle.btnDisable({colorMode})}
+          : {...btnStyle.btnAble()})}
+        isDisabled={claimDisabled}
+        w={'150px'}
+        h={'38px'}
+        fontSize={'14px'}
+        opacity={loading === true ? 0.5 : 1}
+        onClick={() => modalData('claim')}>
+        Claim
+      </Button>
+      {manageDisabled === true ? (
+        <Button
+          {...(data.saleClosed || endSaleBtnDisabled === true
+            ? {...btnStyle.btnDisable({colorMode})}
+            : {...btnStyle.btnAble()})}
+          isDisabled={endSaleBtnDisabled || data.saleClosed}
+          w={'150px'}
+          h={'38px'}
+          fontSize={'14px'}
+          opacity={loading === true ? 0.5 : 1}
+          onClick={() =>
+            data.miningEndTime !== undefined
+              ? closeSale({
+                  userAddress: account,
+                  vaultContractAddress: data.vault,
+                  library,
+                })
+              : null
+          }>
+          {status === 'start' ? 'Manage' : 'End Sale'}
+        </Button>
+      ) : (
+        <Button
+          {...(manageBtnDisabled === true
+            ? {...btnStyle.btnDisable({colorMode})}
+            : {...btnStyle.btnAble()})}
+          isDisabled={manageBtnDisabled}
+          w={'150px'}
+          h={'38px'}
+          fontSize={'14px'}
+          opacity={loading === true ? 0.5 : 1}
+          onClick={() => modalData('manage')}>
+          Manage
+        </Button>
+      )}
 
-          {loading === true ? (
-            <Flex
-              pos="absolute"
-              zIndex={100}
-              w="100%"
-              h="100%"
-              alignItems="cneter"
-              justifyContent="center">
-              <Center>
-                <LoadingComponent></LoadingComponent>
-              </Center>
-            </Flex>
-          ) : null}
-        </Grid>
-      </Box>
-    </Container>
+      {loading === true ? (
+        <Flex
+          pos="absolute"
+          zIndex={100}
+          w="100%"
+          h="100%"
+          alignItems="cneter"
+          justifyContent="center">
+          <Center>
+            <LoadingComponent></LoadingComponent>
+          </Center>
+        </Flex>
+      ) : null}
+    </Flex>
   );
 };

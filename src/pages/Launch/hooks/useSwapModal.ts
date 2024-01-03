@@ -81,7 +81,7 @@ export const useSwapModal = (amountIn: number, vaultAddress?: string) => {
         ).toString();
 
         // console.log('result',result);
-        
+
         return setTosAmountOut(result ?? '-');
       }
       return setTosAmountOut('-');

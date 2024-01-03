@@ -51,9 +51,16 @@ type GetDateProp = {
   currentBlock: number;
   contractAddress: string;
   type: GetDateTimeType;
+  title: string;
 };
 
-const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
+const GetDate = ({
+  time,
+  currentBlock,
+  contractAddress,
+  type,
+  title,
+}: GetDateProp) => {
   const {colorMode} = useColorMode();
   const [date, setDate] = useState('');
 
@@ -75,19 +82,29 @@ const GetDate = ({time, currentBlock, contractAddress, type}: GetDateProp) => {
   }, [time, currentBlock]);
 
   return (
-    <>
+    <Flex flexDir={'column'}>
+      <Text fontSize={15} color={'#808992'} mb={'10px'} fontWeight={'bold'}>
+        {title}
+      </Text>
       {date === '' ? (
         <LoadingDots />
       ) : (
-        <Text
-          fontSize={'20px'}
-          color={colorMode === 'light' ? 'black.300' : 'white.200'}
-          fontWeight={'bold'}
-          w="100%">
-          {date}
-        </Text>
+        <Flex flexDir={'column'}>
+          <Text
+            fontSize={'20px'}
+            color={colorMode === 'light' ? 'black.300' : 'white.200'}
+            fontWeight={'bold'}
+            w="100%"
+            mb={'5px'}>
+            {date}
+          </Text>
+          <Text fontSize={13} color={'#808992'}>
+            <span style={{marginRight: '5px'}}>{time}</span>
+            <span>{'Block'}</span>
+          </Text>
+        </Flex>
       )}
-    </>
+    </Flex>
   );
 };
 
@@ -232,23 +249,23 @@ export const Staking = () => {
       );
     }
 
-    if (title === 'My staked') {
+    if (title === 'My staked' || title === 'Earned TOS') {
       return (
         <Flex flexDir={'column'} alignItems={'space-between'}>
-          <Text fontSize={'15px'} color="gray.400">
+          <Text fontSize={'15px'} color="#2a72e5" fontWeight={'bold'}>
             {title}
           </Text>
           <Text
-            fontSize={'20px'}
+            fontSize={'28px'}
             color={colorMode === 'light' ? 'black.300' : 'white.200'}
             fontWeight={'bold'}
             h="30px">
             {balance === '-' ? <LoadingDots></LoadingDots> : balance}
             {balance !== '-' ? (
               title === 'My staked' ? (
-                <span> TON</span>
+                <span style={{fontSize: 13, marginLeft: '4px'}}> TON</span>
               ) : (
-                <span> TOS</span>
+                <span style={{fontSize: 13, marginLeft: '4px'}}> TOS</span>
               )
             ) : null}
           </Text>
@@ -317,56 +334,91 @@ export const Staking = () => {
     ({row}) => {
       const {account, contractAddress, fetchBlock, library, status} =
         row.original;
+
+      // return (
+      //   <Flex w="100%" m={0} border={'none'} pt={'45px'} px={'172px'}>
+      //     <Flex flexDir={'column'} gridRowGap={'3px'}>
+      //       <Text
+      //         fontSize={15}
+      //         color={'#2a72e5'}
+      //         fontWeight={'bold'}
+      //         lineHeight={'20px'}>
+      //         My Staked
+      //       </Text>
+      //       <Text>1,000</Text>
+      //     </Flex>
+      //   </Flex>
+      // );
       return (
         <Flex
           w="100%"
           m={0}
-          justifyContent={'space-between'}
-          alignItems="center"
-          p="70px"
-          border={'none'}>
-          <Flex flexDir={'column'} justifyContent={'space-between'} h={'100%'}>
-            <Flex flexDir={'column'} alignItems={'space-between'}>
-              <Text fontSize={'15px'} color="gray.400">
-                {data[row.id]?.status === 'sale'
-                  ? 'Sale Starting Day'
-                  : 'Mining Starting Day'}
-              </Text>
-              <Text w="210px">
-                <GetDate
-                  time={
-                    data[row.id]?.status === 'sale'
-                      ? data[row.id]?.saleStartTime
-                      : data[row.id]?.miningStartTime
-                  }
-                  currentBlock={fetchBlock}
-                  contractAddress={contractAddress}
-                  type={
-                    data[row.id]?.status === 'sale'
-                      ? 'sale-start'
-                      : 'mining-start'
-                  }></GetDate>
-              </Text>
-              <Text w="210px" color="gray.400" fontSize={'0.813em'}>
-                Block Num.{' '}
-                {data[row.id]?.status === 'sale'
-                  ? data[row.id]?.saleStartTime
-                  : data[row.id]?.miningStartTime}
-              </Text>
+          border={'none'}
+          pt={'45px'}
+          px={'172px'}
+          gridRowGap={'45px'}
+          flexDir={'column'}>
+          <Flex>
+            <Flex w={'308px'}>
+              <GetBalance
+                title={'My staked'}
+                contractAddress={contractAddress}></GetBalance>
             </Flex>
-            <GetTotalStaker
-              contractAddress={contractAddress}
-              totalStakers={data[row.id]?.totalStakers}></GetTotalStaker>
             <GetBalance
-              title={'My staked'}
-              contractAddress={contractAddress}></GetBalance>
+              title={'Earned TOS'}
+              contractAddress={contractAddress}
+              status={data[row.id]?.status}
+            />
+          </Flex>
+          <Flex>
+            <Flex w={'308px'}>
+              <GetDate
+                time={
+                  data[row.id]?.status === 'sale'
+                    ? data[row.id]?.saleStartTime
+                    : data[row.id]?.miningStartTime
+                }
+                currentBlock={fetchBlock}
+                contractAddress={contractAddress}
+                type={'mining-start'}
+                title={'Mining Starting Day'}></GetDate>
+            </Flex>
+            <GetDate
+              time={
+                data[row.id]?.status === 'sale'
+                  ? data[row.id]?.saleEndTime
+                  : data[row.id]?.miningEndTime
+              }
+              currentBlock={fetchBlock}
+              contractAddress={contractAddress}
+              type={data[row.id]?.status === 'sale' ? 'sale-end' : 'mining-end'}
+              title={'Mining Closing Day'}></GetDate>
+            <Flex flexDir={'column'} mt={'20px'} ml={'auto'}>
+              <Text fontSize={'15px'} color="gray.400" fontWeight={'bold'}>
+                Contract
+              </Text>
+              <Link
+                fontSize={'20px'}
+                fontWeight={'bold'}
+                // color={GetColor() === 'light' ? 'black.300' : 'white.200'}
+                isExternal={true}
+                outline={'none'}
+                _focus={{
+                  outline: 'none',
+                }}
+                href={`${appConfig.explorerLink}${
+                  data[row.id]?.contractAddress
+                }`}>
+                {shortenAddress(data[row.id]?.contractAddress)}
+              </Link>
+            </Flex>
           </Flex>
 
           <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
             <WalletInformation dispatch={dispatch} data={data[row.id]} />
           </Box>
 
-          <Flex flexDir={'column'} h={'100%'} justifyContent={'space-between'}>
+          {/* <Flex flexDir={'column'} h={'100%'} justifyContent={'space-between'}>
             <Flex flexDir={'column'} alignItems={'space-between'}>
               <Text fontSize={'15px'} color="gray.400">
                 {data[row.id]?.status === 'sale'
@@ -418,7 +470,7 @@ export const Staking = () => {
               contractAddress={contractAddress}
               status={data[row.id]?.status}
             />
-          </Flex>
+          </Flex> */}
         </Flex>
       );
     },
@@ -448,15 +500,15 @@ export const Staking = () => {
 
   return (
     <Fragment>
-      <Head title={'Staking'} />
+      <Head title={'TOS Mining'} />
       <Container maxW={'6xl'}>
         <Box pb={20}>
           <PageHeader
-            title={'Staking'}
+            title={'TOS Mining'}
             subtitle={
-              'Put your tokens into TONStarter and earn reward without losing principal'
+              'TOS Mining lets you stake TON & swap the TON seigniorage to TOS via Uniswap v3.'
             }
-            secondSubTitle={'TON base unit principal'}
+            secondSubTitle={'(Originally known as TON Staking)'}
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>

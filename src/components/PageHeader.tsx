@@ -12,7 +12,6 @@ import {
 import {useLocation} from 'react-router-dom';
 import iconUserGuide from 'assets/images/iconUserGuide.png';
 
-
 type HeadProps = {
   title?: string;
   subtitle?: string;
@@ -34,7 +33,6 @@ export const PageHeader: FC<HeadProps> = ({
   return (
     <Container pt="70px" maxW={'100%'}>
       <Flex flexDir="column" alignItems="center" justifyContent="center">
-
         <Heading
           fontSize={'38px'}
           fontWeight={'bold'}
@@ -69,21 +67,20 @@ export const PageHeader: FC<HeadProps> = ({
           fontFamily="Titillium Web, sans-serif">
           {secondSubTitle}
         </Text>
-     
-          <Flex mt={'9px'}>
-            <Image src={iconUserGuide} w="18px" h="18px" />
-            <Link
-              isExternal
-              ml="6px"
-              fontSize="13px"
-              fontFamily="Titillium Web, sans-serif"
-              color={colorMode === 'dark' ? 'gray.475' : 'gray.400'}
-              href="https://tokamaknetwork.gitbook.io/home/v/kor/02-service-guide/tonstarter-launch"
-              cursor="pointer">
-              User Guide
-            </Link>
-          </Flex>
-        
+
+        {/* <Flex mt={'9px'}>
+          <Image src={iconUserGuide} w="18px" h="18px" />
+          <Link
+            isExternal
+            ml="6px"
+            fontSize="13px"
+            fontFamily="Titillium Web, sans-serif"
+            color={colorMode === 'dark' ? 'gray.475' : 'gray.400'}
+            href="https://tokamaknetwork.gitbook.io/home/v/kor/02-service-guide/tonstarter-launch"
+            cursor="pointer">
+            User Guide
+          </Link>
+        </Flex> */}
       </Flex>
     </Container>
   );

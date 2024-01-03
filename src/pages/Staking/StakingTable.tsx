@@ -288,13 +288,14 @@ export const StakingTable: FC<StakingTableProps> = ({
   };
 
   const clickOpen = (contractAddress: string, index: number) => {
-    setIsOpen(contractAddress);
-    setTimeout(() => {
-      focusTarget?.current[index]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }, 100);
+    setIsOpen('0x9a8294566960ab244d78d266ffe0f284cdf728f1');
+    // setIsOpen(contractAddress);
+    // setTimeout(() => {
+    //   focusTarget?.current[index]?.scrollIntoView({
+    //     behavior: 'smooth',
+    //     block: 'start',
+    //   });
+    // }, 100);
   };
 
   const renderBtn = (contractAddress: string, index: number) => {
@@ -449,13 +450,11 @@ export const StakingTable: FC<StakingTableProps> = ({
                         fontSize={type === 'name' ? '15px' : '13px'}
                         fontWeight={type === 'name' ? 600 : 0}
                         {...cell.getCellProps()}>
-
                         {type === 'name' ? getCircle(status) : ''}
                         {type === 'name' ? (
                           <>
                             <Box ml={'10px'} mr={'12px'}>
                               <TokenImage imageLink={TON_SYMBOL}></TokenImage>
-                           
                             </Box>
                             <Text w={'176px'}>{name}</Text>
                             {/* <Button onClick={()=>openModal({type: 'manage', data: {...data}})}>manage</Button> */}
@@ -551,7 +550,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 isOpen === contractAddress ? (
                   <chakra.tr
                     boxShadow="0 1px 1px 0 rgba(96, 97, 112, 0.16)"
-                    h={'430px'}
+                    h={'375px'}
                     key={i}
                     m={0}
                     mb={'14px'}

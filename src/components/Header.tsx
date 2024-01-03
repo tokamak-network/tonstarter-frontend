@@ -394,7 +394,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
               : '#222222',
             width: '92px',
           }}>
-          TON Staking
+          TOS Mining
         </NavLink>
         <Menu>
           <MenuButton>
