@@ -45,7 +45,18 @@ export const SwapModal = () => {
   const [max, setMax] = useState<string>('0');
 
   const {
-    data: {contractAddress, swapBalance, originalSwapBalance, currentTosPrice},
+    data: {
+      contractAddress,
+      swapBalance,
+      originalSwapBalance,
+      currentTosPrice,
+      unstakeL2Disable,
+      withdrawDisable,
+      swapDisabled,
+      stakedL2,
+      stakedRatio,
+      canWithdralAmount,
+    },
   } = sub;
 
   const theme = useTheme();
@@ -58,9 +69,6 @@ export const SwapModal = () => {
   const maxInput = useSwapStake(Number(inputAmount.replaceAll(',', '')));
 
   const stableAmount = useStable();
-  // console.log('stableAmount', stableAmount);
-
-  // console.log('maxAmount', maxAmount);
 
   useEffect(() => {
     setMax(maxAmount);
@@ -82,8 +90,6 @@ export const SwapModal = () => {
 
   const priceImpact = useMemo(() => {
     const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
-    // console.log('numTosAmountOut', numTosAmountOut);
-
     const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
 
     const numInputAmount = Number(inputAmount.replaceAll(',', ''));
@@ -111,6 +117,341 @@ export const SwapModal = () => {
 
   const [isSwapTab, setIsSwapTab] = useState<boolean>(true);
 
+  const SwapTab = () => {
+    return (
+      <Flex flexDir={'column'}>
+        <Stack
+          pt="15px"
+          as={Flex}
+          justifyContent={'center'}
+          alignItems={'center'}
+          w={'full'}>
+          <Flex
+            w={'300px'}
+            border={
+              colorMode === 'light' ? '1px solid #d7d9df' : '1px solid #535353'
+            }
+            flexDir={'column'}
+            borderRadius={10}
+            pt="12px"
+            pl={'25px'}
+            pr={'14px'}>
+            <Flex
+              justifyContent={'space-between'}
+              alignItems={'center'}
+              pt={'16px'}>
+              <Avatar
+                src={TON_SYMBOL}
+                backgroundColor={'transparent'}
+                bg="transparent"
+                color="#c7d1d8"
+                name={'token_image'}
+                border={
+                  colorMode === 'light'
+                    ? '1px solid #e7edf3'
+                    : '1px solid #3c3c3c'
+                }
+                borderRadius={25}
+                h="26px"
+                w="26px"
+                mr="6px"
+              />
+
+              <Text
+                fontSize={16}
+                fontWeight={600}
+                color={colorMode === 'dark' ? '#ffffff' : '#3d495d'}
+                textAlign={'center'}
+                lineHeight={'24px'}>
+                TON
+              </Text>
+              <NumberInput
+                h="26px"
+                ml="10px"
+                borderRadius={'4px'}
+                border={
+                  Number(inputAmount) > Number(maxAmount) ? '1px solid red' : ''
+                }
+                value={Number(inputAmount) <= 0 ? 0 : inputAmount}
+                onChange={(value) => {
+                  if ((value === '0' || value === '00') && value.length <= 2) {
+                    return null;
+                  }
+                  if (value === '') {
+                    return setInputAmount('0');
+                  }
+                  return setInputAmount(value);
+                }}>
+                <NumberInputField
+                  placeholder="0.00"
+                  h="24px"
+                  textAlign={'right'}
+                  // errorBorderColor="red.300"
+                  verticalAlign={'sub'}
+                  fontSize={20}
+                  fontWeight={'bold'}
+                  border="none"
+                  _focus={{
+                    borderWidth: 0,
+                  }}
+                  pr="0px"
+                  _active={{
+                    borderWidth: 0,
+                  }}></NumberInputField>
+              </NumberInput>
+            </Flex>
+            <Flex justifyContent={'flex-end'} pb={'14px'} pt={'13px'}>
+              <Button
+                w={'50px'}
+                h={'20px'}
+                fontSize={12}
+                fontWeight={600}
+                onClick={() => setInputAmount(stableAmount.replace(/,/g, ''))}
+                type={'button'}
+                variant="outline"
+                mr="6px"
+                borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
+                _focus={{
+                  outline: 'none',
+                }}>
+                Stable
+              </Button>
+              <Button
+                w={'50px'}
+                h={'20px'}
+                fontSize={12}
+                fontWeight={600}
+                onClick={() => setInputAmount(max.replace(/,/g, ''))}
+                type={'button'}
+                variant="outline"
+                borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
+                _focus={{
+                  outline: 'none',
+                }}>
+                Max
+              </Button>
+            </Flex>
+            <Box
+              w={'100%'}
+              h={'1px'}
+              borderWidth={1}
+              borderColor={'#f4f6f8'}
+              mt={'12px'}
+              mb={'9px'}></Box>
+            <Flex justifyContent={'space-between'} mb={'9px'}>
+              <Text fontSize={12} color={'#808992'} fontWeight={600}>
+                Available Seignorage
+              </Text>
+              <Flex>
+                <Text fontSize={12} color={'#808992'} fontWeight={600}>
+                  {Number(swapBalance).toLocaleString() || '-'} TON
+                </Text>
+              </Flex>
+            </Flex>
+          </Flex>
+        </Stack>
+        <Flex
+          flexDir={'column'}
+          mt={'15px'}
+          py={'9px'}
+          alignItems={'center'}
+          justifyContent={'flex-start'}
+          w={'100%'}>
+          <Text fontSize={12} color={'#808992'} fontWeight={600} mb={'9px'}>
+            Summary
+          </Text>
+          <Flex
+            justifyContent={'space-between'}
+            pl={'25px'}
+            pr={'39px'}
+            w={'100%'}>
+            <Text fontSize={12} color={'#808992'} fontWeight={600}>
+              Your share from swap
+            </Text>
+            <Flex flexDir={'column'} alignItems={'end'}>
+              <Text fontSize={13} color={'#3d495d'} fontWeight={600} h={'18px'}>
+                {' '}
+                {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)}
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: '#3d495d',
+                    fontWeight: 'bold',
+                  }}>
+                  {' '}
+                  {' TOS'}
+                </span>
+              </Text>
+              <Text fontSize={11} color={'#808992'} fontWeight={600} h={'15px'}>
+                ({stakedRatio} % of{' '}
+                {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)}
+                TOS)
+              </Text>
+            </Flex>
+          </Flex>
+          <Flex
+            mt={'15px'}
+            px={'25px'}
+            fontSize={12}
+            color={'#808992'}
+            h={'80px'}
+            lineHeight={1.33}>
+            <Text>
+              WTON-TOS pool swaps seigniorage to TOS. Sandwich attck check is
+              done before swapping to verify that the price hasn’t changed
+              significantly (+/- 4.8%) compared to the 2-minute moving average.
+              The maximum slippage allowed is 5.5%.
+            </Text>
+          </Flex>
+        </Flex>
+        <Box
+          w={'320px'}
+          h={'1px'}
+          borderWidth={1}
+          borderColor={'#f4f6f8'}
+          mt={'35px'}
+          mb={'25px'}
+          px={'15px'}
+          alignSelf={'center'}></Box>
+        <Button
+          w={'150px'}
+          bg={swapDisabled ? '#e9edf1' : 'blue.500'}
+          color={swapDisabled ? '#86929d' : 'white.100'}
+          alignSelf={'center'}
+          fontSize="14px"
+          _hover={{...theme.btnHover}}
+          disabled={
+            Number(maxAmount) === 0 ||
+            Number(inputAmount) === 0 ||
+            Number(inputAmount) > Number(maxAmount) ||
+            swapDisabled
+          }
+          onClick={() => {
+            const isBalance = checkBalance(
+              Number(inputAmount),
+              Number(swapBalance),
+            );
+            if (isBalance) {
+              const amountRay = convertToRay(inputAmount.toString());
+              swapWTONtoTOS({
+                userAddress: account,
+                amount:
+                  isBalance !== 'balanceAll'
+                    ? amountRay
+                    : originalSwapBalance.toString(),
+                contractAddress,
+                library,
+              });
+              //   .then(() => {
+              //   handleCloseModal();
+              // });
+            }
+          }}>
+          Swap
+        </Button>
+      </Flex>
+    );
+  };
+  const SeignorageTab = () => {
+    return (
+      <Flex mt={'30px'} flexDir={'column'}>
+        <Text
+          fontSize={12}
+          color={'#353c48'}
+          mb={'24px'}
+          px={'40px'}
+          textAlign={'center'}>
+          Seignorage earned by TOS mining can be swapped TOS after it is
+          unstaked and withdrawn from level layer2.
+        </Text>
+        <Flex flexDir={'column'} px={'20px'} alignItems={'center'}>
+          <Text fontSize={13} fontWeight={600} color={'#304156'} mb={'12px'}>
+            TOS Mining Seignorage Status
+          </Text>
+          <Flex
+            w={'300px'}
+            h={'115px'}
+            borderWidth={1}
+            borderColor={'#d7d9df'}
+            borderRadius={'10px'}
+            justifyContent={'space-between'}>
+            <Flex
+              flexDir={'column'}
+              alignItems={'center'}
+              w={'50%'}
+              h={'100%'}
+              justifyContent={'center'}>
+              <Text fontSize={12} color={'#808992'} h={'16px'} mb={'9px'}>
+                Staked
+              </Text>
+              <Flex
+                fontSize={12}
+                fontWeight={'bold'}
+                color={'#3d495d'}
+                mb={'18px'}
+                alignItems={'center'}>
+                <Text mr={'2px'}>{commafy(stakedL2)}</Text>
+                <Text fontSize={10} mt={'1px'}>
+                  TON
+                </Text>
+              </Flex>
+              <Button
+                w={'70px'}
+                h={'20px'}
+                fontSize={12}
+                bgColor={unstakeL2Disable ? '#e9edf1' : '#257eee'}
+                color={unstakeL2Disable ? '#86929d' : '#fff'}
+                _hover={{}}
+                isDisabled={unstakeL2Disable}>
+                Unstake
+              </Button>
+            </Flex>
+            <Box
+              h={'30px'}
+              borderWidth={1}
+              borderColor={'#f4f6f8'}
+              mt={'24px'}></Box>
+            <Flex
+              flexDir={'column'}
+              alignItems={'center'}
+              w={'50%'}
+              h={'100%'}
+              justifyContent={'center'}>
+              <Text fontSize={12} color={'#808992'} h={'16px'} mb={'9px'}>
+                Withdrawable
+              </Text>
+              <Flex
+                fontSize={12}
+                fontWeight={'bold'}
+                color={'#3d495d'}
+                mb={'18px'}
+                alignItems={'center'}>
+                <Text mr={'2px'}>
+                  {canWithdralAmount === undefined
+                    ? '0.00'
+                    : commafy(canWithdralAmount) ?? '0.00'}
+                </Text>
+                <Text fontSize={10} mt={'1px'}>
+                  TON
+                </Text>
+              </Flex>
+              <Button
+                w={'70px'}
+                h={'20px'}
+                fontSize={12}
+                bgColor={withdrawDisable ? '#e9edf1' : '#257eee'}
+                color={withdrawDisable ? '#86929d' : '#fff'}
+                _hover={{}}
+                isDisabled={withdrawDisable}>
+                Withdraw
+              </Button>
+            </Flex>
+          </Flex>
+        </Flex>
+      </Flex>
+    );
+  };
+
   if (true) {
     return (
       <Modal
@@ -125,8 +466,32 @@ export const SwapModal = () => {
           pt="20px"
           pb="25px">
           <CloseButton closeFunc={handleCloseModal}></CloseButton>
-          <ModalBody p={0}>
+          <ModalBody p={0} minH={'553px'}>
             <Flex flexDir={'column'} alignItems={'center'}>
+              <Box
+                textAlign="center"
+                pb={'1.250em'}
+                w={'100%'}
+                mb={'15px'}
+                borderBottom={
+                  colorMode === 'light'
+                    ? '1px solid #f4f6f8'
+                    : '1px solid #373737'
+                }>
+                <Heading
+                  fontSize={'1.250em'}
+                  fontWeight={'bold'}
+                  fontFamily={theme.fonts.titil}
+                  color={colorMode === 'light' ? 'gray.250' : 'white.100'}
+                  textAlign={'center'}
+                  mb={'8px'}>
+                  Manage
+                </Heading>
+                {/* <Text color="gray.175" fontSize={'0.750em'}>
+                  You can manage {name} Product
+                </Text> */}
+              </Box>
+
               <Flex
                 borderRadius={'5px'}
                 w={'272px'}
@@ -140,259 +505,24 @@ export const SwapModal = () => {
                   w={'50%'}
                   borderWidth={1}
                   borderColor={isSwapTab ? '#2a72e5' : '#d7d9df'}
-                  borderLeftRadius={'5px'}>
+                  borderLeftRadius={'5px'}
+                  borderRightWidth={isSwapTab ? 1 : 0}
+                  cursor={'pointer'}
+                  onClick={() => setIsSwapTab(true)}>
                   Swap
                 </Box>
                 <Box
                   w={'50%'}
                   borderWidth={1}
                   borderColor={!isSwapTab ? '#2a72e5' : '#d7d9df'}
-                  borderRightRadius={'5px'}>
-                  Swap
+                  borderRightRadius={'5px'}
+                  borderLeftWidth={!isSwapTab ? 1 : 0}
+                  cursor={'pointer'}
+                  onClick={() => setIsSwapTab(false)}>
+                  Seignorage
                 </Box>
               </Flex>
-              <Stack
-                pt="15px"
-                as={Flex}
-                justifyContent={'center'}
-                alignItems={'center'}
-                w={'full'}>
-                <Flex
-                  w={'300px'}
-                  border={
-                    colorMode === 'light'
-                      ? '1px solid #d7d9df'
-                      : '1px solid #535353'
-                  }
-                  flexDir={'column'}
-                  borderRadius={10}
-                  pt="12px"
-                  pl={'25px'}
-                  pr={'14px'}>
-                  <Flex
-                    justifyContent={'space-between'}
-                    alignItems={'center'}
-                    pt={'16px'}>
-                    <Avatar
-                      src={TON_SYMBOL}
-                      backgroundColor={'transparent'}
-                      bg="transparent"
-                      color="#c7d1d8"
-                      name={'token_image'}
-                      border={
-                        colorMode === 'light'
-                          ? '1px solid #e7edf3'
-                          : '1px solid #3c3c3c'
-                      }
-                      borderRadius={25}
-                      h="26px"
-                      w="26px"
-                      mr="6px"
-                    />
-
-                    <Text
-                      fontSize={16}
-                      fontWeight={600}
-                      color={colorMode === 'dark' ? '#ffffff' : '#3d495d'}
-                      textAlign={'center'}
-                      lineHeight={'24px'}>
-                      TON
-                    </Text>
-                    <NumberInput
-                      h="26px"
-                      ml="10px"
-                      borderRadius={'4px'}
-                      border={
-                        Number(inputAmount) > Number(maxAmount)
-                          ? '1px solid red'
-                          : ''
-                      }
-                      value={Number(inputAmount) <= 0 ? 0 : inputAmount}
-                      onChange={(value) => {
-                        if (
-                          (value === '0' || value === '00') &&
-                          value.length <= 2
-                        ) {
-                          return null;
-                        }
-                        if (value === '') {
-                          return setInputAmount('0');
-                        }
-                        return setInputAmount(value);
-                      }}>
-                      <NumberInputField
-                        placeholder="0.00"
-                        h="24px"
-                        textAlign={'right'}
-                        // errorBorderColor="red.300"
-                        verticalAlign={'sub'}
-                        fontSize={20}
-                        fontWeight={'bold'}
-                        border="none"
-                        _focus={{
-                          borderWidth: 0,
-                        }}
-                        pr="0px"
-                        _active={{
-                          borderWidth: 0,
-                        }}></NumberInputField>
-                    </NumberInput>
-                  </Flex>
-                  <Flex justifyContent={'flex-end'} pb={'14px'} pt={'13px'}>
-                    <Button
-                      w={'50px'}
-                      h={'20px'}
-                      fontSize={12}
-                      fontWeight={600}
-                      onClick={() => setInputAmount(max.replace(/,/g, ''))}
-                      type={'button'}
-                      variant="outline"
-                      mr="6px"
-                      borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
-                      _focus={{
-                        outline: 'none',
-                      }}>
-                      Max
-                    </Button>
-                    <Button
-                      w={'50px'}
-                      h={'20px'}
-                      fontSize={12}
-                      fontWeight={600}
-                      onClick={() =>
-                        setInputAmount(stableAmount.replace(/,/g, ''))
-                      }
-                      type={'button'}
-                      variant="outline"
-                      borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
-                      _focus={{
-                        outline: 'none',
-                      }}>
-                      Stable
-                    </Button>
-                  </Flex>
-                  <Box
-                    w={'100%'}
-                    h={'1px'}
-                    borderWidth={1}
-                    borderColor={'#f4f6f8'}
-                    mt={'12px'}
-                    mb={'9px'}></Box>
-                  <Flex justifyContent={'space-between'} mb={'9px'}>
-                    <Text fontSize={12} color={'#808992'} fontWeight={600}>
-                      Available Seignorage
-                    </Text>
-                    <Flex>
-                      <Text fontSize={12} color={'#808992'} fontWeight={600}>
-                        {Number(swapBalance).toLocaleString() || '-'} TON
-                      </Text>
-                    </Flex>
-                  </Flex>
-                </Flex>
-              </Stack>
-              <Flex
-                flexDir={'column'}
-                mt={'15px'}
-                py={'9px'}
-                alignItems={'center'}
-                justyContent={'flex-start'}
-                w={'100%'}>
-                <Text
-                  fontSize={12}
-                  color={'#808992'}
-                  fontWeight={600}
-                  mb={'9px'}>
-                  Summary
-                </Text>
-                <Flex justyContent={'space-between'} pl={'25px'} pr={'39px'}>
-                  <Text fontSize={12} color={'#808992'} fontWeight={600}>
-                    Your share from swap
-                  </Text>
-                  <Flex flexDir={'column'} alignItems={'end'}>
-                    <Text
-                      fontSize={13}
-                      color={'#3d495d'}
-                      fontWeight={600}
-                      h={'18px'}>
-                      {' '}
-                      {Number(inputAmount) <= 0
-                        ? '0.00'
-                        : commafy(tosAmountOut)}
-                      <span
-                        style={{
-                          fontSize: 11,
-                          color: '#3d495d',
-                          fontWeight: 'bold',
-                        }}>
-                        {' '}
-                        {' TOS'}
-                      </span>
-                    </Text>
-                    <Text
-                      fontSize={11}
-                      color={'#808992'}
-                      fontWeight={600}
-                      h={'15px'}>
-                      (0.7% of 0 TOS)
-                    </Text>
-                  </Flex>
-                </Flex>
-                <Flex
-                  mt={'15px'}
-                  px={'25px'}
-                  fontSize={12}
-                  color={'#808992'}
-                  h={'80px'}
-                  lineHeight={1.33}>
-                  <Text>
-                    WTON-TOS pool swaps seigniorage to TOS. Sandwich attck check
-                    is done before swapping to verify that the price hasn’t
-                    changed significantly (+/- 4.8%) compared to the 2-minute
-                    moving average. The maximum slippage allowed is 5.5%.
-                  </Text>
-                </Flex>
-              </Flex>
-              <Box
-                w={'320px'}
-                h={'1px'}
-                borderWidth={1}
-                borderColor={'#f4f6f8'}
-                mt={'35px'}
-                mb={'25px'}
-                px={'15px'}></Box>
-              <Button
-                w={'150px'}
-                bg={'blue.500'}
-                color="white.100"
-                fontSize="14px"
-                _hover={{...theme.btnHover}}
-                disabled={
-                  Number(maxAmount) === 0 ||
-                  Number(inputAmount) === 0 ||
-                  Number(inputAmount) > Number(maxAmount)
-                }
-                onClick={() => {
-                  const isBalance = checkBalance(
-                    Number(inputAmount),
-                    Number(swapBalance),
-                  );
-                  if (isBalance) {
-                    const amountRay = convertToRay(inputAmount.toString());
-                    swapWTONtoTOS({
-                      userAddress: account,
-                      amount:
-                        isBalance !== 'balanceAll'
-                          ? amountRay
-                          : originalSwapBalance.toString(),
-                      contractAddress,
-                      library,
-                    }).then(() => {
-                      handleCloseModal();
-                    });
-                  }
-                }}>
-                Swap
-              </Button>
+              {isSwapTab ? <SwapTab /> : <SeignorageTab />}
             </Flex>
           </ModalBody>
         </ModalContent>

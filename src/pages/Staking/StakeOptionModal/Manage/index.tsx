@@ -33,6 +33,7 @@ import * as StakeTON from 'services/abis/StakeTON.json';
 import {fetchSwapPayload} from '../utils/fetchSwapPayload';
 import {fetchSwappedTosBalance} from '../utils/fetchSwappedTosBalance';
 import {getTokamakContract} from 'utils/contract';
+import {SwapModal} from '../swap';
 
 const tooltipMsg = () => {
   return (
@@ -68,11 +69,15 @@ const TooltipPendingMsg = (
 const Notice = ({
   totalStaked,
   mystaked,
+  stakedRatio,
   setIsConfirmed,
+  func,
 }: {
   totalStaked: string;
   mystaked: string;
+  stakedRatio: string;
   setIsConfirmed: Dispatch<SetStateAction<boolean>>;
+  func: any;
 }) => {
   const {colorMode} = useColorMode();
   const theme = useTheme();
@@ -127,7 +132,7 @@ const Notice = ({
           </Box>
           <Box d={'flex'} justifyContent={'space-between'}>
             <Text fontSize={13} color={'#808992'}>
-              {`My Staked (%)`}
+              {`My Staked (${stakedRatio}%)`}
             </Text>
             <Text fontSize={15} fontWeight={600}>
               {mystaked} <span style={{fontSize: 11}}>TON</span>
@@ -175,7 +180,10 @@ const Notice = ({
             fontWeight={600}
             w={'150px'}
             h={'38px'}
-            onClick={() => setIsConfirmed(true)}
+            onClick={() => {
+              setIsConfirmed(true);
+              func();
+            }}
             _hover={{}}>
             Confirm
           </Button>
@@ -485,6 +493,8 @@ export const ManageModal = () => {
     handleCloseModal();
   };
 
+  const stakedRatio = (Number(mystaked) / Number(totalStaked)).toFixed(2);
+
   return (
     <Modal
       isOpen={data.modal === 'manage' ? true : false}
@@ -502,7 +512,26 @@ export const ManageModal = () => {
           <Notice
             totalStaked={totalStaked}
             mystaked={mystaked}
+            stakedRatio={stakedRatio}
             setIsConfirmed={setIsConfirmed}
+            func={() => {
+              handleCloseManageModal();
+              handleOpenConfirmModal({
+                type: 'manage_swap',
+                data: {
+                  contractAddress,
+                  swapBalance,
+                  originalSwapBalance,
+                  currentTosPrice,
+                  unstakeL2Disable,
+                  withdrawDisable,
+                  swapDisabled,
+                  stakedL2,
+                  stakedRatio,
+                  canWithdralAmount,
+                },
+              });
+            }}
           />
         ) : (
           <ModalBody p={0}>
