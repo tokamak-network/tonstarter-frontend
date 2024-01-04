@@ -78,8 +78,6 @@ const Notice = ({
   const theme = useTheme();
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
-  console.log('isChecked', isChecked);
-
   return (
     <ModalBody p={0}>
       <Box
