@@ -56,8 +56,13 @@ export const SwapModal = () => {
       stakedL2,
       stakedRatio,
       canWithdralAmount,
+      name,
+      canUnstakedL2,
+      unstakeAll,
     },
   } = sub;
+
+  const {handleOpenConfirmModal} = useModal();
 
   const theme = useTheme();
   const {colorMode} = useColorMode();
@@ -402,7 +407,18 @@ export const SwapModal = () => {
                 bgColor={unstakeL2Disable ? '#e9edf1' : '#257eee'}
                 color={unstakeL2Disable ? '#86929d' : '#fff'}
                 _hover={{}}
-                isDisabled={unstakeL2Disable}>
+                isDisabled={unstakeL2Disable}
+                onClick={() =>
+                  handleOpenConfirmModal({
+                    type: 'manage_unstakeL2',
+                    data: {
+                      canUnstakedL2,
+                      contractAddress,
+                      unstakeAll,
+                      name,
+                    },
+                  })
+                }>
                 Unstake
               </Button>
             </Flex>
@@ -442,7 +458,16 @@ export const SwapModal = () => {
                 bgColor={withdrawDisable ? '#e9edf1' : '#257eee'}
                 color={withdrawDisable ? '#86929d' : '#fff'}
                 _hover={{}}
-                isDisabled={withdrawDisable}>
+                isDisabled={withdrawDisable}
+                onClick={() =>
+                  handleOpenConfirmModal({
+                    type: 'manage_withdraw',
+                    data: {
+                      contractAddress,
+                      pendingL2Balance: canWithdralAmount,
+                    },
+                  })
+                }>
                 Withdraw
               </Button>
             </Flex>

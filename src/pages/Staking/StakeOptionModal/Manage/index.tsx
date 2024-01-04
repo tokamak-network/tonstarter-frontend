@@ -529,6 +529,9 @@ export const ManageModal = () => {
                   stakedL2,
                   stakedRatio,
                   canWithdralAmount,
+                  unstakeAll,
+                  canUnstakedL2,
+                  ...data.data,
                 },
               });
             }}
