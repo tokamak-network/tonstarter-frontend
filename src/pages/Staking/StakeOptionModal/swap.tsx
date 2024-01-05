@@ -37,6 +37,8 @@ import {useSwapModal} from '@Launch/hooks/useSwapModal';
 // import {useSwapMax} from '@Launch/hooks/useSwapMax';
 import {useSwapStake} from '../hooks/useSwapStake';
 import {useStable} from '../hooks/useStable';
+import SettingIcon from 'assets/svgs/setting_icon_normal.svg';
+import SettingHoverIcon from 'assets/svgs/setting_icon_hover.svg';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -121,6 +123,7 @@ export const SwapModal = () => {
   }, [inputAmount, setInputAmount]);
 
   const [isSwapTab, setIsSwapTab] = useState<boolean>(true);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const SwapTab = () => {
     return (
@@ -247,10 +250,22 @@ export const SwapModal = () => {
               <Text fontSize={12} color={'#808992'} fontWeight={600}>
                 Available Seignorage
               </Text>
-              <Flex>
-                <Text fontSize={12} color={'#808992'} fontWeight={600}>
+              <Flex alignItems={'center'}>
+                <Text
+                  fontSize={12}
+                  color={'#808992'}
+                  fontWeight={600}
+                  mr={'3px'}>
                   {Number(swapBalance).toLocaleString() || '-'} TON
                 </Text>
+                <Image
+                  src={isHovered ? SettingHoverIcon : SettingIcon}
+                  alt={'SettingIcon'}
+                  cursor={'pointer'}
+                  onClick={() => setIsSwapTab(false)}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                />
               </Flex>
             </Flex>
           </Flex>
@@ -276,7 +291,12 @@ export const SwapModal = () => {
             <Flex flexDir={'column'} alignItems={'end'}>
               <Text fontSize={13} color={'#3d495d'} fontWeight={600} h={'18px'}>
                 {' '}
-                {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)}
+                {Number(tosAmountOut) <= 0
+                  ? '0.00'
+                  : (
+                      (Number(tosAmountOut) / 100) *
+                      Number(stakedRatio)
+                    ).toFixed(2)}
                 <span
                   style={{
                     fontSize: 11,
@@ -302,10 +322,13 @@ export const SwapModal = () => {
             h={'80px'}
             lineHeight={1.33}>
             <Text>
-              WTON-TOS pool swaps seigniorage to TOS. Sandwich attck check is
-              done before swapping to verify that the price hasn’t changed
-              significantly (+/- 4.8%) compared to the 2-minute moving average.
-              The maximum slippage allowed is 5.5%.
+              <span style={{fontWeight: 'bold', color: '#353c48'}}>
+                WTON-TOS
+              </span>{' '}
+              pool swaps seigniorage to TOS. Sandwich attck check is done before
+              swapping to verify that the price hasn’t changed significantly
+              (+/- 4.8%) compared to the 2-minute moving average. The maximum
+              slippage allowed is 5.5%.
             </Text>
           </Flex>
         </Flex>

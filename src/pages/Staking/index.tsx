@@ -344,7 +344,7 @@ export const Staking = () => {
           px={'172px'}
           gridRowGap={'45px'}
           flexDir={'column'}>
-          <Flex>
+          {/* <Flex>
             <Flex w={'308px'}>
               <GetBalance
                 title={'My staked'}
@@ -398,7 +398,7 @@ export const Staking = () => {
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Flex>
-          </Flex>
+          </Flex> */}
 
           <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
             <WalletInformation dispatch={dispatch} data={data[row.id]} />
