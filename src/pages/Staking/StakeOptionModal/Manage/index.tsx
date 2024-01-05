@@ -339,7 +339,7 @@ export const ManageModal = () => {
           stakeContractBalanceWton,
           originalBalance,
         } = result;
-        console.log('result**', result);
+
         //@ts-ignore
         const res_CanWithdralAmount = await fetchWithdrawPayload(
           library,
