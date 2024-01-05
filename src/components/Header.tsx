@@ -380,7 +380,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           </MenuList>
         </Menu>
         <NavLink
-          to="/staking"
+          to="/mining"
           className={match?.isExact ? 'link-match' : 'link'}
           style={{
             zIndex: 100,
