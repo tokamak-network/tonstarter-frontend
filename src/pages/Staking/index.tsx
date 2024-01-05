@@ -252,7 +252,7 @@ export const Staking = () => {
       );
     }
 
-    if (title === 'My staked' || title === 'Earned TOS') {
+    if (title === 'My Staked' || title === 'Earned TOS') {
       return (
         <Flex flexDir={'column'} alignItems={'space-between'}>
           <Flex>
@@ -260,7 +260,7 @@ export const Staking = () => {
               w={'20px'}
               h={'20px'}
               mr={'6px'}
-              src={title === 'My staked' ? TOKAMAK_SYMBOL : TOS_SYMBOL}
+              src={title === 'My Staked' ? TOKAMAK_SYMBOL : TOS_SYMBOL}
               alt={'TOKAMAK_SYMBOL'}
             />
             <Text fontSize={'15px'} color="#2a72e5" fontWeight={'bold'}>
