@@ -42,7 +42,7 @@ import SettingIcon from 'assets/svgs/setting_icon_normal.svg';
 import SettingHoverIcon from 'assets/svgs/setting_icon_hover.svg';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
-const SwapTab = () => {
+const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
   const {sub} = useAppSelector(selectModalType);
   const {account, library} = useActiveWeb3React();
   const [inputAmount, setInputAmount] = useState<string>('0');
@@ -125,7 +125,6 @@ const SwapTab = () => {
     }
   }, [inputAmount, setInputAmount]);
 
-  const [isSwapTab, setIsSwapTab] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
   return (
@@ -813,7 +812,11 @@ export const SwapModal = () => {
                   Seignorage
                 </Box>
               </Flex>
-              {isSwapTab ? <SwapTab /> : <SeignorageTab />}
+              {isSwapTab ? (
+                <SwapTab setIsSwapTab={setIsSwapTab} />
+              ) : (
+                <SeignorageTab />
+              )}
             </Flex>
           </ModalBody>
         </ModalContent>
