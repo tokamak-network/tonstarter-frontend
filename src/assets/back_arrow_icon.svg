@@ -1,0 +1,21 @@
+<svg id="back_arrow_icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke: #c7d1d8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <rect id="Base" class="cls-1" width="22" height="22"/>
+  <g id="icon" transform="translate(3 5)">
+    <line id="선_5" data-name="선 5" class="cls-2" x1="15.125" transform="translate(0 6.188)"/>
+    <path id="패스_238" data-name="패스 238" class="cls-2" d="M104.063,87.562,97.875,93.75l6.188,6.188" transform="translate(-97.875 -87.562)"/>
+  </g>
+</svg>

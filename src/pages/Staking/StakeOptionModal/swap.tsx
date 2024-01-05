@@ -41,6 +41,7 @@ import {useStable} from '../hooks/useStable';
 import SettingIcon from 'assets/svgs/setting_icon_normal.svg';
 import SettingHoverIcon from 'assets/svgs/setting_icon_hover.svg';
 import tooltipIcon from 'assets/svgs/input_question_icon.svg';
+import BackButtonIcon from 'assets/back_arrow_icon.svg';
 
 const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
   const {sub} = useAppSelector(selectModalType);
@@ -135,10 +136,18 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
         justifyContent={'center'}
         alignItems={'center'}
         w={'full'}>
+        <Text
+          mt={'15px'}
+          fontSize={13}
+          color={colorMode === 'dark' ? 'white.200' : '#353c48'}
+          fontWeight={700}
+          h={'18px'}>
+          TOS Mining Seignorage Swap
+        </Text>
         <Flex
           w={'300px'}
           border={
-            colorMode === 'light' ? '1px solid #535353' : '1px solid #535353'
+            colorMode === 'light' ? '1px solid #D7D9DF' : '1px solid #535353'
           }
           flexDir={'column'}
           borderRadius={10}
@@ -211,7 +220,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
           </Flex>
           <Flex justifyContent={'flex-end'} pb={'14px'} pt={'13px'}>
             <Button
-              w={'50px'}
+              w={'60px'}
               h={'20px'}
               fontSize={12}
               fontWeight={600}
@@ -219,25 +228,25 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
               type={'button'}
               variant="outline"
               mr="6px"
-              borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
+              borderColor={colorMode === 'dark' ? '#535353' : '#D7D9DF'}
               _focus={{
                 outline: 'none',
               }}>
-              Stable
+              STABLE
             </Button>
             <Button
-              w={'50px'}
+              w={'60px'}
               h={'20px'}
               fontSize={12}
               fontWeight={600}
               onClick={() => setInputAmount(max.replace(/,/g, ''))}
               type={'button'}
               variant="outline"
-              borderColor={colorMode === 'dark' ? '#535353' : '#9d9ea5'}
+              borderColor={colorMode === 'dark' ? '#535353' : '#D7D9DF'}
               _focus={{
                 outline: 'none',
               }}>
-              Max
+              MAX
             </Button>
           </Flex>
           <Box
@@ -277,7 +286,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
       <Flex
         flexDir={'column'}
         mt={'15px'}
-        py={'9px'}
+        pt={'9px'}
         alignItems={'center'}
         justifyContent={'flex-start'}
         w={'100%'}>
@@ -361,7 +370,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
           </Flex>
         </Flex>
         <Flex
-          mt={'15px'}
+          mt={'21px'}
           px={'25px'}
           fontSize={12}
           color={colorMode === 'dark' ? 'gray.475' : '#808992'}
@@ -468,7 +477,7 @@ export const SwapModal = () => {
     },
   } = sub;
 
-  const {handleOpenConfirmModal} = useModal();
+  const {handleOpenConfirmModal, openAnyModal} = useModal();
 
   const theme = useTheme();
   const {colorMode} = useColorMode();
@@ -741,28 +750,41 @@ export const SwapModal = () => {
           fontFamily={theme.fonts.roboto}
           bg={colorMode === 'light' ? 'white.100' : 'black.200'}
           w="350px"
-          pt="20px"
           pb="25px">
           <CloseButton closeFunc={handleCloseModal}></CloseButton>
-          <ModalBody p={0} minH={'553px'}>
+          <ModalBody p={0} minH={'603px'}>
             <Flex flexDir={'column'} alignItems={'center'}>
               <Box
                 textAlign="center"
-                pb={'1.250em'}
                 w={'100%'}
+                pt={'20px'}
+                pb={'15px'}
                 mb={'15px'}
                 borderBottom={
                   colorMode === 'light'
                     ? '1px solid #f4f6f8'
                     : '1px solid #373737'
-                }>
+                }
+                pos={'relative'}
+                cursor={'pointer'}>
+                <Image
+                  src={BackButtonIcon}
+                  alt={'BackButtonIcon'}
+                  pos="absolute"
+                  pt={'3px'}
+                  pl={'20px'}
+                  onClick={() => {
+                    handleCloseModal();
+                    openAnyModal('manage', sub.data);
+                  }}
+                />
                 <Heading
                   fontSize={'1.250em'}
                   fontWeight={'bold'}
                   fontFamily={theme.fonts.titil}
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
-                  textAlign={'center'}
-                  mb={'8px'}>
+                  h={'31px'}
+                  textAlign={'center'}>
                   Manage
                 </Heading>
                 {/* <Text color="gray.175" fontSize={'0.750em'}>
@@ -789,6 +811,7 @@ export const SwapModal = () => {
                       ? 'gray.75'
                       : '#d7d9df'
                   }
+                  color={isSwapTab ? '#2A72E5' : ''}
                   borderLeftRadius={'5px'}
                   borderRightWidth={isSwapTab ? 1 : 0}
                   cursor={'pointer'}
@@ -807,6 +830,7 @@ export const SwapModal = () => {
                   }
                   borderRightRadius={'5px'}
                   borderLeftWidth={!isSwapTab ? 1 : 0}
+                  color={!isSwapTab ? '#2A72E5' : ''}
                   cursor={'pointer'}
                   onClick={() => setIsSwapTab(false)}>
                   Seignorage
