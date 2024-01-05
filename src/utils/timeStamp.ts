@@ -26,7 +26,7 @@ export const formatStartTime = async (
     const currentTimeStamp = currentBlk.timestamp;
     const timestamp = currentTimeStamp + seconds;
 
-    return moment.unix(timestamp).format('YYYY MM DD HH:mm');
+    return moment.unix(timestamp).format('YYYY.MM.DD HH:mm');
   }
 };
 export const formatEndTime = async (

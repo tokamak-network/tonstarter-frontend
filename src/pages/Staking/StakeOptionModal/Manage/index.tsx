@@ -34,6 +34,7 @@ import {fetchSwapPayload} from '../utils/fetchSwapPayload';
 import {fetchSwappedTosBalance} from '../utils/fetchSwappedTosBalance';
 import {getTokamakContract} from 'utils/contract';
 import {SwapModal} from '../swap';
+import commafy from 'utils/commafy';
 
 const tooltipMsg = () => {
   return (
@@ -633,7 +634,8 @@ export const ManageModal = () => {
                     color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                     fontWeight={500}
                     fontSize={'15px'}>
-                    {totalStaked} TON
+                    {isNaN(Number(totalStaked)) ? '0.00' : commafy(totalStaked)}{' '}
+                    TON
                   </Text>
                 </Flex>
                 <Flex
