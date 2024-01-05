@@ -7,6 +7,7 @@ import {
   useColorMode,
   useTheme,
   Switch,
+  Image,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
@@ -39,6 +40,8 @@ import {LoadingDots} from 'components/Loader/LoadingDots';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {getEarnedTon} from './utils/getEarnedTon';
 import {fetchVaults} from './vault.reducer';
+import TOKAMAK_SYMBOL from 'assets/title_tokamak.svg';
+import TOS_SYMBOL from 'assets/title_TOS.svg';
 
 type GetDateTimeType =
   | 'sale-start'
@@ -252,9 +255,18 @@ export const Staking = () => {
     if (title === 'My staked' || title === 'Earned TOS') {
       return (
         <Flex flexDir={'column'} alignItems={'space-between'}>
-          <Text fontSize={'15px'} color="#2a72e5" fontWeight={'bold'}>
-            {title}
-          </Text>
+          <Flex>
+            <Image
+              w={'20px'}
+              h={'20px'}
+              mr={'6px'}
+              src={title === 'My staked' ? TOKAMAK_SYMBOL : TOS_SYMBOL}
+              alt={'TOKAMAK_SYMBOL'}
+            />
+            <Text fontSize={'15px'} color="#2a72e5" fontWeight={'bold'}>
+              {title}
+            </Text>
+          </Flex>
           <Text
             fontSize={'28px'}
             color={colorMode === 'light' ? 'black.300' : 'white.200'}
@@ -344,7 +356,7 @@ export const Staking = () => {
           px={'172px'}
           gridRowGap={'45px'}
           flexDir={'column'}>
-          {/* <Flex>
+          <Flex>
             <Flex w={'308px'}>
               <GetBalance
                 title={'My staked'}
@@ -398,7 +410,7 @@ export const Staking = () => {
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Flex>
-          </Flex> */}
+          </Flex>
 
           <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
             <WalletInformation dispatch={dispatch} data={data[row.id]} />

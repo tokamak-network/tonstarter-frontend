@@ -109,21 +109,27 @@ const Notice = ({
         pr={'1.875em'}
         justifyContent={'center'}
         alignItems={'center'}>
-        <Text fontSize={13} fontWeight={600} color={'#304156'} mb={'12px'}>
+        <Text
+          fontSize={13}
+          fontWeight={600}
+          color={colorMode === 'dark' ? 'white.200' : '#304156'}
+          mb={'12px'}>
           Your staked on TOS Mining
         </Text>
         <Flex
           w={'302px'}
           h={'82px'}
           borderWidth={1}
-          borderColor={'#d7d9df'}
+          borderColor={colorMode === 'dark' ? '#535353' : '#d7d9df'}
           borderRadius={'10px'}
           flexDir={'column'}
           px={'20px'}
           py={'17px'}
           justifyContent={'space-between'}>
           <Box d={'flex'} justifyContent={'space-between'} w={'100%'}>
-            <Text fontSize={13} color={'#808992'}>
+            <Text
+              fontSize={13}
+              color={colorMode === 'dark' ? 'gray.475' : '#808992'}>
               Total Staked
             </Text>
             <Text fontSize={15} fontWeight={600}>
@@ -131,11 +137,14 @@ const Notice = ({
             </Text>
           </Box>
           <Box d={'flex'} justifyContent={'space-between'}>
-            <Text fontSize={13} color={'#808992'}>
+            <Text
+              fontSize={13}
+              color={colorMode === 'dark' ? 'gray.475' : '#808992'}>
               {`My Staked (${stakedRatio}%)`}
             </Text>
             <Text fontSize={15} fontWeight={600}>
-              {mystaked} <span style={{fontSize: 11}}>TON</span>
+              {mystaked}{' '}
+              <span style={{fontSize: 11}}>TON ({stakedRatio}%)</span>
             </Text>
           </Box>
         </Flex>
@@ -148,7 +157,10 @@ const Notice = ({
             mt={'30px'}>
             Warning
           </Text>
-          <Text mb={'21px'} fontSize={12} color={'#3e495c'}>
+          <Text
+            mb={'21px'}
+            fontSize={12}
+            color={colorMode === 'dark' ? 'white.200' : '#3e495c'}>
             While TOS mining is not accepting new stakers, swapping related
             functions are open to anyone.
           </Text>
@@ -158,15 +170,23 @@ const Notice = ({
               h={'18px'}
               checked={isChecked}
               onChange={() => setIsChecked(!isChecked)}></Checkbox>
-            <Text fontSize={12} color={'#3d495d'} fontWeight={600}>
+            <Text
+              fontSize={12}
+              color={colorMode === 'dark' ? 'white.200' : '#3d495d'}
+              fontWeight={600}>
               Agree
             </Text>
           </Flex>
           <Flex mt={'61px'} flexDir={'column'} mb={'56px'}>
-            <Text fontSize={12} color={'#353c48'} mb={'15px'}>
+            <Text
+              fontSize={12}
+              color={colorMode === 'dark' ? 'white.100' : '#353c48'}
+              mb={'15px'}>
               About TOS Mining
             </Text>
-            <Text fontSize={12} color={'#808992'}>
+            <Text
+              fontSize={12}
+              color={colorMode === 'dark' ? 'white.200' : '#808992'}>
               Users can stake TON to TOS mining and seigniorage earned from it
               can be swapped to TOS and claimable by stakers at the end of
               mining date.
@@ -174,7 +194,13 @@ const Notice = ({
           </Flex>
           <Button
             alignSelf={'center'}
-            bg={isChecked ? '#257eee' : '#e9edf1'}
+            bg={
+              isChecked
+                ? '#257eee'
+                : colorMode === 'dark'
+                ? '#353535'
+                : '#e9edf1'
+            }
             fontSize={14}
             color={isChecked ? '#fff' : '#86929d'}
             fontWeight={600}
