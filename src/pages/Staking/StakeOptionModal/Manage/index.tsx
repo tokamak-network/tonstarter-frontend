@@ -531,6 +531,11 @@ export const ManageModal = () => {
                   canWithdralAmount,
                   unstakeAll,
                   canUnstakedL2,
+                  withdrawTooltip: TooltipPendingMsg(
+                    currentBlock,
+                    withdrawableBlock,
+                    withdrawableAmount,
+                  ),
                   ...data.data,
                 },
               });

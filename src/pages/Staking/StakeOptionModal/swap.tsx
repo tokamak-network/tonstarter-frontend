@@ -8,7 +8,7 @@ import {
   Text,
   Button,
   Flex,
-  Input,
+  Tooltip,
   Stack,
   useTheme,
   Image,
@@ -39,6 +39,7 @@ import {useSwapStake} from '../hooks/useSwapStake';
 import {useStable} from '../hooks/useStable';
 import SettingIcon from 'assets/svgs/setting_icon_normal.svg';
 import SettingHoverIcon from 'assets/svgs/setting_icon_hover.svg';
+import tooltipIcon from 'assets/svgs/input_question_icon.svg';
 
 export const SwapModal = () => {
   const {sub} = useAppSelector(selectModalType);
@@ -61,6 +62,7 @@ export const SwapModal = () => {
       name,
       canUnstakedL2,
       unstakeAll,
+      withdrawTooltip,
     },
   } = sub;
 
@@ -285,9 +287,36 @@ export const SwapModal = () => {
             pl={'25px'}
             pr={'39px'}
             w={'100%'}>
-            <Text fontSize={12} color={'#808992'} fontWeight={600}>
-              Your share from swap
-            </Text>
+            <Flex alignItems={'center'}>
+              <Text fontSize={12} color={'#808992'} fontWeight={600} mr={'3px'}>
+                Your share from swap
+              </Text>
+              <Tooltip
+                hasArrow
+                placement="top"
+                label={
+                  <Flex
+                    flexDir="column"
+                    fontSize="12px"
+                    pt="6px"
+                    pl="5px"
+                    pr="5px">
+                    <Text textAlign="center" fontSize="12px">
+                      This is the amount of TOS that you will be able to claim
+                      at the end of the mining date.
+                    </Text>
+                  </Flex>
+                }
+                color={theme.colors.white[100]}
+                bg={theme.colors.gray[375]}
+                p={0}
+                w="227px"
+                h="47px"
+                borderRadius={3}
+                fontSize="12px">
+                <img src={tooltipIcon} alt={'tooltipIcon'} />
+              </Tooltip>
+            </Flex>
             <Flex flexDir={'column'} alignItems={'end'}>
               <Text fontSize={13} color={'#3d495d'} fontWeight={600} h={'18px'}>
                 {' '}
@@ -409,9 +438,36 @@ export const SwapModal = () => {
               w={'50%'}
               h={'100%'}
               justifyContent={'center'}>
-              <Text fontSize={12} color={'#808992'} h={'16px'} mb={'9px'}>
-                Staked
-              </Text>
+              <Flex alignItems={'center'} mb={'9px'}>
+                <Text fontSize={12} color={'#808992'} h={'16px'} mr={'3px'}>
+                  Staked
+                </Text>
+                <Tooltip
+                  hasArrow
+                  placement="top"
+                  label={
+                    <Flex
+                      flexDir="column"
+                      fontSize="12px"
+                      pt="6px"
+                      pl="5px"
+                      pr="5px">
+                      <Text textAlign="center" fontSize="12px">
+                        The total amount of TON staked in TOS mining, including
+                        the seignorage
+                      </Text>
+                    </Flex>
+                  }
+                  color={theme.colors.white[100]}
+                  bg={theme.colors.gray[375]}
+                  p={0}
+                  w="227px"
+                  h="47px"
+                  borderRadius={3}
+                  fontSize="12px">
+                  <img src={tooltipIcon} alt={'tooltipIcon'} />
+                </Tooltip>
+              </Flex>
               <Flex
                 fontSize={12}
                 fontWeight={'bold'}
@@ -456,9 +512,24 @@ export const SwapModal = () => {
               w={'50%'}
               h={'100%'}
               justifyContent={'center'}>
-              <Text fontSize={12} color={'#808992'} h={'16px'} mb={'9px'}>
-                Withdrawable
-              </Text>
+              <Flex mb={'9px'} alignItems={'center'}>
+                <Text fontSize={12} color={'#808992'} h={'16px'} mr={'3px'}>
+                  Withdrawable
+                </Text>
+                <Tooltip
+                  hasArrow
+                  placement="top"
+                  label={withdrawTooltip}
+                  color={theme.colors.white[100]}
+                  bg={theme.colors.gray[375]}
+                  p={0}
+                  w="227px"
+                  h="47px"
+                  borderRadius={3}
+                  fontSize="12px">
+                  <img src={tooltipIcon} alt={'tooltipIcon'} />
+                </Tooltip>
+              </Flex>
               <Flex
                 fontSize={12}
                 fontWeight={'bold'}
