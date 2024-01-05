@@ -220,7 +220,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
                 }}></NumberInputField>
             </NumberInput>
           </Flex>
-          <Flex justifyContent={'flex-end'} pt={'13px'}>
+          <Flex justifyContent={'flex-end'} pt={'9px'}>
             <Button
               w={'60px'}
               h={'20px'}
