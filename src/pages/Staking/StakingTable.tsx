@@ -47,6 +47,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {TokenImage} from '@Admin/components/TokenImage';
 import TON_SYMBOL from 'assets/tokens/TON_symbol_nobg.svg';
 import {openModal} from 'store/modal.reducer';
+import commafy from 'utils/commafy';
 
 type StakingTableProps = {
   columns: Column[];
@@ -502,7 +503,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                               }>
                               Total Staked
                             </Text>
-                            <Text mr={'4px'}>{stakeBalanceTON}</Text>
+                            <Text mr={'4px'}>{commafy(stakeBalanceTON)}</Text>
                             <Text> TON</Text>
                           </>
                         ) : (
