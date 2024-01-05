@@ -152,13 +152,14 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
           }
           flexDir={'column'}
           borderRadius={10}
-          pt="12px"
-          pl={'25px'}
-          pr={'14px'}>
+          // pt="12px"
+          pl={'15px'}
+          // pl={'25px'}
+          pr={'20px'}>
           <Flex
             justifyContent={'space-between'}
             alignItems={'center'}
-            pt={'16px'}>
+            pt={'15px'}>
             <Avatar
               src={TON_SYMBOL}
               backgroundColor={'transparent'}
@@ -219,7 +220,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
                 }}></NumberInputField>
             </NumberInput>
           </Flex>
-          <Flex justifyContent={'flex-end'} pb={'14px'} pt={'13px'}>
+          <Flex justifyContent={'flex-end'} pt={'13px'}>
             <Button
               w={'60px'}
               h={'20px'}
@@ -256,8 +257,8 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
             borderWidth={1}
             borderColor={colorMode === 'dark' ? '#363636' : '#f4f6f8'}
             mt={'12px'}
-            mb={'9px'}></Box>
-          <Flex justifyContent={'space-between'} mb={'9px'}>
+            mb={'7px'}></Box>
+          <Flex justifyContent={'space-between'} mb={'7px'}>
             <Text
               fontSize={12}
               color={colorMode === 'dark' ? 'gray.475' : '#808992'}
@@ -759,8 +760,7 @@ export const SwapModal = () => {
         <ModalContent
           fontFamily={theme.fonts.roboto}
           bg={colorMode === 'light' ? 'white.100' : 'black.200'}
-          w="350px"
-          pb="25px">
+          w="350px">
           <CloseButton closeFunc={handleCloseModal}></CloseButton>
           <ModalBody p={0} minH={'603px'}>
             <Flex flexDir={'column'} alignItems={'center'}>

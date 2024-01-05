@@ -359,7 +359,7 @@ export const Staking = () => {
           <Flex>
             <Flex w={'308px'}>
               <GetBalance
-                title={'My staked'}
+                title={'My Staked'}
                 contractAddress={contractAddress}></GetBalance>
             </Flex>
             <GetBalance

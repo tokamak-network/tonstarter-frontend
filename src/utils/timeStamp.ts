@@ -19,7 +19,7 @@ export const formatStartTime = async (
   if (currentBlock > blockNumber) {
     const block = await provider.getBlock(blockNumber);
     const timeStamp = block.timestamp;
-    return moment.unix(timeStamp).format('YYYY MM DD HH:mm');
+    return moment.unix(timeStamp).format('YYYY.MM.DD HH:mm');
   } else {
     const seconds = (blockNumber - currentBlock) * 12;
     const currentBlk = await provider.getBlock(currentBlock);
