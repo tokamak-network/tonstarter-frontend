@@ -274,7 +274,7 @@ export const Staking = () => {
             h="30px">
             {balance === '-' ? <LoadingDots></LoadingDots> : balance}
             {balance !== '-' ? (
-              title === 'My staked' ? (
+              title === 'My Staked' ? (
                 <span style={{fontSize: 13, marginLeft: '4px'}}> TON</span>
               ) : (
                 <span style={{fontSize: 13, marginLeft: '4px'}}> TOS</span>
