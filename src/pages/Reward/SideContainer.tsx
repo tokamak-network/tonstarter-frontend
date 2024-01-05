@@ -51,9 +51,7 @@ export const SideContainer: FC<SideContainerProps> = ({
     library,
   );
 
-  // const poools = usePools()
-
-
+  //gets the TVL of all the pools
   useEffect(() => {
     const getTVL = async () => {
       if (library) {
@@ -64,6 +62,7 @@ export const SideContainer: FC<SideContainerProps> = ({
     getTVL()
   },[library])
 
+//gets the withdrawable LP tokens
   useEffect(() => {
     const getWithdrawable = async () => {
       if (account === null || account === undefined || library === undefined) {
@@ -101,6 +100,8 @@ export const SideContainer: FC<SideContainerProps> = ({
       bg={colorMode === 'light' ? '#FFFFFF' : ''}
       mb={'20px'}>
       <Box>
+
+      {/* if manage is selected, display the create rewards component */}
         {selected === 'reward' ? (
           <ClaimReward rewards={rewards} tokens={withdrawableTokens} />
         ) : (

@@ -27,7 +27,7 @@ const getStakedBalance = async (
   return Promise.all([
     StakeTONContract.totalStakedAmount(),
     //should convert to ray from wei for seigManager
-    seigManager.stakeOf(DEPLOYED.TokamakLayer2_ADDRESS, contractAddress),
+    seigManager['stakeOf(address,address)'](DEPLOYED.TokamakLayer2_ADDRESS, contractAddress),
     depositManager.pendingUnstaked(
       DEPLOYED.TokamakLayer2_ADDRESS,
       contractAddress,

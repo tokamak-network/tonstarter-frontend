@@ -5,7 +5,7 @@ import {
   Text,
   Button,
   Link,
-  CircularProgress
+  CircularProgress,
 } from '@chakra-ui/react';
 import {useEffect, useState, useCallback, useMemo} from 'react';
 import {useFormikContext} from 'formik';
@@ -44,7 +44,7 @@ const Vesting = (props: {step: string}) => {
   // @ts-ignore
   const {blockNumber} = useBlockNumber();
   const network = BASE_PROVIDER._network.name;
-  const {tx,data} = useAppSelector(selectTxType);
+  const {tx, data} = useAppSelector(selectTxType);
 
   const vestingVault = values.vaults[2] as VaultCommon;
   const publicVault = values.vaults[0] as VaultPublic;
@@ -143,9 +143,7 @@ const Vesting = (props: {step: string}) => {
           values.vaults[1].isDeployed === false
           ? true
           : false
-        : vestingVault.isSet === true ||
-    
-          values.vaults[1].isSet === false
+        : vestingVault.isSet === true || values.vaults[1].isSet === false
         ? true
         : false;
 
@@ -156,7 +154,7 @@ const Vesting = (props: {step: string}) => {
     values.vaults,
     vestingVault.vaultAddress,
     vestingVault.isSet,
-   ]);
+  ]);
 
   return (
     <Flex
@@ -311,8 +309,13 @@ const Vesting = (props: {step: string}) => {
                   fontFamily={theme.fonts.roboto}
                   fontWeight={'normal'}
                   color={colorMode === 'dark' ? 'gray.425' : 'gray.400'}>
-                  <span style={{color: colorMode === 'light'? '#3d495d': '#ffffff', marginRight: '3px', fontWeight: 'bold'}}>
-                    0{index+1}
+                  <span
+                    style={{
+                      color: colorMode === 'light' ? '#3d495d' : '#ffffff',
+                      marginRight: '3px',
+                      fontWeight: 'bold',
+                    }}>
+                    0{index + 1}
                   </span>
                   {/* {claim.claimTime} */}
                   {moment
@@ -321,7 +324,7 @@ const Vesting = (props: {step: string}) => {
                 </Text>
                 <Text
                   fontSize={'12px'}
-                  color={colorMode === 'light'? '#3d495d':'#ffffff'}
+                  color={colorMode === 'light' ? '#3d495d' : '#ffffff'}
                   fontFamily={theme.fonts.roboto}
                   fontWeight={'bold'}>
                   {publicVault.hardCap
@@ -330,7 +333,13 @@ const Vesting = (props: {step: string}) => {
                         100
                       ).toLocaleString()
                     : 0}{' '}
-                  TON  <span style={{color: colorMode === 'light'? '#7e8993':'#9d9ea5'}}>({claim.claimTokenAllocation}%)</span>
+                  TON{' '}
+                  <span
+                    style={{
+                      color: colorMode === 'light' ? '#7e8993' : '#9d9ea5',
+                    }}>
+                    ({claim.claimTokenAllocation}%)
+                  </span>
                 </Text>
               </Flex>
             );
@@ -356,20 +365,23 @@ const Vesting = (props: {step: string}) => {
           mr={'12px'}
           _active={buttonStatus ? {} : {bg: '#2a72e5'}}
           _hover={buttonStatus ? {} : {bg: '#2a72e5'}}
-          _disabled={buttonStatus || tx !== true?{
-            background: colorMode === 'dark' ? '#353535' : '#e9edf1',
-            color: colorMode === 'dark' ? '#838383' : '#86929d',
-            cursor: 'not-allowed',
-          }:{}}
+          _disabled={
+            buttonStatus || tx !== true
+              ? {
+                  background: colorMode === 'dark' ? '#353535' : '#e9edf1',
+                  color: colorMode === 'dark' ? '#838383' : '#86929d',
+                  cursor: 'not-allowed',
+                }
+              : {}
+          }
           isDisabled={buttonStatus || tx === true}
           onClick={() => {
             vaultDeploy();
           }}
           borderRadius={4}>
-         {tx !== true || buttonStatus
-         ?(
-          <Text>{step}</Text>
-        ): (
+          {tx !== true || buttonStatus ? (
+            <Text>{step}</Text>
+          ) : (
             <CircularProgress
               isIndeterminate
               size={'20px'}
@@ -377,7 +389,7 @@ const Vesting = (props: {step: string}) => {
               color="blue.500"
               pos="absolute"
             />
-          ) }
+          )}
         </Button>
       </Flex>
     </Flex>

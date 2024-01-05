@@ -39,8 +39,7 @@ const StepTwo = () => {
   const {vaults} = values;
   const publicVault = vaults[0] as VaultPublic;
 
-  console.log(values);
-
+  //calculates the funding price needed for each total supply depending on the funding target and total supply
   const getPrices = useMemo(() => {
     const fundingTarget = values.fundingTarget;
     const totalSupply = [
@@ -58,6 +57,7 @@ const StepTwo = () => {
     return opts;
   }, [values.fundingTarget]);
 
+  //same function as step one
   useEffect(() => {
     async function getTonPrice() {
       try {
@@ -80,8 +80,6 @@ const StepTwo = () => {
         const krwInUsd = usdPriceObj.rates.USD;
 
         const tonPriceInUsd = tonPriceKRW * krwInUsd;
-        // console.log('tonPriceInUsd',tonPriceInUsd);
-
         setTonInDollars(tonPriceInUsd);
         const poolData = await fetchPoolPayload(library);
 
@@ -91,9 +89,6 @@ const StepTwo = () => {
       } catch (e) {
         console.log(e);
       }
-
-      // console.log(token0Price);
-      // const tonPriceInTos =
     }
     getTonPrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,6 +117,8 @@ const StepTwo = () => {
     handleInput(option);
   };
 
+  //depending on the total supply and the funding price set by the user, calculate project properties if the user selects option fro the 1st time 
+  //or recalculate the the project properties if the user selects the option for the 2nd time and save to formik
   const handleInput = (opt: any) => {
     const totalSupply = opt.totalSupply;
     const fundingPrice = opt.fundingPrice;
@@ -151,15 +148,10 @@ const StepTwo = () => {
           totalSupply,
           publicVault.publicRound2End ? publicVault.publicRound2End : 0,
         );
-
-        // const mainVaults = vaults.filter((vault:VaultCommon) => vault.vaultType !== 'Vesting')
-
         const tot = roundInfo.reduce(
           (acc, round) => acc + round.claimTokenAllocation,
           0,
         );
-
-        //  const totalTokenAllocation =
         setFieldValue(`vaults[${index}].claim`, roundInfo);
         setFieldValue(`vaults[${index}].adminAddress`, account);
         setFieldValue(`vaults[${index}].vaultTokenAllocation`, tot);
@@ -171,15 +163,6 @@ const StepTwo = () => {
       setFieldValue('vaults[0].adminAddress', account);
       setFieldValue('vaults[1].tokenPair', `${values.tokenSymbol}-TOS`);
       setFieldValue('vaults[6].tokenPair', `${values.tokenSymbol}-TOS`);
-      // setFieldValue(]
-      //   'vaults[0].publicRound1Allocation',
-      //   Number(parseInt((publicAllocation * 0.5).toString())),
-      // );
-      // setFieldValue(
-      //   'vaults[0].publicRound2Allocation',
-      //   publicAllocation -
-      //     Number(parseInt((publicAllocation * 0.5).toString())),
-      // );
 
       const tier1 = truncNumber(publicAllocation * 0.5 * 0.06, 0);
       const tier2 = truncNumber(publicAllocation * 0.5 * 0.12, 0);

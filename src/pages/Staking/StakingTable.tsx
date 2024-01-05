@@ -609,7 +609,7 @@ export const StakingTable: FC<StakingTableProps> = ({
                 </Button>
               }></CustomTooltip> */}
             <Box>
-              <CustomTooltip
+              {/* <CustomTooltip
                 toolTipW={245}
                 toolTipH={'50px'}
                 fontSize="12px"
@@ -630,7 +630,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                     onClick={() => requestUnstakingLayer2All()}>
                     Unstake
                   </Button>
-                }></CustomTooltip>
+                }
+                ></CustomTooltip> */}
             </Box>
             {/* <Box ml={'10px'}>
               <CustomTooltip

@@ -48,6 +48,7 @@ const InitialLiquidity = (props: {step: string}) => {
 
   const initialVault = values.vaults[1] as VaultLiquidityIncentive;
   
+  //get the vault details from formik
   const details = [
     {name: 'Vault Name', value: `${initialVault.vaultName}`},
     {
@@ -97,18 +98,11 @@ const InitialLiquidity = (props: {step: string}) => {
     });
   }, [blockNumber, initialVault, library, setFieldValue]);
 
-  //setVaultState
-
-  // useEffect(() => {
-  //   setBtnDisable(
-  //     vaultState === 'readyForToken' && !values.isAllDeployed ? true : false,
-  //   );
-  // }, [values.isAllDeployed, vaultState, blockNumber]);
-
   const {
     data: {hashKey},
   } = useAppSelector(selectLaunch);
 
+  //deploy the vault
   const vaultDeploy = useCallback(async () => {
     deploy(
       account,
@@ -124,6 +118,8 @@ const InitialLiquidity = (props: {step: string}) => {
   }, [account, dispatch, initialVault, library, setFieldValue, values, step]);
 
   const ERC20_CONTRACT = useContract(values?.tokenAddress, ERC20.abi);
+
+  //check if this vault has received the tokens from token distribution or not
   useEffect(() => {
     async function fetchContractBalance() {
       if (
