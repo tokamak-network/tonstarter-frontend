@@ -502,7 +502,8 @@ export const StakingTable: FC<StakingTableProps> = ({
                               }>
                               Total Staked
                             </Text>
-                            <Text>{stakeBalanceTON}</Text>
+                            <Text mr={'4px'}>{stakeBalanceTON}</Text>
+                            <Text> TON</Text>
                           </>
                         ) : (
                           ''
