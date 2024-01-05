@@ -302,7 +302,8 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
           justifyContent={'space-between'}
           pl={'25px'}
           pr={'39px'}
-          w={'100%'}>
+          w={'100%'}
+          alignItems={'flex-start'}>
           <Flex alignItems={'center'}>
             <Text
               fontSize={12}
