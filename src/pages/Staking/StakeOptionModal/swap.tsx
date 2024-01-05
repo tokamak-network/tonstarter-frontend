@@ -59,6 +59,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
       withdrawDisable,
       swapDisabled,
       stakedL2,
+      pendingL2Balance,
       stakedRatio,
       canWithdralAmount,
       name,
@@ -468,12 +469,14 @@ export const SwapModal = () => {
       withdrawDisable,
       swapDisabled,
       stakedL2,
+      pendingL2Balance,
       stakedRatio,
       canWithdralAmount,
       name,
       canUnstakedL2,
       unstakeAll,
       withdrawTooltip,
+      seigBalance,
     },
   } = sub;
 
@@ -580,7 +583,7 @@ export const SwapModal = () => {
                   color={colorMode === 'dark' ? 'gray.475' : '#808992'}
                   h={'16px'}
                   mr={'3px'}>
-                  Staked
+                  Unstakable
                 </Text>
                 <Tooltip
                   hasArrow
@@ -593,8 +596,8 @@ export const SwapModal = () => {
                       pl="5px"
                       pr="5px">
                       <Text textAlign="center" fontSize="12px">
-                        The total amount of TON staked in TOS mining, including
-                        the seignorage
+                        Staked seigniorage can be unstaked and withdrawn after
+                        approximately 14 days.
                       </Text>
                     </Flex>
                   }
@@ -602,7 +605,7 @@ export const SwapModal = () => {
                   bg={theme.colors.gray[375]}
                   p={0}
                   w="227px"
-                  h="47px"
+                  h="67px"
                   borderRadius={3}
                   fontSize="12px">
                   <img src={tooltipIcon} alt={'tooltipIcon'} />
@@ -614,7 +617,13 @@ export const SwapModal = () => {
                 color={colorMode === 'dark' ? 'white.200' : '#3d495d'}
                 mb={'18px'}
                 alignItems={'center'}>
-                <Text mr={'2px'}>{commafy(stakedL2)}</Text>
+                <Text mr={'2px'}>
+                  {seigBalance <= 0 ||
+                  seigBalance === undefined ||
+                  isNaN(seigBalance)
+                    ? '0.00'
+                    : commafy(seigBalance)}
+                </Text>
                 <Text fontSize={10} mt={'1px'}>
                   TON
                 </Text>

@@ -140,7 +140,9 @@ const Notice = ({
             <Text
               fontSize={13}
               color={colorMode === 'dark' ? 'gray.475' : '#808992'}>
-              {`My Staked (${stakedRatio}%)`}
+              {`My Staked (${
+                isNaN(Number(stakedRatio)) ? '0.00' : stakedRatio
+              }%)`}
             </Text>
             <Text fontSize={15} fontWeight={600}>
               {mystaked}{' '}
@@ -336,6 +338,7 @@ export const ManageModal = () => {
           stakeContractBalanceWton,
           originalBalance,
         } = result;
+        console.log('result**', result);
         //@ts-ignore
         const res_CanWithdralAmount = await fetchWithdrawPayload(
           library,
@@ -557,6 +560,8 @@ export const ManageModal = () => {
                   canWithdralAmount,
                   unstakeAll,
                   canUnstakedL2,
+                  pendingL2Balance,
+                  seigBalance,
                   withdrawTooltip: TooltipPendingMsg(
                     currentBlock,
                     withdrawableBlock,
