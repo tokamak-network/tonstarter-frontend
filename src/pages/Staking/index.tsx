@@ -357,7 +357,7 @@ export const Staking = () => {
           gridRowGap={'45px'}
           flexDir={'column'}>
           <Flex>
-            {/* <Flex w={'308px'}>
+            <Flex w={'308px'}>
               <GetBalance
                 title={'My Staked'}
                 contractAddress={contractAddress}></GetBalance>
@@ -366,9 +366,9 @@ export const Staking = () => {
               title={'Earned TOS'}
               contractAddress={contractAddress}
               status={data[row.id]?.status}
-            /> */}
+            />
           </Flex>
-          {/* <Flex>
+          <Flex>
             <Flex w={'308px'}>
               <GetDate
                 time={
@@ -410,7 +410,7 @@ export const Staking = () => {
                 {shortenAddress(data[row.id]?.contractAddress)}
               </Link>
             </Flex>
-          </Flex> */}
+          </Flex>
 
           <Box p={0} w={'450px'} borderRadius={'10px'} alignSelf={'flex-start'}>
             <WalletInformation dispatch={dispatch} data={data[row.id]} />
