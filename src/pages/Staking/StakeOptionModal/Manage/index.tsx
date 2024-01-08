@@ -118,38 +118,63 @@ const Notice = ({
           Your staked on TOS Mining
         </Text>
         <Flex
-          w={'302px'}
-          h={'82px'}
+          w={'300px'}
+          h={'91px'}
           borderWidth={1}
           borderColor={colorMode === 'dark' ? '#535353' : '#d7d9df'}
           borderRadius={'10px'}
           flexDir={'column'}
-          px={'20px'}
-          py={'17px'}
-          justifyContent={'space-between'}>
-          <Box d={'flex'} justifyContent={'space-between'} w={'100%'}>
+          pt={'12px'}
+          pb={'11px'}
+          alignItems={'center'}
+          vertical>
+          <Text fontSize={13} fontWeight={600} color={'#2a27e5'} h={'18px'}>
+            My Staked
+          </Text>
+          <Flex
+            mt={'3px'}
+            mb={'2px'}
+            h={'32px'}
+            verticalAlign={'middle'}
+            lineHeight={'32px'}>
+            <Text
+              fontSize={24}
+              fontWeight={600}
+              color={colorMode === 'dark' ? '#fff' : '#3d495d'}>
+              {commafy(mystaked)} <span style={{fontSize: 11}}>TON</span>
+            </Text>
+          </Flex>
+          <Text
+            fontSize={11}
+            color={colorMode === 'dark' ? '#9d9ea5' : '#808992'}
+            h={'15px'}>
+            {isNaN(Number(stakedRatio)) ? '0.00' : stakedRatio}
+            {'%'} of {commafy(totalStaked)} TON
+          </Text>
+
+          {/* <Box d={'flex'} justifyContent={'space-between'} w={'100%'}>
             <Text
               fontSize={13}
               color={colorMode === 'dark' ? 'gray.475' : '#808992'}>
               Total Staked
             </Text>
             <Text fontSize={15} fontWeight={600}>
-              {totalStaked} <span style={{fontSize: 11}}>TON</span>
+              {commafy(totalStaked)} <span style={{fontSize: 11}}>TON</span>
             </Text>
           </Box>
           <Box d={'flex'} justifyContent={'space-between'}>
             <Text
               fontSize={13}
               color={colorMode === 'dark' ? 'gray.475' : '#808992'}>
-              {`My Staked (${
-                isNaN(Number(stakedRatio)) ? '0.00' : stakedRatio
-              }%)`}
+              {`My Staked (%)`}
             </Text>
             <Text fontSize={15} fontWeight={600}>
               {mystaked}{' '}
-              <span style={{fontSize: 11}}>TON ({stakedRatio}%)</span>
+              <span style={{fontSize: 11}}>
+                TON ({isNaN(Number(stakedRatio)) ? '0.00' : stakedRatio}%)
+              </span>
             </Text>
-          </Box>
+          </Box> */}
         </Flex>
         <Flex w={'300px'} textAlign={'center'} flexDir={'column'}>
           <Text
