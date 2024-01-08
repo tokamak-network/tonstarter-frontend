@@ -128,7 +128,7 @@ const Notice = ({
           pb={'11px'}
           alignItems={'center'}
           vertical>
-          <Text fontSize={13} fontWeight={600} color={'#2a27e5'} h={'18px'}>
+          <Text fontSize={13} fontWeight={600} color={'#2a72e5'} h={'18px'}>
             My Staked
           </Text>
           <Flex
