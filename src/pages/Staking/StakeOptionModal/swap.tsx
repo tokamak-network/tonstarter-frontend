@@ -362,8 +362,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
               color={colorMode === 'dark' ? 'white.200' : '#808992'}
               h={'15px'}>
               ({stakedRatio} % of{' '}
-              {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)}
-              TOS)
+              {Number(inputAmount) <= 0 ? '0.00' : commafy(tosAmountOut)} TOS)
             </Text>
           </Flex>
         </Flex>
