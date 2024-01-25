@@ -54,31 +54,18 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
       contractAddress,
       swapBalance,
       originalSwapBalance,
-      currentTosPrice,
-      unstakeL2Disable,
-      withdrawDisable,
       swapDisabled,
-      stakedL2,
-      pendingL2Balance,
       stakedRatio,
-      canWithdralAmount,
-      name,
-      canUnstakedL2,
-      unstakeAll,
-      withdrawTooltip,
     },
   } = sub;
-
-  const {handleOpenConfirmModal} = useModal();
 
   const theme = useTheme();
   const {colorMode} = useColorMode();
 
-  const {handleCloseConfirmModal} = useModal();
+  // const {handleCloseConfirmModal} = useModal();
   const {checkBalance} = useCheckBalance();
 
   const maxAmount = useSwapStake(Number(swapBalance));
-  const maxInput = useSwapStake(Number(inputAmount.replaceAll(',', '')));
 
   const stableAmount = useStable();
 
@@ -86,7 +73,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
     setMax(maxAmount);
   }, [maxAmount]);
 
-  const {tosAmountOut: basicPrice} = useSwapModal(1);
+  // const {tosAmountOut: basicPrice} = useSwapModal(1);
 
   const {tosAmountOut} = useSwapModal(
     isNaN(Number(inputAmount.replaceAll(',', ''))) ||
@@ -95,26 +82,26 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
       : Number(inputAmount.replaceAll(',', '')),
   );
 
-  const handleCloseModal = () => {
-    handleCloseConfirmModal();
-    setInputAmount('0');
-  };
+  // const handleCloseModal = () => {
+  //   handleCloseConfirmModal();
+  //   setInputAmount('0');
+  // };
 
-  const priceImpact = useMemo(() => {
-    const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
-    const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
+  // const priceImpact = useMemo(() => {
+  //   const numTosAmountOut = Number(tosAmountOut.replaceAll(',', ''));
+  //   const numBasicPrice = Number(basicPrice.replaceAll(',', ''));
 
-    const numInputAmount = Number(inputAmount.replaceAll(',', ''));
+  //   const numInputAmount = Number(inputAmount.replaceAll(',', ''));
 
-    const theoreticalValue = numInputAmount * numBasicPrice;
+  //   const theoreticalValue = numInputAmount * numBasicPrice;
 
-    const priceDiff = (theoreticalValue - numTosAmountOut) / theoreticalValue;
-    const result = priceDiff * 100;
+  //   const priceDiff = (theoreticalValue - numTosAmountOut) / theoreticalValue;
+  //   const result = priceDiff * 100;
 
-    return isNaN(result) || result === Infinity || result === -Infinity
-      ? '-'
-      : commafy(result);
-  }, [tosAmountOut, basicPrice, inputAmount]);
+  //   return isNaN(result) || result === Infinity || result === -Infinity
+  //     ? '-'
+  //     : commafy(result);
+  // }, [tosAmountOut, basicPrice, inputAmount]);
 
   useEffect(() => {
     if (inputAmount.length > 1 && inputAmount.startsWith('0')) {
@@ -226,7 +213,15 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
               h={'20px'}
               fontSize={12}
               fontWeight={600}
-              onClick={() => setInputAmount(stableAmount.replace(/,/g, ''))}
+              onClick={() => {
+                const stableAmountNum = Number(stableAmount.replace(/,/g, ''));
+                const maxAmountNum = Number(maxAmount);
+                if (stableAmountNum > maxAmountNum) {
+                  return setInputAmount(maxAmountNum.toString());
+                }
+                if (stableAmount)
+                  return setInputAmount(stableAmount.replace(/,/g, ''));
+              }}
               type={'button'}
               variant="outline"
               mr="6px"
