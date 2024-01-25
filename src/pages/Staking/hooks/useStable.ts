@@ -10,6 +10,7 @@ import * as UniswapV3PoolABI from '../../../services/abis/UniswapV3Pool.json';
 const univ3prices = require('@thanpolas/univ3prices');
 
 const encodePath = (path: any, fees: any) => {
+  const FEE_SIZE = 3;
   if (path.length !== fees.length + 1) {
     throw new Error('path/fee lengths do not match');
   }
