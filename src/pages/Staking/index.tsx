@@ -214,7 +214,7 @@ export const Staking = () => {
             library,
             contractAddress,
           );
-          if (title === 'My staked') {
+          if (title === 'My Staked') {
             //@ts-ignore
             return SetBalance(result?.totalStakedBalance);
           }

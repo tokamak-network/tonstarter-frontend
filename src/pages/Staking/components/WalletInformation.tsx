@@ -187,16 +187,23 @@ export const WalletInformation: FC<WalletInformationProps> = ({
       let payload;
       const {contractAddress, vault} = data;
       try {
-        if (modal === 'manage') {
+        if (modal === 'manage' && account && library) {
           const payloadModal = await modalPayload({
             account,
             library,
             contractAddress,
             vault,
           });
+          const result = await getUserBalance(
+            account,
+            library,
+            contractAddress,
+          );
+          const mystaked = result?.totalStakedBalance;
           payload = {
             ...data,
             ...payloadModal,
+            mystaked,
           };
         } else if (modal === 'claim') {
           payload = {

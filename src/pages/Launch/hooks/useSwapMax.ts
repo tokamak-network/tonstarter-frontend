@@ -82,7 +82,6 @@ export const useSwapMax = (amountIn: number) => {
 
         const result =
           isMax === true ? amountIn.toString() : afterAmountIn2.toString();
-        // console.log('result', result);
 
         return setMaxAmount(result ?? '-');
       }

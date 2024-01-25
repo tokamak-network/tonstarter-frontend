@@ -548,7 +548,9 @@ export const ManageModal = () => {
     handleCloseModal();
   };
 
-  const stakedRatio = (Number(mystaked) / Number(totalStaked)).toFixed(2);
+  const stakedRatio = ((Number(mystaked) / Number(totalStaked)) * 100).toFixed(
+    2,
+  );
 
   return (
     <Modal
