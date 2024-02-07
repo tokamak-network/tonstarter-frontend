@@ -12,6 +12,7 @@ import {
 import {convertLocaleString} from 'utils';
 // import starterActions from './actions';
 import {REACT_APP_MODE} from 'constants/index';
+import {starterDB} from 'constants/db';
 
 interface StarterState {
   data: {
@@ -56,13 +57,19 @@ export const fetchStarters = createAsyncThunk(
       return;
     }
 
-    const starterReq = await fetch(fetchStarterURL)
-      .then((res) => res.json())
-      .then((result) => result);
+    /**
+     * fetching through db
+     */
+    // const starterReq = await fetch(fetchStarterURL)
+    //   .then((res) => res.json())
+    //   .then((result) => result);
 
-    const starterData = starterReq.datas.filter((data: AdminObject) =>
-      REACT_APP_MODE === 'PRODUCTION' ? data.production === 'production' : data,
-    );
+    // const starterData = starterReq.datas.filter((data: AdminObject) =>
+    //   REACT_APP_MODE === 'PRODUCTION' ? data.production === 'production' : data,
+    // );
+
+    //fetching through local data
+    const starterData: any = starterDB.datas;
 
     const nowTimeStamp = moment().unix();
 
@@ -71,23 +78,11 @@ export const fetchStarters = createAsyncThunk(
     // );
 
     try {
-      // const matchData = starterData.filter((data: any) => {
-      //   return (
-      //     data.delistedData === undefined ||
-      //     data.delistedData.delistedTime === undefined
-      //   );
-      // });
-
       const matchData = starterData;
 
       const activeData = matchData.filter(
         (data: AdminObject) => data.endDepositTime > nowTimeStamp,
       );
-
-      //remove upcomingData
-      // const upcomingData = matchData.filter(
-      //   (data: AdminObject) => data.snapshot > nowTimeStamp,
-      // );
 
       const upcomingData: any = [];
       const pastData = matchData.filter(
@@ -102,24 +97,6 @@ export const fetchStarters = createAsyncThunk(
         activeData.map(async (data: AdminObject) => {
           const address = data.saleContractAddress;
           const nowTimeStamp = moment().unix();
-
-          // const dummy = 1634804360;
-
-          // const {
-          //   startAddWhiteTime,
-          //   endAddWhiteTime,
-          //   startExclusiveTime,
-          //   endExclusiveTime,
-          //   startDepositTime,
-          //   endDepositTime,
-          // } = {
-          //   startAddWhiteTime: dummy,
-          //   endAddWhiteTime: dummy + 60,
-          //   startExclusiveTime: dummy + 61,
-          //   endExclusiveTime: dummy + 120,
-          //   startDepositTime: dummy + 121,
-          //   endDepositTime: dummy + 180,
-          // };
 
           const {
             startAddWhiteTime,
