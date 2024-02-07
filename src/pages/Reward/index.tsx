@@ -13,9 +13,7 @@ import {
   MenuList,
   MenuItem,
   Switch,
-  Stack,
   Radio,
-  RadioGroup,
 } from '@chakra-ui/react';
 import {Fragment, useEffect, useState} from 'react';
 import {Head} from 'components/SEO';
@@ -39,8 +37,8 @@ import {getSigner} from 'utils/contract';
 // import {fetchPositionPayload} from '../Pools/utils/fetchPositionPayload';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
 import {ChevronDownIcon, ChevronRightIcon} from '@chakra-ui/icons';
-import {utils, ethers} from 'ethers';
-import {incentiveKey, Token, interfaceReward, LPToken} from './types';
+import {ethers} from 'ethers';
+import {Token, interfaceReward, LPToken} from './types';
 import {fetchPositionRangePayload} from './utils/fetchPositionRangePayloads';
 import {InformationModal} from '../Reward/RewardModals/information';
 
@@ -575,7 +573,7 @@ export const Reward = () => {
       setFilteredManageData(manageDatas);
     }
   };
-//get the reward programs that have been staked with the selected LP token
+  //get the reward programs that have been staked with the selected LP token
   const getSelectedPosition = (e: any) => {
     const pos = e.target.value;
     const selectedLP: any = positions.find((position) => position.id === pos);
@@ -626,9 +624,11 @@ export const Reward = () => {
             subtitle={'Stake Uniswap V3 liquidity tokens and receive rewards! '}
           />
         </Box>
-        {isPositionLoading !== true &&
-        account !== undefined &&
-        pool.length !== 0 ? (
+        {account === undefined ? (
+          <Center color={'red'}>
+            <>You need to connect to the wallet to view this page</>
+          </Center>
+        ) : pool.length !== 0 ? (
           <Box>
             <Flex
               fontFamily={theme.fonts.roboto}
@@ -1303,7 +1303,6 @@ export const Reward = () => {
                   tokens={tokensFromAPI}
                 />
               )}
-
               {/* display the side container */}
               <SideContainer
                 pools={pool}

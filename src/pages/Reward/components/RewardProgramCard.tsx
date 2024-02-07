@@ -25,7 +25,7 @@ import {Contract} from '@ethersproject/contracts';
 import * as NPMABI from 'services/abis/NonfungiblePositionManager.json';
 import {approveStaking, stake, unstake} from '../actions';
 import * as STAKERABI from 'services/abis/UniswapV3Staker.json';
-import { ethers} from 'ethers';
+import {ethers} from 'ethers';
 import {soliditySha3} from 'web3-utils';
 // import * as TOSABI from 'services/abis/TOS.json';
 import {getTokenSymbol} from '../utils/getTokenSymbol';
@@ -69,10 +69,7 @@ type RewardProgramCardProps = {
   latestBlockNumber: number;
 };
 
-const {
-  WTON_ADDRESS,
-  UniswapStaker_Address,
-} = DEPLOYED;
+const {WTON_ADDRESS, UniswapStaker_Address} = DEPLOYED;
 
 export const RewardProgramCard: FC<RewardProgramCardProps> = ({
   reward,
@@ -423,11 +420,10 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
     }
   };
 
-
   const setInitials = () => {
-    const initial = rewardSymbol.toString()
+    const initial = rewardSymbol?.toString();
     return initial;
-  }
+  };
   return (
     <Flex
       {...REWARD_STYLE.containerStyle({colorMode})}
@@ -523,10 +519,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                         maximumFractionDigits: 2,
                       },
                     )}{' '}
-                {
-                  rewardSymbol
-                }{' '}
-                /{' '}
+                {rewardSymbol} /{' '}
                 {parseFloat(
                   (
                     (Number(ethers.utils.formatEther(selectedToken.liquidity)) *
@@ -691,16 +684,20 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
                     })}
               </Text>
               <Text ml="2px" fontSize="13">
-                {TOKEN_CONTRACT !== null? rewardSymbol: ''}
+                {TOKEN_CONTRACT !== null ? rewardSymbol : ''}
               </Text>
             </Box>
           </Box>
           <Avatar
             ml={'10px'}
-           name='TOKEN_CONTRACT !== null? rewardSymbol: ``'
-            src={reward.rewardTokenSymbolImage !== ''? reward.rewardTokenSymbolImage : 'T' }
+            name="TOKEN_CONTRACT !== null? rewardSymbol: ``"
+            src={
+              reward.rewardTokenSymbolImage !== ''
+                ? reward.rewardTokenSymbolImage
+                : 'T'
+            }
             bg={colorMode === 'light' ? '#ffffff' : '#222222'}
-            getInitials={()=>setInitials()}
+            getInitials={() => setInitials()}
             border={
               colorMode === 'light' ? '1px solid #e7edf3' : '1px solid #3c3c3c'
             }

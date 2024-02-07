@@ -38,6 +38,9 @@ const AllProjects = () => {
     params: {id},
   } = match;
 
+  /**
+   * fetching through api
+   */
   // const {data, isLoading, error} = useQuery(
   //   ['launchProjects'],
   //   () =>
