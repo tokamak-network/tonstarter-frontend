@@ -6,6 +6,7 @@ import {fetchStakeURL} from 'constants/index';
 import {BASE_PROVIDER} from 'constants/index';
 import {Stake} from './types';
 import {checkL2Status} from './utils';
+import {tosMiningDB} from 'constants/db';
 
 interface StakeState {
   data: Stake[];
@@ -33,11 +34,16 @@ export const fetchStakes = createAsyncThunk(
       return;
     }
 
-    const stakeReq = await fetch(fetchStakeURL)
-      .then((res) => res.json())
-      .then((result) => result);
+    /**
+     * fetching through db
+     */
+    // const stakeReq = await fetch(fetchStakeURL)
+    //   .then((res) => res.json())
+    //   .then((result) => result);
 
-    const stakeList = stakeReq.datas;
+    // const stakeList = stakeReq.datas;
+
+    const stakeList = tosMiningDB;
 
     const currentBlock = await BASE_PROVIDER.getBlockNumber();
 
