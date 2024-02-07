@@ -4,22 +4,19 @@ import {
   useTheme,
   Text,
   Grid,
-  Heading,
   Select,
   Tooltip,
   Center,
   IconButton,
   useColorMode,
 } from '@chakra-ui/react';
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 // import {PageHeader} from 'components/PageHeader';
 import {useRouteMatch} from 'react-router-dom';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectLaunch} from '@Launch/launch.reducer';
-import FeaturedProjects from '../components/FeaturedProjects';
 import ProjectCard from '../components/ProjectCard';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-// import {allProjectsData} from './FakeData';
 import {ChevronRightIcon, ChevronLeftIcon} from '@chakra-ui/icons';
 import LaunchGuide from './LaunchGuide';
 import {fetchCampaginURL} from 'constants/index';
@@ -27,6 +24,8 @@ import {useQuery} from 'react-query';
 import axios from 'axios';
 import {useAppDispatch} from 'hooks/useRedux';
 import {fetchProjects} from '@Launch/launch.reducer';
+import {launchDB} from 'constants/db';
+
 const AllProjects = () => {
   const theme = useTheme();
   const match = useRouteMatch();
@@ -39,24 +38,24 @@ const AllProjects = () => {
     params: {id},
   } = match;
 
-  const {data, isLoading, error} = useQuery(
-    ['launchProjects'],
-    () =>
-      axios.get(fetchCampaginURL, {
-        headers: {
-          account,
-        },
-      }),
-    {
-      //refetch every 10min
-      refetchInterval: 600000,
-    },
-  );  
+  // const {data, isLoading, error} = useQuery(
+  //   ['launchProjects'],
+  //   () =>
+  //     axios.get(fetchCampaginURL, {
+  //       headers: {
+  //         account,
+  //       },
+  //     }),
+  //   {
+  //     //refetch every 10min
+  //     refetchInterval: 600000,
+  //   },
+  // );
+  const data: any = launchDB;
   const {
     data: {projects},
   } = useAppSelector(selectLaunch);
-  
-  
+
   useEffect(() => {
     if (data) {
       const {data: datas} = data;
@@ -67,11 +66,9 @@ const AllProjects = () => {
             return vault.isSet === true;
           });
           return {key: k, data: datas[k], isSet: stat};
+        } else {
+          return {key: k, data: datas[k], isSet: false};
         }
-        else {
-          return {key: k, data: datas[k], isSet: false}
-        }
-       
       });
 
       const filteredProjects = projects.filter(
@@ -120,12 +117,19 @@ const AllProjects = () => {
           </Text>
         </Box>
         <Flex justifyContent={'center'}>
-          {projectsData.length !==0?  <Grid templateColumns="repeat(3, 1fr)" gap={30}>
-            {getPaginatedData().map((project: any, index: number) => {
-              return <ProjectCard project={project} index={index} key={index}/>;
-            })}
-          </Grid> : <Text  fontFamily={theme.fonts.roboto} fontSize={'16px'}>There are no projects currently</Text>}
-         
+          {projectsData.length !== 0 ? (
+            <Grid templateColumns="repeat(3, 1fr)" gap={30}>
+              {getPaginatedData().map((project: any, index: number) => {
+                return (
+                  <ProjectCard project={project} index={index} key={index} />
+                );
+              })}
+            </Grid>
+          ) : (
+            <Text fontFamily={theme.fonts.roboto} fontSize={'16px'}>
+              There are no projects currently
+            </Text>
+          )}
         </Flex>
         <Flex
           flexDirection={'row'}

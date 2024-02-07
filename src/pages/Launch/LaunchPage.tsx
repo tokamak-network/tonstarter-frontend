@@ -30,51 +30,41 @@ import {DEFAULT_NETWORK} from 'constants/index';
 type LaunchProps = {
   numPairs: Number;
 };
+
+const themeDesign = {
+  border: {
+    light: 'solid 1px #e6eaee',
+    dark: 'solid 1px #373737',
+  },
+  font: {
+    light: 'black.300',
+    dark: 'gray.475',
+  },
+  tosFont: {
+    light: 'gray.250',
+    dark: 'black.100',
+  },
+  borderDashed: {
+    light: 'dashed 1px #dfe4ee',
+    dark: 'dashed 1px #535353',
+  },
+  buttonColorActive: {
+    light: 'gray.225',
+    dark: 'gray.0',
+  },
+  buttonColorInactive: {
+    light: '#c9d1d8',
+    dark: '#777777',
+  },
+};
+
 const LaunchPage: React.FC<LaunchProps> = ({numPairs}) => {
   const [showAllProjects, setShowAllProjects] = useState<boolean>(true);
-  const [showLaunchMode, setShowLaunchMode] = useState<boolean>(false);
   const theme = useTheme();
   const {colorMode} = useColorMode();
-  const match = useRouteMatch();
   const dispatch = useAppDispatch();
-  const {
-    //@ts-ignore
-    params: {id},
-  } = match;
-  const {url} = match;
-  const {active, activate, connector} = useActiveWeb3React();
+  const {active, activate} = useActiveWeb3React();
   const {account, chainId} = useActiveWeb3React();
-
-  const showLaunchModes = () => {
-    setShowLaunchMode(true);
-  };
-
-  const themeDesign = {
-    border: {
-      light: 'solid 1px #e6eaee',
-      dark: 'solid 1px #373737',
-    },
-    font: {
-      light: 'black.300',
-      dark: 'gray.475',
-    },
-    tosFont: {
-      light: 'gray.250',
-      dark: 'black.100',
-    },
-    borderDashed: {
-      light: 'dashed 1px #dfe4ee',
-      dark: 'dashed 1px #535353',
-    },
-    buttonColorActive: {
-      light: 'gray.225',
-      dark: 'gray.0',
-    },
-    buttonColorInactive: {
-      light: '#c9d1d8',
-      dark: '#777777',
-    },
-  };
 
   //sets the create project mode to simplified at the initial load
   //initializes all the states
