@@ -16,6 +16,7 @@ import {selectStakes} from '../Staking/staking.reducer';
 import {LoadingComponent} from 'components/Loading';
 import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 import NoticeModal from 'components/Modal/Notice';
+import {tosMiningDB} from 'constants/db';
 
 export const FLDstarter = () => {
   // const [selected, setSelected] = useState<string>('hi');
@@ -25,13 +26,13 @@ export const FLDstarter = () => {
   // }
 
   // @ts-ignore
-  const {data, loading} = useAppSelector(selectStakes);
+  // const {data, loading} = useAppSelector(selectStakes);
 
   return (
     <Fragment>
       <Head title={'TONStarter'} />
       <Animation></Animation>
-      <Stack>
+      {/* <Stack>
         <Container maxW={'6xl'} py={12}>
           <SimpleGrid minChildWidth={350} gap={30}>
             {loading === 'pending' || data.length === 0 ? (
@@ -63,7 +64,7 @@ export const FLDstarter = () => {
             <IconTopArrow />
           </Button>
         </Flex>
-      </Stack>
+      </Stack> */}
       {/* <NoticeModal></NoticeModal> */}
     </Fragment>
   );

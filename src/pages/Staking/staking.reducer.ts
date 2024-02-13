@@ -44,15 +44,12 @@ export const fetchStakes = createAsyncThunk(
     // const stakeList = stakeReq.datas;
 
     const stakeList = tosMiningDB;
-
     const currentBlock = await BASE_PROVIDER.getBlockNumber();
-
     const vaultsData = store.getState().vaults.data;
 
     await Promise.all(
       stakeList.map(async (stake: any, index: number) => {
         const mystaked = '';
-
         const status = await getStatus(stake, currentBlock);
         //@ts-ignore
         const {saleClosed, period} = vaultsData[stake.vault];

@@ -10,20 +10,17 @@ import {
 import OpenStepOne from '@Launch/components/OpenStepOne';
 import {Formik, Form} from 'formik';
 import useValues from '@Launch/hooks/useValues';
-import type {LaunchMode, StepNumber, VaultCommon} from '@Launch/types';
+import type {StepNumber, VaultCommon} from '@Launch/types';
 import ProjectSchema from '@Launch/utils/projectSchema';
 import {PageHeader} from 'components/PageHeader';
 import Steps from '@Launch/components/Steps';
 import OpenStepTwo from '@Launch/components/OpenStepTwo';
 import {useRouteMatch, useHistory, Redirect} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from 'hooks/useRedux';
-import {selectLaunch, setHashKey, setProjectStep} from '@Launch/launch.reducer';
+import {selectLaunch, setHashKey} from '@Launch/launch.reducer';
 import OpenStepThree from '@Launch/components/OpenStepThree';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {saveProject, editProject} from '@Launch/utils/saveProject';
-import {CustomButton} from 'components/Basic/CustomButton';
-import {isProduction} from './utils/checkConstants';
-import {useLocation} from 'react-router-dom';
 
 const StepComponent = (props: {
   step: StepNumber;
@@ -52,10 +49,6 @@ const MainScreen = () => {
   const theme = useTheme();
   const {account} = useActiveWeb3React();
   const {initialValues} = useValues(account || '');
-  const {state} = useLocation();
-
-  // Access the project launch mode parameter from link
-  const launchMode = state;
 
   const match = useRouteMatch();
   const {url} = match;
@@ -80,15 +73,24 @@ const MainScreen = () => {
     //@ts-ignore
     const unBlock = historyObj.block((loc, action) => {
       if (action === 'POP' || action === 'PUSH') {
-        return window.confirm('Are you sure you want to go back?\nClick the Save button to save your progress before you leave.');
+        return window.confirm(
+          'Are you sure you want to go back?\nClick the Save button to save your progress before you leave.',
+        );
       }
     });
     return () => unBlock();
   }, [historyObj]);
 
-  useEffect(() => {    
+  useEffect(() => {
     dispatch(
-      setHashKey({data: hashKey !== undefined? hashKey: isExist === 'createproject' ? undefined : isExist}),
+      setHashKey({
+        data:
+          hashKey !== undefined
+            ? hashKey
+            : isExist === 'createproject'
+            ? undefined
+            : isExist,
+      }),
     );
   }, [dispatch, hashKey, isExist]);
 
@@ -106,7 +108,6 @@ const MainScreen = () => {
     },
     [step],
   );
-  
 
   // const {web3Token} = useWeb3Token();
 
@@ -119,12 +120,15 @@ const MainScreen = () => {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
 
-  if (id !== undefined && projects[id] && projects[id]?.ownerAddress !== account) {
+  if (
+    id !== undefined &&
+    projects[id] &&
+    projects[id]?.ownerAddress !== account
+  ) {
     return <Redirect to={{pathname: '/launch'}}></Redirect>;
   }
 
-// console.log('tempProjectData',tempProjectData);
-
+  // console.log('tempProjectData',tempProjectData);
 
   return (
     <Flex
@@ -148,10 +152,9 @@ const MainScreen = () => {
         innerRef={formikRef}
         initialValues={
           Object.keys(tempProjectData).length !== 0
-            ? {...initialValues, ...tempProjectData}:
-          id && projects
+            ? {...initialValues, ...tempProjectData}
+            : id && projects
             ? {...initialValues, ...projects[id]}
-            
             : {...initialValues, ownerAddress: account}
         }
         validationSchema={ProjectSchema}

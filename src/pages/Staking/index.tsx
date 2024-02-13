@@ -8,6 +8,7 @@ import {
   useTheme,
   Switch,
   Image,
+  Center,
 } from '@chakra-ui/react';
 import {IconClose} from 'components/Icons/IconClose';
 import {IconOpen} from 'components/Icons/IconOpen';
@@ -114,9 +115,7 @@ const GetDate = ({
 export const Staking = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  // @ts-ignore
   const {data, loading} = useAppSelector(selectStakes);
-  // @ts-ignore
   const {data: appConfig} = useAppSelector(selectApp);
   const columns = useMemo(
     () => [
@@ -476,7 +475,7 @@ export const Staking = () => {
     [data, dispatch, appConfig.explorerLink],
   );
 
-  const {chainId, library} = useActiveWeb3React();
+  const {chainId, library, account} = useActiveWeb3React();
   const [tableLoading, setTableLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -510,12 +509,16 @@ export const Staking = () => {
           />
         </Box>
         <Box fontFamily={theme.fonts.roboto}>
-          <StakingTable
-            renderDetail={renderRowSubComponent}
-            columns={columns}
-            data={data}
-            isLoading={tableLoading}
-          />
+          {account ? (
+            <StakingTable
+              renderDetail={renderRowSubComponent}
+              columns={columns}
+              data={data}
+              isLoading={tableLoading}
+            />
+          ) : (
+            <Center color={'red'}>You need to connect your wallet</Center>
+          )}
         </Box>
       </Container>
       <StakeOptionModal />

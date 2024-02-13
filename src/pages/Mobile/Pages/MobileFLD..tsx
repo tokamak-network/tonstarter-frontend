@@ -1,5 +1,5 @@
 import {Head} from 'components/SEO';
-import {Fragment, useState,useEffect} from 'react';
+import {Fragment, useState, useEffect} from 'react';
 import {
   Flex,
   Text,
@@ -9,12 +9,11 @@ import {
   Center,
   useColorMode,
   Box,
-
 } from '@chakra-ui/react';
 import logoDark from 'assets/svgs/fldw_bi.svg';
 import {Link} from 'react-router-dom';
 import {useActiveWeb3React} from 'hooks/useWeb3';
-import { fetchPoolPayload } from 'pages/Reward/utils/fetchPoolPayload';
+import {fetchPoolPayload} from 'pages/Reward/utils/fetchPoolPayload';
 import {useAppSelector} from 'hooks/useRedux';
 import {selectStakes} from 'pages/Staking/staking.reducer';
 import {Stake} from 'pages/Staking/types';
@@ -37,7 +36,6 @@ const TextComponent = (props: any) => {
   } = props;
   const {colorMode} = useColorMode();
 
-  
   return (
     <Center
       w={'100%'}
@@ -76,7 +74,7 @@ export const MobileFLD = () => {
   const [liquidity, setLiquidity] = useState('');
   const [numProjects, setNumProjects] = useState<number>(0);
   const dispatch = useAppDispatch();
-  
+
   const projects = useQuery(
     ['launchProjects'],
     () =>
@@ -93,13 +91,14 @@ export const MobileFLD = () => {
 
   const projectsData = projects.data;
   const isProjectsLoading = projects.isLoading;
-  
+
   useEffect(() => {
-    async function calcLiquidity () {
+    async function calcLiquidity() {
       let totalLiquidity = 0;
-      const tvl = await fetchPoolPayload(library)
+      const tvl = await fetchPoolPayload(library);
+      if (!tvl) return;
       for (const liquidity of tvl) {
-        totalLiquidity = totalLiquidity + Number(liquidity.total)
+        totalLiquidity = totalLiquidity + Number(liquidity.total);
       }
       const res = Number(totalLiquidity).toLocaleString(undefined, {
         minimumFractionDigits: 2,
@@ -108,9 +107,7 @@ export const MobileFLD = () => {
         res.split('.')[0] + '.' + res.split('.')[1][0] + res.split('.')[1][1],
       );
     }
-    calcLiquidity()
-      
-    
+    calcLiquidity();
   }, [library]);
 
   useEffect(() => {
@@ -128,31 +125,29 @@ export const MobileFLD = () => {
   }, [data]);
 
   useEffect(() => {
-    if (projectsData  && !isProjectsLoading) {
+    if (projectsData && !isProjectsLoading) {
       const {data: datas} = projectsData;
       dispatch(fetchProjects({data: datas}));
       const projects = Object.keys(datas).map((k) => {
         if (datas[k].vaults !== undefined) {
-        const stat = datas[k].vaults.every((vault: any) => {
-          return vault.isSet === true;
-        });
-        return {name: datas[k].projectName, key: k,isSet: stat}
-      }
-      else {
-        return {key: k, data: datas[k], isSet: false}
-      }
-    })
-      
+          const stat = datas[k].vaults.every((vault: any) => {
+            return vault.isSet === true;
+          });
+          return {name: datas[k].projectName, key: k, isSet: stat};
+        } else {
+          return {key: k, data: datas[k], isSet: false};
+        }
+      });
+
       const filteredProjects = projects.filter(
         (project: any) => project.isSet === true,
       );
       // console.log(filteredProjects.length);
-      
-      setNumProjects(filteredProjects.length+4)
+
+      setNumProjects(filteredProjects.length + 4);
     }
   }, [data, dispatch]);
 
-  
   return (
     <Fragment>
       <Flex
@@ -180,13 +175,13 @@ export const MobileFLD = () => {
               Phase1 Total Staked
             </Text>
             <Text fontSize={'25px'}>
-             {totalStakedAmount} <span style={{fontSize: '15px'}}>TON</span>
+              {totalStakedAmount} <span style={{fontSize: '15px'}}>TON</span>
             </Text>
             <Text mt={'21px'} fontSize={'15px'} color={'#ffff07'}>
-            Total Ecosystem Value Locked
+              Total Ecosystem Value Locked
             </Text>
             <Text fontSize={'25px'}>
-            <span style={{fontSize: '25px'}}>$</span> {liquidity}
+              <span style={{fontSize: '25px'}}>$</span> {liquidity}
             </Text>
           </Flex>
 
@@ -223,7 +218,7 @@ into sTOS(staked TOS)"
                 borderColor={whiteWithOpacity}
                 w={'100%'}
                 h={'390px'}
-              pt='39px'
+                pt="39px"
                 flexDirection="column"
                 justifyContent={'flex-start'}
                 alignItems="left"
@@ -235,30 +230,31 @@ into sTOS(staked TOS)"
                 <Text fontSize={'11px'}>
                   Make Your Own Token and Create Token Economy
                 </Text>
-                <Link   to="/launch">
-                <Box
-                  w={'106px'}
-                  mt={'25px'}
-                  h={'24px'}
-                  border={
-                    colorMode == 'light'
-                      ? '1px solid #409cff'
-                      : '1px solid #535353'
-                  }
-                  borderRadius="4px"
-                  fontSize={'11px'}
-                  display="flex"
-                  justifyContent={'center'}
-                  alignItems="center">
-                  Launched Projects
-                </Box></Link>
-               
+                <Link to="/launch">
+                  <Box
+                    w={'106px'}
+                    mt={'25px'}
+                    h={'24px'}
+                    border={
+                      colorMode == 'light'
+                        ? '1px solid #409cff'
+                        : '1px solid #535353'
+                    }
+                    borderRadius="4px"
+                    fontSize={'11px'}
+                    display="flex"
+                    justifyContent={'center'}
+                    alignItems="center">
+                    Launched Projects
+                  </Box>
+                </Link>
+
                 <Text mt={'56px'} fontSize={'11px'}>
-                 Raised Capital
+                  Raised Capital
                 </Text>
                 <Text fontSize={'15px'}>$ 7,115,401.98</Text>
                 <Text mt={'30px'} fontSize={'11px'}>
-                TOS pairs (in Uniswap)
+                  TOS pairs (in Uniswap)
                 </Text>
                 <Text fontSize={'15px'}>{numProjects}</Text>
               </Center>

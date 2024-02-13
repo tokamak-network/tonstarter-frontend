@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from 'store/reducers';
 import {convertNumber} from 'utils/number';
 import {fetchValutURL} from 'constants/index';
+import {stakingVaultData} from 'constants/db';
 
 type Vault = {
   // address: AddressDetail;
@@ -101,11 +102,16 @@ export const fetchVaults = createAsyncThunk(
       return;
     }
 
-    const vaultReq = await fetch(fetchValutURL)
-      .then((res) => res.json())
-      .then((result) => result);
-    const vaultData = vaultReq.datas;
+    /**
+     * fetch through api
+     */
+    // const vaultReq = await fetch(fetchValutURL)
+    //   .then((res) => res.json())
+    //   .then((result) => result);
+    // const vaultData = vaultReq.datas;
+    const vaultData = stakingVaultData;
 
+    //@ts-ignore
     const result = getEarningPerBlock(vaultData);
 
     return result;

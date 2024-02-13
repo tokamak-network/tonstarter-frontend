@@ -5,7 +5,6 @@ import {
   Container,
   SimpleGrid,
   SkeletonCircle,
-  Wrap,
   Image,
   Button,
 } from '@chakra-ui/react';
@@ -21,14 +20,11 @@ import Blue_Arrow from 'assets/svgs/blue_arrow.svg';
 import {selectStakes} from 'pages/Staking/staking.reducer';
 import {Stake} from 'pages/Staking/types';
 import {useAppSelector} from 'hooks/useRedux';
-import {DEPLOYED} from 'constants/index';
-import {usePoolByUserQuery, usePoolByArrayQuery} from 'store/data/enhanced';
+import {usePoolByArrayQuery} from 'store/data/enhanced';
 import ms from 'ms.macro';
-import {fetchTosPriceURL, fetchEthPriceURL} from '../../constants/index';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import views from '../Reward/rewards';
 import {selectTransactionType} from 'store/refetch.reducer';
-// import {getLiquidity} from '../Reward/utils/getLiquidity';
 import {fetchPoolPayload} from 'pages/Reward/utils/fetchPoolPayload';
 import {NavLink} from 'react-router-dom';
 
@@ -475,6 +471,7 @@ export const Animation: React.FC<HomeProps> = () => {
     async function calcLiquidity() {
       let totalLiquidity = 0;
       const tvl = await fetchPoolPayload(library);
+      if (!tvl) return;
       for (const liquidity of tvl) {
         totalLiquidity = totalLiquidity + Number(liquidity.total);
       }
