@@ -55,9 +55,9 @@ const AllProjects = () => {
   //   },
   // );
   const data: any = launchDB;
-  const {
-    data: {projects},
-  } = useAppSelector(selectLaunch);
+  // const {
+  //   data: {projects},
+  // } = useAppSelector(selectLaunch);
 
   useEffect(() => {
     if (data) {

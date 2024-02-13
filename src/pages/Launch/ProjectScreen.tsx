@@ -23,6 +23,7 @@ import {useActiveWeb3React} from 'hooks/useWeb3';
 import {LoadingComponent} from 'components/Loading';
 import VestingClaimModal from './components/modals/VestingClaim';
 import SwapModal from './components/modals/SwapModal';
+import {launchDB} from 'constants/db';
 
 const ProjectScreen = () => {
   const {openAnyModal} = useModal();
@@ -46,31 +47,38 @@ const ProjectScreen = () => {
     params: {name},
   } = match;
 
-
-  //gets all the projects from the API
-  const {data, isLoading, error} = useQuery(
-    ['test'],
-    () =>
-      axios.get(fetchCampaginURL, {
-        headers: {
-          account,
-        },
-      }),
-    {
-      //refetch every 10min
-      refetchInterval: 600000,
-    },
-  );
+  /**
+   * fetch through api
+   */
+  // gets all the projects from the API
+  // const {data, isLoading, error} = useQuery(
+  //   ['test'],
+  //   () =>
+  //     axios.get(fetchCampaginURL, {
+  //       headers: {
+  //         account,
+  //       },
+  //     }),
+  //   {
+  //     //refetch every 10min
+  //     refetchInterval: 600000,
+  //   },
+  // );
+  const data = launchDB;
 
   //set the main project state of this page to the project with the same hashkey from the above results
   useEffect(() => {
     if (data) {
       const {data: datas} = data;
       dispatch(fetchProjects({data: datas}));
-      
-      setProject(datas[name]);
+
+      //@ts-ignore
+      if (datas[name]) {
+        //@ts-ignore
+        setProject(datas[name]);
+      }
     }
-  }, [data, dispatch]);
+  }, [data, dispatch, name]);
 
   const themeDesign = {
     border: {
@@ -99,7 +107,7 @@ const ProjectScreen = () => {
     },
   };
 
-//set the global state to the hashkey if it exists
+  //set the global state to the hashkey if it exists
   useEffect(() => {
     dispatch(setHashKey({data: isExist === 'project' ? undefined : isExist}));
   }, []);

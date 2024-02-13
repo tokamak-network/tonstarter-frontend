@@ -6913,7 +6913,6 @@ export const launchDB = {
     'content-type': 'application/json; charset=utf-8',
   },
   config: {
-    url: 'https://dev.tonstarterapi.tokamak.network/projects?chainId=1',
     method: 'get',
     headers: {
       Accept: 'application/json, text/plain, */*',
