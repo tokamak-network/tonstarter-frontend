@@ -15,8 +15,7 @@ Before installing this project, you'll need Node.js. The following version is re
 ## Getting Started
 
 1. Clone and navigate to the project directory
-2. Create a
-3. To get started with the project, run the following commands:
+2. To get started with the project, run the following commands:
 
 ```
 npm install
