@@ -5,7 +5,6 @@ import {Header} from 'components/Header';
 import {FLDstarter} from './FLDstarter';
 import {Staking} from './Staking';
 import {Pools} from './Pools';
-import {DAO} from './Dao/index';
 import {Reward} from './Reward';
 import {Starter} from './Starter/index';
 import {Switch, Route} from 'react-router-dom';
@@ -20,7 +19,6 @@ import {fetchStarters} from './Starter/starter.reducer';
 import {DEFAULT_NETWORK} from 'constants/index';
 import {Footer} from 'components/Footer';
 import {ConfirmModal} from 'components/Modal';
-import {MobilePreOpen} from './PreOpen/Index';
 import {useWindowDimensions} from 'hooks/useWindowDimentions';
 import {useActiveWeb3React} from 'hooks/useWeb3';
 import {StarterDetail} from './Starter/StarterDetail';
@@ -31,20 +29,10 @@ import MobileAirDrop from './Mobile/Pages/AirDrop/index';
 import {MobileFLD} from './Mobile/Pages/MobileFLD.';
 import {MobileFooter} from './Mobile/Components/MobileFooter';
 import CreateMain from '@Launch/CreateMain';
-import {
-  CreateProject,
-  ListingProjects,
-  ListingPools,
-  ListingRewards,
-} from './Admin';
 import {MyAirdrop} from './Admin/MyAirdrop';
 import {fetchTosStakes} from '@Dao/dao.reducer';
 import OpenCampagin from '@Launch/index';
-import MainScreen from '@Launch/MainScreen';
 import ProjectScreen from '@Launch/ProjectScreen';
-import TokamakGNB from 'components/TokamakGNB';
-import MobileTokamakGNB from 'components/MobileTokamakGNB';
-import SimplifiedMainScreen from '@Launch/SimplifiedMainScreen';
 import ConfirmTermsModal from '@Launch/components/modals/ConfirmTerms';
 
 export interface RouterProps extends HTMLAttributes<HTMLDivElement> {}
@@ -182,7 +170,6 @@ export const Router: FC<RouterProps> = () => {
     return (
       <div
         style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-        <MobileTokamakGNB />
         <MobileHeader
           account={account}
           walletopen={() => handleWalletModalOpen('wallet')}
@@ -215,7 +202,6 @@ export const Router: FC<RouterProps> = () => {
   return (
     <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
       <ConfirmModal></ConfirmModal>
-      <TokamakGNB></TokamakGNB>
       <Header
         account={account}
         walletopen={() => handleWalletModalOpen('wallet')}

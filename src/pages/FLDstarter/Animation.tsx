@@ -612,7 +612,7 @@ export const Animation: React.FC<HomeProps> = () => {
               <Text>Platform</Text>
             </div>
             <div style={{position: 'absolute', bottom: '302px'}}>
-              <Text
+              {/* <Text
                 fontSize={'26px'}
                 color={colorMode === 'light' ? '#0070ed' : '#ffff07'}
                 h={'25px'}>
@@ -620,7 +620,7 @@ export const Animation: React.FC<HomeProps> = () => {
               </Text>
               <Text fontSize={'52px'} h={'60px'}>
                 {totalStakedAmount} <span style={{fontSize: '26px'}}>TON</span>
-              </Text>
+              </Text> */}
             </div>
             <div style={{position: 'absolute', bottom: '193px'}}>
               <Text
@@ -728,7 +728,7 @@ export const Animation: React.FC<HomeProps> = () => {
                   style={{
                     background: '#ffffff',
                     position: 'relative',
-                    right: '-2px',
+                    right: '2px',
                   }}></div>
               )}
               renderThumbHorizontal={() => (
@@ -761,11 +761,11 @@ export const Animation: React.FC<HomeProps> = () => {
                     </Button>
                   </NavLink>
                 </Flex>
-                <SubTextComponent
+                {/* <SubTextComponent
                   header={'Raised Capital'}
                   content={'$ 7,115,401.98'}
                   mb={'30px'}
-                />
+                /> */}
                 <SubTextComponent
                   header={'TOS pairs (in Uniswap)'}
                   content={'6'}

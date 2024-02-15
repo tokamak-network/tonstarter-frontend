@@ -626,7 +626,7 @@ export const Reward = () => {
         </Box>
         {account === undefined ? (
           <Center color={'red'}>
-            <>You need to connect to the wallet to view this page</>
+            <>You need to connect your wallet</>
           </Center>
         ) : pool.length !== 0 ? (
           <Box>

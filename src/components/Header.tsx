@@ -286,7 +286,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           }}>
           Launch
         </NavLink>
-        <Flex
+        {/* <Flex
           className={match?.isExact ? 'link-match' : 'link'}
           style={{
             zIndex: 100,
@@ -302,7 +302,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
           cursor={'pointer'}
           onClick={() => window.open('https://tosv2.tokamak.network/')}>
           TOSv2
-        </Flex>
+        </Flex> */}
 
         <Menu>
           <MenuButton>
@@ -605,7 +605,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://github.com/tokamak-network/papers/blob/master/cryptoeconomics/tokamak-cryptoeconomics-en.md',
+                    'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
                   );
                 }}>
                 <MenuItem
