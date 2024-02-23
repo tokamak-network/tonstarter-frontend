@@ -37,7 +37,8 @@ export const UnStakeFromLayer2Modal = () => {
 
   return (
     <Modal
-      isOpen={sub.type === 'manage_unstakeL2' ? true : false}
+      // isOpen={sub.type === 'manage_unstakeL2' ? true : false}
+      isOpen={true}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
@@ -62,8 +63,14 @@ export const UnStakeFromLayer2Modal = () => {
               textAlign={'center'}>
               Unstake TON from the {name} Product
             </Heading>
-            <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              You can earn TON and POWER
+            <Text
+              color="gray.175"
+              fontSize={'0.750em'}
+              textAlign={'center'}
+              mt={'5px'}
+              px={'5px'}>
+              Unstake TON owned by the TOS mining contract. After 14 days, they
+              can be withdrawn and swapped for TOS for TOS miners
             </Text>
           </Box>
 

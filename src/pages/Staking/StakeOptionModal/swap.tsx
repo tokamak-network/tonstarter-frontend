@@ -130,7 +130,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
           color={colorMode === 'dark' ? 'white.200' : '#353c48'}
           fontWeight={700}
           h={'18px'}>
-          TOS Mining Seignorage Swap
+          TOS Mining Seigniorage Swap
         </Text>
         <Flex
           w={'300px'}
@@ -258,7 +258,7 @@ const SwapTab = ({setIsSwapTab}: {setIsSwapTab: any}) => {
               fontSize={12}
               color={colorMode === 'dark' ? 'gray.475' : '#808992'}
               fontWeight={600}>
-              Available Seignorage
+              Available Seigniorage
             </Text>
             <Flex alignItems={'center'}>
               <Text
@@ -549,7 +549,7 @@ export const SwapModal = () => {
           mb={'24px'}
           px={'40px'}
           textAlign={'center'}>
-          Seignorage earned by TOS mining can be swapped TOS after it is
+          Seigniorage earned by TOS mining can be swapped to TOS after it is
           unstaked and withdrawn from level layer2.
         </Text>
         <Flex flexDir={'column'} px={'20px'} alignItems={'center'}>
@@ -558,7 +558,7 @@ export const SwapModal = () => {
             fontWeight={600}
             color={colorMode === 'dark' ? 'white.200' : '#304156'}
             mb={'12px'}>
-            TOS Mining Seignorage Status
+            TOS Mining Seigniorage Status
           </Text>
           <Flex
             w={'300px'}
@@ -837,7 +837,7 @@ export const SwapModal = () => {
                   color={!isSwapTab ? '#2A72E5' : ''}
                   cursor={'pointer'}
                   onClick={() => setIsSwapTab(false)}>
-                  Seignorage
+                  Seigniorage
                 </Box>
               </Flex>
               {isSwapTab ? (

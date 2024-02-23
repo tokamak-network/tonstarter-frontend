@@ -554,7 +554,8 @@ export const ManageModal = () => {
 
   return (
     <Modal
-      isOpen={data.modal === 'manage' ? true : false}
+      // isOpen={data.modal === 'manage' ? true : false}
+      isOpen={true}
       isCentered
       onClose={handleCloseManageModal}>
       <ModalOverlay />
