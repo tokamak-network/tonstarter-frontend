@@ -37,8 +37,7 @@ export const UnStakeFromLayer2Modal = () => {
 
   return (
     <Modal
-      // isOpen={sub.type === 'manage_unstakeL2' ? true : false}
-      isOpen={true}
+      isOpen={sub.type === 'manage_unstakeL2' ? true : false}
       isCentered
       onClose={handleCloseModal}>
       <ModalOverlay />
