@@ -60,16 +60,16 @@ export const UnStakeFromLayer2Modal = () => {
               fontFamily={theme.fonts.titil}
               color={colorMode === 'light' ? 'gray.250' : 'white.100'}
               textAlign={'center'}>
-              Unstake TON from the {name} Product
+              Unstake
             </Heading>
             <Text
               color="gray.175"
               fontSize={'0.750em'}
               textAlign={'center'}
               mt={'5px'}
-              px={'5px'}>
-              Unstake TON owned by the TOS mining contract. After 14 days, they
-              can be withdrawn and swapped for TOS for TOS miners
+              px={'20px'}>
+              Unstake TON seigniorage earned by TOS mining contract. After 14
+              days, they can be withdrawn and swapped to TOS for stakers.
             </Text>
           </Box>
 
