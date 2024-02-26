@@ -89,26 +89,16 @@ export const Footer = () => {
             alignItems={'center'}
             mr={{base: 0, md: 5}}>
             <Text
-              color={colorMode === 'light' ? 'gray.225' : 'white.100'}
+              color={'#999999'}
               fontWeight={600}
               fontSize={14}
               fontFamily={theme.fonts.body}
               letterSpacing={'normal'}>
-              Tokamak Network PTE.LTD
-            </Text>
-          </Box>
-          <Box
-            d="flex"
-            justifyContent={'center'}
-            alignItems={'center'}
-            mr={3}
-            py={{base: 4, md: 0}}>
-            <Text
-              color={colorMode === 'light' ? 'gray.175' : 'white.100'}
-              fontSize={13}
-              fontFamily={theme.fonts.body}
-              fontWeight={'normal'}>
-              111 SOMERSET ROAD #06-07O 111 SOMERSET SINGAPORE 238164
+              Copyright ©2024{' '}
+              <span style={{color: colorMode === 'light' ? '#1c1c1c' : '#fff'}}>
+                Tokamak Network
+              </span>{' '}
+              All Rights Reserved.
             </Text>
           </Box>
           <Box
