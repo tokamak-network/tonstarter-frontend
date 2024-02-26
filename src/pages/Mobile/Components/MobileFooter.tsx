@@ -19,7 +19,7 @@ export const MobileFooter = () => {
         h="72px"
         alignItems={'center'}
         justifyContent="space-between"
-        fontFamily={theme.fonts.openSans}
+        fontFamily={'TitilliumWeb'}
         w="100%"
         py={'15px'}
         color={
@@ -27,18 +27,22 @@ export const MobileFooter = () => {
             ? '#fff'
             : colorMode === 'light'
             ? '#3e495c'
-            : '#ffffff'
+            : '#999999'
         }>
-        <Text fontSize="14px" fontWeight={600} h={'21px'}>
-          Copyright © 2024{' '}
+        <Text
+          fontSize="14px"
+          fontWeight={600}
+          h={'21px'}
+          color={colorMode === 'light' ? '#fff' : '#999999'}>
+          © 2024{' '}
           <span style={{color: colorMode === 'light' ? '#ffffff' : '#fff'}}>
             Tokamak Network
           </span>{' '}
-          All Rights Reserved.
         </Text>
         <Text
           fontSize="11px"
-          color={colorMode === 'light' ? '#ffff07' : '#fff'}
+          h={'15px'}
+          color={colorMode === 'light' ? '#ffff07' : '#9d9ea5'}
           fontWeight={'normal'}>
           E. hello@tokamak.network
         </Text>
