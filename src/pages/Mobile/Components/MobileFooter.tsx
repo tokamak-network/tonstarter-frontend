@@ -44,7 +44,7 @@ export const MobileFooter = () => {
           h={'15px'}
           color={colorMode === 'light' ? '#ffff07' : '#9d9ea5'}
           fontWeight={'normal'}
-          textDecor={'none'}>
+          textDecoration={'none !important'}>
           E. hello@tokamak.network
         </Text>
       </Flex>
