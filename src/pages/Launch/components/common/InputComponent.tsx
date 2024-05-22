@@ -10,8 +10,7 @@ type InputComponentProps = {
   nameDisplay?: boolean;
   inputStyle?: {};
   requirement?: boolean;
-  disabled: boolean
-
+  disabled: boolean;
 };
 
 const InputComponentStyle = {
@@ -39,7 +38,7 @@ const getPlaceHolder = (name: string) => {
     case 'Website ':
       return 'https://tonstarter.tokamak.network';
     case 'Medium ':
-      return 'https://medium.com/onther-tech';
+      return 'https://medium.com/tokamak-network';
     case 'Telegram ':
       return 'https://t.me/tokamak_network';
     case 'Twitter ':
@@ -54,7 +53,7 @@ const getPlaceHolder = (name: string) => {
 };
 
 const InputComponent: React.FC<InputComponentProps> = (props) => {
-  const {name, nameDisplay, inputStyle, requirement,disabled} = props;
+  const {name, nameDisplay, inputStyle, requirement, disabled} = props;
   const {errors, values, setFieldValue} =
     useFormikContext<Projects['CreateProject']>();
   const {colorMode} = useColorMode();
@@ -95,7 +94,9 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
             </Text>
           </Flex>
           {name === 'projectName' && (
-            <Text color={colorMode === 'dark'?'#949494' : '#86929d'} fontSize={10}>
+            <Text
+              color={colorMode === 'dark' ? '#949494' : '#86929d'}
+              fontSize={10}>
               {(values.projectName && 20 - values.projectName?.length) || 20}{' '}
               characters remaining
             </Text>
@@ -136,7 +137,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
             return (
               <Flex justifyContent={'space-between'}>
                 <Select
-                isDisabled={disabled}
+                  isDisabled={disabled}
                   style={{
                     height: '32px',
                     border:
@@ -155,7 +156,6 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                       colorMode === 'light'
                         ? '1px solid #dfe4ee'
                         : '1px solid #323232',
-                       
                   }}
                   w={isCustom ? '127px' : '100%'}
                   fontSize={13}
@@ -172,17 +172,16 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                 </Select>
                 {isCustom && (
                   <Input
-                  isDisabled={disabled}
-                  _disabled={{
-                    bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
-                    color: colorMode === 'light' ? '#8f96a1' : '#484848',
-                    cursor: 'not-allowed',
-                    border:
-                      colorMode === 'light'
-                        ? '1px solid #dfe4ee'
-                        : '1px solid #323232',
-                       
-                  }}
+                    isDisabled={disabled}
+                    _disabled={{
+                      bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+                      color: colorMode === 'light' ? '#8f96a1' : '#484848',
+                      cursor: 'not-allowed',
+                      border:
+                        colorMode === 'light'
+                          ? '1px solid #dfe4ee'
+                          : '1px solid #323232',
+                    }}
                     className={
                       isError
                         ? 'input-err'
@@ -215,17 +214,16 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
             return (
               <Flex justifyContent={'space-between'}>
                 <Select
-                 isDisabled={disabled}
-                 _disabled={{
-                  bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
-                  color: colorMode === 'light' ? '#8f96a1' : '#484848',
-                  cursor: 'not-allowed',
-                  border:
-                    colorMode === 'light'
-                      ? '1px solid #dfe4ee'
-                      : '1px solid #323232',
-                     
-                }}
+                  isDisabled={disabled}
+                  _disabled={{
+                    bg: colorMode === 'dark' ? 'transparent' : '#e9edf1',
+                    color: colorMode === 'light' ? '#8f96a1' : '#484848',
+                    cursor: 'not-allowed',
+                    border:
+                      colorMode === 'light'
+                        ? '1px solid #dfe4ee'
+                        : '1px solid #323232',
+                  }}
                   style={{
                     height: '32px',
                     border:
@@ -368,7 +366,7 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
 
           return (
             <Input
-            isDisabled={disabled}
+              isDisabled={disabled}
               className={
                 isError
                   ? 'input-err'
@@ -389,7 +387,6 @@ const InputComponent: React.FC<InputComponentProps> = (props) => {
                   colorMode === 'light'
                     ? '1px solid #dfe4ee'
                     : '1px solid #323232',
-                   
               }}
               h={'32px'}
               _focus={{}}

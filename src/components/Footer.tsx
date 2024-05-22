@@ -37,7 +37,7 @@ const socialLinks = [
   {
     title: 'Medium',
     icon: IconMedium,
-    href: 'https://medium.com/onther-tech/https-medium-com-onther-tech-tos/home',
+    href: 'https://medium.com/tokamak-network/https-medium-com-onther-tech-tos/home',
     isExternal: true,
   },
   // {

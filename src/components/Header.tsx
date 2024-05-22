@@ -475,7 +475,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-guide-en-kr-6b7cad5773f1',
+                    'https://medium.com/tokamak-network/tonstarter-guide-en-kr-6b7cad5773f1',
                   );
                 }}>
                 <MenuItem
@@ -501,7 +501,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
+                    'https://medium.com/tokamak-network/wton-tos-lp-staking-reward-system-en-kr-881e57ec0568',
                   );
                 }}>
                 <MenuItem
@@ -527,7 +527,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/introduction-of-stos-en-kr-56c12a5440e0',
+                    'https://medium.com/tokamak-network/introduction-of-stos-en-kr-56c12a5440e0',
                   );
                 }}>
                 <MenuItem
@@ -553,7 +553,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
+                    'https://medium.com/tokamak-network/tonstarter-phase-3-starter-guide-en-kr-ab97bb9e50fc',
                   );
                 }}>
                 <MenuItem
@@ -579,7 +579,7 @@ const MenuItems: React.FC<MenuLinksProps> = ({isOpen}) => {
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    'https://medium.com/onther-tech/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
+                    'https://medium.com/tokamak-network/tonstarter-pools-reward-program-guide-en-kr-bef9ae274afd',
                   );
                 }}>
                 <MenuItem
