@@ -24,7 +24,7 @@ export const fetchPoolPayload = async (library: any) => {
     while (sw) {
       for (const i in Pools) {
         positionPromises.push(
-          axios.post('process.env.REACT_APP_SUBGRAPH_ENDPOINT', {
+          axios.post(process.env.REACT_APP_SUBGRAPH_ENDPOINT as string, {
             query: `{positions(where:{pool:"${Pools[i].poolAddress}"},skip:${positionDataList[i].length},first:1000){id\nliquidity\ntickLower{tickIdx}tickUpper{tickIdx}}}`,
             variables: null,
           }),

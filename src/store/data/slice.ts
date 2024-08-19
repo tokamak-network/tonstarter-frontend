@@ -10,7 +10,7 @@ import {REACT_APP_MODE} from 'constants/index';
 
 // List of supported subgraphs. Note that the app currently only support one active subgraph at a time
 const CHAIN_SUBGRAPH_URL: Record<number, string> = {
-  1: 'process.env.REACT_APP_SUBGRAPH_ENDPOINT',
+  1: process.env.REACT_APP_SUBGRAPH_ENDPOINT as string,
   4: 'https://api.thegraph.com/subgraphs/name/cd4761/uniswap-v3-rinkeby',
 };
 

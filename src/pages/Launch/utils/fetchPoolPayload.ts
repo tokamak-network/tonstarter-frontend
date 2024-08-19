@@ -7,8 +7,10 @@ export const fetchPoolPayload = async (library: any) => {
     pools: {TOS_WTON_POOL},
   } = DEPLOYED;
 
-  if (library && TOS_WTON_POOL) {
-    const res = await axios.post('process.env.REACT_APP_SUBGRAPH_ENDPOINT', {
+  const subgraphURL = process.env.REACT_APP_SUBGRAPH_ENDPOINT;
+
+  if (library && TOS_WTON_POOL && subgraphURL) {
+    const res = await axios.post(subgraphURL, {
       query: `{pool(id: "0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4") {
         id
         token0Price
