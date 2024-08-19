@@ -2,7 +2,7 @@ import {ApolloClient, InMemoryCache} from '@apollo/client';
 import {REACT_APP_MODE} from 'constants/index';
 
 const mainnetClient = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
+  uri: 'https://gateway.thegraph.com/api/2d8d6a5aa89e0f7f36516c40797c9584/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV',
   cache: new InMemoryCache({}) as any,
 });
 

@@ -1,5 +1,5 @@
 overrideExisting: true
-schema: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
+schema: 'https://gateway.thegraph.com/api/2d8d6a5aa89e0f7f36516c40797c9584/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV'
 documents: 'src/**/!(*.d).{ts,tsx}'
 generates:
   ./src/store/data/generated.ts:

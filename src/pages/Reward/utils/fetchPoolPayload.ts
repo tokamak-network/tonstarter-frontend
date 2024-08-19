@@ -25,7 +25,7 @@ export const fetchPoolPayload = async (library: any) => {
       for (const i in Pools) {
         positionPromises.push(
           axios.post(
-            'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
+            'https://gateway.thegraph.com/api/2d8d6a5aa89e0f7f36516c40797c9584/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV',
             {
               query: `{positions(where:{pool:"${Pools[i].poolAddress}"},skip:${positionDataList[i].length},first:1000){id\nliquidity\ntickLower{tickIdx}tickUpper{tickIdx}}}`,
               variables: null,
