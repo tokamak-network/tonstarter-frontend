@@ -1,5 +1,5 @@
 overrideExisting: true
-schema: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
+schema: 'process.env.REACT_APP_SUBGRAPH_ENDPOINT'
 documents: 'src/**/!(*.d).{ts,tsx}'
 generates:
   ./src/store/data/generated.ts:

@@ -41,7 +41,7 @@ const LaunchGuide = () => {
     // },
     {
       title: 'TONStarter Launch Create Project Guide',
-      link: 'https://medium.com/onther-tech/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
+      link: 'https://medium.com/tokamak-network/tonstarter-launch-create-project-user-guide-en-kr-82f2ae05c673',
       src: CreateProjectGuide,
       socialName: 'Medium',
       socialIcon: LaunchMedium,

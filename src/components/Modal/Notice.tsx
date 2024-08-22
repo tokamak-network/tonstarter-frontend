@@ -96,14 +96,14 @@ const NoticeModal = () => {
               <Link
                 color={'#2a72e5'}
                 isExternal={true}
-                href="https://medium.com/onther-tech/tosv2-phase-1-release-a0b46e54f69f">
+                href="https://medium.com/tokamak-network/tosv2-phase-1-release-a0b46e54f69f">
                 EN
               </Link>
               ,
               <Link
                 color={'#2a72e5'}
                 isExternal={true}
-                href="https://medium.com/onther-tech/tosv2-1%EB%8B%A8%EA%B3%84-%EA%B3%B5%EA%B0%9C-1e9465db6985">
+                href="https://medium.com/tokamak-network/tosv2-1%EB%8B%A8%EA%B3%84-%EA%B3%B5%EA%B0%9C-1e9465db6985">
                 KR
               </Link>
               <Text>] for more details.</Text>
@@ -119,7 +119,7 @@ const NoticeModal = () => {
               text={'Detail'}
               func={() => {
                 window.open(
-                  'https://medium.com/onther-tech/tonstarter-planned-service-maintenance-smart-contract-upgrade-announcement-4362b02403c2',
+                  'https://medium.com/tokamak-network/tonstarter-planned-service-maintenance-smart-contract-upgrade-announcement-4362b02403c2',
                 );
               }}
               style={{

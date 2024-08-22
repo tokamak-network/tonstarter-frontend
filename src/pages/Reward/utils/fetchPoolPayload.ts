@@ -24,13 +24,10 @@ export const fetchPoolPayload = async (library: any) => {
     while (sw) {
       for (const i in Pools) {
         positionPromises.push(
-          axios.post(
-            'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
-            {
-              query: `{positions(where:{pool:"${Pools[i].poolAddress}"},skip:${positionDataList[i].length},first:1000){id\nliquidity\ntickLower{tickIdx}tickUpper{tickIdx}}}`,
-              variables: null,
-            },
-          ),
+          axios.post(process.env.REACT_APP_SUBGRAPH_ENDPOINT as string, {
+            query: `{positions(where:{pool:"${Pools[i].poolAddress}"},skip:${positionDataList[i].length},first:1000){id\nliquidity\ntickLower{tickIdx}tickUpper{tickIdx}}}`,
+            variables: null,
+          }),
         );
       }
       let positionPromisesData = await Promise.all(positionPromises);

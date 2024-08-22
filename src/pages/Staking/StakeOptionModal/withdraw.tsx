@@ -68,7 +68,8 @@ export const WithdrawalOptionModal = () => {
               Withdraw
             </Heading>
             <Text color="gray.175" fontSize={'0.750em'} textAlign={'center'}>
-              Do You really want to withdraw your TON now?
+              Withdraw TON and they can be swapped to TOS. Swapped TOS can be
+              claimed by stakers at the end of the mining date.
             </Text>
           </Box>
           <Stack
@@ -84,10 +85,7 @@ export const WithdrawalOptionModal = () => {
               justifyContent="center"
               flexDir="column"
               w={'100%'}>
-              <Flex justifyContent="space-between" alignItems="center" h="15px">
-                <Text color={'gray.400'} fontSize="13px" fontWeight={500}>
-                  Withdrawable amount
-                </Text>
+              <Flex justifyContent="center" alignItems="center" h="15px">
                 <Text
                   color={colorMode === 'light' ? 'gray.250' : 'white.100'}
                   fontWeight={500}

@@ -15,23 +15,36 @@ export const MobileFooter = () => {
           : 'transparent'
       }>
       <Flex
-        h="50px"
+        flexDirection="column"
+        h="72px"
         alignItems={'center'}
         justifyContent="space-between"
-        fontFamily={theme.fonts.openSans}
-        w='100%'
-        px='20px'
+        fontFamily={'TitilliumWeb'}
+        w="100%"
+        py={'15px'}
         color={
           match?.isExact
             ? '#fff'
             : colorMode === 'light'
             ? '#3e495c'
-            : '#ffffff'
+            : '#999999'
         }>
-        <Text fontSize="14px" fontWeight={800}>
-          © 2022 Onther
+        <Text
+          fontSize="14px"
+          fontWeight={600}
+          h={'21px'}
+          color={colorMode === 'light' ? '#fff' : '#999999'}>
+          © 2024{' '}
+          <span style={{color: colorMode === 'light' ? '#ffffff' : '#fff'}}>
+            Tokamak Network
+          </span>{' '}
         </Text>
-        <Text fontSize="11px" fontWeight={'normal'}>
+        <Text
+          fontSize="11px"
+          h={'15px'}
+          color={colorMode === 'light' ? '#ffff07' : '#9d9ea5'}
+          fontWeight={'normal'}
+          textDecoration={'none !important'}>
           E. hello@tokamak.network
         </Text>
       </Flex>
