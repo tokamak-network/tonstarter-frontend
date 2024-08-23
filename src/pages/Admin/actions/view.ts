@@ -58,6 +58,7 @@ const getRewardData = async (): Promise<RewardData[] | undefined> => {
   const rewardReq = await fetch(fetchRewardsURL)
     .then((res) => res.json())
     .then((result) => result);
+  console.log('**rewardReq**', rewardReq);
   const rewardData: RewardData[] = await rewardReq.datas;
 
   return rewardData || undefined;

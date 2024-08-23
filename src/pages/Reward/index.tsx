@@ -150,7 +150,9 @@ export const Reward = () => {
       }
       setPoolAddresses(poolArray);
     }
-    fetchProjectsData();
+    fetchProjectsData().catch((e) => {
+      console.log(e);
+    });
   }, [account, library, selected]);
 
   //get all the pool information using the pool addresses array
@@ -494,7 +496,7 @@ export const Reward = () => {
       //will be sent to the manageContainer as props
       const filtered = orderedData.filter(
         (data) =>
-          ethers.utils.getAddress(data.incentiveKey.refundee) ===
+          ethers.utils.getAddress(data?.incentiveKey?.refundee) ===
           ethers.utils.getAddress(account),
       );
       setManageDatas(filtered);

@@ -7847,3 +7847,124 @@ export const rewardDB = [
     status: 'open',
   },
 ];
+
+export const localDumpRewardData = {
+  success: true,
+  message: '',
+  query: {
+    del: {
+      $ne: true,
+    },
+    chainId: '1',
+  },
+  counts: 7,
+  page: 1,
+  pagesize: 100,
+  sort: -1,
+  datas: [
+    {
+      chainId: 1,
+      poolAddress: '0x369bca127b8858108536b71528ab3befa1deb6fc',
+      poolName: 'DOC/TOS',
+      token0Address: '0x0e498afce58dE8651B983F136256fA3b8d9703bc',
+      token1Address: '0x409c4D8cd5d2924b9bc5509230d16a61289c8153',
+      token0Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/doc-symbol%403x.png',
+      token1Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+      feeTier: 3000,
+      numReward: 0,
+      token1Price: '0.6870668497226844',
+      token0Price: '0.000046203845532091626',
+    },
+    {
+      chainId: 1,
+      poolAddress: '0x2ad99c938471770da0cd60e08eaf29ebff67a92a',
+      poolName: 'TOS/ETH',
+      token0Address: '0x409c4D8cd5d2924b9bc5509230d16a61289c8153',
+      token1Address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      token0Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+      token1Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/eth-symbol%403x.png',
+      feeTier: 3000,
+      numReward: 0,
+      token0Price: '0.6870668497226844',
+      token1Price: '2676.75',
+    },
+    {
+      chainId: 1,
+      poolAddress: '0xc29271e3a68a7647fd1399298ef18feca3879f59',
+      poolName: 'ETH/WTON',
+      token0Address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      token1Address: '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2',
+      token0Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/eth-symbol%403x.png',
+      token1Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/wton-symbol%403x.png',
+      feeTier: 3000,
+      numReward: 0,
+      token0Price: '2676.75',
+      token1Price: '1.12575',
+    },
+    {
+      chainId: 1,
+      poolAddress: '0x1c0ce9aaa0c12f53df3b4d8d77b82d6ad343b4e4',
+      poolName: 'TOS/WTON',
+      token0Address: '0x409c4D8cd5d2924b9bc5509230d16a61289c8153',
+      token1Address: '0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2',
+      token0Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+      token1Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/wton-symbol%403x.png',
+      feeTier: 3000,
+      numReward: 0,
+      token1Price: '1.1199999999999999',
+      token0Price: '0.6870668497226844',
+    },
+    {
+      chainId: 1,
+      poolAddress: '0xbddd3a50bd2afd27aed05cc9fe1c8d67fcaa3218',
+      poolName: 'TOS/AURA',
+      token0Address: '0x409c4D8cd5d2924b9bc5509230d16a61289c8153',
+      token1Address: '0xaec59e5b4f8dbf513e260500ea96eba173f74149',
+      token0Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+      token1Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/aura-logo-black-big.png',
+      feeTier: 3000,
+      numReward: 0,
+      token1Price: '0.00391086649101487',
+      token0Price: '0.6870668497226844',
+    },
+    {
+      chainId: 1,
+      poolAddress: '0xda3cc73170aa5bb7c0a9588e7690299df568d53d',
+      poolName: 'DOC/ETH',
+      token0Address: '0x0e498afce58de8651b983f136256fa3b8d9703bc',
+      token1Address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      token0Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/doc-symbol%403x.png',
+      token1Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/eth-symbol%403x.png',
+      feeTier: 3000,
+      numReward: 0,
+      token1Price: '2676.75',
+      token0Price: '7.866852641549787e-36',
+    },
+    {
+      chainId: 1,
+      poolAddress: '0x3ae1e82f20c134867514ecd1e615856b312fb685',
+      poolName: 'TOS / LYDA',
+      token0Address: '0x409c4D8cd5d2924b9bc5509230d16a61289c8153',
+      token0Price: '0.6870668497226844',
+      token1Address: '0xE1B0630D7649CdF503eABc2b6423227Be9605247',
+      token1Price: '0.011776449122132967',
+      token0Image:
+        'https://tonstarter-symbols.s3.ap-northeast-2.amazonaws.com/tos-symbol%403x.png',
+      token1Image: 'https://cdn.imweb.me/thumbnail/20220608/f32f048bccbad.jpg',
+      feeTier: 3000,
+      numReward: 0,
+    },
+  ],
+};

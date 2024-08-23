@@ -274,7 +274,7 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
 
       let totalStakerInfo: any[] = [];
       await Promise.all(
-        stakedPools.map(async (pool: any) => {
+        stakedPools?.map(async (pool: any) => {
           const incentiveInfo = await uniswapStakerContract
             .connect(signer)
             .stakes(Number(pool.id), incentiveId);
