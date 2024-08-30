@@ -61,16 +61,18 @@ export const PoolComponent: FC<PoolComponentProps> = ({
   const [pageLimit, setPageLimit] = useState<number>(2);
 
   useEffect(() => {
-    const pagenumber = parseInt(
-      ((pools.length - 1) / pageLimit + 1).toString(),
-    );
-    setPageOptions(pagenumber);
+    if (pools) {
+      const pagenumber = parseInt(
+        ((pools.length - 1) / pageLimit + 1).toString(),
+      );
+      setPageOptions(pagenumber);
+    }
   }, [pageLimit, pools]);
 
   const getPaginatedData = () => {
     const startIndex = pageIndex * pageLimit - pageLimit;
     const endIndex = startIndex + pageLimit;
-    return pools.slice(startIndex, endIndex);
+    return pools?.slice(startIndex, endIndex);
   };
 
   const goToNextPage = () => {
@@ -105,7 +107,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({
           Pools
         </Text>
       </Flex>
-      {getPaginatedData().map((pool: any, index: number) => {
+      {getPaginatedData()?.map((pool: any, index: number) => {
         // const length = pool.hourData.length - 1;
 
         const now = moment().unix();
@@ -160,7 +162,6 @@ export const PoolComponent: FC<PoolComponentProps> = ({
                 h="26px"
                 p={token0Image.name === 'ETH' ? '6px' : '0px'}
                 w="26px"
-               
               />
               <Avatar
                 src={tok1Image}
@@ -249,7 +250,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({
           </Flex>
         );
       })}
-      {getPaginatedData().length === 1 ? (
+      {getPaginatedData()?.length === 1 ? (
         <Flex
           h={'73px'}
           borderBottom={themeDesign.border[colorMode]}
@@ -294,7 +295,7 @@ export const PoolComponent: FC<PoolComponentProps> = ({
         </Flex>
         <Flex>
           {getPaginationGroup().map((groupIndex: number, index: number) => {
-            const data = getPaginatedData().length;
+            const data = getPaginatedData()?.length;
             return (
               <Button
                 key={index}

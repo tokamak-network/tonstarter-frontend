@@ -273,47 +273,49 @@ export const RewardProgramCard: FC<RewardProgramCardProps> = ({
       const signer = getSigner(library, account);
 
       let totalStakerInfo: any[] = [];
-      await Promise.all(
-        stakedPools?.map(async (pool: any) => {
-          const incentiveInfo = await uniswapStakerContract
-            .connect(signer)
-            .stakes(Number(pool.id), incentiveId);
+      if (stakedPools) {
+        await Promise.all(
+          stakedPools?.map(async (pool: any) => {
+            const incentiveInfo = await uniswapStakerContract
+              .connect(signer)
+              .stakes(Number(pool.id), incentiveId);
 
-          const depositInfo = await uniswapStakerContract
-            .connect(signer)
-            .deposits(Number(pool.id));
+            const depositInfo = await uniswapStakerContract
+              .connect(signer)
+              .deposits(Number(pool.id));
 
-          if (incentiveInfo.liquidity._hex !== '0x00') {
-            if (
-              totalStakerInfo.length > 0 &&
-              totalStakerInfo.some(
-                (data) => data.ownerAddress === depositInfo.owner,
-              )
-            ) {
-              let index = totalStakerInfo.findIndex(
-                (data: any) => data.ownerAddress === depositInfo.owner,
-              );
-              totalStakerInfo[index].liquidity += Number(
-                ethers.utils.formatEther(incentiveInfo.liquidity),
-              );
-            } else {
-              totalStakerInfo.push({
-                ownerAddress: depositInfo.owner,
-                liquidity: Number(
+            if (incentiveInfo.liquidity._hex !== '0x00') {
+              if (
+                totalStakerInfo.length > 0 &&
+                totalStakerInfo.some(
+                  (data) => data.ownerAddress === depositInfo.owner,
+                )
+              ) {
+                let index = totalStakerInfo.findIndex(
+                  (data: any) => data.ownerAddress === depositInfo.owner,
+                );
+                totalStakerInfo[index].liquidity += Number(
                   ethers.utils.formatEther(incentiveInfo.liquidity),
-                ),
-              });
+                );
+              } else {
+                totalStakerInfo.push({
+                  ownerAddress: depositInfo.owner,
+                  liquidity: Number(
+                    ethers.utils.formatEther(incentiveInfo.liquidity),
+                  ),
+                });
+              }
             }
-          }
-        }),
-      ).then(() => {
-        const tempStakerInfo = totalStakerInfo.map((data: any) => {
-          return {
-            ownerAddress: data.ownerAddress,
-          };
+          }),
+        ).then(() => {
+          const tempStakerInfo = totalStakerInfo.map((data: any) => {
+            return {
+              ownerAddress: data.ownerAddress,
+            };
+          });
+          setNumStakers(tempStakerInfo.length);
         });
-        setNumStakers(tempStakerInfo.length);
-      });
+      }
     }
     getIncentives();
   }, [

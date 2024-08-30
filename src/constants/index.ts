@@ -9,9 +9,6 @@ export const REACT_APP_MAINNET_INFURA_API = process.env
   .REACT_APP_MAINNET_INFURA_API as string;
 export const REACT_APP_RINKEBY_INFURA_API = process.env
   .REACT_APP_RINKEBY_INFURA_API as string;
-export const REACT_APP_MAINNET_API = process.env
-  .REACT_APP_MAINNET_API as string;
-export const REACT_APP_DEV_API = process.env.REACT_APP_DEV_API as string;
 export const REACT_APP_LOCAL = process.env.REACT_APP_LOCAL as string;
 export const REACT_APP_MAINNET_OPENCAMPAGIN_API = process.env
   .REACT_APP_MAINNET_OPENCAMPAGIN_API as string;
@@ -20,17 +17,17 @@ export const REACT_APP_RINKEBY_OPENCAMPAGIN_API = process.env
 export const REACT_APP_TOS_PRICE = process.env.REACT_APP_TOS_PRICE as string;
 export const REACT_APP_ETH_PRICE = process.env.REACT_APP_ETH_PRICE as string;
 export const REACT_APP_TON_PRICE = process.env.REACT_APP_TON_PRICE as string;
-export const REACT_APP_USD_PRICE = process.env.REACT_APP_USD_PRICE as string
+export const REACT_APP_USD_PRICE = process.env.REACT_APP_USD_PRICE as string;
 //
 export const NetworkContextName = `${new Date().getTime()}-NETWORK`;
 export const DEFAULT_NETWORK = REACT_APP_MODE === 'DEV' ? 5 : 1;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-export const API_SERVER =
-  REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
-export const API_SERVER_LAUNCH =
-  REACT_APP_MODE === 'DEV'
-    ? REACT_APP_RINKEBY_OPENCAMPAGIN_API
-    : REACT_APP_MAINNET_OPENCAMPAGIN_API;
+export const API_SERVER = '';
+// REACT_APP_MODE === 'DEV' ? REACT_APP_DEV_API : REACT_APP_MAINNET_API;
+export const API_SERVER_LAUNCH = '';
+// REACT_APP_MODE === 'DEV'
+//   ? REACT_APP_RINKEBY_OPENCAMPAGIN_API
+//   : REACT_APP_MAINNET_OPENCAMPAGIN_API;
 
 export const BASE_PROVIDER =
   REACT_APP_MODE === 'DEV'
@@ -118,7 +115,7 @@ const MAINNET_DEPLOYED = {
   StakingV2Proxy: '0x14fb0933Ec45ecE75A431D10AFAa1DDF7BfeE44C',
   Quoter: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
   LibPublicSaleLogic: '0x869C594116782df22d9276430c78e3D88ae3673c',
-  StakeTONAddress: '0x9a8294566960Ab244d78D266FFe0f284cDf728F1'
+  StakeTONAddress: '0x9a8294566960Ab244d78D266FFe0f284cDf728F1',
 };
 
 const RINKEBY_DEPLOYED = {
@@ -183,7 +180,7 @@ const RINKEBY_DEPLOYED = {
   StakingV2Proxy: '0x2fF6D99EbEE9A61430FE4909745FFa9C69a3FCD0',
   Quoter: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
   LibPublicSaleLogic: '0x31512fA8D38d0aD35c0FF8A2F4385dCE0003a368',
-  StakeTONAddress: ''
+  StakeTONAddress: '',
 };
 
 export const DEPLOYED: DEPLOYED_TYPE =
